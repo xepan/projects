@@ -41,6 +41,6 @@ class page_openproject extends \Page{
 	}
 
 	function defaultTemplate(){
-		return['page\dashboard'];
+		return['page\openproject'];
 	}
 }
