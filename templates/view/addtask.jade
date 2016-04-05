@@ -1,0 +1,61 @@
+.row
+  .main-box.clearfix
+    header.main-box-header.clearfix
+      button.btn.btn-success(type='submit') Add Task
+    .main-box-body.clearfix
+      ul.widget-todo
+        li.clearfix
+          .name
+            .checkbox-nice
+              input#todo-1(type='checkbox')
+              label(for='todo-1')
+                | Make user interface of 'projects' module 
+                span.label.label-danger High Priority
+        li.clearfix
+          .name
+            .checkbox-nice
+              input#todo-2(type='checkbox')
+              label(for='todo-2')
+                | Report to authority before lunch 
+                span.label.label-success Low Priority
+          .actions
+            a.table-link(href='#')
+              i.fa.fa-pencil
+            a.table-link.danger(href='#')
+              i.fa.fa-trash-o
+        li.clearfix
+          .name
+            .checkbox-nice
+              input#todo-3(type='checkbox', checked='checked')
+              label(for='todo-3')
+                | review your work.  
+                span.label.label-warning Medium Priority
+          .actions
+            a.table-link(href='#')
+              i.fa.fa-pencil
+            a.table-link.danger(href='#')
+              i.fa.fa-trash-o
+        li.clearfix
+          .name
+            .checkbox-nice
+              input#todo-4(type='checkbox')
+              label(for='todo-4')
+                | New marketing campaign 
+                span.label.label-success Low Priority
+        li.clearfix
+          .name
+            .checkbox-nice
+              input#todo-5(type='checkbox')
+              label(for='todo-5')
+                | Calling Mom 
+                span.label.label-warning Medium Priority
+          .actions
+            a.table-link.badge(href='#')
+              i.fa.fa-cog
+        li.clearfix
+          .name
+            .checkbox-nice
+              input#todo-6(type='checkbox')
+              label(for='todo-6')
+                | Ryan's birthday 
+                span.label.label-danger High Priority

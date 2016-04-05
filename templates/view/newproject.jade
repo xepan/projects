@@ -1,0 +1,27 @@
+.col-lg-8
+  .main-box
+    header.main-box-header.clearfix
+      h2 New Project
+    .main-box-body.clearfix
+      form.form-horizontal(role='form')
+        .form-group
+          .col-lg-10
+            input#name.form-control(type='text', placeholder='Project Name')
+        .form-group
+          .col-lg-10
+            textarea#description.form-control(rows = '3' type='textarea', placeholder='Description')
+        .form-group
+          .col-lg-10
+              .radio
+                input#optionsRadios1(type='radio', checked='', value='option1', name='optionsRadios')
+                label(for='optionsRadios1')
+                  .text-muted Make Public
+              .radio
+                input#optionsRadios2(type='radio', value='option2', name='optionsRadios')
+                label(for='optionsRadios2')
+                  .text-muted Make Private
+
+        .form-group
+          .col-lg-4
+          .col-lg-4 
+            button.btn.btn-success(type='submit') Create Project

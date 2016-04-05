@@ -1,0 +1,21 @@
+.row.col-lg-12
+  .main-box
+    .row.col-md-12.xepan-push-small
+      .col-md-4
+        span.icon.fa.fa-tasks.text-muted Assign Task 
+      .col-md-4
+        span.icon.fa.fa-calendar.text-muted Set DeadLine
+      .col-md-4  
+        span.icon.fa.fa-tag.text-muted Add Followers
+    .row
+    hr
+    header.main-box-header.clearfix
+      h2 New Task
+    .main-box-body.clearfix
+      form.form-horizontal(role='form')
+        .form-group
+          .col-lg-10
+            input#task.form-control(type='text', placeholder='Add Task')
+        .form-group
+          .col-lg-10
+            textarea#comment.form-control(type='text', placeholder='Comment')

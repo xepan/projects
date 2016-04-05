@@ -1,0 +1,27 @@
+.col-lg-8
+  .main-box
+    header.main-box-header.clearfix
+      h2 Status
+    .main-box-body.clearfix
+      form.form-horizontal(role='form')
+        .form-group
+          .col-lg-10
+            textarea#status.form-control(rows = '3' type='textarea', placeholder='status')
+        .form-group
+          .col-lg-10
+              .radio
+                input#optionsRadios1(type='radio', checked='', value='option1', name='optionsRadios')
+                label(for='optionsRadios1')
+                  .text-muted Great
+              .radio
+                input#optionsRadios2(type='radio', value='option2', name='optionsRadios')
+                label(for='optionsRadios2')
+                  .text-muted Moderate
+              .radio    
+                input#optionsRadios3(type='radio', value='option3', name='optionsRadios')
+                label(for='optionsRadios3')
+                  .text-muted Poor
+        .row.xepan-push          
+        .panel.panel-default
+          .panel-body
+            | space for progress graph            
