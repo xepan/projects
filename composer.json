@@ -1,0 +1,27 @@
+{
+    "name": "xepan/projects",
+    "type": "library",
+    "description": "Projects and Tasks management Application for xEpan Platform",
+    "homepage": "https://github.com/xepan/projects",
+    "keywords": ["xEpan","SaaS","ERP","Projects","Tasks"],
+    "license": "MIT",
+    "minimum-stability" : "dev",
+    "authors": [
+        {
+            "name": "Xavoc Technocrats Pvt. Ltd.",
+            "email": "info@xavoc.com"
+        }
+    ],
+    "source": {
+        "url": "git@github.com:xepan/projects.git",
+        "type": "git",
+        "reference": "origin/master"
+    },
+    "require": {
+        "xepan/base" : "dev-master",
+        "php": ">=5.3"
+    },
+    "autoload": {
+        "psr-0": { "autocomplete": "lib" }
+    }
+}
