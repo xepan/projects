@@ -2,12 +2,12 @@
 
 namespace xepan\projects;
 
-class View_TopMenu extends \View{
+class View_TopView extends \View{
 	function init(){
 		parent::init();
 	}
 
 	function defaultTemplate(){
-		return['view\topmenu'];
+		return['view\topview'];
 	}
 }
