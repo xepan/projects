@@ -1,0 +1,20 @@
+.row(id="{$_name}")
+  .main-box.clearfix
+    header.main-box-header.clearfix
+      button.btn.name.btn-success(type='submit') Add Task
+    .main-box-body.clearfix
+      ul.widget-todo
+        {rows}{row}
+        li.clearfix
+          .name(data-id="{$id}")
+            .checkbox-nice
+              input(id="todo-{$id}", type='checkbox')
+              label(for='todo-{$id}')
+                | {name}Make user interface of 'projects' module {/}
+                span.label.label-danger High Priority
+          .actions
+            a.table-link(href='#')
+              i.fa.fa-pencil
+            a.table-link.danger(href='#')
+              i.fa.fa-trash-o
+        {/row}{/rows}

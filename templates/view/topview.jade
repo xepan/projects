@@ -5,13 +5,13 @@
     .main-box-body.clearfix
       .col-md-4
       .col-md-4 
-        a(href!='?page=xepan_projects_projectdetail') 
+        a(href!='?page=xepan_projects_projectdetail&project_id={$id}') 
          |Tasks
-        a(href!="?page=xepan_projects_calendar") 
+        a(href!="?page=xepan_projects_calendar&project_id={$id}") 
          |Calendar
-        a(href!="?page=xepan_projects_conversation") 
+        a(href!="?page=xepan_projects_conversation&project_id={$id}") 
          |Conversation
-        a(href!="?page=xepan_projects_progress") 
+        a(href!="?page=xepan_projects_progress&project_id={$id}") 
          |Progress
-        a(href!="?page=xepan_projects_files") 
+        a(href!="?page=xepan_projects_files&project_id={$id}") 
          |Files

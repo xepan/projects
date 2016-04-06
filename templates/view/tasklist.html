@@ -1,0 +1,21 @@
+
+<div id="{$_name}" class="row">
+  <div class="main-box clearfix">
+    <header class="main-box-header clearfix">
+      <button type="submit" class="btn name btn-success">Add Task</button>
+    </header>
+    <div class="main-box-body clearfix">
+      <ul class="widget-todo">{rows}{row}
+        <li class="clearfix">
+          <div data-id="{$id}" class="name">
+            <div class="checkbox-nice">
+              <input id="todo-{$id}" type="checkbox"/>
+              <label for="todo-{$id}">{name}Make user interface of 'projects' module {/}<span class="label label-danger">High Priority</span></label>
+            </div>
+          </div>
+          <div class="actions"><a href="#" class="table-link"><i class="fa fa-pencil"></i></a><a href="#" class="table-link danger"><i class="fa fa-trash-o"></i></a></div>
+        </li>{/row}{/rows}
+      </ul>
+    </div>
+  </div>
+</div>

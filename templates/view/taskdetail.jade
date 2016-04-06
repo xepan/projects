@@ -1,4 +1,4 @@
-.row.col-lg-12
+.row.col-lg-12(id="{$_name}")
   .main-box
     .row.col-md-12.xepan-push-small
       .col-md-4
@@ -7,10 +7,11 @@
         span.icon.fa.fa-calendar.text-muted Set DeadLine
       .col-md-4  
         span.icon.fa.fa-tag.text-muted Add Followers
+        span.glyphicon.glyphicon-remove.pull-right
     .row
     hr
     header.main-box-header.clearfix
-      h2 New Task
+      h2 {$Content} New Task
     .main-box-body.clearfix
       form.form-horizontal(role='form')
         .form-group

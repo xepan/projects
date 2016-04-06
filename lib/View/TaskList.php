@@ -2,12 +2,12 @@
 
 namespace xepan\projects;
 
-class View_Comment extends \View{
+class View_TaskList extends \CompleteLister{
 	function init(){
 		parent::init();
 	}
 
 	function defaultTemplate(){
-		return['view\comment'];
+		return['view\tasklist'];
 	}
 }
