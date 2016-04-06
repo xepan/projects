@@ -25,7 +25,7 @@ class Model_Project extends \xepan\base\Model_Table
 		$this->addField('name');
 		$this->addField('description');	
 		$this->addField('type');
-
+		$this->hasMany('xepan\projects\Model_Task','project_id');
 		$this->addCondition('type','project');	
 	}
 }

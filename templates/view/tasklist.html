@@ -1,21 +1,32 @@
 
-<div id="{$_name}" class="row">
-  <div class="main-box clearfix">
-    <header class="main-box-header clearfix">
-      <button type="submit" class="btn name btn-success">Add Task</button>
-    </header>
-    <div class="main-box-body clearfix">
-      <ul class="widget-todo">{rows}{row}
-        <li class="clearfix">
-          <div data-id="{$id}" class="name">
-            <div class="checkbox-nice">
-              <input id="todo-{$id}" type="checkbox"/>
-              <label for="todo-{$id}">{name}Make user interface of 'projects' module {/}<span class="label label-danger">High Priority</span></label>
-            </div>
-          </div>
-          <div class="actions"><a href="#" class="table-link"><i class="fa fa-pencil"></i></a><a href="#" class="table-link danger"><i class="fa fa-trash-o"></i></a></div>
-        </li>{/row}{/rows}
-      </ul>
+<div id="{$_name}" class="xepan-grid main-box clearfix {$class}">{Pannel}
+  <header class="main-box-header clearfix atk-actions  {$class} ">
+    <div class="filter-block">
+      <div class="pull-right">{$grid_buttons} </div>
+      <div class="form-group pull-right xepan-filter-form">
+        <div class="form-control pull-left">{$quick_search}<i class="fa fa-search search-icon"></i></div>
+      </div>
     </div>
+  </header>{/Pannel}
+  <div data-id="{$id}" class="row main-box-body clearfix">
+    <ul class="widget-todo">
+      {header}{cols}{col}{/}{/}{/}
+      {rows}{row}
+      <li class="clearfix">
+        <div data-id="{$id}" class="name">
+          <div class="checkbox-nice">
+            <input id="todo-{$id}" type="checkbox"/>
+            <label for="todo-{$id}">{task_name}{/}</label>{$action}
+            {$edit}
+            {$delete}
+          </div>
+        </div>
+      </li>{/}{/}
+      {not_found}
+      <div class="row">
+        <div role="alert" class="col-md-12 text-center alert alert-warning"><span class="icon-attention fa fa-exclamation-triangle"> &nbsp;{$not_found_message}</span></div>
+      </div>{/}
+      {totals}{cols}{col}{$content}{/}{/}{/}
+    </ul>{$Paginator}
   </div>
 </div>

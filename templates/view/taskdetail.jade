@@ -11,12 +11,6 @@
     .row
     hr
     header.main-box-header.clearfix
-      h2 {$Content} New Task
+      h2 New Task
     .main-box-body.clearfix
-      form.form-horizontal(role='form')
-        .form-group
-          .col-lg-10
-            input#task.form-control(type='text', placeholder='Add Task')
-        .form-group
-          .col-lg-10
-            textarea#comment.form-control(type='text', placeholder='Comment')
+        {$form}
