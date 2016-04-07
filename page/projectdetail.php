@@ -32,13 +32,14 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 		if($task_id){
 			$task->addCondition('id',$task_id);
 			$task->tryLoadAny();
+			$task_detail_view->setModel($task);
 		}
 
 		/***************************************************************************
 			Form to add tasks.
 		***************************************************************************/	
 		$f = $task_detail_view->add('Form',null,'form');
-		$f->setModel($task);
+		$f->setModel($task,['project_id','task_name','comment']);
 
 		if($f->isSubmitted()){
 			$f->save();

@@ -1,16 +1,13 @@
 .row.col-lg-12(id="{$_name}")
   .main-box
-    .row.col-md-12.xepan-push-small
+    .row.col-md-12
       .col-md-4
-        span.icon.fa.fa-tasks.text-muted Assign Task 
+        span.showhide.icon.fa.fa-tasks.text-muted#assigntask(data-task_id="{$id}") Assign Task 
       .col-md-4
         span.icon.fa.fa-calendar.text-muted Set DeadLine
       .col-md-4  
-        span.icon.fa.fa-tag.text-muted Add Followers
+        span.icon.fa.fa-tag.text-muted#addfollowers(data-task_id="{$id}") Add Followers
         span.glyphicon.glyphicon-remove.pull-right
-    .row
-    hr
     header.main-box-header.clearfix
-      h2 New Task
     .main-box-body.clearfix
         {$form}
