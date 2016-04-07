@@ -18,6 +18,8 @@ class Model_Project extends \xepan\base\Model_Table
 		'Completed'=>['view','edit','delete','running']
 	];
 
+	public $acl = false;
+
 	function init()
 	{
 		parent::init();

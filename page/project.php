@@ -11,6 +11,8 @@ class page_project extends \xepan\projects\page_sidemenu{
 		$crud=$this->add('xepan\hr\CRUD',null,null,['view\project-grid']);
 		$crud->setModel($project);
 
+		$crud->grid->addQuickSearch('name');
+
 		
 	}	
 }
