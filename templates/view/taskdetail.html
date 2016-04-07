@@ -3,8 +3,8 @@
   <div class="main-box">
     <div class="row col-md-12">
       <div class="col-md-4"><span id="assigntask" data-task_id="{$id}" class="showhide icon fa fa-tasks text-muted">Assign Task </span></div>
-      <div class="col-md-4"><span class="icon fa fa-calendar text-muted">Set DeadLine</span></div>
-      <div class="col-md-4"> <span id="addfollowers" data-task_id="{$id}" class="icon fa fa-tag text-muted">Add Followers</span><span class="glyphicon glyphicon-remove pull-right"></span></div>
+      <div class="col-md-4"><span id="deadline" class="toggle icon fa fa-calendar text-muted">Set DeadLine</span><span id="calendar" style="display:none" class="toggle text-muted">{$deadline}</span></div>
+      <div class="col-md-4"><span id="addfollowers" data-task_id="{$id}" class="icon fa fa-tag text-muted">Add Followers</span><span class="glyphicon glyphicon-remove pull-right"></span></div>
     </div>
     <header class="main-box-header clearfix"></header>
     <div class="main-box-body clearfix">{$form}</div>

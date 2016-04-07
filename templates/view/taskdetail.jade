@@ -4,8 +4,9 @@
       .col-md-4
         span.showhide.icon.fa.fa-tasks.text-muted#assigntask(data-task_id="{$id}") Assign Task 
       .col-md-4
-        span.icon.fa.fa-calendar.text-muted Set DeadLine
-      .col-md-4  
+        span.toggle.icon.fa.fa-calendar.text-muted#deadline Set DeadLine
+        span.toggle.text-muted#calendar(style="display:none"){$deadline}
+      .col-md-4
         span.icon.fa.fa-tag.text-muted#addfollowers(data-task_id="{$id}") Add Followers
         span.glyphicon.glyphicon-remove.pull-right
     header.main-box-header.clearfix
