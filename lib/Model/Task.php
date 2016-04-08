@@ -16,6 +16,7 @@ class Model_Task extends \xepan\base\Model_Table
 		$this->addField('employee');
 		$this->addField('description');
 		$this->addField('deadline')->type('date');
+		$this->addField('starting_date')->type('date');
 		$this->hasMany('xepan\projects\Follower_Task_Association','task_id');
 		$this->hasMany('xepan\projects\Comment','task_id');	
 		$this->hasMany('xepan\projects\Task','parent_id',null,'SubTasks');

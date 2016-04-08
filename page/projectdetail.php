@@ -28,9 +28,9 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 		$task_detail_view = $this->add('xepan\projects\View_Task',null,'rightview');
 		$task_detail_view_url = $this->api->url(null,['cut_object'=>$task_detail_view->name]);
 
-		$task_detail_view->add('View')->set("Task ID " . $task_id );
-		$task_detail_view->add('View')->set("Parent ID " . $parent_id );
-		$task_detail_view->add('View')->set("Action " . $action );
+		// $task_detail_view->add('View')->set("Task ID " . $task_id );
+		// $task_detail_view->add('View')->set("Parent ID " . $parent_id );
+		// $task_detail_view->add('View')->set("Action " . $action );
 		
 		$task = $this->add('xepan\projects\Model_Task');
 		$task->addCondition('project_id',$project_id);
@@ -68,7 +68,7 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 			Form to add tasks.
 		***************************************************************************/	
 		$f = $task_detail_view->add('Form',null,'form');
-		$f->setModel($task,['task_name','description']);
+		$f->setModel($task,['task_name','description','starting_date','deadline']);
 		$f->addSubmit('ADD');
 
 		/***************************************************************************
@@ -104,7 +104,7 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 		/***************************************************************************
 			Grid to show comments
 		***************************************************************************/
-			$task_detail_view->add('xepan\hr\Grid',null,'commentgrid',['view\comment-grid'])->setModel('xepan\projects\Comment',['comment','name']);
+			$task_detail_view->add('xepan\hr\Grid',null,'commentgrid',['view\comment-grid'])->setModel('xepan\projects\Comment',['comment','name'])->addCondition('task_id',$task_id);
 		/***************************************************************************
 			Js to show task detail view
 		***************************************************************************/
