@@ -15,11 +15,10 @@
             {rows}{row}
             li.clearfix
                 .name(data-id="{$id}")
-                  .checkbox-nice
-                    input(id="todo-{$id}", type='checkbox')
-                    label(for='todo-{$id}')
-                      | {task_name}{/}
+                    {$avatar}
+                    {$task_name}
                     {$action}
+                .pull-right
                     {$delete}
             {/}{/}
             {not_found}

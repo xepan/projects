@@ -12,8 +12,8 @@ class Model_Task extends \xepan\base\Model_Table
 		parent::init();
 		$this->hasOne('xepan\projects\Project','project_id');
 		$this->hasOne('xepan\projects\Task','parent_id');
+		$this->hasOne('xepan\hr\Employee','employee_id');
 		$this->addField('task_name');
-		$this->addField('employee');
 		$this->addField('description');
 		$this->addField('deadline')->type('date');
 		$this->addField('starting_date')->type('date');

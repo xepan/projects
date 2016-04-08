@@ -23,28 +23,24 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 		// crud added for edit, delete, action purpose.
 		$task_list_view = $this->add('xepan\hr\CRUD',['allow_add'=>false],'leftview',['view\tasklist']);	
 		$task_list_view->setModel('xepan\projects\Task')->addCondition('project_id',$project_id);
+		$task_list_view->add('xepan\base\Controller_Avatar',['options'=>['size'=>30],'name_field'=>'employee','default_value'=>'']);
 
 		// task detail view for showing/editing details of tasks.
 		$task_detail_view = $this->add('xepan\projects\View_Task',null,'rightview');
 		$task_detail_view_url = $this->api->url(null,['cut_object'=>$task_detail_view->name]);
-
-		// $task_detail_view->add('View')->set("Task ID " . $task_id );
-		// $task_detail_view->add('View')->set("Parent ID " . $parent_id );
-		// $task_detail_view->add('View')->set("Action " . $action );
 		
 		$task = $this->add('xepan\projects\Model_Task');
 		$task->addCondition('project_id',$project_id);
-
-		// if there is already some task added, only then apply these conditions.
-		if($task_id){
-			// $task->addCondition('id',$task_id);
-			$task->load($task_id);
-		}
 
 		if($parent_id){
 			$task->addCondition('parent_id',$parent_id);
 		}
 
+		// if there is already some task added, only then apply these conditions.
+		if($task_id){
+			// $task->addCondition('id',$task_id);
+			$task->load($task_id);			
+		}
 
 		$task_detail_view->setModel($task);
 
