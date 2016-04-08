@@ -39,13 +39,35 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 			Form to add tasks.
 		***************************************************************************/	
 		$f = $task_detail_view->add('Form',null,'form');
-		$f->setModel($task,['project_id','task_name','comment']);
+		$f->setModel($task,['project_id','task_name','description']);
+		$f->addSubmit('ADD');
+		
+		/***************************************************************************
+			Form to add commnets on task.
+		***************************************************************************/
+		$comment_f = $task_detail_view->add('Form',null,'commentform');
+		$comment_f->addField('text','comment');	
+		$comment_f->addSubmit('ADD');
 
+		/***************************************************************************
+			Handling Form Submission
+		***************************************************************************/
 		if($f->isSubmitted()){
 			$f->save();
 			$f->js()->univ()->successMessage('saved')->execute();
 		}
 
+		if($comment_f->isSubmitted()){
+			$model_comment = $this->add('xepan\projects\Model_Comment');
+
+			$model_comment->addCondition('task_id',$_GET['task_id']);
+			$model_comment->addCondition('name',$this->app->employee->id);
+
+			$model_comment['comment'] = $comment_f['comment'];
+			$model_comment->save();
+			
+			$f->js()->univ()->successMessage('comment Saved')->execute();
+		}
 
 		/***************************************************************************
 			Js to show task detail view

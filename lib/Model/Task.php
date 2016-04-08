@@ -12,10 +12,11 @@ class Model_Task extends \xepan\base\Model_Table
 		parent::init();
 		$this->hasOne('xepan\projects\Project','project_id');
 		$this->addField('task_name');
-		$this->addField('comment');	
 		$this->addField('employee');
+		$this->addField('description');
 		$this->addField('deadline')->type('date');
-		$this->hasMany('xepan\projects\Follower_Task_Association','task_id');	
+		$this->hasMany('xepan\projects\Follower_Task_Association','task_id');
+		$this->hasMany('xepan\projects\Comment','task_id');	
 	}
 
 	function getAssociatedfollowers(){
