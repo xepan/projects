@@ -8,6 +8,5 @@ class page_projectdashboard extends \xepan\projects\page_sidemenu{
 		parent::init();
 
 		$this->add('View_Info')->set('Graphical information about projects');
-
 	}
 }

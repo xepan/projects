@@ -7,7 +7,7 @@ class Model_Follower_Task_Association extends \xepan\base\Model_Table{
 	function init(){
 		parent::init();
 
-		$this->hasOne('xepan\projects\Model_Task','task_id');
-		$this->hasOne('xepan\hr\Model_Employee','employee_id');
+		$this->hasOne('xepan\projects\Task','task_id');
+		$this->hasOne('xepan\hr\Employee','employee_id');
 	}
 }

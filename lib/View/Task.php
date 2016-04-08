@@ -35,15 +35,37 @@ class View_Task extends \View{
 		***************************************************************************/
 		$vp2 = $this->add('VirtualPage');
 		$vp2->set(function($p){
+
+			$model_task = $p->add('xepan\projects\Model_Task');
+			$model_task->load($p->app->stickyGET('task_id'));
+
 			$model_employee = $p->add('xepan\hr\Model_Employee');
-			$model_follower = $this->add('xepan\projects\Model_Follower_Task_Association');
-			$form = $p->add('Form');
-			$form->addField('dropdown','name')->setModel($model_employee);
+			$model_follower_task_association = $p->add('xepan\projects\Model_Follower_Task_Association');
 			
-			if($form->isSubmitted()){				
-				$model_follower->addCondition('task_id',$_GET['task_id']);
-				$model_follower['employee_id'] = $form['name'];
-				$model_follower->save(); 
+			$form = $p->add('Form');
+			$follower_field = $form->addField('line','name')->set(json_encode($model_task->getAssociatedFollowers()));
+
+			// Selectable for "task can have many followers" 
+
+			$follower_grid = $p->add('xepan\base\Grid');
+
+			$follower_grid->setModel($model_employee,['name']);
+			$follower_grid->addSelectable($follower_field);
+
+			if($form->isSubmitted()){
+
+				$model_task->removeAssociateFollowers();
+				
+				$selected_followers = array();
+			 	$selected_followers = json_decode($form['name'],true);
+
+				foreach ($selected_followers as $followers) {
+					$model_follower_task_association->addCondition('task_id',$_GET['task_id']);
+					$model_follower_task_association['employee_id'] = $followers;
+					$model_follower_task_association->saveAndUnload();
+				}
+
+				$form->js()->univ()->closeDialog()->execute(); 
 			}
 		});
 
