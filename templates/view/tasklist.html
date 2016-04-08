@@ -16,11 +16,9 @@
       {rows}{row}
       <li class="clearfix">
         <div data-id="{$id}" class="name">
-          <div class="checkbox-nice">
-            <input id="todo-{$id}" type="checkbox"/>
-            <label for="todo-{$id}">{task_name}{/}</label>{$action}
-            {$delete}
-          </div>
+          <label id="todo-{$id}"></label>
+          <label for="todo-{$id}">{task_name}{/}</label>{$action}
+          {$delete}
         </div>
       </li>{/}{/}
       {not_found}

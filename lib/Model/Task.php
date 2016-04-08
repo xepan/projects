@@ -6,19 +6,22 @@ class Model_Task extends \xepan\base\Model_Table
 {	
 	public $table = "task";
 	public $acl = false;
+
+	public $title_field ='task_name';
 	
 	function init()
 	{
 		parent::init();
 		$this->hasOne('xepan\projects\Project','project_id');
-		$this->hasOne('xepan\projects\Task','parent_id');
-		$this->addField('task_name');
+		$this->hasOne('xepan\projects\ParentTask','parent_id');
+		$this->addField('task_name')->type('string');
 		$this->addField('employee');
-		$this->addField('description');
+		$this->addField('description')->type('text');
 		$this->addField('deadline')->type('date');
 		$this->addField('starting_date')->type('date');
 		$this->hasMany('xepan\projects\Follower_Task_Association','task_id');
 		$this->hasMany('xepan\projects\Comment','task_id');	
+		
 		$this->hasMany('xepan\projects\Task','parent_id',null,'SubTasks');
 	}
 

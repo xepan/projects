@@ -8,7 +8,7 @@ class View_Task extends \View{
 		$self = $this;
 		$self_url=$this->app->url(null,['cut_object'=>$this->name]);
 
-		
+
 		/***************************************************************************
 			Virtual page for assigning task.
 		***************************************************************************/	
@@ -68,27 +68,7 @@ class View_Task extends \View{
 				$form->js()->univ()->closeDialog()->execute(); 
 			}
 		});
-
-		// /***************************************************************************
-		// 	Form for setting deadline
-		// ***************************************************************************/
-		// $deadline_form = $this->add('Form',null,'deadline');
-		// $deadline_form->addField('DatePicker','deadline');
-
-		// if($deadline_form->isSubmitted()){
-		// 	$model_task = $this->add('xepan\projects\Model_Task')->load($_GET['task_id']);
-		// 	$model_task['deadline'] = $deadline_form['deadline'];
-		// 	$model_task->save();
-		// }						
-		
-		// /***************************************************************************
-		// 	js click function for setting deadline
-		// ***************************************************************************/
-		// $js_new = [
-		// 	$this->js()->_selector('#deadline')->hide(),
-		// 	$this->js()->_selector('#calendar')->show()
-		// ];
-		// $this->js('click',$js_new)->_selector('.toggle');
+				
 
 		/***************************************************************************
 			js click function for assign task 

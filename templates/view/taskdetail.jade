@@ -1,12 +1,9 @@
 .row.col-lg-12(id="{$_name}")
-  {$Content}
   .main-box
+    .text-center.text-muted{parent_name}{/}
     .row.col-md-12
       .col-md-6
         span.showhide.icon.fa.fa-tasks.text-muted#assigntask(data-task_id="{$id}") Assign Task 
-      //- .col-md-4
-      //-   span.toggle.icon.fa.fa-calendar.text-muted#deadline Set DeadLine
-      //-   span.toggle.text-muted#calendar(style="display:none"){$deadline}
       .col-md-6
         span.icon.fa.fa-tag.text-muted#addfollowers(data-task_id="{$id}") Add Followers
         span.glyphicon.glyphicon-remove.pull-right
@@ -14,8 +11,10 @@
     .main-box-body.clearfix
         .row.xepan-push-small
           {$form}
-        .row.xepan-push-large
-          {$subtask}  
+        .row.xepan-push
+          {$subtask}
+          .row.xepan-push-large 
+          {$showsubtask} 
         .row 
           {$commentform}
 

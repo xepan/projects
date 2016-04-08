@@ -1,6 +1,7 @@
 
-<div id="{$_name}" class="row col-lg-12">{$Content}
+<div id="{$_name}" class="row col-lg-12">
   <div class="main-box">
+    <div class="text-center text-muted">{parent_name}{/}</div>
     <div class="row col-md-12">
       <div class="col-md-6"><span id="assigntask" data-task_id="{$id}" class="showhide icon fa fa-tasks text-muted">Assign Task </span></div>
       <div class="col-md-6"><span id="addfollowers" data-task_id="{$id}" class="icon fa fa-tag text-muted">Add Followers</span><span class="glyphicon glyphicon-remove pull-right"></span></div>
@@ -8,7 +9,9 @@
     <header class="main-box-header clearfix"></header>
     <div class="main-box-body clearfix">
       <div class="row xepan-push-small">{$form}</div>
-      <div class="row xepan-push-large">{$subtask}  </div>
+      <div class="row xepan-push">{$subtask}
+        <div class="row xepan-push-large"> </div>{$showsubtask} 
+      </div>
       <div class="row">
          
         {$commentform}

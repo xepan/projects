@@ -51,6 +51,14 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 		/***************************************************************************
 			Adding SubTasks.
 		***************************************************************************/
+		
+
+		$p_v = $task_detail_view->add('HtmlElement',null,'parent_name')
+				->setElement('a')
+				->setAttr('href','#')
+				->set($task['parent']);	
+		$p_v->js('click',$task_detail_view->js()->reload(['task_id'=>$task['parent_id']]));
+
 		if($task['parent_id']==null){
 			
 			$subtask = $task_detail_view->add('Button',null,'subtask')->set('Add SubTasks');
@@ -63,13 +71,23 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 				return $js_new;
 			});
 		}
+
+		/***************************************************************************
+			Showing SubTasks.
+		***************************************************************************/
+		if($task->loaded()){
+			$task->load($task_id);
+			$subtask = $task->ref('SubTasks');
 			
+			$task_detail_view->add('xepan\hr\Grid',null,'showsubtask',['view\subtasks'])->setModel($subtask);
+		}
+		
 		/***************************************************************************
 			Form to add tasks.
 		***************************************************************************/	
 		$f = $task_detail_view->add('Form',null,'form');
 		$f->setModel($task,['task_name','description','starting_date','deadline']);
-		$f->addSubmit('ADD');
+		$f->addSubmit('Save');
 
 		/***************************************************************************
 			Form to add commnets on task.
