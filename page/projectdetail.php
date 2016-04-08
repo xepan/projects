@@ -9,6 +9,7 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 
 		$project_id = $this->app->stickyGET('project_id');
 		$task_id = $this->app->stickyGET('task_id');
+		$parent_id = $this->app->stickyGET('parent_id');
 
 		$model_project = $this->add('xepan\projects\Model_Project');
 
@@ -20,29 +21,56 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 		$top_view->setModel($model_project)->load($project_id);
 		
 		// crud added for edit, delete, action purpose.
-		$task_list_view = $this->add('xepan\hr\CRUD',null,'leftview',['view\tasklist']);	
+		$task_list_view = $this->add('xepan\hr\CRUD',['allow_add'=>false],'leftview',['view\tasklist']);	
 		$task_list_view->setModel('xepan\projects\Task')->addCondition('project_id',$project_id);
 
 		// task detail view for showing/editing details of tasks.
 		$task_detail_view = $this->add('xepan\projects\View_Task',null,'rightview');
 		$task_detail_view_url = $this->api->url(null,['cut_object'=>$task_detail_view->name]);
+
+		$task_detail_view->add('View')->set("Task ID " . $task_id );
+		$task_detail_view->add('View')->set("Parent ID " . $parent_id );
+		$task_detail_view->add('View')->set("Action " . $action );
+		
 		$task = $this->add('xepan\projects\Model_Task');
+		$task->addCondition('project_id',$project_id);
 
 		// if there is already some task added, only then apply these conditions.
 		if($task_id){
-			$task->addCondition('id',$task_id);
-			$task->addCondition('project_id',$_GET['project_id']);
-			$task->tryLoadAny();
-			$task_detail_view->setModel($task);
+			// $task->addCondition('id',$task_id);
+			$task->load($task_id);
 		}
 
+		if($parent_id){
+			$task->addCondition('parent_id',$parent_id);
+		}
+
+
+		$task_detail_view->setModel($task);
+
+		/***************************************************************************
+			Adding SubTasks.
+		***************************************************************************/
+		if($task['parent_id']==null){
+			
+			$subtask = $task_detail_view->add('Button',null,'subtask')->set('Add SubTasks');
+			$subtask->setAttr('data-id',$task_id);
+					
+			$subtask->on('click',null,function($js,$data)use($task_detail_view_url,$task_detail_view){
+				$js_new = [
+					$task_detail_view->js()->reload(['parent_id'=>$data['id']],null,$this->api->url($task_detail_view_url,['task_id'=>'']))
+				];
+				return $js_new;
+			});
+		}
+			
 		/***************************************************************************
 			Form to add tasks.
 		***************************************************************************/	
 		$f = $task_detail_view->add('Form',null,'form');
 		$f->setModel($task,['task_name','description']);
 		$f->addSubmit('ADD');
-		
+
 		/***************************************************************************
 			Form to add commnets on task.
 		***************************************************************************/
@@ -55,7 +83,10 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 		***************************************************************************/
 		if($f->isSubmitted()){
 			$f->save();
-			$f->js()->univ()->successMessage('saved')->execute();
+			$js=[$f->js()->univ()->successMessage('saved')];
+			$js[] = $task_detail_view->js()->reload(['task_id'=>$f->model->id,'parent_id'=>$task['parent_id']]);
+			$js[] = $task_list_view->js()->reload();
+			$this->js(null,$js)->execute();
 		}
 
 		if($comment_f->isSubmitted()){
@@ -83,7 +114,7 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 				$this->js()->_selector('#left_view')->removeClass('col-md-12'),
 				$this->js()->_selector('#left_view')->addClass('col-md-7'),
 				$this->js()->_selector('#right_view')->show(),
-				$task_detail_view->js()->reload(['task_id'=>$data['id']?:''],null,$task_detail_view_url)
+				$task_detail_view->js()->reload(['task_id'=>$data['id']?:'','parent_id'=>''],null,$task_detail_view_url)
 			];
 			return $js_new;
 		});
