@@ -31,6 +31,7 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 		// if there is already some task added, only then apply these conditions.
 		if($task_id){
 			$task->addCondition('id',$task_id);
+			$task->addCondition('project_id',$_GET['project_id']);
 			$task->tryLoadAny();
 			$task_detail_view->setModel($task);
 		}
@@ -39,7 +40,7 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 			Form to add tasks.
 		***************************************************************************/	
 		$f = $task_detail_view->add('Form',null,'form');
-		$f->setModel($task,['project_id','task_name','description']);
+		$f->setModel($task,['task_name','description']);
 		$f->addSubmit('ADD');
 		
 		/***************************************************************************
@@ -65,10 +66,14 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 
 			$model_comment['comment'] = $comment_f['comment'];
 			$model_comment->save();
-			
+
 			$f->js()->univ()->successMessage('comment Saved')->execute();
 		}
 
+		/***************************************************************************
+			Grid to show comments
+		***************************************************************************/
+			$task_detail_view->add('xepan\hr\Grid',null,'commentgrid',['view\comment-grid'])->setModel('xepan\projects\Comment',['comment','name']);
 		/***************************************************************************
 			Js to show task detail view
 		***************************************************************************/
