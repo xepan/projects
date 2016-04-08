@@ -36,11 +36,11 @@ class page_project extends \xepan\projects\page_sidemenu{
 			$team_grid->addSelectable($team_field);
 
 			if($form->isSubmitted()){
-				// $model_project->removeAssociateTeam();
+				$model_project->removeAssociateTeam();
 				
 				$selected_team = array();
 			 	$selected_team = json_decode($form['team'],true);
-
+			 	
 				foreach ($selected_team as $team) {
 					$model_team_project_association->addCondition('project_id',$_GET['project_id']);
 					$model_team_project_association['employee_id'] = $team;
