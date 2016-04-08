@@ -28,6 +28,17 @@ class Model_Project extends \xepan\base\Model_Table
 		$this->addField('description');	
 		$this->addField('type');
 		$this->hasMany('xepan\projects\Model_Task','project_id');
+		$this->hasMany('xepan\projects\Team_Project_Association','project_id');
 		$this->addCondition('type','project');	
+	}
+
+	function getAssociatedTeam(){
+		$associated_team = $this->ref('xepan\projects\Team_Project_Association')
+								->_dsql()->del('fields')->field('employee_id')->getAll();
+		return iterator_to_array(new \RecursiveIteratorIterator(new \RecursiveArrayIterator($associated_team)),false);
+	}
+
+	function removeAssociateTeam(){
+		$this->ref('xepan\projects\Team_Project_Association')->deleteAll();
 	}
 }
