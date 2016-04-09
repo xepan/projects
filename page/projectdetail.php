@@ -6,7 +6,6 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 	public $title = "Project Detail";
 	function init(){
 		parent::init();
-
 		$project_id = $this->app->stickyGET('project_id');
 		$task_id = $this->app->stickyGET('task_id');
 		$parent_id = $this->app->stickyGET('parent_id');
@@ -18,9 +17,11 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 		***************************************************************************/
 		$top_view = $this->add('xepan\projects\View_TopView',null,'topview');
 		$top_view->setModel($model_project)->load($project_id);
+
+
 		
 		// crud added for edit, delete, action purpose.
-		$task_list_view = $this->add('xepan\projects\View_TaskList',null,'leftview');	
+	$task_list_view = $this->add('xepan\projects\View_TaskList',null,'leftview');	
 		$task_list_view->setModel('xepan\projects\Task')
 			->addCondition('parent_id',null)
 			->addCondition('project_id',$project_id);
@@ -47,7 +48,6 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 
 		$task_detail_view->setModel($task);
 
-
 		/***************************************************************************
 			Js to show task detail view
 		***************************************************************************/
@@ -60,6 +60,29 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 				$task_detail_view->js()->reload(['task_id'=>$data['id']?:'','parent_id'=>''],null,$task_detail_view_url)
 			];
 			return $js_new;
+		});
+
+		$top_view->on('click','.add-task',function($js,$data){
+			// return $js->univ()->alert('hello');
+			$js_new = [
+				$this->js()->_selector('#left_view')->removeClass('col-md-12'),
+				$this->js()->_selector('#left_view')->addClass('col-md-7'),
+				$this->js()->_selector('#right_view')->show()
+			];
+			return $js_new;
+		});
+
+		
+		$task_list_view->on('click','.do-delete',function($js,$data){
+			$delete_task=$this->add('xepan\projects\Model_Task');
+			$delete_task->load($data['id']);
+			$delete_task->delete();
+			$js_new=[
+					$js->closest('li')->hide(),
+					$this->js()->univ()->successMessage('Delete SuccessFullly')
+			];
+			return $js_new;
+
 		});
 
 		$task_list_view->js(true)->_load('jquery.nestable')->nestable(['group'=>1]);
