@@ -13,7 +13,6 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 
 		$model_project = $this->add('xepan\projects\Model_Project');
 
-
 		/***************************************************************************
 			Adding views
 		***************************************************************************/
@@ -42,7 +41,11 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 		}
 
 		if($parent_id){
-			$task->addCondition('parent_id',$parent_id);
+			
+			$parent_task = $this->add('xepan\projects\Model_Task')->load($parent_id);
+			
+			$task->addCondition('parent_id',$parent_id)
+				 ->addCondition('employee',$parent_task['employee']);
 		}
 
 
