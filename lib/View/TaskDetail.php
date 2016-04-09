@@ -21,7 +21,9 @@ class View_TaskDetail extends \View{
 			$model_task = $p->add('xepan\projects\Model_Task')->load($_GET['task_id']);
 
 			$form = $p->add('Form');
+			$form->addField('radio','change_employee')->enum('');
 			$form->setModel($model_task,['employee_id']);
+			
 			if($form->isSubmitted()){
 				throw new \Exception($model_task['employee'], 1);
 				
@@ -29,6 +31,7 @@ class View_TaskDetail extends \View{
 					$st['employee_id'] = $form['employee_id'];
 					$st->saveAndUnload();
 				}
+
 				$form->save();
 				$form->js('null',$self->js()->reload(null,null,$self_url))->univ()->closeDialog()->execute();
 			}
@@ -170,7 +173,7 @@ class View_TaskDetail extends \View{
 		/***************************************************************************
 			Grid to show comments
 		***************************************************************************/
-		$task_detail_view->add('xepan\hr\Grid',null,'commentgrid',['view\comment-grid'])->setModel('xepan\projects\Comment',['comment','name'])->addCondition('task_id',$task_id);
+		$task_detail_view->add('xepan\hr\Grid',null,'commentgrid',['view\comment-grid'])->setModel('xepan\projects\Comment',['comment','name'])->addCondition('task_id',$task->id);
 
 		/***************************************************************************
 			Js to revert changes on cross icon click on task detail view
