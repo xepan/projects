@@ -159,12 +159,12 @@ class View_TaskDetail extends \View{
 		$f->addSubmit('Save');
 
 		if($f->isSubmitted()){
-			$parent_task = $this->add('xepan\projects\Model_Task')->tryLoad($parent_id?:0);
+			$parent_task = $this->add('xepan\projects\Model_Task')->tryLoad($_GET['parent_id']?:0);
 			$f->model['employee_id'] = $parent_task['employee_id'];
 			$f->save();
 			$js=[$f->js()->univ()->successMessage('saved')];
 			$js[] = $task_detail_view->js()->reload(['task_id'=>$f->model->id,'parent_id'=>$task['parent_id']]);
-			$js[] = $task_list_view->js()->reload();
+			$js[] = $this->task_list_view->js()->reload();
 			$this->js(null,$js)->execute();
 		}
 

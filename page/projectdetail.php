@@ -20,8 +20,11 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 		$top_view->setModel($model_project)->load($project_id);
 		
 		// crud added for edit, delete, action purpose.
-		$task_list_view = $this->add('xepan\projects\View_TaskList');	
-		$task_list_view->setModel('xepan\projects\Task')->addCondition('parent_id',null)->addCondition('project_id',$project_id);
+		$task_list_view = $this->add('xepan\projects\View_TaskList',null,'leftview');	
+		$task_list_view->setModel('xepan\projects\Task')
+			->addCondition('parent_id',null)
+			->addCondition('project_id',$project_id);
+
 		$task_list_view->add('xepan\base\Controller_Avatar',['options'=>['size'=>30],'name_field'=>'employee','default_value'=>'']);
 
 		// task detail view for showing/editing details of tasks.
@@ -48,7 +51,7 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 			Js to show task detail view
 		***************************************************************************/
 
-		$task_list_view->on('click','.name',function($js,$data)use($task_detail_view_url,$task_detail_view){
+		$task_list_view->on('click','.task-item',function($js,$data)use($task_detail_view_url,$task_detail_view){
 			$js_new = [
 				$this->js()->_selector('#left_view')->removeClass('col-md-12'),
 				$this->js()->_selector('#left_view')->addClass('col-md-7'),
@@ -57,6 +60,8 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 			];
 			return $js_new;
 		});
+
+		$task_list_view->js(true)->_load('jquery.nestable')->nestable(['group'=>1]);
 
 	}
 

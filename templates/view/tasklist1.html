@@ -1,30 +1,19 @@
-<div class="row cf nestable-lists">
-    <div class="col-md-6 dd" id="nestable">
-        <ol class="dd-list">
-            {rows}{row}
-            <li class="dd-item" data-id="2">
-                <div class="dd-handle">
-                    {$task_name}
-                </div>
-                <ol class="dd-list">
-                    {child}
-                    {rows}{row}
-                    <li class="dd-item" data-id="5">
-                        <div class="dd-handle">
-                            {child_task}Item 5{/}
-                            <div class="nested-links">
-                                <a href="#" class="nested-link"><i class="fa fa-pencil"></i></a>
-                                <a href="#" class="nested-link"><i class="fa fa-cog"></i></a>
-                                <a href="#" class="nested-link"><i class="fa fa-trash"></i></a>
-                            </div>
-                        </div>
-                    </li>
-                    {/}{/}
-                    {/}
-                </ol>
-            </li>
-            {/}{/}
-            
-        </ol>
-    </div>
+<div id="{$_name}" class="cf nestable-lists">
+    {nested_template}
+    <ol class="dd-list">
+        {rows}{row}
+        <li class="dd-item" data-id="{$id}">
+            <div class="dd-handle">
+                {$task_name}
+            </div>
+             <div class="nested-links">
+                <a href="#" class="nested-link"><i class="fa fa-pencil"></i></a>
+                <a href="#" class="nested-link"><i class="fa fa-cog task-item" data-id="{$id}"></i></a>
+                <a href="#" class="nested-link"><i class="fa fa-trash"></i></a>
+            </div>
+            {$sub_tasks}
+        </li>
+        {/}{/}
+    </ol>
+    {/nested_template}
 </div>             

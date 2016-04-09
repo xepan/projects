@@ -9,19 +9,17 @@ class View_TaskList extends \CompleteLister{
 		
 	}
 	function formatRow(){
-		$c_task=$this->add('xepan\projects\Model_Task');
-		$c_task->addCondition('parent_id',$this->model->id);
-		$c_task->tryLoadAny();
-		
-		// if($c_task['parent_id']){
-			// $c_lister=$this->add('xepan\projects\View_TaskList',null,'child');
-			// $c_lister->setModel($c_task);
-		// }
-
-		$this->current_row['child_task']=$c_task['task_name'];
+		$sub_tasks=$this->add('xepan\projects\Model_Task',['name'=>'task_'.$this->model->id]);
+		$sub_tasks->addCondition('parent_id',$this->model->id);
+		if($sub_tasks->count()->getOne() > 0){
+			$sub_v =$this->add('xepan\projects\View_TaskList',null,'sub_tasks',['view/tasklist1','nested_template']);
+			$sub_v->setModel($sub_tasks);
+			$this->current_row_html['sub_tasks']= $sub_v->getHTML();
+		}
+		return parent::formatRow();
 	}
 
 	function defaultTemplate(){
-		return['view\tasklist1'];
+		return['view/tasklist1'];
 	}
 }
