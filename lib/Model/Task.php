@@ -37,6 +37,9 @@ class Model_Task extends \xepan\base\Model_Table
 		$this->hasMany('xepan\projects\Comment','task_id');	
 		$this->hasMany('xepan\projects\Task','parent_id',null,'SubTasks');
 
+		$this->addExpression('follower_count')->set(function($m){
+			return $m->refSQL('xepan\projects\Follower_Task_Association')->count();
+		});
 
 	}
 

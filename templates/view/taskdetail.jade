@@ -1,19 +1,22 @@
 .row.col-lg-12(id="{$_name}")
   .main-box
-    h4.text-center.text-muted(style="width: 100%;white-space:nowrap;overflow: hidden;text-overflow: ellipsis;"){parent_name}{/}
+    span.glyphicon.glyphicon-remove.pull-right.text-muted(style="cursor:pointer; cursor: hand; margin-right:10px; margin-top:12px")
+    h4.text-center.text-muted(style="width: 100%; margin-top:20px; white-space:nowrap;overflow: hidden;text-overflow: ellipsis;"){parent_name}{/}
     hr
     .row.col-md-12
-      .row.col-md-4.text-muted
+      .col-md-2
+      .col-md-4.text-muted
         |Assigned To
-      .row.col-md-4.text-muted
-        span.icon.fa.fa-tag.text-muted#addfollowers(data-task_id="{$id}", style="cursor:pointer; cursor: hand;") Add Followers  
-      .row.col-md-4.text-muted  
-        span.glyphicon.glyphicon-remove.pull-right(style="cursor:pointer; cursor: hand;")
+      .col-md-1
+      .col-md-4
+        span.icon.fa.fa-tag.text-muted#addfollowers(data-task_id="{$id}", style="cursor:pointer; cursor: hand;") Followers  
     .row.col-md-12
-      .col-md-4
+      .col-md-2
+      .col-md-4(style="margin-left:20px; padding-right:17px;")
         span.text-muted#assigntask(data-task_id="{$id}", style="cursor:pointer; cursor: hand;") {avatar}Assign task ... {/}
-      .col-md-4
-      .col-md-4  
+      .col-md-1
+      .col-md-4.text-muted(style="margin-left:52px")
+        h4{follower_count}10{/}
     header.main-box-header.clearfix
     .main-box-body.clearfix
         .row.xepan-push-small
