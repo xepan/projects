@@ -10,7 +10,11 @@ class Model_Task extends \xepan\base\Model_Table
 	public $status=['Pending','Assigned','Submitted','On-Hold','Completed'];
 
 	public $actions =[
-		'Draft'=>['view','edit','delete','submit','assign','mark_complete']
+		'Submitted'=>['view','edit','delete','assign','mark_complete','onhold'],
+		'Assigned'=>['view','edit','delete','submit','mark_complete','onhold'],
+		'Completed'=>['view','edit','delete','submit','assign','mark_complete'],
+		'Pending'=>['view','edit','delete','submit','assign','mark_complete','onhold'],
+		'On-Hold'=>['view','edit','delete','submit','assign','mark_complete'],
 	];
 	
 	function init()
@@ -44,14 +48,44 @@ class Model_Task extends \xepan\base\Model_Table
 	}
 
 	function submit(){
+		$this['status']='Submitted';
+        $this->app->employee
+            ->addActivity("Submitted Task", $this->id)
+            ->notifyWhoCan('assign,mark_complete','Submitted');
+        $this->saveAndUnload();    
 	}
 
 	function assign(){
 		
+		$this['status']='Assigned';
+        $this->app->employee
+            ->addActivity("Assigned Task", $this->id)
+            ->notifyWhoCan('submit,mark_complete','onhold','Assigned');
+        $this->saveAndUnload();	
 	}
 
 	function mark_complete(){
-		
+		$this['status']='Completed';
+        $this->app->employee
+            ->addActivity("Completed Task", $this->id)
+            ->notifyWhoCan('submit,assign,mark_complete','onhold','Completed');
+        $this->saveAndUnload();		
+	}
+
+	function pending(){
+		$this['status']='Pending';
+	    $this->app->employee
+	        ->addActivity("Pending Task", $this->id)
+	        ->notifyWhoCan('submit,assign,onhold,mark_complete','Pending');
+	    $this->saveAndUnload();		
+	}
+
+	function onhold(){
+		$this['status']='On-Hold';
+	    $this->app->employee
+	        ->addActivity("Completed Task", $this->id)
+	        ->notifyWhoCan('submit,assign,mark_complete','On-Hold');
+	    $this->saveAndUnload();		
 	}
 
 	function getAssociatedfollowers(){
