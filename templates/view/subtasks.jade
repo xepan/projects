@@ -13,6 +13,7 @@
             thead
                 {cols}{col}
                 th
+                th   
                 th 
                 {/}{/}
             {/}
@@ -23,6 +24,8 @@
                 tr(class="{$odd_even}" data-id="{$id}")
                     {cols}
                     td
+                        {$avatar}
+                    td    
                       | {$task_name}
                     td(style="width: 15%;") 
                     {/}
