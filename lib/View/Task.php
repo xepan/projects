@@ -21,6 +21,10 @@ class View_Task extends \View{
 			$form->setModel($model_task,['employee_id']);
 			if($form->isSubmitted()){
 				$form->save();
+				foreach($model_task->ref('SubTasks')->addCondition('employee_id',null) as $st){
+					$st['employee_id'] = $form['employee_id'];
+					$st->saveAndUnload();
+				}
 				$form->js('null',$self->js()->reload(null,null,$self_url))->univ()->closeDialog()->execute();
 			}
 

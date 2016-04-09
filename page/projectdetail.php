@@ -32,11 +32,7 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 		$task->addCondition('project_id',$project_id);
 
 		if($parent_id){
-			
-			$parent_task = $this->add('xepan\projects\Model_Task')->load($parent_id);
-			
-			$task->addCondition('parent_id',$parent_id)
-				 ->addCondition('employee_id',$parent_task['employee_id']);
+			$task->addCondition('parent_id',$parent_id);
 		}
 
 		// if there is already some task added, only then apply these conditions.
@@ -99,6 +95,8 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 			Handling Form Submission
 		***************************************************************************/
 		if($f->isSubmitted()){
+			$parent_task = $this->add('xepan\projects\Model_Task')->tryLoad($parent_id?:0);
+			$f->model['employee_id'] = $parent_task['employee_id'];
 			$f->save();
 			$js=[$f->js()->univ()->successMessage('saved')];
 			$js[] = $task_detail_view->js()->reload(['task_id'=>$f->model->id,'parent_id'=>$task['parent_id']]);
