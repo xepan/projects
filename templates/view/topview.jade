@@ -1,4 +1,4 @@
-.row
+.row(id="{$_name}")
   .main-box
     header.main-box-header.clearfix
       h2 {$name}
@@ -15,3 +15,7 @@
          |Progress
         a(href!="?page=xepan_projects_files&project_id={$id}") 
          |Files
+      .col-md-4
+        .pull-right.top-page-ui
+          a.btn.btn-primary.pull-right(href="#")
+            i.fa.fa-plus-circle.fa-lg.add-task Add Task

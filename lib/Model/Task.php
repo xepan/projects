@@ -48,44 +48,14 @@ class Model_Task extends \xepan\base\Model_Table
 	}
 
 	function submit(){
-		$this['status']='Submitted';
-        $this->app->employee
-            ->addActivity("Submitted Task", $this->id)
-            ->notifyWhoCan('assign,mark_complete','Submitted');
-        $this->saveAndUnload();    
 	}
 
 	function assign(){
 		
-		$this['status']='Assigned';
-        $this->app->employee
-            ->addActivity("Assigned Task", $this->id)
-            ->notifyWhoCan('submit,mark_complete','onhold','Assigned');
-        $this->saveAndUnload();	
 	}
 
 	function mark_complete(){
-		$this['status']='Completed';
-        $this->app->employee
-            ->addActivity("Completed Task", $this->id)
-            ->notifyWhoCan('submit,assign,mark_complete','onhold','Completed');
-        $this->saveAndUnload();		
-	}
-
-	function pending(){
-		$this['status']='Pending';
-	    $this->app->employee
-	        ->addActivity("Pending Task", $this->id)
-	        ->notifyWhoCan('submit,assign,onhold,mark_complete','Pending');
-	    $this->saveAndUnload();		
-	}
-
-	function onhold(){
-		$this['status']='On-Hold';
-	    $this->app->employee
-	        ->addActivity("Completed Task", $this->id)
-	        ->notifyWhoCan('submit,assign,mark_complete','On-Hold');
-	    $this->saveAndUnload();		
+		
 	}
 
 	function getAssociatedfollowers(){
