@@ -24,8 +24,9 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 		$task_list_view->setModel('xepan\projects\Task')
 			->addCondition('parent_id',null)
 			->addCondition('project_id',$project_id);
+		$task_list_view->add('xepan\hr\Controller_ACL');
 
-		$task_list_view->add('xepan\base\Controller_Avatar',['options'=>['size'=>30],'name_field'=>'employee','default_value'=>'']);
+		$task_list_view->add('xepan\base\Controller_Avatar',['options'=>['size'=>20],'name_field'=>'employee','default_value'=>'']);
 
 		// task detail view for showing/editing details of tasks.
 		$task_detail_view = $this->add('xepan\projects\View_TaskDetail',['task_list_view'=>$task_list_view],'rightview');
@@ -61,7 +62,7 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 			return $js_new;
 		});
 
-		$task_list_view->js(true)->_load('jquery.nestable')->nestable(['group'=>1]);
+		// $task_list_view->js(true)->_load('jquery.nestable')->nestable(['group'=>1]);
 
 	}
 
