@@ -1,0 +1,21 @@
+{$Content}
+.main-box
+  header.main-box-header.clearfix
+    h2 Add Task
+  .main-box-body.clearfix
+    form.form-horizontal(role='form')
+      .form-group
+        .row.col-lg-12.xepan-push
+          {$task_name}
+        .row.col-lg-12.xepan-push
+          {$description}
+        .row.col-lg-10.xepan-push
+          .form-group.col-md-5
+            label(for='startingdate') Starting Date
+              {$starting_date}
+          .col-md-2    
+          .form-group.col-md-5
+            label(for='deadline') Deadline
+              {$deadline}                                    
+        .row
+          {$form_buttons}    

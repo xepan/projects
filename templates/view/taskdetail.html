@@ -1,10 +1,17 @@
 
 <div id="{$_name}" class="row col-lg-12">
   <div class="main-box">
-    <div class="text-center text-muted">{parent_name}{/}</div>
+    <h4 style="width: 100%;white-space:nowrap;overflow: hidden;text-overflow: ellipsis;" class="text-center text-muted">{parent_name}{/}</h4>
+    <hr/>
     <div class="row col-md-12">
-      <div class="col-md-6"><span id="assigntask" data-task_id="{$id}" class="text-muted">{avatar}Assign task ... {/}</span></div>
-      <div class="col-md-6"><span id="addfollowers" data-task_id="{$id}" class="icon fa fa-tag text-muted">Add Followers</span><span class="glyphicon glyphicon-remove pull-right"></span></div>
+      <div class="row col-md-4 text-muted">Assigned To</div>
+      <div class="row col-md-4 text-muted"><span id="addfollowers" data-task_id="{$id}" style="cursor:pointer; cursor: hand;" class="icon fa fa-tag text-muted">Add Followers  </span></div>
+      <div class="row col-md-4 text-muted"> <span style="cursor:pointer; cursor: hand;" class="glyphicon glyphicon-remove pull-right"></span></div>
+    </div>
+    <div class="row col-md-12">
+      <div class="col-md-4"><span id="assigntask" data-task_id="{$id}" style="cursor:pointer; cursor: hand;" class="text-muted">{avatar}Assign task ... {/}</span></div>
+      <div class="col-md-4"></div>
+      <div class="col-md-4"> </div>
     </div>
     <header class="main-box-header clearfix"></header>
     <div class="main-box-body clearfix">

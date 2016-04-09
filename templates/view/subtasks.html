@@ -10,12 +10,17 @@
     <table style="width:100%" class="table user-list table-hover">{header}
       <thead>{cols}{col}
         <th></th>
+        <th>  </th>
         <th> </th>{/}{/}
       </thead>{/}
       {$subheader}
       <tbody>{rows}{row}
         <tr data-id="{$id}" class="{$odd_even}">{cols}
-          <td>{$task_name}</td>
+          <td>{$avatar}</td>
+          <td>
+               
+            {$task_name}
+          </td>
           <td style="width: 15%;"> </td>{/}
         </tr>{/}{/}
         {not_found}
