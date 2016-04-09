@@ -18,18 +18,19 @@ class Model_Project extends \xepan\base\Model_Table
 		'Completed'=>['view','edit','delete','running']
 	];
 
-	public $acl = false;
-
 	function init()
 	{
 		parent::init();
 		
 		$this->addField('name');
 		$this->addField('description');	
+		$this->addField('status')->defaultValue('Draft');
 		$this->addField('type');
+		
+		$this->addCondition('type','project');
+
 		$this->hasMany('xepan\projects\Model_Task','project_id');
 		$this->hasMany('xepan\projects\Team_Project_Association','project_id');
-		$this->addCondition('type','project');	
 	}
 
 	function getAssociatedTeam(){

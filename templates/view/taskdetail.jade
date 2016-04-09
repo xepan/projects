@@ -1,28 +1,46 @@
 .row.col-lg-12(id="{$_name}")
   .main-box
-    h4.text-center.text-muted(style="width: 100%;white-space:nowrap;overflow: hidden;text-overflow: ellipsis;"){parent_name}{/}
+    span.glyphicon.glyphicon-remove.pull-right.text-muted(style="cursor:pointer; cursor: hand; margin-right:10px; margin-top:12px")
+    h4.text-center.text-muted(style="width: 100%; margin-top:20px; white-space:nowrap;overflow: hidden;text-overflow: ellipsis;"){parent_name}{/}
     hr
     .row.col-md-12
-      .row.col-md-4.text-muted
+      .col-md-2
+      .col-md-4.text-muted
         |Assigned To
-      .row.col-md-4.text-muted
-        span.icon.fa.fa-tag.text-muted#addfollowers(data-task_id="{$id}", style="cursor:pointer; cursor: hand;") Add Followers  
-      .row.col-md-4.text-muted  
-        span.glyphicon.glyphicon-remove.pull-right(style="cursor:pointer; cursor: hand;")
+      .col-md-1
+      .col-md-4
+        span.icon.fa.fa-tag.text-muted#addfollowers(data-task_id="{$id}", style="cursor:pointer; cursor: hand;") Followers  
     .row.col-md-12
+      .col-md-2
       .col-md-4
-        span.text-muted#assigntask(data-task_id="{$id}", style="cursor:pointer; cursor: hand;") {avatar}Assign task ... {/}
-      .col-md-4
-      .col-md-4  
+        span.text-muted#assigntask(data-task_id="{$id}", style="cursor:pointer; cursor: hand; margin-left:40px; padding-right:17px;") {avatar}Assign task ... {/}
+      .col-md-1
+      .col-md-4.text-muted
+        h4(style ="margin-left:35px;"){follower_count}10{/}
     header.main-box-header.clearfix
     .main-box-body.clearfix
         .row.xepan-push-small
           {$form}
-        .row.xepan-push
+        .row.xepan-push-large
           {$subtask}
-          .row.xepan-push-large 
-          {$showsubtask} 
-        .row 
-          {$commentform}
+        .row
+          .col-lg-12
+              .main-box.clearfix
+                .tabs-wrapper.profile-tabs
+                  ul.nav.nav-tabs
+                    li.active
+                      a(data-toggle='tab', href='#tab-subtask') SubTasks
+                    li
+                      a(data-toggle='tab', href='#tab-showcomment') Comments
+                    li
+                      a(data-toggle='tab', href='#tab-comment') Add Comment
+                        
+                  .tab-content
 
-          {$commentgrid}
+                     #tab-subtask.tab-pane.fade.in.active
+                        {$showsubtask}
+                     #tab-showcomment.tab-pane.clearfix.fade
+                        {$commentgrid}
+                     #tab-comment.tab-pane.clearfix.fade
+                        {$commentform}
+                     

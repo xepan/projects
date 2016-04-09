@@ -9,15 +9,15 @@
   <div class="main-box-body clearfix table">
     <table style="width:100%" class="table user-list table-hover">{header}
       <thead>{cols}{col}
-        <th></th>
-        <th></th>
+        <th>Comments</th>
+        <th>By</th>
         <th> </th>{/}{/}
       </thead>{/}
       {$subheader}
       <tbody>{rows}{row}
         <tr data-id="{$id}" class="{$odd_even}">{cols}
           <td>{$comment}</td>
-          <td class="text-right">{$name}</td>
+          <td>{$name}</td>
           <td>{$action}</td>
           <td style="width: 15%;">
             {$edit}
