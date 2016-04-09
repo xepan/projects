@@ -20,8 +20,8 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 		$top_view->setModel($model_project)->load($project_id);
 		
 		// crud added for edit, delete, action purpose.
-		$task_list_view = $this->add('xepan\hr\CRUD',['allow_add'=>false],'leftview',['view\tasklist']);	
-		$task_list_view->setModel('xepan\projects\Task')->addCondition('project_id',$project_id);
+		$task_list_view = $this->add('xepan\projects\View_TaskList');	
+		$task_list_view->setModel('xepan\projects\Task')->addCondition('parent_id',null)->addCondition('project_id',$project_id);
 		$task_list_view->add('xepan\base\Controller_Avatar',['options'=>['size'=>30],'name_field'=>'employee','default_value'=>'']);
 
 		// task detail view for showing/editing details of tasks.
