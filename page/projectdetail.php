@@ -62,7 +62,7 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 			return $js_new;
 		});
 
-		// $task_list_view->js(true)->_load('jquery.nestable')->nestable(['group'=>1]);
+		$task_list_view->js(true)->_load('jquery.nestable')->nestable(['group'=>1]);
 
 	}
 
