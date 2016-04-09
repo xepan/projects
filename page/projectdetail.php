@@ -36,7 +36,7 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 			$parent_task = $this->add('xepan\projects\Model_Task')->load($parent_id);
 			
 			$task->addCondition('parent_id',$parent_id)
-				 ->addCondition('employee',$parent_task['employee']);
+				 ->addCondition('employee_id',$parent_task['employee_id']);
 		}
 
 		// if there is already some task added, only then apply these conditions.
