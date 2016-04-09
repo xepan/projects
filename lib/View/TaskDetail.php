@@ -142,11 +142,11 @@ class View_TaskDetail extends \View{
 		/***************************************************************************
 			GRID Showing SubTasks.
 		***************************************************************************/
-		$avatar = $this->add('xepan\base\Controller_Avatar',['options'=>['size'=>30],'name_field'=>'employee','default_value'=>'??']);	
 		if($task->loaded()){
 			$subtask = $task->ref('SubTasks');			
-			$subtask_grid = $task_detail_view->add('xepan\hr\Grid',null,'showsubtask',['view\subtasks'])->setModel($subtask);
-			$subtask_grid->add($avatar);
+			$subtask_grid = $task_detail_view->add('xepan\hr\Grid',null,'showsubtask',['view\subtasks']);
+			$subtask_grid->setModel($subtask);
+			$subtask_grid->add('xepan\base\Controller_Avatar',['options'=>['size'=>30],'name_field'=>'employee','default_value'=>'??']);	
 		}
 		
 		/***************************************************************************
