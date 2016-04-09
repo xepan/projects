@@ -3,17 +3,64 @@
     <ol class="dd-list">
         {rows}{row}
         <li class="dd-item" data-id="{$id}">
-            <div class="dd-handle">
-                {$task_name}
+            <div class="dd-handle dd3-handle">
             </div>
-             <div class="nested-links">
-                <a href="#" class="nested-link"><i class="fa fa-pencil"></i></a>
-                <a href="#" class="nested-link"><i class="fa fa-cog task-item" data-id="{$id}"></i></a>
-                <a href="#" class="nested-link"><i class="fa fa-trash"></i></a>
+            <div class="dd3-content">
+                {$task_name}
+                <span class="pull-right">    
+                    <a href="#" class="nested-link"><i class="fa fa-pencil"></i></a>
+                    <a href="#" class="nested-link"><i class="fa fa-cog task-item" data-id="{$id}"></i></a>
+                    <a href="#" class="nested-link"><i class="fa fa-trash-o"></i></a>
+                </span>
             </div>
             {$sub_tasks}
         </li>
         {/}{/}
     </ol>
+    {$not_found}
     {/nested_template}
-</div>             
+</div>
+<style type="text/css" media="screen">
+.dd3-handle::before {
+    color: #fff;
+    content: "≡";
+    display: block;
+    font-size: 15px;
+    font-weight: normal;
+    left: 0;
+    position: absolute;
+    text-align: center;
+    text-indent: 0;
+    top: -5px;
+    width: 100%;
+}
+.dd3-handle {
+    background: rgba(0, 0, 0, 0) -moz-linear-gradient(center top , #ddd 0%, #bbb 100%) repeat scroll 0 0;
+    border: 1px solid #aaa;
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+    cursor: pointer;
+    left: 0;
+    margin: 0;
+    overflow: hidden;
+    position: absolute;
+    text-indent: 100%;
+    top: 0;
+    white-space: nowrap;
+    /*width: 30px;*/
+    height: 0px!important;
+}
+.dd3-content {
+    background: rgba(0, 0, 0, 0) -moz-linear-gradient(center top , #fafafa 0%, #eee 100%) repeat scroll 0 0;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    box-sizing: border-box;
+    color: #333;
+    display: block;
+    font-weight: bold;
+    height: 30px;
+    margin: 5px 0;
+    padding: 5px 10px 5px 40px;
+    text-decoration: none;
+}
+</style>             
