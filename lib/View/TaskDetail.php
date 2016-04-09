@@ -21,12 +21,26 @@ class View_TaskDetail extends \View{
 			$model_task = $p->add('xepan\projects\Model_Task')->load($_GET['task_id']);
 
 			$form = $p->add('Form');
-			$form->addField('radio','change_employee')->enum('');
+			$form->addField('radio','assign_subtasks')->setValueList(['All SubTasks','Leave Reassigned SubTasks']);
 			$form->setModel($model_task,['employee_id']);
 			
 			if($form->isSubmitted()){
-				throw new \Exception($model_task['employee'], 1);
 				
+				if($form['assign_subtasks']==0){
+					
+					foreach($model_task->ref('SubTasks') as $st){
+						$st['employee_id'] = $form['employee_id'];
+						$st->saveAndUnload();
+					}
+				}
+
+				if($form['assign_subtasks']==1){
+					foreach($model_task->ref('SubTasks')->addCondition('employee_id',$model_task['employee_id']) as $st){
+						$st['employee_id'] = $form['employee_id'];
+						$st->saveAndUnload();
+					}
+				}
+
 				foreach($model_task->ref('SubTasks')->addCondition('employee_id',null) as $st){
 					$st['employee_id'] = $form['employee_id'];
 					$st->saveAndUnload();
