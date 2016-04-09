@@ -5,13 +5,19 @@ namespace xepan\projects;
 class Model_Task extends \xepan\base\Model_Table
 {	
 	public $table = "task";
-	public $acl = false;
-
 	public $title_field ='task_name';
+
+	public $status=['Pending','Assigned','Submitted','On-Hold','Completed'];
+
+	public $actions =[
+		'Draft'=>['view','edit','delete','submit','assign','mark_complete']
+	];
 	
 	function init()
 	{
 		parent::init();
+
+		$this->hasOne('xepan\base\Epan');
 		$this->hasOne('xepan\projects\Project','project_id');
 		$this->hasOne('xepan\projects\ParentTask','parent_id');
 		$this->hasOne('xepan\hr\Employee','employee_id');
@@ -19,9 +25,19 @@ class Model_Task extends \xepan\base\Model_Table
 		$this->addField('description')->type('text');
 		$this->addField('deadline')->type('date');
 		$this->addField('starting_date')->type('date');
+		
+		$this->addField('status')->defaultValue('Draft');
+		$this->addField('type');
+		$this->addCondition('type','Task');
+
+		$this->addField('created_at')->type('datetime')->defaultValue($this->app->now);
+		$this->hasOne('xepan\hr\Employee','created_by_id');
+
 		$this->hasMany('xepan\projects\Follower_Task_Association','task_id');
 		$this->hasMany('xepan\projects\Comment','task_id');	
 		$this->hasMany('xepan\projects\Task','parent_id',null,'SubTasks');
+
+
 	}
 
 	function getAssociatedfollowers(){
