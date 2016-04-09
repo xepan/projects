@@ -16,10 +16,11 @@
       {rows}{row}
       <li class="clearfix">
         <div data-id="{$id}" class="name">
-          <label id="todo-{$id}"></label>
-          <label for="todo-{$id}">{task_name}{/}</label>{$action}
-          {$delete}
+          {$avatar}
+          {$task_name}
+          {$action}
         </div>
+        <div class="pull-right">{$delete}</div>
       </li>{/}{/}
       {not_found}
       <div class="row">

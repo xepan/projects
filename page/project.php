@@ -18,7 +18,7 @@ class page_project extends \xepan\projects\page_sidemenu{
 			Virtual page for assigning TEAM
 		***************************************************************************/
 		$vp = $this->add('VirtualPage');
-		$vp->set(function($p)use($self,$self_url){
+		$vp->set(function($p){
 
 			$project_id = $this->app->stickyGET('project_id');
 

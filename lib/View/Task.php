@@ -15,16 +15,12 @@ class View_Task extends \View{
 		$vp = $this->add('VirtualPage');
 		$vp->set(function($p)use($self,$self_url){
 						
-			$model_employee = $p->add('xepan\hr\Model_Employee');
 			$model_task = $p->add('xepan\projects\Model_Task')->load($_GET['task_id']);
 
 			$form = $p->add('Form');
-			$form->addField('dropdown','name')->setModel($model_employee);
-
+			$form->setModel($model_task,['employee_id']);
 			if($form->isSubmitted()){
-				$model_task['employee'] = $form['name'];
-				$model_task->save();
-				
+				$form->save();
 				$form->js('null',$self->js()->reload(null,null,$self_url))->univ()->closeDialog()->execute();
 			}
 
@@ -83,6 +79,12 @@ class View_Task extends \View{
 		$this->on('click','#addfollowers',function($js,$data)use($vp2){
 			return $js->univ()->dialogURL("ADD PEOPLE TO FOLLOW THIS TASK",$this->api->url($vp2->getURL(),['task_id'=>$data['task_id']]));
 		});
+	}
+
+	function setModel($model,$fields=null){		
+		$m = parent::setModel($model,$fields);
+		$this->add('xepan\base\Controller_Avatar',['options'=>['size'=>30],'name_field'=>'employee','default_value'=>'??']);
+		return $m;
 	}
 
 	function defaultTemplate(){

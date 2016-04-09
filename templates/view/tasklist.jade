@@ -15,11 +15,11 @@
             {rows}{row}
             li.clearfix
                 .name(data-id="{$id}")
-                  label(id="todo-{$id}")
-                  label(for='todo-{$id}')
-                    | {task_name}{/}
-                  {$action}
-                  {$delete}
+                    {$avatar}
+                    {$task_name}
+                    {$action}
+                .pull-right
+                    {$delete}
             {/}{/}
             {not_found}
             div.row
