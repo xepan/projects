@@ -140,13 +140,15 @@ class View_TaskDetail extends \View{
 		}
 
 		/***************************************************************************
-			GRID Showing SubTasks.
+			Tab Showing SubTasks/Comments.
 		***************************************************************************/
+		
 		if($task->loaded()){
 			$subtask = $task->ref('SubTasks');			
-			$subtask_grid = $task_detail_view->add('xepan\hr\Grid',null,'showsubtask',['view\subtasks']);
+			$grid = $subtask_grid = $task_detail_view->add('xepan\hr\Grid',null,'showsubtask',['view\subtasks']);
 			$subtask_grid->setModel($subtask);
-			$subtask_grid->add('xepan\base\Controller_Avatar',['options'=>['size'=>30],'name_field'=>'employee','default_value'=>'??']);	
+			$subtask_grid->add('xepan\base\Controller_Avatar',['options'=>['size'=>30],'name_field'=>'employee','default_value'=>'??']);
+			$grid->addQuickSearch(['name']);
 		}
 		
 		/***************************************************************************
@@ -190,8 +192,9 @@ class View_TaskDetail extends \View{
 		/***************************************************************************
 			Grid to show comments
 		***************************************************************************/
-		$task_detail_view->add('xepan\hr\Grid',null,'commentgrid',['view\comment-grid'])->setModel('xepan\projects\Comment',['comment','name'])->addCondition('task_id',$task->id);
+		$comment_grid = $task_detail_view->add('xepan\hr\Grid',null,'commentgrid',['view\comment-grid'])->setModel('xepan\projects\Comment',['comment','name'])->addCondition('task_id',$task->id);
 
+		// $comment_grid->addQuickSearch(['name']);
 		/***************************************************************************
 			Js to revert changes on cross icon click on task detail view
 		***************************************************************************/

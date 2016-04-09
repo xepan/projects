@@ -12,20 +12,35 @@
         span.icon.fa.fa-tag.text-muted#addfollowers(data-task_id="{$id}", style="cursor:pointer; cursor: hand;") Followers  
     .row.col-md-12
       .col-md-2
-      .col-md-4(style="margin-left:20px; padding-right:17px;")
-        span.text-muted#assigntask(data-task_id="{$id}", style="cursor:pointer; cursor: hand;") {avatar}Assign task ... {/}
+      .col-md-4
+        span.text-muted#assigntask(data-task_id="{$id}", style="cursor:pointer; cursor: hand; margin-left:40px; padding-right:17px;") {avatar}Assign task ... {/}
       .col-md-1
-      .col-md-4.text-muted(style="margin-left:52px")
-        h4{follower_count}10{/}
+      .col-md-4.text-muted
+        h4(style ="margin-left:35px;"){follower_count}10{/}
     header.main-box-header.clearfix
     .main-box-body.clearfix
         .row.xepan-push-small
           {$form}
-        .row.xepan-push
+        .row.xepan-push-large
           {$subtask}
-          .row.xepan-push-large 
-          {$showsubtask} 
-        .row 
-          {$commentform}
+        .row
+          .col-lg-12
+              .main-box.clearfix
+                .tabs-wrapper.profile-tabs
+                  ul.nav.nav-tabs
+                    li.active
+                      a(data-toggle='tab', href='#tab-subtask') SubTasks
+                    li
+                      a(data-toggle='tab', href='#tab-showcomment') Comments
+                    li
+                      a(data-toggle='tab', href='#tab-comment') Add Comment
+                        
+                  .tab-content
 
-          {$commentgrid}
+                     #tab-subtask.tab-pane.fade.in.active
+                        {$showsubtask}
+                     #tab-showcomment.tab-pane.clearfix.fade
+                        {$commentgrid}
+                     #tab-comment.tab-pane.clearfix.fade
+                        {$commentform}
+                     

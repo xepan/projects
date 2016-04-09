@@ -43,6 +43,17 @@ class Model_Task extends \xepan\base\Model_Table
 
 	}
 
+	function submit(){
+	}
+
+	function assign(){
+		
+	}
+
+	function mark_complete(){
+		
+	}
+
 	function getAssociatedfollowers(){
 		$associated_followers = $this->ref('xepan\projects\Follower_Task_Association')
 								->_dsql()->del('fields')->field('employee_id')->getAll();
