@@ -12,7 +12,7 @@ class Model_Task extends \xepan\base\Model_Table
 	public $actions =[
 		'Submitted'=>['view','edit','delete','assign','mark_complete','onhold'],
 		'Assigned'=>['view','edit','delete','submit','mark_complete','onhold'],
-		'Completed'=>['view','edit','delete','submit','assign','pending','re_open'],
+		'Completed'=>['view','edit','delete','submit','assign','re_open'],
 		'Pending'=>['view','edit','delete','submit','assign','mark_complete','onhold'],
 		'On-Hold'=>['view','edit','delete','submit','assign','mark_complete'],
 	];
@@ -63,13 +63,8 @@ class Model_Task extends \xepan\base\Model_Table
 		$this->save();
 	}
 
-	function pending(){		
-		$this['status']='Pending';
-		$this->save();
-	}
-
 	function re_open(){		
-		$this['status']='Reopened';
+		$this['status']='Pending';
 		$this->save();
 	}
 

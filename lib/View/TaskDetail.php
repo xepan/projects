@@ -182,7 +182,7 @@ class View_TaskDetail extends \View{
 			$model_comment = $this->add('xepan\projects\Model_Comment');
 
 			$model_comment->addCondition('task_id',$_GET['task_id']);
-			$model_comment->addCondition('name',$this->app->employee->id);
+			$model_comment->addCondition('employee_id',$this->app->employee->id);
 
 			$model_comment['comment'] = $comment_f['comment'];
 			$model_comment->save();
