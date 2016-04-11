@@ -1,8 +1,7 @@
 .form-group
-  .row
-    .col-md-12
-      span.checkbox-nice
-        label(for="completed" style="margin-left:15px;") Completed
-        span{$completed} 
-  .row
-    {$form_buttons}
+	h4.text-muted Task Filter
+	.row.col-md-12
+		span.checkbox-nice
+			label(for="completed" style="margin-left:15px;") Completed
+			span{$completed} 
+		{$form_buttons}
