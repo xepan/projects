@@ -14,7 +14,7 @@
       <div class="col-md-4"><span id="assigntask" data-task_id="{$id}" style="cursor:pointer; cursor: hand; margin-left:40px; padding-right:17px;" class="text-muted">{avatar}Assign task ... {/}</span></div>
       <div class="col-md-1"></div>
       <div class="col-md-4 text-muted">
-        <h4 style="margin-left:35px;">{follower_count}10{/}</h4>
+        <h4 style="margin-left:35px;">{follower_count}0{/}</h4>
       </div>
     </div>
     <header class="main-box-header clearfix"></header>
@@ -28,12 +28,16 @@
               <ul class="nav nav-tabs">
                 <li class="active"><a data-toggle="tab" href="#tab-subtask">SubTasks</a></li>
                 <li><a data-toggle="tab" href="#tab-showcomment">Comments</a></li>
-                <li><a data-toggle="tab" href="#tab-comment">Add Comment</a></li>
               </ul>
               <div class="tab-content">
                 <div id="tab-subtask" class="tab-pane fade in active">{$showsubtask}</div>
-                <div id="tab-showcomment" class="tab-pane clearfix fade">{$commentgrid}</div>
-                <div id="tab-comment" class="tab-pane clearfix fade">{$commentform}</div>
+                <div id="tab-showcomment" class="tab-pane clearfix fade">
+                  <div class="row xepan-push-large">{$commentform}</div>
+                  <div class="row">
+                     
+                    {$commentgrid}
+                  </div>
+                </div>
               </div>
             </div>
           </div>

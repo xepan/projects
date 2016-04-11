@@ -3,14 +3,15 @@
     <ol class="dd-list">
         {rows}{row}
         <li class="dd-item" data-id="{$id}">
+        <span> {$avatar}</span>
             <div class="dd-handle dd3-handle">
             </div>
-            <div class="dd3-content task-item" data-id="{$id}">
-                {$task_name}
+            <div class="dd3-content" data-id="{$id}">
+                <span class="task-item" data-id="{$id}" style= "cursor:pointer; cursor: hand;">{$task_name}</span>
                 <!-- <span class ="pull-right label label-danger"> -->
                 <!-- </span> -->
                 <span class="pull-right" style="margin-top:-4px ">    
-                <span class=" label label-danger">{$status}</span>
+                <span class="">{$action}</span>
                     <!-- <a href="#" class="nested-link"><i class="fa fa-pencil"></i></a>
                     <a href="#" class="nested-link"><i class="fa fa-cog" ></i></a> -->
                     <!-- <a href="#" class="nested-link"><i class="fa fa-trash-o delete-item" data-id="{$id}"></i></a> -->

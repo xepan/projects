@@ -30,7 +30,7 @@ class Model_Task extends \xepan\base\Model_Table
 		$this->addField('deadline')->type('date');
 		$this->addField('starting_date')->type('date');
 		
-		$this->addField('status')->defaultValue('Draft');
+		$this->addField('status')->defaultValue('Pending');
 		$this->addField('type');
 		$this->addCondition('type','Task');
 
@@ -54,8 +54,9 @@ class Model_Task extends \xepan\base\Model_Table
 		
 	}
 
-	function mark_complete(){
-		
+	function mark_complete(){		
+		$this['status']='Completed';
+		$this->save();
 	}
 
 	function getAssociatedfollowers(){

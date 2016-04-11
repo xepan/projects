@@ -21,7 +21,7 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 
 		
 		// crud added for edit, delete, action purpose.
-	$task_list_view = $this->add('xepan\projects\View_TaskList',null,'leftview');	
+	    $task_list_view = $this->add('xepan\projects\View_TaskList',null,'leftview');	
 		$task_list_view->setModel('xepan\projects\Task')
 			->addCondition('parent_id',null)
 			->addCondition('project_id',$project_id);
@@ -62,9 +62,9 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 			return $js_new;
 		});
 
-		$top_view->on('click','.add-task',function($js,$data){
-			// return $js->univ()->alert('hello');
+		$top_view->on('click','.add-task',function($js,$data)use($task_detail_view_url,$task_detail_view){
 			$js_new = [
+				$task_detail_view->js()->reload(null,null,$task_detail_view_url),
 				$this->js()->_selector('#left_view')->removeClass('col-md-12'),
 				$this->js()->_selector('#left_view')->addClass('col-md-7'),
 				$this->js()->_selector('#right_view')->show()

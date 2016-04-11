@@ -21,6 +21,7 @@ class View_TaskDetail extends \View{
 			$model_task = $p->add('xepan\projects\Model_Task')->load($_GET['task_id']);
 
 			$form = $p->add('Form');
+			$form->setLayout('view\assign_form');
 			$form->addField('radio','assign_subtasks')->setValueList(['All SubTasks','Leave Reassigned SubTasks']);
 			$form->setModel($model_task,['employee_id']);
 			
@@ -171,7 +172,7 @@ class View_TaskDetail extends \View{
 		}
 
 		/***************************************************************************
-			Form to add commnets on task.
+			Form to add comments on task.
 		***************************************************************************/
 		$comment_f = $task_detail_view->add('Form',null,'commentform');
 		$comment_f->addField('text','comment');	

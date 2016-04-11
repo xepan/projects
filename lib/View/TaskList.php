@@ -18,6 +18,8 @@ class View_TaskList extends \xepan\base\Grid{
 			$sub_v->add('xepan\hr\Controller_ACL');
 			$sub_v->add('xepan\base\Controller_Avatar',['options'=>['size'=>20],'name_field'=>'employee','default_value'=>'']);
 			$this->current_row_html['sub_tasks']= $sub_v->getHTML();
+		}else{
+			$this->current_row_html['sub_tasks']= "";
 		}
 		return parent::formatRow();
 	}
