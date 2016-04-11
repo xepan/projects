@@ -193,7 +193,7 @@ class View_TaskDetail extends \View{
 		/***************************************************************************
 			Grid to show comments
 		***************************************************************************/
-		$comment_grid = $task_detail_view->add('xepan\hr\Grid',null,'commentgrid',['view\comment-grid'])->setModel('xepan\projects\Comment',['comment','name'])->addCondition('task_id',$task->id);
+		$comment_grid = $task_detail_view->add('xepan\hr\CRUD',null,'commentgrid',['view\comment-grid'])->setModel('xepan\projects\Comment',['comment','employee'])->addCondition('task_id',$task->id);
 
 		// $comment_grid->addQuickSearch(['name']);
 		/***************************************************************************
