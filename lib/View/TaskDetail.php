@@ -169,6 +169,7 @@ class View_TaskDetail extends \View{
 			$js[] = $this->task_list_view->js()->reload();
 			$this->js(null,$js)->execute();
 		}
+		
 
 		/***************************************************************************
 			Form to add comments on task.
@@ -186,7 +187,7 @@ class View_TaskDetail extends \View{
 			$model_comment['comment'] = $comment_f['comment'];
 			$model_comment->save();
 
-			$f->js()->univ()->successMessage('comment Saved')->execute();
+			$this->js()->univ()->reload()->execute();
 		}
 
 		/***************************************************************************

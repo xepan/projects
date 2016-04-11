@@ -11,6 +11,8 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 		$parent_id = $this->app->stickyGET('parent_id');
 
 		$model_project = $this->add('xepan\projects\Model_Project');
+		
+	    
 
 		/***************************************************************************
 			Adding views
@@ -18,13 +20,34 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 		$top_view = $this->add('xepan\projects\View_TopView',null,'topview');
 		$top_view->setModel($model_project)->load($project_id);
 
+		$task = $this->add('xepan\projects\Model_Task');
+		$task->addCondition('project_id',$project_id);
 
-		
 		// crud added for edit, delete, action purpose.
-	    $task_list_view = $this->add('xepan\projects\View_TaskList',null,'leftview');	
-		$task_list_view->setModel('xepan\projects\Task')
-			->addCondition('parent_id',null)
-			->addCondition('project_id',$project_id);
+	    $option_form = $this->add('Form',null,'leftview');
+	    $option_form->setLayout('view\option_form');
+	    $option_form->addField('checkbox','completed','');
+	    $option_form->addSubmit('Update');
+	    
+
+	    $task_list_m = $this->add('xepan\projects\Model_Task')
+						->addCondition('parent_id',null)
+						->addCondition('project_id',$project_id);
+	    
+	    $show_completed = $this->api->stickyGET('show_completed')=='true'?true:false;
+
+	    if(!$show_completed){
+	    	$task_list_m->addCondition('status','<>','Completed');
+	    }
+
+	    $task_list_view = $this->add('xepan\projects\View_TaskList',['show_completed'=>$show_completed],'leftview');	
+
+	    if($option_form->isSubmitted()){	    	
+    		$task_list_view->js()->reload(['show_completed'=>$option_form['completed']])->execute();
+	    }
+		
+	    
+		$task_list_view->setModel($task_list_m);
 		$task_list_view->add('xepan\hr\Controller_ACL');
 
 		$task_list_view->add('xepan\base\Controller_Avatar',['options'=>['size'=>20],'name_field'=>'employee','default_value'=>'']);
@@ -33,8 +56,6 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 		$task_detail_view = $this->add('xepan\projects\View_TaskDetail',['task_list_view'=>$task_list_view],'rightview');
 		$task_detail_view_url = $this->api->url(null,['cut_object'=>$task_detail_view->name]);
 
-		$task = $this->add('xepan\projects\Model_Task');
-		$task->addCondition('project_id',$project_id);
 
 		if($parent_id && $parent_id!='null'){
 			$task->addCondition('parent_id',$parent_id);
