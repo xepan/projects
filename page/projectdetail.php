@@ -36,7 +36,7 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 		$task = $this->add('xepan\projects\Model_Task');
 		$task->addCondition('project_id',$project_id);
 
-		if($parent_id){
+		if($parent_id && $parent_id!='null'){
 			$task->addCondition('parent_id',$parent_id);
 		}
 

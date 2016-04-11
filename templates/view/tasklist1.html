@@ -3,9 +3,7 @@
     <ol class="dd-list">
         {rows}{row}
         <li class="dd-item" data-id="{$id}">
-        <span> {$avatar}</span>
-            <div class="dd-handle dd3-handle">
-            </div>
+            {$avatar}
             <div class="dd3-content" data-id="{$id}">
                 <span class="task-item" data-id="{$id}" style= "cursor:pointer; cursor: hand;">{$task_name}</span>
                 <!-- <span class ="pull-right label label-danger"> -->
@@ -28,31 +26,17 @@
 <style type="text/css" media="screen">
 .dd3-handle::before {
     color: #fff;
-    content: "≡";
-    display: block;
-    font-size: 15px;
-    font-weight: normal;
     left: 0;
-    position: absolute;
     text-align: center;
     text-indent: 0;
-    top: -5px;
     width: 100%;
 }
 .dd3-handle {
-    background: rgba(0, 0, 0, 0) -moz-linear-gradient(center top , #ddd 0%, #bbb 100%) repeat scroll 0 0;
-    border: 1px solid #aaa;
-    border-bottom-right-radius: 0;
-    border-top-right-radius: 0;
     cursor: pointer;
     left: 0;
     margin: 0;
-    overflow: hidden;
-    position: absolute;
-    text-indent: 100%;
     top: 0;
-    white-space: nowrap;
-    /*width: 30px;*/
+    float: left;
     height: 0px!important;
 }
 .dd3-content {
