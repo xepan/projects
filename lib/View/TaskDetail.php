@@ -19,8 +19,6 @@ class View_TaskDetail extends \View{
 		$vp->set(function($p)use($self,$self_url){
 						
 			$model_task = $p->add('xepan\projects\Model_Task')->load($_GET['task_id']);
-			// $this->app->currentEmployee()->ref()->queryfield()->count
-			// add spot and place view on that spot with that count
 			$form = $p->add('Form');
 			$form->setLayout('view\assign_form');
 			$form->addField('radio','assign_subtasks')->setValueList(['All SubTasks','Leave Reassigned SubTasks']);
