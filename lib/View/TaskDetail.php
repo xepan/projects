@@ -148,7 +148,7 @@ class View_TaskDetail extends \View{
 			$grid = $subtask_grid = $task_detail_view->add('xepan\hr\Grid',null,'showsubtask',['view\subtasks']);
 			$subtask_grid->setModel($subtask);
 			$subtask_grid->add('xepan\base\Controller_Avatar',['options'=>['size'=>30],'name_field'=>'employee','default_value'=>'??']);
-			$grid->addQuickSearch(['name']);
+			$grid->addQuickSearch(['task_name']);
 		}
 		
 		/***************************************************************************
