@@ -12,7 +12,7 @@ class Model_Task extends \xepan\base\Model_Table
 	public $actions =[
 		'Submitted'=>['view','edit','delete','assign','mark_complete','onhold'],
 		'Assigned'=>['view','edit','delete','submit','mark_complete','onhold'],
-		'Completed'=>['view','edit','delete','submit','assign','mark_complete'],
+		'Completed'=>['view','edit','delete','submit','assign','pending'],
 		'Pending'=>['view','edit','delete','submit','assign','mark_complete','onhold'],
 		'On-Hold'=>['view','edit','delete','submit','assign','mark_complete'],
 	];
@@ -58,6 +58,12 @@ class Model_Task extends \xepan\base\Model_Table
 		$this['status']='Completed';
 		$this->save();
 	}
+
+	function pending(){		
+		$this['status']='Pending';
+		$this->save();
+	}
+
 
 	function getAssociatedfollowers(){
 		$associated_followers = $this->ref('xepan\projects\Follower_Task_Association')
