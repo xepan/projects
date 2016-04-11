@@ -41,6 +41,8 @@ class Model_Task extends \xepan\base\Model_Table
 		$this->hasMany('xepan\projects\Comment','task_id');	
 		$this->hasMany('xepan\projects\Task','parent_id',null,'SubTasks');
 
+		$this->addHook('beforeDelete',$this);
+
 		$this->is([
 			'task_name|required'
 			]);
@@ -49,6 +51,17 @@ class Model_Task extends \xepan\base\Model_Table
 			return $m->refSQL('xepan\projects\Follower_Task_Association')->count();
 		});
 
+	}
+
+	function beforedelete(){
+		$sub_task=$this->add('xepan\projects\Model_Task');
+		$sub_task->addCondition('parent_id',$this->id);
+		$sub_task->tryLoadAny();
+
+		if($sub_task->count()->getOne()){
+			throw new \Exception("Can'not Delete Task Its has Contains Many First delete Sub task", 1);
+			
+		}
 	}
 
 	function submit(){
