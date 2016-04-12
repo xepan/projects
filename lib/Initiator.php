@@ -14,7 +14,7 @@ class Initiator extends \Controller_Addon {
 
 		if($this->app->is_admin){
 			$m = $this->app->top_menu->addMenu('Projects');
-			$m->addItem('Dashboard','xepan_projects_projectdashboard');
+			$m->addItem(['Dashboard','icon'=>'fa fa-dashboard'],'xepan_projects_projectdashboard');
 		}
 	}
 }
