@@ -48,7 +48,7 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 		
 	    
 		$task_list_view->setModel($task_list_m);
-		$task_list_view->add('xepan\hr\Controller_ACL');
+		$task_list_view->add('xepan\hr\Controller_ACL',['action_btn_group'=>'xs']);
 
 		$task_list_view->add('xepan\base\Controller_Avatar',['options'=>['size'=>20],'name_field'=>'employee','default_value'=>'']);
 
