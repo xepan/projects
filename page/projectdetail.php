@@ -41,7 +41,9 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 	    	$task_list_m->addCondition('status','<>','Completed');
 	    }
 
-	    $task_list_view = $this->add('xepan\projects\View_TaskList',['show_completed'=>$show_completed],'leftview');	    
+	    $running_task_id = 71;
+
+	    $task_list_view = $this->add('xepan\projects\View_TaskList',['show_completed'=>$show_completed, 'running_task_id'=>$running_task_id],'leftview');	    
 
 	    if($option_form->isSubmitted()){	    	
     		$task_list_view->js()->reload(['show_completed'=>$option_form['completed']])->execute();
@@ -112,14 +114,14 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 	/***************************************************************************
 	  Timesheet PLAY/STOP
 	***************************************************************************/
-	$task_list_view->on('click','.fa-play',function($js,$data)use($task_list_view){
+	$task_list_view->on('click','.current_task_btn',function($js,$data)use($task_list_view){
 			
 			$model_close_timesheet = $this->add('xepan\projects\Model_Timesheet');
 
 			$model_close_timesheet->addCondition('employee_id',$this->app->employee->id);
 			$model_close_timesheet->setOrder('starttime','desc');
 			$model_close_timesheet->tryLoadAny();
-			
+
 			if($model_close_timesheet->loaded()){
 				if(!$model_close_timesheet['endtime']){
 					$model_close_timesheet['endtime'] = $this->app->now;
@@ -127,14 +129,26 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 				}
 			}
 
-			$model_timesheet = $this->add('xepan\projects\Model_Timesheet');
-				
-			$model_timesheet['task_id'] = $data['id'];
-			$model_timesheet['employee_id'] = $this->app->employee->id;
-			$model_timesheet['starttime'] = $this->app->now;
-			$model_timesheet->save();
+			if($data['action']=='start'){
 
-			$this->js()->univ()->successMessage('Task Started')->execute();
+				$model_timesheet = $this->add('xepan\projects\Model_Timesheet');
+					
+				$model_timesheet['task_id'] = $data['id'];
+				$model_timesheet['employee_id'] = $this->app->employee->id;
+				$model_timesheet['starttime'] = $this->app->now;
+				$model_timesheet->save();
+
+				return [
+						$this->js()->_selector('.current_task_btn')->removeClass('fa-stop')->addClass('fa-play'),
+						$this->js()->_selector('.dd3-content')->removeClass('alert alert-info'),
+						$js->removeClass('fa-play')->addClass('fa-stop')->data('action','stop'),
+						$this->js()->_selector('.dd3-content[data-id='.$data['id'].']')->addClass('alert alert-info'),
+					];
+			}
+
+			return $js->removeClass('fa-stop')->addClass('fa-play')->data('action','start');	
+
+
 		});
 	}
 
