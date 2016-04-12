@@ -41,9 +41,7 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 	    	$task_list_m->addCondition('status','<>','Completed');
 	    }
 
-	    $task_list_view = $this->add('xepan\projects\View_TaskList',['show_completed'=>$show_completed],'leftview');
-
-
+	    $task_list_view = $this->add('xepan\projects\View_TaskList',['show_completed'=>$show_completed],'leftview');	    
 
 	    if($option_form->isSubmitted()){	    	
     		$task_list_view->js()->reload(['show_completed'=>$option_form['completed']])->execute();
@@ -111,7 +109,25 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 
 		$task_list_view->js(true)->_load('jquery.nestable')->nestable(['group'=>1]);
 
+	/***************************************************************************
+	  Js to show task detail view
+	***************************************************************************/
+	// $model_timesheet = $this->add('xepan\projects\Model_Timesheet');
+	// $task_list_view->add($model_timesheet);
+
+	// $task_list_view->on('click','.fa-play',function($js,$data)use($task_detail_view_url,$task_detail_view){
+	// 		// $js_new = [
+	// 		// 	$task_detail_view->js()->reload(null,null,$task_detail_view_url),
+	// 		// 	// $this->js()->_selector('#left_view')->removeClass('col-md-12'),
+	// 			// $this->js()->_selector('#left_view')->addClass('col-md-7'),
+	// 			// $this->js()->_selector('#right_view')->show()
+	// 		// ];
+	// 		return $this->js()->univ()->alert();
+	// 	});
 	}
+
+
+
 
 	function defaultTemplate(){
 		return['page\projectdetail'];
