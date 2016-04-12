@@ -1,6 +1,6 @@
 <?php
 namespace xepan\projects;
-class page_sidemenu extends \Page{
+class page_sidemenu extends \xepan\base\Page{
 	function init(){
 		parent::init();
 		$this->app->side_menu->addItem('Project Dashboard','xepan_projects_projectdashboard');

@@ -4,6 +4,8 @@ namespace xepan\projects;
 
 class page_projectdetail extends \xepan\projects\page_sidemenu{
 	public $title = "Project Detail";
+	public $breadcrumb=['Home'=>'index','Project'=>'xepan_projects_project','Detail'=>'#'];
+
 	function init(){
 		parent::init();
 		$project_id = $this->app->stickyGET('project_id');
