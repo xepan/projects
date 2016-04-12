@@ -9,7 +9,7 @@ class View_TaskList extends \xepan\base\Grid{
 		parent::init();		
 	}
 	function formatRow(){
-		$sub_tasks=$this->add('xepan\projects\Model_Task',['name'=>'task_'.$this->model->id]);
+		$sub_tasks=$this->add('xepan\projects\Model_Formatted_Task',['name'=>'task_'.$this->model->id]);
 		$sub_tasks->addCondition('parent_id',$this->model->id);
 		
 		if(!$this->show_completed)

@@ -5,7 +5,7 @@
         <li class="dd-item" data-id="{$id}">
             {$avatar}
             <div class="dd3-content" data-id="{$id}">
-                <span class="task-item" data-id="{$id}" style= "cursor:pointer; cursor: hand;">[{$task_no}] {$task_name}</span>
+                <span class="task-item text-{$color} " data-id="{$id}" style= "cursor:pointer; cursor: hand;">[{$task_no}] {$task_name}</span>
                 <!-- <span class ="pull-right label label-danger"> -->
                 <!-- </span> -->
                 <span class="pull-right" style="margin-top:-4px ">    
@@ -16,7 +16,7 @@
                     <a class="table-link danger do-delete nested-link" href="#" data-id="{$id}"><span class="fa-stack"><i class="fa fa-square fa-stack-2x"></i><i class="fa fa-trash-o fa-stack-1x fa-inverse"></i></span></a>
                 </span>
             </div>
-            {$sub_tasks}
+            <span class="text-{$color} text-muted">{$sub_tasks}</span>
         </li>
         {/}{/}
     </ol>
@@ -40,13 +40,11 @@
     height: 0px!important;
 }
 .dd3-content {
-    background: rgba(0, 0, 0, 0) -moz-linear-gradient(center top , #fafafa 0%, #eee 100%) repeat scroll 0 0;
-    border: 1px solid #ccc;
+    border: 1px solid #eee;
     border-radius: 3px;
     box-sizing: border-box;
     color: #333;
     display: block;
-    font-weight: bold;
     height: 30px;
     margin: 5px 0;
     padding: 5px 10px 5px 40px;

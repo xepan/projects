@@ -157,7 +157,7 @@ class View_TaskDetail extends \View{
 		
 		$f = $task_detail_view->add('Form',null,'form');
 		$f->setLayout(['view\task_form']);
-		$f->setModel($task,['task_name','description','starting_date','deadline']);
+		$f->setModel($task,['task_name','description','starting_date','deadline','priority']);
 		$f->addSubmit('Save');
 
 		if($f->isSubmitted()){

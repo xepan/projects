@@ -32,6 +32,7 @@ class Model_Task extends \xepan\base\Model_Table
 		
 		$this->addField('status')->defaultValue('Pending');
 		$this->addField('type');
+		$this->addField('priority')->enum(['Low','Medium','High','Critical'])->EmptyText('Priority  ')->defaultValue('Medium');
 		$this->addCondition('type','Task');
 
 		$this->addField('created_at')->type('datetime')->defaultValue($this->app->now);

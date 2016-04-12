@@ -10,7 +10,7 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 		$task_id = $this->app->stickyGET('task_id');
 		$parent_id = $this->app->stickyGET('parent_id');
 
-		$model_project = $this->add('xepan\projects\Model_Project');
+		$model_project = $this->add('xepan\projects\Model_Formatted_Project');
 		
 	    
 
@@ -30,9 +30,10 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 	    $option_form->addSubmit('Update');
 	    
 
-	    $task_list_m = $this->add('xepan\projects\Model_Task')
+	    $task_list_m = $this->add('xepan\projects\Model_Formatted_Task')
 						->addCondition('parent_id',null)
 						->addCondition('project_id',$project_id);
+
 	    
 	    $show_completed = $this->api->stickyGET('show_completed')=='true'?true:false;
 
