@@ -9,8 +9,10 @@ class View_TaskDetail extends \View{
 	function init(){
 		parent::init();
 		$self = $this;
-		$self_url=$this->app->url(null,['cut_object'=>$this->name]);
+		$self_url = $this->app->url(null,['cut_object'=>$this->name]);
 
+
+		
 
 		/***************************************************************************
 			Virtual page for assigning task.
@@ -95,16 +97,19 @@ class View_TaskDetail extends \View{
 		/***************************************************************************
 			js click function for assign task 
 		***************************************************************************/
-		$this->on('click','#assigntask',function($js,$data)use($vp){
-			return $js->univ()->dialogURL("ASSIGN TASK TO EMPLOYEE",$this->api->url($vp->getURL(),['task_id'=>$data['task_id']]));
-		});
+		if($_GET['task_id']){
+			$this->on('click','#assigntask',function($js,$data)use($vp){
+				return $js->univ()->dialogURL("ASSIGN TASK TO EMPLOYEE",$this->api->url($vp->getURL(),['task_id'=>$data['task_id']]));
+			});
+				
+			$this->on('click','#addfollowers',function($js,$data)use($vp2){
+				return $js->univ()->dialogURL("ADD PEOPLE TO FOLLOW THIS TASK",$this->api->url($vp2->getURL(),['task_id'=>$data['task_id']]));
+			});
+		}
 
 		/***************************************************************************
 			js click function for adding followers.
 		***************************************************************************/
-		$this->on('click','#addfollowers',function($js,$data)use($vp2){
-			return $js->univ()->dialogURL("ADD PEOPLE TO FOLLOW THIS TASK",$this->api->url($vp2->getURL(),['task_id'=>$data['task_id']]));
-		});
 	}
 
 	function setModel($model,$fields=null){		
@@ -138,7 +143,6 @@ class View_TaskDetail extends \View{
 				return $js_new;
 			});
 		}
-
 		/***************************************************************************
 			Tab Showing SubTasks/Comments.
 		***************************************************************************/
@@ -157,7 +161,12 @@ class View_TaskDetail extends \View{
 		
 		$f = $task_detail_view->add('Form',null,'form');
 		$f->setLayout(['view\task_form']);
-		$f->setModel($task,['task_name','description','starting_date','deadline']);
+		$f->setModel($task,['task_name','description','starting_date','deadline','priority','estimate_time']);
+		$f->addField('checkbox','addsubtask','')->set(true);
+
+		$f->getElement('estimate_time')->setOption('minuteStep',1)
+									   ->setOption('showSeconds',true)
+									   ->setOption('showMeridian',true);
 		$f->addSubmit('Save');
 
 		if($f->isSubmitted()){
@@ -165,7 +174,13 @@ class View_TaskDetail extends \View{
 			$f->model['employee_id'] = $parent_task['employee_id'];
 			$f->save();
 			$js=[$f->js()->univ()->successMessage('saved')];
-			$js[] = $task_detail_view->js()->reload(['task_id'=>$f->model->id,'parent_id'=>$task['parent_id']]);
+			
+			if($f['addsubtask']){
+				$js[] = $task_detail_view->js()->reload(['parent_id'=>$f->model['parent_id'],'task_id'=>'']);	
+			}else{
+				$js[] = $task_detail_view->js()->reload(['task_id'=>$f->model->id,'parent_id'=>$task['parent_id']]);
+			}
+
 			$js[] = $this->task_list_view->js()->reload();
 			$this->js(null,$js)->execute();
 		}

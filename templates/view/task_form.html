@@ -21,8 +21,22 @@
           <div class="form-group col-md-5">
             <label for="deadline">
               Deadline
-              {$deadline}                                    
+              {$deadline}  
             </label>
+          </div>
+        </div>
+        <div class="row col-md-12 xepan-push-large">
+          <div class="col-md-6">
+               
+            {$priority}  
+          </div>
+          <div class="col-md-6">
+            <div class="form-group col-md-12">{$estimate_time}</div>
+          </div>
+        </div>
+        <div class="row col-md-12">
+          <div class="col-md-6">
+            <label for="completed" style="margin-left:15px;">Save and add subtask</label><span>{$addsubtask}                                                                                 </span>
           </div>
         </div>
         <div class="row">{$form_buttons}    </div>

@@ -4,15 +4,15 @@ namespace xepan\projects;
 
 class page_projectdetail extends \xepan\projects\page_sidemenu{
 	public $title = "Project Detail";
+	public $breadcrumb=['Home'=>'index','Project'=>'xepan_projects_project','Detail'=>'#'];
+
 	function init(){
 		parent::init();
 		$project_id = $this->app->stickyGET('project_id');
 		$task_id = $this->app->stickyGET('task_id');
 		$parent_id = $this->app->stickyGET('parent_id');
 
-		$model_project = $this->add('xepan\projects\Model_Project');
-		
-	    
+		$model_project = $this->add('xepan\projects\Model_Formatted_Project');
 
 		/***************************************************************************
 			Adding views
@@ -30,9 +30,10 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 	    $option_form->addSubmit('Update');
 	    
 
-	    $task_list_m = $this->add('xepan\projects\Model_Task')
+	    $task_list_m = $this->add('xepan\projects\Model_Formatted_Task')
 						->addCondition('parent_id',null)
 						->addCondition('project_id',$project_id);
+
 	    
 	    $show_completed = $this->api->stickyGET('show_completed')=='true'?true:false;
 
@@ -40,7 +41,7 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 	    	$task_list_m->addCondition('status','<>','Completed');
 	    }
 
-	    $task_list_view = $this->add('xepan\projects\View_TaskList',['show_completed'=>$show_completed],'leftview');	
+	    $task_list_view = $this->add('xepan\projects\View_TaskList',['show_completed'=>$show_completed],'leftview');	    
 
 	    if($option_form->isSubmitted()){	    	
     		$task_list_view->js()->reload(['show_completed'=>$option_form['completed']])->execute();
@@ -48,7 +49,7 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 		
 	    
 		$task_list_view->setModel($task_list_m);
-		$task_list_view->add('xepan\hr\Controller_ACL');
+		$task_list_view->add('xepan\hr\Controller_ACL',['action_btn_group'=>'xs']);
 
 		$task_list_view->add('xepan\base\Controller_Avatar',['options'=>['size'=>20],'name_field'=>'employee','default_value'=>'']);
 
@@ -108,7 +109,38 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 
 		$task_list_view->js(true)->_load('jquery.nestable')->nestable(['group'=>1]);
 
+	/***************************************************************************
+	  Timesheet PLAY/STOP
+	***************************************************************************/
+	$task_list_view->on('click','.fa-play',function($js,$data)use($task_list_view){
+			
+			$model_close_timesheet = $this->add('xepan\projects\Model_Timesheet');
+
+			$model_close_timesheet->addCondition('employee_id',$this->app->employee->id);
+			$model_close_timesheet->setOrder('starttime','desc');
+			$model_close_timesheet->tryLoadAny();
+			
+			if($model_close_timesheet->loaded()){
+				if(!$model_close_timesheet['endtime']){
+					$model_close_timesheet['endtime'] = $this->app->now;
+					$model_close_timesheet->save();
+				}
+			}
+
+			$model_timesheet = $this->add('xepan\projects\Model_Timesheet');
+				
+			$model_timesheet['task_id'] = $data['id'];
+			$model_timesheet['employee_id'] = $this->app->employee->id;
+			$model_timesheet['starttime'] = $this->app->now;
+			$model_timesheet->save();
+
+			$this->js()->univ()->successMessage('Task Started')->execute();
+		});
 	}
+
+
+
+
 
 	function defaultTemplate(){
 		return['page\projectdetail'];

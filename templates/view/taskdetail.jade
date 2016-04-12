@@ -9,7 +9,7 @@
         |Assigned To
       .col-md-1
       .col-md-4
-        span.icon.fa.fa-tag.text-muted#addfollowers(data-task_id="{$id}", style="cursor:pointer; cursor: hand;") Followers  
+        span.glyphicon.glyphicon-share.text-muted#addfollowers(data-task_id="{$id}", style="cursor:pointer; cursor: hand;") Followers  
     .row.col-md-12
       .col-md-2
       .col-md-4
@@ -33,7 +33,6 @@
                     li
                       a(data-toggle='tab', href='#tab-showcomment') Comments
                   .tab-content
-
                      #tab-subtask.tab-pane.fade.in.active
                         {$showsubtask}
                      #tab-showcomment.tab-pane.clearfix.fade
