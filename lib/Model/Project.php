@@ -31,6 +31,8 @@ class Model_Project extends \xepan\base\Model_Table
 
 		$this->hasMany('xepan\projects\Model_Task','project_id');
 		$this->hasMany('xepan\projects\Team_Project_Association','project_id');
+
+		$this->addHook('beforeDelete',$this);
 	}
 
 	function getAssociatedTeam(){
@@ -41,5 +43,16 @@ class Model_Project extends \xepan\base\Model_Table
 
 	function removeAssociateTeam(){
 		$this->ref('xepan\projects\Team_Project_Association')->deleteAll();
+	}
+
+	function beforedelete(){
+		$task=$this->add('xepan\projects\Model_Task');
+		$task->addCondition('project_id',$this->id);
+		$task->tryLoadAny();
+
+		if($task->count()->getOne()){
+			throw new \Exception("Can'not Delete Project, First delete associated tasks", 1);
+			
+		}
 	}
 }

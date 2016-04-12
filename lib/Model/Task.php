@@ -29,10 +29,11 @@ class Model_Task extends \xepan\base\Model_Table
 		$this->addField('description')->type('text');
 		$this->addField('deadline')->type('date');
 		$this->addField('starting_date')->type('date');
+		$this->addField('estimate_time');
 		
 		$this->addField('status')->defaultValue('Pending');
 		$this->addField('type');
-		$this->addField('priority')->enum(['Low','Medium','High','Critical'])->EmptyText('Priority  ')->defaultValue('Medium');
+		$this->addField('priority')->setValueList(['25'=>'Low','50'=>'Medium','75'=>'High','90'=>'Critical'])->EmptyText('Priority')->defaultValue('Medium');
 		$this->addCondition('type','Task');
 
 		$this->addField('created_at')->type('datetime')->defaultValue($this->app->now);
