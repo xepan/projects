@@ -95,16 +95,19 @@ class View_TaskDetail extends \View{
 		/***************************************************************************
 			js click function for assign task 
 		***************************************************************************/
-		$this->on('click','#assigntask',function($js,$data)use($vp){
-			return $js->univ()->dialogURL("ASSIGN TASK TO EMPLOYEE",$this->api->url($vp->getURL(),['task_id'=>$data['task_id']]));
-		});
+		if($_GET['task_id']){
+			$this->on('click','#assigntask',function($js,$data)use($vp){
+				return $js->univ()->dialogURL("ASSIGN TASK TO EMPLOYEE",$this->api->url($vp->getURL(),['task_id'=>$data['task_id']]));
+			});
+				
+			$this->on('click','#addfollowers',function($js,$data)use($vp2){
+				return $js->univ()->dialogURL("ADD PEOPLE TO FOLLOW THIS TASK",$this->api->url($vp2->getURL(),['task_id'=>$data['task_id']]));
+			});
+		}
 
 		/***************************************************************************
 			js click function for adding followers.
 		***************************************************************************/
-		$this->on('click','#addfollowers',function($js,$data)use($vp2){
-			return $js->univ()->dialogURL("ADD PEOPLE TO FOLLOW THIS TASK",$this->api->url($vp2->getURL(),['task_id'=>$data['task_id']]));
-		});
 	}
 
 	function setModel($model,$fields=null){		
@@ -158,6 +161,9 @@ class View_TaskDetail extends \View{
 		$f = $task_detail_view->add('Form',null,'form');
 		$f->setLayout(['view\task_form']);
 		$f->setModel($task,['task_name','description','starting_date','deadline','priority','estimate_time']);
+		$f->getElement('estimate_time')->setOption('minuteStep',1)
+									   ->setOption('showSeconds',true)
+									   ->setOption('showMeridian',true);
 		$f->addSubmit('Save');
 
 		if($f->isSubmitted()){

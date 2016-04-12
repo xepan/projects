@@ -29,7 +29,7 @@ class Model_Task extends \xepan\base\Model_Table
 		$this->addField('description')->type('text');
 		$this->addField('deadline')->type('date');
 		$this->addField('starting_date')->type('date');
-		$this->addField('estimate_time');
+		$this->addField('estimate_time')->display(['form'=>'TimePicker']);
 		
 		$this->addField('status')->defaultValue('Pending');
 		$this->addField('type');
