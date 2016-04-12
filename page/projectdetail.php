@@ -11,8 +11,6 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 		$parent_id = $this->app->stickyGET('parent_id');
 
 		$model_project = $this->add('xepan\projects\Model_Formatted_Project');
-		
-	    
 
 		/***************************************************************************
 			Adding views
@@ -41,7 +39,9 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 	    	$task_list_m->addCondition('status','<>','Completed');
 	    }
 
-	    $task_list_view = $this->add('xepan\projects\View_TaskList',['show_completed'=>$show_completed],'leftview');	
+	    $task_list_view = $this->add('xepan\projects\View_TaskList',['show_completed'=>$show_completed],'leftview');
+
+
 
 	    if($option_form->isSubmitted()){	    	
     		$task_list_view->js()->reload(['show_completed'=>$option_form['completed']])->execute();

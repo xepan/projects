@@ -53,6 +53,8 @@ class Model_Task extends \xepan\base\Model_Table
 			return $m->refSQL('xepan\projects\Follower_Task_Association')->count();
 		});
 
+		$this->setOrder('priority');
+
 	}
 
 	function beforedelete(){
