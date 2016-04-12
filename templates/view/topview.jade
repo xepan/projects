@@ -1,24 +1,41 @@
 .row(id="{$_name}")
   .main-box
     header.main-box-header.clearfix
-      h2 {$name}
       .row
-        span.text-muted{$pending_task}
-    .main-box-body.clearfix
-      .col-md-4
-      .col-md-4 
-        a(href!='?page=xepan_projects_projectdetail&project_id={$id}') 
-         |Tasks
-        a(href!="?page=xepan_projects_calendar&project_id={$id}") 
-         |Calendar
-        a(href!="?page=xepan_projects_conversation&project_id={$id}") 
-         |Conversation
-        a(href!="?page=xepan_projects_progress&project_id={$id}") 
-         |Progress
-        a(href!="?page=xepan_projects_files&project_id={$id}") 
-         |Files
-      .col-md-4
-        .pull-right.top-page-ui
-          span(data-id="{$id}")
-            a.btn.btn-primary.pull-right(href="#")
-              i.fa.fa-plus-circle.fa-lg.add-task Add Task
+        .col-md-3
+        .col-md-6.text-center
+          h1 {$name}
+        .col-md-3  
+          .pull-right.top-page-ui
+            span(data-id="{$id}")
+              a.btn.btn-primary.pull-right(href="#" style="margin-top:10px;")
+                i.fa.fa-plus-circle.fa-lg.add-task &nbsp; Add New Task
+      .row
+        .col-md-3
+          .clearfix
+            .title.pull-left
+              .text-muted Self Tasks : {self_task}50{/}
+            .value.pull-right(data-toggle='tooltip', title='', data-original-title='10% down')
+              .text-muted{self_percentage}10{/}% Completed   
+          .progress
+            .progress-bar(class='progress-bar-{$self_color}', role='progressbar', aria-valuenow='{self_percentage}69{/}', aria-valuemin='0', aria-valuemax='100', style='width: {self_percentage}69{/}%;')  
+        .col-md-6
+          .text-center 
+            a(href!='?page=xepan_projects_projectdetail&project_id={$id}') 
+             |Tasks
+            a(href!="?page=xepan_projects_calendar&project_id={$id}") 
+             |Calendar
+            a(href!="?page=xepan_projects_conversation&project_id={$id}") 
+             |Conversation
+            a(href!="?page=xepan_projects_progress&project_id={$id}") 
+             |Progress
+            a(href!="?page=xepan_projects_files&project_id={$id}") 
+             |Files
+        .col-md-3
+          .clearfix
+            .title.pull-left
+              .text-muted Total Tasks : {total_task}50{/}
+            .value.pull-right(data-toggle='tooltip', title='', data-original-title='10% down')
+              .text-muted{completed_percentage}10{/}% Completed   
+          .progress
+            .progress-bar(class='progress-bar-{$color}',role='progressbar', aria-valuenow='{completed_percentage}69{/}', aria-valuemin='0', aria-valuemax='100', style='width: {completed_percentage}69{/}%;')
