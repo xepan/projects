@@ -59,11 +59,6 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 		$task_detail_view = $this->add('xepan\projects\View_TaskDetail',['task_list_view'=>$task_list_view],'rightview');
 		$task_detail_view_url = $this->api->url(null,['cut_object'=>$task_detail_view->name]);
 
-
-		if($parent_id && $parent_id!='null'){
-			$task->addCondition('parent_id',$parent_id);
-		}
-
 		// if there is already some task added, only then apply these conditions.
 		if($task_id){
 			// $task->addCondition('id',$task_id);
@@ -81,7 +76,7 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 				$this->js()->_selector('#left_view')->removeClass('col-md-12'),
 				$this->js()->_selector('#left_view')->addClass('col-md-7'),
 				$this->js()->_selector('#right_view')->show(),
-				$task_detail_view->js()->reload(['task_id'=>$data['id']?:'','parent_id'=>''],null,$task_detail_view_url)
+				$task_detail_view->js()->reload(['task_id'=>$data['id']?:''],null,$task_detail_view_url)
 			];
 			return $js_new;
 		});

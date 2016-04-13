@@ -23,7 +23,6 @@ class Model_Task extends \xepan\base\Model_Table
 
 		$this->hasOne('xepan\base\Epan');
 		$this->hasOne('xepan\projects\Project','project_id');
-		$this->hasOne('xepan\projects\ParentTask','parent_id');
 		$this->hasOne('xepan\hr\Employee','employee_id');
 		$this->addField('task_name');
 		$this->addField('description')->type('text');

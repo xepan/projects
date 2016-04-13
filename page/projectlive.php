@@ -3,6 +3,8 @@
 namespace xepan\projects;
 
 class page_projectlive extends \xepan\projects\page_sidemenu{
+	public $title = "Project Status";
+	public $breadcrumb=['Home'=>'index','Project'=>'xepan_projects_project','Status'=>'#'];
 	function init(){
 		parent::init();
 
@@ -23,7 +25,8 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 						->count();
 		});
 		
-		$project_detail_grid = $this->add('xepan\hr\Grid',null,'grid');
+		$project_detail_grid=$this->add('xepan\hr\Grid',null,'grid',['view\status']);
+
 		$project_detail_grid->setModel($model_employee,['name','running_task','project','pending_tasks_count','running_task_since']); 
 	}
 

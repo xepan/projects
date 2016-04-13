@@ -11,9 +11,6 @@ class View_TaskDetail extends \View{
 		$self = $this;
 		$self_url = $this->app->url(null,['cut_object'=>$this->name]);
 
-
-		
-
 		/***************************************************************************
 			Virtual page for assigning task.
 		***************************************************************************/	
@@ -23,30 +20,9 @@ class View_TaskDetail extends \View{
 			$model_task = $p->add('xepan\projects\Model_Task')->load($_GET['task_id']);
 			$form = $p->add('Form');
 			$form->setLayout('view\assign_form');
-			$form->addField('radio','assign_subtasks')->setValueList(['All SubTasks','Leave Reassigned SubTasks']);
 			$form->setModel($model_task,['employee_id']);
 			
 			if($form->isSubmitted()){
-				
-				if($form['assign_subtasks']==0){
-					
-					foreach($model_task->ref('SubTasks') as $st){
-						$st['employee_id'] = $form['employee_id'];
-						$st->saveAndUnload();
-					}
-				}
-
-				if($form['assign_subtasks']==1){
-					foreach($model_task->ref('SubTasks')->addCondition('employee_id',$model_task['employee_id']) as $st){
-						$st['employee_id'] = $form['employee_id'];
-						$st->saveAndUnload();
-					}
-				}
-
-				foreach($model_task->ref('SubTasks')->addCondition('employee_id',null) as $st){
-					$st['employee_id'] = $form['employee_id'];
-					$st->saveAndUnload();
-				}
 
 				$form->save();
 				$form->js('null',$self->js()->reload(null,null,$self_url))->univ()->closeDialog()->execute();
@@ -121,28 +97,21 @@ class View_TaskDetail extends \View{
 		$task_detail_view_url = $this->api->url(null,['cut_object'=>$task_detail_view->name]);
 		
 
-		$p_v = $task_detail_view->add('HtmlElement',null,'parent_name')
-				->setElement('a')
-				->setAttr('href','#')
-				->set($task['parent']);	
-		$p_v->js('click',$task_detail_view->js()->reload(['task_id'=>$task['parent_id']]));
-		
-
 		/***************************************************************************
 			Adding SubTasks.
 		***************************************************************************/
-		if($task['parent_id']==null){
+		// if($task['parent_id']==null){
 			
-			$subtask = $task_detail_view->add('Button',null,'subtask')->set('Add SubTasks');
-			$subtask->setAttr('data-id',$task->id);
+		// 	$subtask = $task_detail_view->add('Button',null,'subtask')->set('Add SubTasks');
+		// 	$subtask->setAttr('data-id',$task->id);
 					
-			$subtask->on('click',null,function($js,$data)use($task_detail_view_url,$task_detail_view){
-				$js_new = [
-					$task_detail_view->js()->reload(['parent_id'=>$data['id']],null,$this->api->url($task_detail_view_url,['task_id'=>'']))
-				];
-				return $js_new;
-			});
-		}
+		// 	$subtask->on('click',null,function($js,$data)use($task_detail_view_url,$task_detail_view){
+		// 		$js_new = [
+		// 			$task_detail_view->js()->reload(['parent_id'=>$data['id']],null,$this->api->url($task_detail_view_url,['task_id'=>'']))
+		// 		];
+		// 		return $js_new;
+		// 	});
+		// }
 		/***************************************************************************
 			Tab Showing SubTasks/Comments.
 		***************************************************************************/
@@ -162,7 +131,7 @@ class View_TaskDetail extends \View{
 		$f = $task_detail_view->add('Form',null,'form');
 		$f->setLayout(['view\task_form']);
 		$f->setModel($task,['task_name','description','starting_date','deadline','priority','estimate_time']);
-		$f->addField('checkbox','addsubtask','')->set(true);
+		// $f->addField('checkbox','addsubtask','')->set(true);
 
 		// $f->getElement('estimate_time')->setOption('minuteStep',1)
 		// 							   ->setOption('showSeconds',true)
@@ -170,16 +139,14 @@ class View_TaskDetail extends \View{
 		$f->addSubmit('Save');
 
 		if($f->isSubmitted()){
-			$parent_task = $this->add('xepan\projects\Model_Task')->tryLoad($_GET['parent_id']?:0);
-			$f->model['employee_id'] = $parent_task['employee_id'];
+			// $parent_task = $this->add('xepan\projects\Model_Task')->tryLoad($_GET['parent_id']?:0);
+			// $f->model['employee_id'] = $parent_task['employee_id'];
 			$f->save();
 			$js=[$f->js()->univ()->successMessage('saved')];
 			
-			if($f['addsubtask']){
-				$js[] = $task_detail_view->js()->reload(['parent_id'=>$f->model['parent_id'],'task_id'=>'']);	
-			}else{
-				$js[] = $task_detail_view->js()->reload(['task_id'=>$f->model->id,'parent_id'=>$task['parent_id']]);
-			}
+			// if($f['addsubtask']){
+			// 	$js[] = $task_detail_view->js()->reload(['parent_id'=>$f->model['parent_id'],'task_id'=>'']);	
+			$js[] = $task_detail_view->js()->reload(['task_id'=>$f->model->id]);
 
 			$js[] = $this->task_list_view->js()->reload();
 			$this->js(null,$js)->execute();
