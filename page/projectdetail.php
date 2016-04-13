@@ -36,18 +36,6 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 						->addCondition('project_id',$project_id);
 
 	    $filter = $this->api->stickyGET('filter');
-	    $mytask = $this->api->stickyGET('mytask');
-	    
-	    if($mytask == 'true'){
-	    	$task_list_m->addCondition('employee_id',$this->app->employee->id);
-	    }
-
-	    if($filter == 'Completed'){
-	    	$task_list_m->addCondition('status',$filter);
-	    	
-	    }else if($filter == 'Pending'){
-	    	$task_list_m->addCondition('status',$filter);
-	    }
 
 	    $running_task_id = $this->add('xepan\projects\Model_Employee')
 	    					->load($this->app->employee->id)
@@ -57,12 +45,14 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 
 	    if($option_form->isSubmitted()){	
 
-    		$task_list_view->js()->reload(['filter'=>$option_form['filter']?:'', 'mytask'=>$option_form['mytask']])->execute();
+    		$task_list_view->js()->reload(['filter'=>$option_form['filter'], 'mytask'=>$option_form['mytask']])->execute();
 	    }
 		
 	    
 		$task_list_view->setModel($task_list_m);
 		$task_list_view->add('xepan\hr\Controller_ACL',['action_btn_group'=>'xs']);
+
+		$task_list_view->add('xepan\base\Controller_Avatar',['options'=>['size'=>20,'border'=>['width'=>0]],'name_field'=>'employee','default_value'=>'']);
 
 		// task detail view for showing/editing details of tasks.
 		$task_detail_view = $this->add('xepan\projects\View_TaskDetail',['task_list_view'=>$task_list_view],'rightview');
@@ -70,6 +60,7 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 
 		// if there is already some task added, only then apply these conditions.
 		if($task_id){
+			// $task->addCondition('id',$task_id);
 			$task->load($task_id);			
 		}
 
