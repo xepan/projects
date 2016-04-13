@@ -13,17 +13,15 @@
             thead
                 {cols}{col}
                 th
-                    span Team Members
+                    span Name
                 th
-                    span Project Name
+                    span Running Task
                 th
-                    span Total Task
+                    span  Project
                 th
-                    span Completed Task
+                    span Pending Tasks Count
                 th
-                    span Pending Task
-                th
-                    span Time Elapsed
+                    span Running Task Since
                 {/}{/}
             {/}
             {$subheader}
@@ -37,17 +35,15 @@
                         img(src='img/samples/scarlet-159.png', alt='')
                         {/}
                         br
-                        a.user-subhead(href='{url}?page=xepan_hr_employeedetail&contact_id={$id}{/}') {employee_id} Sushil{/}
+                        a.user-subhead(href='{url}?page=xepan_hr_employeedetail&contact_id={$id}{/}') {$name}
+                    td
+                      | {$running_task}
                     td
                       | {$project}
                     td
-                      | {$total_task}
-                    td
-                      | {$completed_task}
-                    td
                       | {$pending_tasks_count}
                     td
-                      | {$time_elapsed}
+                      | {$running_task_since}
                     {/}
                 {/}{/}
                 {not_found}

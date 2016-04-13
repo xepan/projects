@@ -9,22 +9,20 @@
   <div class="main-box-body clearfix table">
     <table style="width:100%" class="table user-list table-hover">{header}
       <thead>{cols}{col}
-        <th><span>Team Members</span></th>
-        <th><span>Project Name</span></th>
-        <th><span>Total Task</span></th>
-        <th><span>Completed Task</span></th>
-        <th><span>Pending Task</span></th>
-        <th><span>Time Elapsed</span></th>{/}{/}
+        <th><span>Name</span></th>
+        <th><span>Running Task</span></th>
+        <th><span> Project</span></th>
+        <th><span>Pending Tasks Count</span></th>
+        <th><span>Running Task Since</span></th>{/}{/}
       </thead>{/}
       {$subheader}
       <tbody>{rows}{row}
         <tr data-id="{$id}" class="{$odd_even}">{cols}
-          <td style="width: 20%;">{avatar}<img src="img/samples/scarlet-159.png" alt=""/>{/}<br/><a href="{url}?page=xepan_hr_employeedetail&amp;contact_id={$id}{/}" class="user-subhead">{employee_id} Sushil{/}</a></td>
+          <td style="width: 20%;">{avatar}<img src="img/samples/scarlet-159.png" alt=""/>{/}<br/><a href="{url}?page=xepan_hr_employeedetail&amp;contact_id={$id}{/}" class="user-subhead">{$name}</a></td>
+          <td>{$running_task}</td>
           <td>{$project}</td>
-          <td>{$total_task}</td>
-          <td>{$completed_task}</td>
           <td>{$pending_tasks_count}</td>
-          <td>{$time_elapsed}</td>{/}
+          <td>{$running_task_since}</td>{/}
         </tr>{/}{/}
         {not_found}
         <div class="row">
