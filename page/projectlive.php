@@ -3,6 +3,8 @@
 namespace xepan\projects;
 
 class page_projectlive extends \xepan\projects\page_sidemenu{
+	public $title = "Project Status";
+	public $breadcrumb=['Home'=>'index','Project'=>'xepan_projects_project','Status'=>'#'];
 	function init(){
 		parent::init();
 
