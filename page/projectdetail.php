@@ -53,7 +53,7 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 		$task_list_view->setModel($task_list_m);
 		$task_list_view->add('xepan\hr\Controller_ACL',['action_btn_group'=>'xs']);
 
-		$task_list_view->add('xepan\base\Controller_Avatar',['options'=>['size'=>20],'name_field'=>'employee','default_value'=>'']);
+		$task_list_view->add('xepan\base\Controller_Avatar',['options'=>['size'=>20,'border'=>['width'=>0]],'name_field'=>'employee','default_value'=>'']);
 
 		// task detail view for showing/editing details of tasks.
 		$task_detail_view = $this->add('xepan\projects\View_TaskDetail',['task_list_view'=>$task_list_view],'rightview');
