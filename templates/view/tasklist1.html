@@ -5,14 +5,14 @@
         <li class="dd-item" data-id="{$id}">
             {$avatar}
             <div class="dd3-content {$running_class}" data-id="{$id}">
-                <span class="task-item text-{$color}" data-id="{$id}" style= "cursor:pointer; cursor: hand;">[{$task_no}] {$task_name}</span>
+                <span class="task-item text-{$color}" data-id="{$id}" style= "cursor:pointer; cursor: hand; max-width:600px;">[{$task_no}] {$task_name}</span>
                 
                 <span class="">
-                    <span class="text-muted">{$created_by} </span>
+                    <span class="text-muted">{$created_by}</span>
                 </span>
                 
                 <span class="pull-right" style="margin-top:-4px ">
-                <span class="fa {$icon} current_task_btn " data-action="{$event_action}" data-id="{$id}" style= "cursor:pointer; cursor: hand; "><div>{$duration}</div></span>    
+                <span class="fa {$icon} current_task_btn " data-action="{$event_action}" data-id="{$id}" style= "cursor:pointer; cursor: hand; "><div style="color: #767676;display: block;font-size: 13px;font-weight: 500;">{duration}Todo{/}</div></span>    
                 <span class="">{$action}</span>
                     <!-- <a href="#" class="nested-link"><i class="fa fa-pencil"></i></a>
                     <a href="#" class="nested-link"><i class="fa fa-cog" ></i></a> -->
@@ -55,3 +55,4 @@
     text-decoration: none;
 }
 </style>             
+
