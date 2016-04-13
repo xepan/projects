@@ -3,22 +3,20 @@
 namespace xepan\projects;
 
 class View_TopView extends \View{
-	function init(){
-		parent::init();
-
-		$model_formatted_project = $this->add('xepan\projects\Model_Formatted_Project')->load($_GET['project_id']);
+	function setModel($m){
+		$m = parent::setModel($m);
 
 		$complete = $this->add('xepan\projects\View_Progressbar',null,'totalprogress',['view\progressbar']);
-		$complete->setModel($model_formatted_project,['total_task','completed_percentage','color']);
-		$complete->template->trydel('self_task');
-		$complete->template->trydel('self_percentage');
-		$complete->template->trydel('self_color');
+		$complete->template->set('total_task',$m['total_task']);
+		$complete->template->set('completed_percentage',$m['completed_percentage']);
+		$complete->template->set('color',$m['color']);
 
 		$self = $this->add('xepan\projects\View_Progressbar',null,'selfprogress',['view\progressbar']);
-		$self->setModel($model_formatted_project,['self_task','self_percentage','self_color']);
-		$self->template->trydel('total_task');
-		$self->template->trydel('completed_percentage');
-		$self->template->trydel('color');
+		$self->template->set('self_task',$m['self_task']);
+		$self->template->set('self_percentage',$m['self_percentage']);
+		$self->template->set('self_color',$m['self_color']);
+
+		return $m;
 	}
 
 
