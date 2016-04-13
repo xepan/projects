@@ -1,48 +1,9 @@
 
-<div id="{$_name}" class="row col-lg-12">
-  <div class="main-box"><span style="cursor:pointer; cursor: hand; margin-right:10px; margin-top:12px" class="glyphicon glyphicon-remove pull-right text-muted"></span>
-    <h4 style="width: 100%; margin-top:20px; white-space:nowrap;overflow: hidden;text-overflow: ellipsis;" class="text-center text-muted">{parent_name}{/}</h4>
-    <hr/>
-    <div class="row col-md-12">
-      <div class="col-md-2"></div>
-      <div class="col-md-4 text-muted">Assigned To</div>
-      <div class="col-md-1"></div>
-      <div class="col-md-4"><span id="addfollowers" data-task_id="{$id}" style="cursor:pointer; cursor: hand;" class="glyphicon glyphicon-share text-muted">Followers  </span></div>
-    </div>
-    <div class="row col-md-12">
-      <div class="col-md-2"></div>
-      <div class="col-md-4"><span id="assigntask" data-task_id="{$id}" style="cursor:pointer; cursor: hand; margin-left:40px; padding-right:17px;" class="text-muted">{avatar}Assign task ... {/}</span></div>
-      <div class="col-md-1"></div>
-      <div class="col-md-4 text-muted">
-        <h4 style="margin-left:35px;">{follower_count}0{/}</h4>
-      </div>
-    </div>
-    <header class="main-box-header clearfix"></header>
-    <div class="main-box-body clearfix">
-      <div class="row xepan-push-small">{$form}</div>
-      <div class="row xepan-push-large">{$subtask}</div>
-      <div class="row">
-        <div class="col-lg-12">
-          <div class="main-box clearfix">
-            <div class="tabs-wrapper profile-tabs">
-              <ul class="nav nav-tabs">
-                <li class="active"><a data-toggle="tab" href="#tab-subtask">SubTasks</a></li>
-                <li><a data-toggle="tab" href="#tab-showcomment">Comments</a></li>
-              </ul>
-              <div class="tab-content">
-                <div id="tab-subtask" class="tab-pane fade in active">{$showsubtask}</div>
-                <div id="tab-showcomment" class="tab-pane clearfix fade">
-                  <div class="row xepan-push-large">{$commentform}</div>
-                  <div class="row">
-                     
-                    {$commentgrid}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+<div id="{$_name}" class="row col-lg-12">         
+  <div class="row xepan-push-large">
+    <div class="panel panel-default">
+      <div class="panel-body">{$task_form}</div>
     </div>
   </div>
+  <div class="row xepan-push-large">{$commentgrid}</div>
 </div>

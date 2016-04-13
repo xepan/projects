@@ -36,7 +36,7 @@ class Model_Task extends \xepan\base\Model_Table
 		$this->addCondition('type','Task');
 
 		$this->addField('created_at')->type('datetime')->defaultValue($this->app->now);
-		$this->hasOne('xepan\hr\Employee','created_by_id');
+		$this->hasOne('xepan\hr\Employee','created_by_id')->defaultValue($this->app->employee->id);
 
 		$this->hasMany('xepan\projects\Follower_Task_Association','task_id');
 		$this->hasMany('xepan\projects\Comment','task_id');	
@@ -57,10 +57,8 @@ class Model_Task extends \xepan\base\Model_Table
  	}
 	
 	function beforedelete(){
-				
 		if($this->app->employee['type']!='SuperUser'){
 			throw new \Exception("@@@@ YOU ARE NOT SUPERUSER @@@@");
-			
 		}	
 	}
 

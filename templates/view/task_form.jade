@@ -1,30 +1,20 @@
-{$Content}
-.main-box
-  header.main-box-header.clearfix
-    h2 Add Task
-  .main-box-body.clearfix
-    form.form-horizontal(role='form')
-      .form-group
-        .row.col-lg-12.xepan-push
-          .atk-form-row.atk-form-field{$task_name}
-        .row.col-lg-12.xepan-push
-          {$description}
-        .row.col-lg-10.xepan-push
-          .form-group.col-md-5
-            label(for='startingdate') Starting Date
-              {$starting_date}
-          .col-md-2    
-          .form-group.col-md-5
-            label(for='deadline') Deadline
-              {$deadline}  
-        .row.col-md-12.xepan-push-large
-          .col-md-6    
-            {$priority}  
-          .col-md-6
-            .form-group.col-md-12
-              label(for='deadline') Estimate Time
-               {$estimate_time}
-        .row.col-md-12                                                                              
-    
-        .row
-          {$form_buttons}    
+.row  
+  .row.xepan-push-large
+    .col-md-6
+      {$task_name}
+    .col-md-3
+      {$employee_id}
+    .col-md-3
+      {$estimate_time}
+  .row.xepan-push-large
+    .col-md-6
+      {$description}
+    .col-md-3
+      {$starting_date}
+    .col-md-3    
+      {$deadline}
+  .row.xepan-push-large
+    .col-md-3    
+      {$priority}
+
+  {$form_buttons}

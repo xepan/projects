@@ -8,6 +8,7 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 
 	function init(){
 		parent::init();
+
 		$project_id = $this->app->stickyGET('project_id');
 		$task_id = $this->app->stickyGET('task_id');
 
@@ -66,42 +67,62 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 
 		$task_list_view->add('xepan\base\Controller_Avatar',['options'=>['size'=>20,'border'=>['width'=>0]],'name_field'=>'employee','default_value'=>'']);
 
-		// task detail view for showing/editing details of tasks.
-		$task_detail_view = $this->add('xepan\projects\View_TaskDetail',['task_list_view'=>$task_list_view],'rightview');
-		$task_detail_view_url = $this->api->url(null,['cut_object'=>$task_detail_view->name]);
-
-		// if there is already some task added, only then apply these conditions.
 		if($task_id){
-			// $task->addCondition('id',$task_id);
 			$task->load($task_id);			
 		}
 
-		$task_detail_view->setModel($task);
+		$task_list_view_url = $this->api->url(null,['cut_object'=>$task_list_view->name]);
+
+		// $task_view_url = $task_list_view->getUrl();
 
 		/***************************************************************************
-			Js to show task detail view
+			Virtual page for TASK DETAIL
 		***************************************************************************/
+		$self = $this;
+		$self_url = $this->app->url(null,['cut_object'=>$this->name]);
 
-		$task_list_view->on('click','.task-item',function($js,$data)use($task_detail_view_url,$task_detail_view){
-			$js_new = [
-				$this->js()->_selector('#left_view')->removeClass('col-md-12'),
-				$this->js()->_selector('#left_view')->addClass('col-md-7'),
-				$this->js()->_selector('#right_view')->show(),
-				$task_detail_view->js()->reload(['task_id'=>$data['id']?:''],null,$task_detail_view_url)
-			];
-			return $js_new;
-		});
+		$vp = $this->add('VirtualPage');
+		$vp->set(function($p)use($self,$self_url,$task_list_view,$task_list_view_url){
 
-		$top_view->on('click','.add-task',function($js,$data)use($task_detail_view_url,$task_detail_view){
-			$js_new = [
-				$task_detail_view->js()->reload(null,null,$task_detail_view_url),
-				$this->js()->_selector('#left_view')->removeClass('col-md-12'),
-				$this->js()->_selector('#left_view')->addClass('col-md-7'),
-				$this->js()->_selector('#right_view')->show()
-			];
-			return $js_new;
-		});
+			$task_id = $this->app->stickyGET('task_id')?:0;
+			$project_id = $this->app->stickyGET('project_id');
+			
+			$model_task = $this->add('xepan\projects\Model_Task')->tryLoad($task_id);
+			$model_task->addCondition('project_id',$project_id);
 
+			$detail_view = $p->add('xepan\projects\View_TaskDetail');
+
+			$task_form = $detail_view->add('Form',null,'task_form');
+			$task_form->setLayout('view\task_form');
+
+			$task_form->setModel($model_task,['employee_id','task_name','description','starting_date','deadline','priority','estimate_time']);
+
+			$task_form->addSubmit('Save');
+
+			if($task_form->isSubmitted()){
+
+				$task_form->save();
+				$js=[
+					$task_form->js()->univ()->successMessage('saved'),
+					$task_form->js()->univ()->closeDialog(),
+					$task_list_view->js()->reload(null,null,$task_list_view_url)
+					];
+				$p->js(null,$js)->execute();
+			}
+
+			$comment_grid = $detail_view->add('xepan\hr\CRUD',null,'commentgrid',['view\comment-grid'])->setModel('xepan\projects\Comment',['comment','employee'])->addCondition('task_id',$task->id);
+		});	
+
+		/***************************************************************************
+			Js to show task detail view etc.
+		***************************************************************************/
+		$task_list_view->on('click','.task-item',function($js,$data)use($vp){
+				return $js->univ()->dialogURL("TASK DETAIL",$this->api->url($vp->getURL(),['task_id'=>$data['id']]));
+			});
+
+		$top_view->on('click','.add-task',function($js,$data)use($vp){
+				return $js->univ()->dialogURL("TASK DETAIL",$this->api->url($vp->getURL()));
+			});
 		
 		$task_list_view->on('click','.do-delete',function($js,$data){
 			$delete_task=$this->add('xepan\projects\Model_Task');

@@ -1,44 +1,7 @@
-.row.col-lg-12(id="{$_name}")
-  .main-box
-    span.glyphicon.glyphicon-remove.pull-right.text-muted(style="cursor:pointer; cursor: hand; margin-right:10px; margin-top:12px")
-    h4.text-center.text-muted(style="width: 100%; margin-top:20px; white-space:nowrap;overflow: hidden;text-overflow: ellipsis;"){parent_name}{/}
-    hr
-    .row.col-md-12
-      .col-md-2
-      .col-md-4.text-muted
-        |Assigned To
-      .col-md-1
-      .col-md-4
-        span.glyphicon.glyphicon-share.text-muted#addfollowers(data-task_id="{$id}", style="cursor:pointer; cursor: hand;") Followers  
-    .row.col-md-12
-      .col-md-2
-      .col-md-4
-        span.text-muted#assigntask(data-task_id="{$id}", style="cursor:pointer; cursor: hand; margin-left:40px; padding-right:17px;") {avatar}Assign task ... {/}
-      .col-md-1
-      .col-md-4.text-muted
-        h4(style ="margin-left:35px;"){follower_count}0{/}
-    header.main-box-header.clearfix
-    .main-box-body.clearfix
-        .row.xepan-push-small
-          {$form}
-        .row.xepan-push-large
-          {$subtask}
-        .row
-          .col-lg-12
-              .main-box.clearfix
-                .tabs-wrapper.profile-tabs
-                  ul.nav.nav-tabs
-                    li.active
-                      a(data-toggle='tab', href='#tab-subtask') SubTasks
-                    li
-                      a(data-toggle='tab', href='#tab-showcomment') Comments
-                  .tab-content
-                     #tab-subtask.tab-pane.fade.in.active
-                        {$showsubtask}
-                     #tab-showcomment.tab-pane.clearfix.fade
-                        .row.xepan-push-large
-                          {$commentform}
-                        .row  
-                          {$commentgrid}
-                        
-                     
+.row.col-lg-12(id="{$_name}")          
+	.row.xepan-push-large
+		.panel.panel-default
+			.panel-body
+				{$task_form}
+	.row.xepan-push-large
+		{$commentgrid}
