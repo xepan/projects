@@ -54,17 +54,14 @@ class Model_Task extends \xepan\base\Model_Table
 
 		$this->setOrder('priority');
 
-	}
-
+ 	}
+	
 	function beforedelete(){
-		$sub_task=$this->add('xepan\projects\Model_Task');
-		$sub_task->addCondition('parent_id',$this->id);
-		$sub_task->tryLoadAny();
-
-		if($sub_task->count()->getOne()){
-			throw new \Exception("Can'not Delete Task Its has Contains Many First delete Sub task", 1);
+				
+		if($this->app->employee['type']!='SuperUser'){
+			throw new \Exception("@@@@ YOU ARE NOT SUPERUSER @@@@");
 			
-		}
+		}	
 	}
 
 	function submit(){
