@@ -53,7 +53,7 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 	    					->load($this->app->employee->id)
 	    					->get('running_task_id');
 
-	    $task_list_view = $this->add('xepan\projects\View_TaskList',null,'leftview');	    
+	    $task_list_view = $this->add('xepan\projects\View_TaskList',['running_task_id'=>$running_task_id],'leftview');	    
 
 	    if($option_form->isSubmitted()){	
 
