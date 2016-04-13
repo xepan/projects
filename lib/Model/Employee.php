@@ -11,5 +11,8 @@ class Model_Employee extends \xepan\hr\Model_Employee{
 		$this->addExpression('total_task')->set("'Todo'");
 		$this->addExpression('completed_task')->set("'Todo'");
 		$this->addExpression('pending_task')->set("'Todo'");
+		$this->addExpression('current_task')->set("'Todo'");
+		$this->addExpression('task_starting_time')->set("'Todo'");
+		$this->addExpression('time_elapsed')->set("'Todo'");
 	}
 }

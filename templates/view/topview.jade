@@ -12,13 +12,7 @@
                 i.fa.fa-plus-circle.fa-lg.add-task &nbsp; Add New Task
       .row
         .col-md-3
-          .clearfix
-            .title.pull-left
-              .text-muted Self Tasks : {self_task}50{/}
-            .value.pull-right(data-toggle='tooltip', title='', data-original-title='10% down')
-              .text-muted{self_percentage}10{/}% Completed   
-          .progress
-            .progress-bar(class='progress-bar-{$self_color}', role='progressbar', aria-valuenow='{self_percentage}69{/}', aria-valuemin='0', aria-valuemax='100', style='width: {self_percentage}69{/}%;')  
+          {$selfprogress}
         .col-md-6
           .text-center 
             a(href!='?page=xepan_projects_projectdetail&project_id={$id}') 
@@ -32,10 +26,4 @@
             a(href!="?page=xepan_projects_files&project_id={$id}") 
              |Files
         .col-md-3
-          .clearfix
-            .title.pull-left
-              .text-muted Total Tasks : {total_task}50{/}
-            .value.pull-right(data-toggle='tooltip', title='', data-original-title='10% down')
-              .text-muted{completed_percentage}10{/}% Completed   
-          .progress
-            .progress-bar(class='progress-bar-{$color}',role='progressbar', aria-valuenow='{completed_percentage}69{/}', aria-valuemin='0', aria-valuemax='100', style='width: {completed_percentage}69{/}%;')
+          {$totalprogress}

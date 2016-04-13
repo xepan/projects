@@ -35,7 +35,7 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 						->addCondition('project_id',$project_id);
 
 	    
-	    $show_completed = $this->api->stickyGET('show_completed')=='true'?true:false;
+	    $show_completed = $this->api->stickyGET('show_completed') == 'true'?true:false;
 
 	    if(!$show_completed){
 	    	$task_list_m->addCondition('status','<>','Completed');
@@ -151,10 +151,6 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 
 		});
 	}
-
-
-
-
 
 	function defaultTemplate(){
 		return['page\projectdetail'];

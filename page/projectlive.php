@@ -14,8 +14,8 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 		$top_view = $this->add('xepan\projects\View_TopView',null,'topview');
 		$top_view->setModel($model_project,['name']);
 
-		$project_detail_grid = $this->add('xepan\hr\Grid',null,'grid');
-		$project_detail_grid->setModel($model_employee,['team_members','project_name','total_task','completed_task','pending_task']); 
+		$project_detail_grid = $this->add('xepan\hr\Grid',null,'grid',['view\projectlive-grid']);
+		$project_detail_grid->setModel($model_employee,['team_members','project_name','total_task','completed_task','pending_task','task_starting_time','time_elapsed']); 
 	}
 
 	function defaultTemplate(){
