@@ -41,7 +41,9 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 	    	$task_list_m->addCondition('status','<>','Completed');
 	    }
 
-	    $running_task_id = 71;
+	    $running_task_id = $this->add('xepan\projects\Model_Employee')
+	    					->load($this->app->employee->id)
+	    					->get('running_task_id');
 
 	    $task_list_view = $this->add('xepan\projects\View_TaskList',['show_completed'=>$show_completed, 'running_task_id'=>$running_task_id],'leftview');	    
 

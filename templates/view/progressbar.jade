@@ -1,7 +1,7 @@
 .clearfix
     .title.pull-left
-      .text-muted Total Tasks : {$total_task}
+      .text-muted Total Tasks : {$total_task}{$self_task}
     .value.pull-right(data-toggle='tooltip', title='', data-original-title='10% down')
-      .text-muted{completed_percentage}10{/}% Completed   
+      .text-muted{$completed_percentage}{$self_percentage}% Completed   
   .progress
-    .progress-bar(class='progress-bar-{$color}',role='progressbar', aria-valuenow='{completed_percentage}69{/}', aria-valuemin='0', aria-valuemax='100', style='width: {completed_percentage}69{/}%;')
+    .progress-bar(class='progress-bar-{$color}{$self_color}',role='progressbar', aria-valuenow='{completed_percentage}{self_percentage}', aria-valuemin='0', aria-valuemax='100', style='width: {completed_percentage}{self_percentage}%;')
