@@ -12,13 +12,13 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 		$task_id = $this->app->stickyGET('task_id');
 		$parent_id = $this->app->stickyGET('parent_id');
 
-		$model_project = $this->add('xepan\projects\Model_Formatted_Project');
+		$model_project = $this->add('xepan\projects\Model_Formatted_Project')->load($project_id);
 
 		/***************************************************************************
 			Adding views
 		***************************************************************************/
 		$top_view = $this->add('xepan\projects\View_TopView',null,'topview');
-		$top_view->setModel($model_project)->load($project_id);
+		$top_view->setModel($model_project);
 
 		$task = $this->add('xepan\projects\Model_Task');
 		$task->addCondition('project_id',$project_id);

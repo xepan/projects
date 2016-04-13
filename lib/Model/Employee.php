@@ -15,16 +15,7 @@ class Model_Employee extends \xepan\hr\Model_Employee{
 						->fieldQuery('task');
 		});
 
-<<<<<<< HEAD
-		$this->addExpression('team_members')->set("'Todo'");
-		$this->addExpression('project_name')->set("'Todo'");
-		$this->addExpression('total_task')->set("'Todo'");
-		$this->addExpression('completed_task')->set("'Todo'");
-		$this->addExpression('pending_task')->set("'Todo'");
-		$this->addExpression('current_task')->set("'Todo'");
-		$this->addExpression('task_starting_time')->set("'Todo'");
-		$this->addExpression('time_elapsed')->set("'Todo'");
-=======
+
 		$this->addExpression('running_task_id')->set(function($m,$q){
 			return $this->add('xepan\projects\Model_Timesheet',['table_alias'=>'running_task'])
 						->addCondition('endtime',null)
@@ -62,6 +53,5 @@ class Model_Employee extends \xepan\hr\Model_Employee{
 
 
 		$this->addExpression('performance')->set("'Todo'");
->>>>>>> 0dab4a74bbdd58712b72a97ef36256d95f5dae43
 	}
 }

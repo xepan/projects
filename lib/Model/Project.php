@@ -29,7 +29,7 @@ class Model_Project extends \xepan\base\Model_Table
 		
 		$this->addCondition('type','project');
 
-		$this->hasMany('xepan\projects\Model_Task','project_id');
+		$this->hasMany('xepan\projects\Task','project_id');
 		$this->hasMany('xepan\projects\Team_Project_Association','project_id');
 
 		$this->addHook('beforeDelete',$this);
