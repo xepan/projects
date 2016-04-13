@@ -17,13 +17,13 @@
           .text-center 
             a(href!='?page=xepan_projects_projectdetail&project_id={$id}') 
              |Tasks
+            a(href!="{url}index.php?page=xepan_projects_projectlive&project_id={$id}{/}") 
+             |Status
             a(href!="?page=xepan_projects_calendar&project_id={$id}") 
              |Calendar
-            a(href!="?page=xepan_projects_conversation&project_id={$id}") 
-             |Conversation
             a(href!="?page=xepan_projects_progress&project_id={$id}") 
-             |Progress
-            a(href!="?page=xepan_projects_files&project_id={$id}") 
+             |Conversation
+            a(href!="?page=xepan_projects_conversation&project_id={$id}") 
              |Files
         .col-md-3
           {$totalprogress}

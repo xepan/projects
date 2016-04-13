@@ -13,15 +13,15 @@
             thead
                 {cols}{col}
                 th
-                    span Name
+                    span Team Members
                 th
-                    span Running Task
+                    span Project
                 th
-                    span  Project
+                    span Current Task
                 th
-                    span Pending Tasks Count
+                    span Time Elapsed
                 th
-                    span Running Task Since
+                    span Pending Tasks
                 {/}{/}
             {/}
             {$subheader}
@@ -30,20 +30,18 @@
                 {rows}{row}
                 tr(class="{$odd_even}" data-id="{$id}")
                     {cols}
-                    td(style="width: 20%;")
-                        {avatar}
-                        img(src='img/samples/scarlet-159.png', alt='')
-                        {/}
-                        br
-                        a.user-subhead(href='{url}?page=xepan_hr_employeedetail&contact_id={$id}{/}') {$name}
                     td
-                      | {$running_task}
+                      {$avatar}                   
+                      a.user-link(href='{url}index.php?page=xepan_projects_dailyanalysis&contact_id={$id}{/}'){$name}
                     td
                       | {$project}
                     td
-                      | {$pending_tasks_count}
+                      | {$running_task}
                     td
                       | {$running_task_since}
+                    td
+                      | {$pending_tasks_count}
+                    
                     {/}
                 {/}{/}
                 {not_found}

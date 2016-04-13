@@ -9,24 +9,18 @@
   <div class="main-box-body clearfix table">
     <table style="width:100%" class="table user-list table-hover">{header}
       <thead>{cols}{col}
-        <th><span>Team Members</span></th>
-        <th><span>Project Name</span></th>
-        <th><span>Total Task</span></th>
-        <th><span>Completed Task</span></th>
-        <th><span>Pending Task</span></th>
-        <th><span>Task Starting Time</span></th>
-        <th><span>Time Elapsed</span></th>{/}{/}
+        <th><span>Project</span></th>
+        <th><span>Task</span></th>
+        <th><span>Time Taken</span></th>
+        <th><span>Breaks            </span></th>{/}{/}
       </thead>{/}
       {$subheader}
       <tbody>{rows}{row}
         <tr data-id="{$id}" class="{$odd_even}">{cols}
-          <td><a href="{url}index.php?page=xepan_projects_dailyanalysis&amp;contact_id={$id}{/}" class="user-link">{$team_members}</a></td>
-          <td>{$project_name}</td>
-          <td>{$total_task}</td>
-          <td>{$completed_task}</td>
-          <td>{$pending_task}</td>
-          <td>{$task_starting_time}</td>
-          <td>{$time_elapsed}</td>{/}
+          <td>{$projects}</td>
+          <td>{$task}</td>
+          <td>{$time_taken}</td>
+          <td>{$breaks} </td>{/}
         </tr>{/}{/}
         {not_found}
         <div class="row">

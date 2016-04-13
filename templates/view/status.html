@@ -9,20 +9,20 @@
   <div class="main-box-body clearfix table">
     <table style="width:100%" class="table user-list table-hover">{header}
       <thead>{cols}{col}
-        <th><span>Name</span></th>
-        <th><span>Running Task</span></th>
-        <th><span> Project</span></th>
-        <th><span>Pending Tasks Count</span></th>
-        <th><span>Running Task Since</span></th>{/}{/}
+        <th><span>Team Members</span></th>
+        <th><span>Project</span></th>
+        <th><span>Current Task</span></th>
+        <th><span>Time Elapsed</span></th>
+        <th><span>Pending Tasks</span></th>{/}{/}
       </thead>{/}
       {$subheader}
       <tbody>{rows}{row}
         <tr data-id="{$id}" class="{$odd_even}">{cols}
-          <td style="width: 20%;">{avatar}<img src="img/samples/scarlet-159.png" alt=""/>{/}<br/><a href="{url}?page=xepan_hr_employeedetail&amp;contact_id={$id}{/}" class="user-subhead">{$name}</a></td>
-          <td>{$running_task}</td>
+          <td>{$avatar}                   <a href="{url}index.php?page=xepan_projects_dailyanalysis&amp;contact_id={$id}{/}" class="user-link">{$name}</a></td>
           <td>{$project}</td>
-          <td>{$pending_tasks_count}</td>
-          <td>{$running_task_since}</td>{/}
+          <td>{$running_task}</td>
+          <td>{$running_task_since}</td>
+          <td>{$pending_tasks_count}</td>{/}
         </tr>{/}{/}
         {not_found}
         <div class="row">

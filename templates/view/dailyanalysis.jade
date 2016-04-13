@@ -13,19 +13,14 @@
             thead
                 {cols}{col}
                 th
-                    span Team Members
+                    span Project
                 th
-                    span Project Name
+                    span Task
                 th
-                    span Total Task
+                    span Time Taken
                 th
-                    span Completed Task
-                th
-                    span Pending Task
-                th
-                    span Task Starting Time
-                th
-                    span Time Elapsed
+                    span Breaks            
+                
                 {/}{/}
             {/}
             {$subheader}
@@ -35,19 +30,13 @@
                 tr(class="{$odd_even}" data-id="{$id}")
                     {cols}
                     td
-                      a.user-link(href='{url}index.php?page=xepan_projects_dailyanalysis&contact_id={$id}{/}'){$team_members}
+                      | {$projects}
                     td
-                      | {$project_name}
+                      | {$task}
                     td
-                      | {$total_task}
+                      | {$time_taken}
                     td
-                      | {$completed_task}
-                    td
-                      | {$pending_task}
-                    td
-                      | {$task_starting_time}
-                    td
-                      | {$time_elapsed}
+                      | {$breaks} 
                     
                     {/}
                 {/}{/}
