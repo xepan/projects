@@ -11,8 +11,14 @@ class View_TaskList extends \xepan\base\Grid{
 		$sub_tasks=$this->add('xepan\projects\Model_Formatted_Task',['name'=>'task_'.$this->model->id]);
 		$sub_tasks->addCondition('parent_id',$this->model->id);
 		
-		if(!$this->show_completed)
-			$sub_tasks->addCondition('status','<>','Completed');
+		if($this->filter =='Completed')
+			$sub_tasks->addCondition('status','Completed');
+
+		if($this->filter =='Pending')
+			$sub_tasks->addCondition('status','Pending');
+
+		if(!$this->mytask)			
+			$sub_tasks->addCondition('employee_id',$this->app->employee->id);
 
 		if($sub_tasks->count()->getOne() > 0){
 			$sub_v =$this->add('xepan\projects\View_TaskList',['running_task_id'=>$this->running_task_id, 'show_completed'=>$this->show_completed],'sub_tasks',['view/tasklist1','nested_template']);

@@ -164,9 +164,9 @@ class View_TaskDetail extends \View{
 		$f->setModel($task,['task_name','description','starting_date','deadline','priority','estimate_time']);
 		$f->addField('checkbox','addsubtask','')->set(true);
 
-		$f->getElement('estimate_time')->setOption('minuteStep',1)
-									   ->setOption('showSeconds',true)
-									   ->setOption('showMeridian',true);
+		// $f->getElement('estimate_time')->setOption('minuteStep',1)
+		// 							   ->setOption('showSeconds',true)
+		// 							   ->setOption('showMeridian',true);
 		$f->addSubmit('Save');
 
 		if($f->isSubmitted()){

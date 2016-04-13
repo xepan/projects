@@ -10,7 +10,6 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 		parent::init();
 		$project_id = $this->app->stickyGET('project_id');
 		$task_id = $this->app->stickyGET('task_id');
-		$parent_id = $this->app->stickyGET('parent_id');
 
 		$model_project = $this->add('xepan\projects\Model_Formatted_Project')->load($project_id);
 
@@ -23,32 +22,31 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 		$task = $this->add('xepan\projects\Model_Task');
 		$task->addCondition('project_id',$project_id);
 
-		// crud added for edit, delete, action purpose.
+		/***************************************************************************
+			FILTER FORM
+		***************************************************************************/
 	    $option_form = $this->add('Form',null,'leftview');
 	    $option_form->setLayout('view\option_form');
-	    $option_form->addField('checkbox','completed','');
+	    $option_form->addField('dropdown','filter','')->setValueList(['All'=>'All','Completed'=>'Completed','Pending'=>'Pending']);
+	    $option_form->addField('checkbox','mytask','');
 	    $option_form->addSubmit('Update');
 	    
 
 	    $task_list_m = $this->add('xepan\projects\Model_Formatted_Task')
-						->addCondition('parent_id',null)
 						->addCondition('project_id',$project_id);
 
-	    
-	    $show_completed = $this->api->stickyGET('show_completed') == 'true'?true:false;
-
-	    if(!$show_completed){
-	    	$task_list_m->addCondition('status','<>','Completed');
-	    }
+	    $filter = $this->api->stickyGET('filter');
+	    $mytask = $this->api->stickyGET('mytask') == 1?true:false;
 
 	    $running_task_id = $this->add('xepan\projects\Model_Employee')
 	    					->load($this->app->employee->id)
 	    					->get('running_task_id');
 
-	    $task_list_view = $this->add('xepan\projects\View_TaskList',['show_completed'=>$show_completed, 'running_task_id'=>$running_task_id],'leftview');	    
+	    $task_list_view = $this->add('xepan\projects\View_TaskList',['filter'=>$filter,'mytask'=>$mytask, 'running_task_id'=>$running_task_id],'leftview');	    
 
-	    if($option_form->isSubmitted()){	    	
-    		$task_list_view->js()->reload(['show_completed'=>$option_form['completed']])->execute();
+	    if($option_form->isSubmitted()){	
+
+    		$task_list_view->js()->reload(['filter'=>$option_form['filter'], 'mytask'=>$option_form['mytask']])->execute();
 	    }
 		
 	    

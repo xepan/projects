@@ -1,7 +1,9 @@
 .form-group
 	h4.text-muted Task Filter
 	.row.col-md-12
-		span.checkbox-nice
-			label(for="completed" style="margin-left:15px;") Completed
-			span{$completed} 
-		{$form_buttons}
+		.row.col-md-6
+			span{$filter} 
+		.row.col-md-6
+			span My Tasks
+			span{$mytask} 			 
+	{$form_buttons}
