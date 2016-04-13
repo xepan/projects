@@ -96,33 +96,6 @@ class View_TaskDetail extends \View{
 		$task_detail_view = $this;
 		$task_detail_view_url = $this->api->url(null,['cut_object'=>$task_detail_view->name]);
 		
-
-		/***************************************************************************
-			Adding SubTasks.
-		***************************************************************************/
-		// if($task['parent_id']==null){
-			
-		// 	$subtask = $task_detail_view->add('Button',null,'subtask')->set('Add SubTasks');
-		// 	$subtask->setAttr('data-id',$task->id);
-					
-		// 	$subtask->on('click',null,function($js,$data)use($task_detail_view_url,$task_detail_view){
-		// 		$js_new = [
-		// 			$task_detail_view->js()->reload(['parent_id'=>$data['id']],null,$this->api->url($task_detail_view_url,['task_id'=>'']))
-		// 		];
-		// 		return $js_new;
-		// 	});
-		// }
-		/***************************************************************************
-			Tab Showing SubTasks/Comments.
-		***************************************************************************/
-		
-		if($task->loaded()){
-			$subtask = $task->ref('SubTasks');			
-			$grid = $subtask_grid = $task_detail_view->add('xepan\hr\Grid',null,'showsubtask',['view\subtasks']);
-			$subtask_grid->setModel($subtask);
-			$subtask_grid->add('xepan\base\Controller_Avatar',['options'=>['size'=>30],'name_field'=>'employee','default_value'=>'??']);
-			$grid->addQuickSearch(['task_name']);
-		}
 		
 		/***************************************************************************
 			Form to add tasks.
@@ -131,21 +104,14 @@ class View_TaskDetail extends \View{
 		$f = $task_detail_view->add('Form',null,'form');
 		$f->setLayout(['view\task_form']);
 		$f->setModel($task,['task_name','description','starting_date','deadline','priority','estimate_time']);
-		// $f->addField('checkbox','addsubtask','')->set(true);
-
-		// $f->getElement('estimate_time')->setOption('minuteStep',1)
-		// 							   ->setOption('showSeconds',true)
-		// 							   ->setOption('showMeridian',true);
+		
 		$f->addSubmit('Save');
 
 		if($f->isSubmitted()){
-			// $parent_task = $this->add('xepan\projects\Model_Task')->tryLoad($_GET['parent_id']?:0);
-			// $f->model['employee_id'] = $parent_task['employee_id'];
+
 			$f->save();
 			$js=[$f->js()->univ()->successMessage('saved')];
-			
-			// if($f['addsubtask']){
-			// 	$js[] = $task_detail_view->js()->reload(['parent_id'=>$f->model['parent_id'],'task_id'=>'']);	
+	
 			$js[] = $task_detail_view->js()->reload(['task_id'=>$f->model->id]);
 
 			$js[] = $this->task_list_view->js()->reload();
