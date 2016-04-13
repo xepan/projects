@@ -104,7 +104,7 @@ class View_TaskDetail extends \View{
 		$f = $task_detail_view->add('Form',null,'form');
 		$f->setLayout(['view\task_form']);
 		$f->setModel($task,['task_name','description','starting_date','deadline','priority','estimate_time']);
-		
+		$f->model->addCondition('created_by_id',$this->app->employee->id);
 		$f->addSubmit('Save');
 
 		if($f->isSubmitted()){

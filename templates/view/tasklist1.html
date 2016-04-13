@@ -6,9 +6,12 @@
             {$avatar}
             <div class="dd3-content {$running_class}" data-id="{$id}">
                 <span class="task-item text-{$color}" data-id="{$id}" style= "cursor:pointer; cursor: hand;">[{$task_no}] {$task_name}</span>
-                <!-- <span class ="pull-right label label-danger"> -->
-                <!-- </span> -->
-                <span class="pull-right" style="margin-top:-4px ">
+                
+               <!--  <span class="pull-right" style="">
+                    <span class="text-muted"> Created By: {$created_by} </span>
+                </span>
+                
+                --> <span class="pull-right" style="margin-top:-4px ">
                 <span class="fa {$icon} current_task_btn " data-action="{$event_action}" data-id="{$id}" style= "cursor:pointer; cursor: hand;"></span>    
                 <span class="">{$action}</span>
                     <!-- <a href="#" class="nested-link"><i class="fa fa-pencil"></i></a>

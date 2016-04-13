@@ -36,6 +36,18 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 						->addCondition('project_id',$project_id);
 
 	    $filter = $this->api->stickyGET('filter');
+	    $mytask = $this->api->stickyGET('mytask');
+
+	    if($mytask == 'true'){
+	    	$task_list_m->addCondition('employee_id',$this->app->employee->id);
+	    }
+
+
+	    if($filter == 'Completed'){
+	    	$task_list_m->addCondition('status','Completed');	
+	    }else if($filter == 'Pending'){
+	    	$task_list_m->addCondition('status','Pending');
+	    }
 
 	    $running_task_id = $this->add('xepan\projects\Model_Employee')
 	    					->load($this->app->employee->id)
@@ -45,7 +57,7 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 
 	    if($option_form->isSubmitted()){	
 
-    		$task_list_view->js()->reload(['filter'=>$option_form['filter'], 'mytask'=>$option_form['mytask']])->execute();
+    		$task_list_view->js()->reload(['filter'=>$option_form['filter']?:'', 'mytask'=>$option_form['mytask']])->execute();
 	    }
 		
 	    
