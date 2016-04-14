@@ -52,6 +52,5 @@ class Model_Formatted_Project extends \xepan\projects\Model_Project{
 
 					);
 		});
-
 	}
 }

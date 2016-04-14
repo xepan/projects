@@ -1,4 +1,5 @@
 <div id="{$_name}" class=""><!--class=" cf nestable-lists" -->
+    {$header}
     {nested_template}
     <ol class="dd-list">
         {rows}{row}
@@ -24,7 +25,7 @@
         </li>
         {/}{/}
     </ol>
-    {$not_found}
+    {not_found}{not_found_message}No Task{/}{/}
     {/nested_template}
 </div>
 <style type="text/css" media="screen">

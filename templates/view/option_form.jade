@@ -1,9 +1,10 @@
 .form-group
 	h4.text-muted Task Filter
 	.row.col-md-12
-		.row.col-md-6
+		.col-md-4
+			span Employee:
+			span{$name}	 			 
+		.col-md-4
+			span Category:
 			span{$filter} 
-		.row.col-md-6
-			span My Tasks
-			span{$mytask} 			 
 	{$form_buttons}
