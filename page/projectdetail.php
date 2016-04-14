@@ -110,7 +110,7 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 				$p->js(null,$js)->execute();
 			}
 
-			$comment_grid = $detail_view->add('xepan\hr\CRUD',null,'commentgrid',['view\comment-grid'])->setModel('xepan\projects\Comment',['comment','employee'])->addCondition('task_id',$task->id);
+			$comment_grid = $detail_view->add('xepan\hr\CRUD',null,'commentgrid',['view\comment-grid'])->setModel('xepan\projects\Comment',['comment','employee'])->addCondition('task_id',$model_task->id);
 		});	
 
 		/***************************************************************************
