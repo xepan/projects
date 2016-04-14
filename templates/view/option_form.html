@@ -1,8 +1,20 @@
 
-<div class="form-group">
-  <h4 class="text-muted">Task Filter</h4>
-  <div class="row col-md-12">
-    <div class="col-md-4"><span>Employee:</span><span>{$name}	 			 </span></div>
-    <div class="col-md-4"><span>Category:</span><span>{$filter} </span></div>
-  </div>{$form_buttons}
+<div class="panel panel-default">
+  <div class="panel-body">
+    <div class="row col-md-12">
+      <h4>Task Filters:</h4>
+    </div>
+    <div class="row col-md-12">
+      <div class="col-md-3"><span>Employee			 </span></div>
+      <div class="col-md-3"><span>Category </span></div>
+      <div class="col-md-3"><span>Quick Search</span></div>
+      <div class="col-md-3"></div>
+    </div>
+    <div class="row col-md-12">
+      <div class="col-md-3"><span>{$name}	 			 </span></div>
+      <div class="col-md-3"><span>{$filter} </span></div>
+      <div class="col-md-3"><span>{$search}</span></div>
+      <div class="col-md-3">{$FormButtons}						</div>
+    </div>
+  </div>
 </div>

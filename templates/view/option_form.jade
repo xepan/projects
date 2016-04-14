@@ -1,10 +1,21 @@
-.form-group
-	h4.text-muted Task Filter
-	.row.col-md-12
-		.col-md-4
-			span Employee:
-			span{$name}	 			 
-		.col-md-4
-			span Category:
-			span{$filter} 
-	{$form_buttons}
+.panel.panel-default
+	.panel-body
+		.row.col-md-12
+			h4 Task Filters:
+		.row.col-md-12
+			.col-md-3
+				span Employee			 
+			.col-md-3
+				span Category 
+			.col-md-3
+				span Quick Search
+			.col-md-3
+		.row.col-md-12
+			.col-md-3
+				span{$name}	 			 
+			.col-md-3
+				span{$filter} 
+			.col-md-3
+				span {$search}
+			.col-md-3
+				{$FormButtons}						

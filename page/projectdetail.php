@@ -29,10 +29,11 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 	    $option_form = $this->add('Form',null,'leftview');
 	    $option_form->setLayout('view\option_form');
 	    $option_form->addField('dropdown','filter','')->setValueList(['All'=>'All','Completed'=>'Completed','Pending'=>'Pending'])->set('Pending');
+	    $option_form->addField('search');
 	    $emp_name = $option_form->addField('dropdown','name');
 	    $emp_name->setModel($employee);
 	    $emp_name->set($this->app->employee->id);
-	    $option_form->addSubmit('Update');
+	    $option_form->addSubmit('Apply Filters');
 	    
 
 	    $task_list_m = $this->add('xepan\projects\Model_Formatted_Task')
