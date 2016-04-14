@@ -43,6 +43,7 @@ class Model_Task extends \xepan\base\Model_Table
 		// $this->hasMany('xepan\projects\Task','parent_id',null,'SubTasks');
 
 		$this->addHook('beforeDelete',$this);
+		$this->addHook('beforeSave',[$this,'notifyAssignement']);
 
 		$this->is([
 			'task_name|required'
@@ -62,16 +63,26 @@ class Model_Task extends \xepan\base\Model_Table
 		}	
 	}
 
+	function notifyAssignement(){
+		if($this->dirty['employee_id'] and $this['employee_id']){
+			$this->app->employee
+	            ->addActivity("Task Assigned", $this->id, $this['created_by_id'] /*Related Contact ID*/)
+	            ->notifyTo([$this['employee_id']],"Task Assigend to you : " . $this['task_name']);
+		}
+	}
+
 	function submit(){
 	}
 
-	function assign(){
-		
-	}
 
 	function mark_complete(){		
 		$this['status']='Completed';
 		$this->save();
+		if($this['employee_id']){
+			$this->app->employee
+		            ->addActivity("Task Completed", $this->id, $this['employee_id'] /*Related Contact ID*/)
+		            ->notifyTo([$this['created_by_id']],"Task Completed : " . $this['task_name']);
+		}
 	}
 
 	function re_open(){		
