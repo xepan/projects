@@ -88,6 +88,11 @@ class Model_Task extends \xepan\base\Model_Table
 	function re_open(){		
 		$this['status']='Pending';
 		$this->save();
+		if($this['employee_id']){
+			$this->app->employee
+		            ->addActivity("Task ReOpenned", $this->id, $this->app->employee->id /*Related Contact ID*/)
+		            ->notifyTo([$this['employee_id']],"Task ReOpenned : " . $this['task_name']);
+		}
 	}
 
 
