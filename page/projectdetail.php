@@ -39,8 +39,8 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 	    $task_list_m = $this->add('xepan\projects\Model_Formatted_Task')
 						->addCondition('project_id',$project_id);
 
-	    $filter = $this->api->stickyGET('filter');
-	    $employee_name = $this->api->stickyGET('employee');
+	    $filter = $this->api->stickyGET('filter')?:'Pending';
+	    $employee_name = $this->api->stickyGET('employee')?:$this->app->employee->id;
 
 	    if($employee_name){
 	    	$task_list_m->addCondition('employee_id',$employee_name);
