@@ -1,18 +1,17 @@
-.row.col-lg-12(id="{$_name}")          
-	.row.xepan-push-large
-		.panel.panel-default
-			.panel-body
-				{$task_form}
-	.row.xepan-push-large
-		.main-box.clearfix
-			.tabs-wrapper.profile-tabs
-				ul.nav.nav-tabs
-					li.active
-						a(data-toggle='tab', href='#tab-comment') Comments
-					li
-						a(data-toggle='tab', href='#tab-attachment') Attachment  
-				.tab-content
-					#tab-comment.tab-pane.fade.in.active
-						{$commentgrid}
-					#tab-attachment.tab-pane.clearfix.fade
-						{$attachment}
+.row.col-lg-12(id="{$_name}")
+	.main-box.clearfix
+		.tabs-wrapper.profile-tabs
+			ul.nav.nav-tabs
+				li.active
+					a(data-toggle='tab', href='#tab-form') Task  
+				li
+					a(data-toggle='tab', href='#tab-comment') Comments
+				li
+					a(data-toggle='tab', href='#tab-attachment') Attachment	  
+			.tab-content
+				#tab-form.tab-pane.fade.in.active
+					{$task_form}
+				#tab-comment.tab-pane.clearfix.fade
+					{$commentgrid}
+				#tab-attachment.tab-pane.clearfix.fade
+					{$attachment}

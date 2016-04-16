@@ -116,8 +116,11 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 
 			$attachment_crud = $detail_view->add('xepan\hr\CRUD',null,'attachment',['view\attachment-grid']);
 			$attachment_crud->setModel('xepan\projects\Model_Task_Attachment',['file_id']);
-
-			$comment_grid = $detail_view->add('xepan\hr\CRUD',null,'commentgrid',['view\comment-grid'])->setModel('xepan\projects\Comment',['comment','employee'])->addCondition('task_id',$model_task->id);
+			$model_comment = $this->add('xepan\projects\Model_Comment');
+			$model_comment->addCondition('task_id',$model_task->id);
+			
+			$comment_grid = $detail_view->add('xepan\hr\CRUD',null,'commentgrid',['view\comment-grid']);
+			$comment_grid->setModel($model_comment,['comment','employee']);
 		});	
 
 		/***************************************************************************
