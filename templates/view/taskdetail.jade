@@ -2,7 +2,17 @@
 	.row.xepan-push-large
 		.panel.panel-default
 			.panel-body
-				{$attachment}
 				{$task_form}
 	.row.xepan-push-large
-		{$commentgrid}
+		.main-box.clearfix
+			.tabs-wrapper.profile-tabs
+				ul.nav.nav-tabs
+					li.active
+						a(data-toggle='tab', href='#tab-comment') Comments
+					li
+						a(data-toggle='tab', href='#tab-attachment') Attachment  
+				.tab-content
+					#tab-comment.tab-pane.fade.in.active
+						{$commentgrid}
+					#tab-attachment.tab-pane.clearfix.fade
+						{$attachment}
