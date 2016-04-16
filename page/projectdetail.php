@@ -112,15 +112,23 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 			}
 
 			$model_attachment = $this->add('xepan\projects\Model_Task_Attachment');
-			$model_attachment->addCondition('task_id',$task_id);
-
+			$model_attachment->addCondition('task_id',$task_id);	
+			
 			$attachment_crud = $detail_view->add('xepan\hr\CRUD',null,'attachment',['view\attachment-grid']);
-			$attachment_crud->setModel('xepan\projects\Model_Task_Attachment',['file_id']);
+			$attachment_crud->setModel($model_attachment,['file_id'])->addCondition('task_id',$task_id);;
+			
+			$attachment_count = $model_attachment->count()->getOne();
+			$detail_view->template->trySet('attachment_count',$attachment_count);
+			
 			$model_comment = $this->add('xepan\projects\Model_Comment');
 			$model_comment->addCondition('task_id',$model_task->id);
-			
+
 			$comment_grid = $detail_view->add('xepan\hr\CRUD',null,'commentgrid',['view\comment-grid']);
-			$comment_grid->setModel($model_comment,['comment','employee']);
+			$comment_grid->setModel($model_comment,['comment','employee'])->addCondition('task_id',$task_id);
+			
+			$comment_count = $model_comment->count()->getOne();
+			$detail_view->template->trySet('comment_count',$comment_count);
+			
 		});	
 
 		/***************************************************************************
