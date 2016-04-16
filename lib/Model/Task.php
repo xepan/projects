@@ -41,6 +41,7 @@ class Model_Task extends \xepan\base\Model_Table
 		$this->hasMany('xepan\projects\Follower_Task_Association','task_id');
 		$this->hasMany('xepan\projects\Comment','task_id');	
 		$this->hasMany('xepan\projects\Timesheet','task_id');	
+		$this->hasMany('xepan\projects\Task_Attachment','task_id');	
 		// $this->hasMany('xepan\projects\Task','parent_id',null,'SubTasks');
 
 		$this->addHook('beforeDelete',$this);
