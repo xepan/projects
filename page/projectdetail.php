@@ -30,11 +30,10 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 	    $option_form->setLayout('view\option_form');
 	    $option_form->addField('dropdown','filter','')->setValueList(['All'=>'All','Completed'=>'Completed','Pending'=>'Pending'])->set('Pending');
 	    $option_form->addField('search');
-	    $emp_name = $option_form->addField('dropdown','name');
+	    $emp_name = $option_form->addField('dropdown','name')->setEmptyText('All');
 	    $emp_name->setModel($employee);
 	    $emp_name->set($this->app->employee->id);
 	    $option_form->addSubmit('Apply Filters');
-	    
 
 	    $task_list_m = $this->add('xepan\projects\Model_Formatted_Task')
 						->addCondition('project_id',$project_id);
@@ -42,7 +41,7 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 	    $filter = $this->api->stickyGET('filter')?:'Pending';
 	    $employee_name = $this->api->stickyGET('employee')?:$this->app->employee->id;
 
-	    if($employee_name){
+	    if($employee_name And $employee_name!= 'null'){
 	    	$task_list_m->addCondition('employee_id',$employee_name);
 	    }
 
@@ -60,7 +59,7 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 
 	    if($option_form->isSubmitted()){	
 
-    		$task_list_view->js()->reload(['filter'=>$option_form['filter']?:'', 'employee'=>$option_form['name']]?:'')->execute();
+    		$task_list_view->js()->reload(['filter'=>$option_form['filter']?:'', 'employee'=>$option_form['name']?:'null'])->execute();
 	    }
 		
 	    
