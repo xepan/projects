@@ -30,11 +30,10 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 	    $option_form->setLayout('view\option_form');
 	    $option_form->addField('dropdown','filter','')->setValueList(['All'=>'All','Completed'=>'Completed','Pending'=>'Pending'])->set('Pending');
 	    $option_form->addField('search');
-	    $emp_name = $option_form->addField('dropdown','name');
+	    $emp_name = $option_form->addField('dropdown','name')->setEmptyText('All');
 	    $emp_name->setModel($employee);
 	    $emp_name->set($this->app->employee->id);
 	    $option_form->addSubmit('Apply Filters');
-	    
 
 	    $task_list_m = $this->add('xepan\projects\Model_Formatted_Task')
 						->addCondition('project_id',$project_id);
@@ -42,7 +41,7 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 	    $filter = $this->api->stickyGET('filter')?:'Pending';
 	    $employee_name = $this->api->stickyGET('employee')?:$this->app->employee->id;
 
-	    if($employee_name){
+	    if($employee_name And $employee_name!= 'null'){
 	    	$task_list_m->addCondition('employee_id',$employee_name);
 	    }
 
@@ -60,7 +59,7 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 
 	    if($option_form->isSubmitted()){	
 
-    		$task_list_view->js()->reload(['filter'=>$option_form['filter']?:'', 'employee'=>$option_form['name']]?:'')->execute();
+    		$task_list_view->js()->reload(['filter'=>$option_form['filter']?:'', 'employee'=>$option_form['name']?:'null'])->execute();
 	    }
 		
 	    
@@ -112,7 +111,24 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 				$p->js(null,$js)->execute();
 			}
 
-			$comment_grid = $detail_view->add('xepan\hr\CRUD',null,'commentgrid',['view\comment-grid'])->setModel('xepan\projects\Comment',['comment','employee'])->addCondition('task_id',$model_task->id);
+			$model_attachment = $this->add('xepan\projects\Model_Task_Attachment');
+			$model_attachment->addCondition('task_id',$task_id);	
+			
+			$attachment_crud = $detail_view->add('xepan\hr\CRUD',null,'attachment',['view\attachment-grid']);
+			$attachment_crud->setModel($model_attachment,['file_id'])->addCondition('task_id',$task_id);;
+			
+			$attachment_count = $model_attachment->count()->getOne();
+			$detail_view->template->trySet('attachment_count',$attachment_count);
+			
+			$model_comment = $this->add('xepan\projects\Model_Comment');
+			$model_comment->addCondition('task_id',$model_task->id);
+
+			$comment_grid = $detail_view->add('xepan\hr\CRUD',null,'commentgrid',['view\comment-grid']);
+			$comment_grid->setModel($model_comment,['comment','employee'])->addCondition('task_id',$task_id);
+			
+			$comment_count = $model_comment->count()->getOne();
+			$detail_view->template->trySet('comment_count',$comment_count);
+			
 		});	
 
 		/***************************************************************************
