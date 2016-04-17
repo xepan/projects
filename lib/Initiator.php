@@ -17,4 +17,7 @@ class Initiator extends \Controller_Addon {
 			$m->addItem(['Dashboard','icon'=>'fa fa-dashboard'],'xepan_projects_projectdashboard');
 		}
 	}
+
+	function generateInstaller(){
+	}
 }
