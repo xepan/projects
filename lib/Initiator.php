@@ -19,5 +19,16 @@ class Initiator extends \Controller_Addon {
 	}
 
 	function generateInstaller(){
+		// Clear DB
+        $this->app->epan=$this->app->old_epan;
+        $truncate_models = ['Follower_Task_Association','Comment','Timesheet','Task_Attachment','Task','Project'];
+        foreach ($truncate_models as $t) {
+            $m=$this->add('xepan\projects\Model_'.$t);
+            foreach ($m as $mt) {
+                $mt->delete();
+            }
+        }
+        
+        $this->app->epan=$this->app->new_epan;
 	}
 }
