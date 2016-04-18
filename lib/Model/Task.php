@@ -44,8 +44,11 @@ class Model_Task extends \xepan\base\Model_Table
 		$this->hasMany('xepan\projects\Task_Attachment','task_id');	
 		// $this->hasMany('xepan\projects\Task','parent_id',null,'SubTasks');
 
-		$this->addHook('beforeDelete',$this);
 		$this->addHook('beforeSave',[$this,'notifyAssignement']);
+		$this->addHook('beforeDelete',[$this,'checkExistingFollwerTaskAssociation']);
+		$this->addHook('beforeDelete',[$this,'checkExistingComment']);
+		$this->addHook('beforeDelete',[$this,'checkExistingTimeSheet']);
+		$this->addHook('beforeDelete',[$this,'checkExistingTaskAttachment']);
 
 		$this->is([
 			'task_name|required'
@@ -59,10 +62,19 @@ class Model_Task extends \xepan\base\Model_Table
 
  	}
 	
-	function beforedelete(){
-		if($this->app->employee['type']!='SuperUser'){
-			throw new \Exception("@@@@ YOU ARE NOT SUPERUSER @@@@");
-		}	
+	function checkExistingFollwerTaskAssociation(){
+		$this->ref('xepan\projects\Follower_Task_Association')->each(function($m){$m->delete();});
+	}
+	
+	function checkExistingComment(){
+		$this->ref('xepan\projects\Comment')->each(function($m){$m->delete();});
+	}
+	
+	function checkExistingTimeSheet(){
+		$this->ref('xepan\projects\Timesheet')->each(function($m){$m->delete();});
+	}
+	function checkExistingTaskAttachment(){
+		$this->ref('xepan\projects\Task_Attachment')->each(function($m){$m->delete();});
 	}
 
 	function notifyAssignement(){
