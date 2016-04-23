@@ -193,6 +193,7 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 
 
 		});
+
 	}
 
 	function defaultTemplate(){
