@@ -10,11 +10,19 @@ class View_TopView extends \View{
 		$complete->template->set('total_task',$m['total_task']);
 		$complete->template->set('completed_percentage',$m['completed_percentage']);
 		$complete->template->set('color',$m['color']);
+		$complete->template->set('critical_completed_percentage',$m['critical_completed_percentage']);
+		$complete->template->set('high_completed_percentage',$m['high_completed_percentage']);
+		$complete->template->set('medium_completed_percentage',$m['medium_completed_percentage']);
+		$complete->template->set('low_completed_percentage',$m['low_completed_percentage']);
 
 		$self = $this->add('xepan\projects\View_Progressbar',null,'selfprogress',['view\progressbar']);
 		$self->template->set('self_task',$m['self_task']);
 		$self->template->set('self_percentage',$m['self_percentage']);
 		$self->template->set('self_color',$m['self_color']);
+		$self->template->set('critical_self_percentage',$m['critical_self_percentage']);
+		$self->template->set('high_self_percentage',$m['high_self_percentage']);
+		$self->template->set('medium_self_percentage',$m['medium_self_percentage']);
+		$self->template->set('low_self_percentage',$m['low_self_percentage']);
 
 		return $m;
 	}

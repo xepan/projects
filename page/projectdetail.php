@@ -39,8 +39,8 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 						->addCondition('project_id',$project_id);
 
 	    $filter = $this->api->stickyGET('filter')?:'Pending';
-	    $employee_name = $this->api->stickyGET('employee')?:$this->app->employee->id;
-
+	    $employee_name = $this->api->stickyGET('employee')/*?:$this->app->employee->id*/;
+	    
 	    if($employee_name And $employee_name!= 'null'){
 	    	$task_list_m->addCondition('employee_id',$employee_name);
 	    }
@@ -98,7 +98,6 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 
 			$task_form->setModel($model_task,['employee_id','task_name','description','starting_date','deadline','priority','estimate_time']);
 
-			$task_form->addSubmit('Save');
 
 			if($task_form->isSubmitted()){
 
@@ -128,7 +127,6 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 			
 			$comment_count = $model_comment->count()->getOne();
 			$detail_view->template->trySet('comment_count',$comment_count);
-			
 		});	
 
 		/***************************************************************************

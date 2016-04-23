@@ -6,10 +6,10 @@
 					a(data-toggle='tab', href='#tab-form') Task  
 				li
 					a(data-toggle='tab', href='#tab-comment') Comments
-						span.label.label-warning.label-circle{$comment_count}
+						span.label.label-warning.label-circle.comment{$comment_count}
 				li
 					a(data-toggle='tab', href='#tab-attachment') Attachment 
-						span.label.label-warning.label-circle {$attachment_count}  
+						span.label.label-warning.label-circle.attachment{$attachment_count}  
 			.tab-content
 				#tab-form.tab-pane.fade.in.active
 					{$task_form}

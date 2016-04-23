@@ -5,3 +5,6 @@
       .text-muted{$completed_percentage}{$self_percentage}% Completed   
   .progress
     .progress-bar(class='progress-bar-{$color} {$self_color}',role='progressbar', aria-valuenow='{$completed_percentage}{$self_percentage}', aria-valuemin='0', aria-valuemax='100', style='width: {$completed_percentage}{$self_percentage}%;')
+  .title.pull-left
+      .text-muted.small Critical: {$critical_completed_percentage}{$critical_self_percentage}% High: {$high_completed_percentage}{$high_self_percentage}%    	
+      .text-muted.small Medium: {$medium_completed_percentage}{$medium_self_percentage}% Low :{$low_completed_percentage}{$low_self_percentage}%
