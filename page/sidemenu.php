@@ -19,8 +19,5 @@ class page_sidemenu extends \xepan\base\Page{
 			
 			$this->app->side_menu->addItem([$project_name,'icon'=>' fa fa-tasks','badge'=>[$task_count,'swatch'=>' label label-primary label-circle pull-right']],$this->app->url('xepan_projects_projectdetail',['project_id'=>$project_id]));
 		}
-
-		
-		
 	}
 }
