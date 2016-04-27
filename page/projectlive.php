@@ -10,8 +10,11 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 
 		$project_id = $this->app->stickyGET('project_id');
 		
-		$model_project = $this->add('xepan\projects\Model_Formatted_Project')->load($project_id);
-
+		$model_project = $this->add('xepan\projects\Model_Formatted_Project');
+		
+		if($project_id){
+			$model_project->load($project_id);
+		}
 
 		$top_view = $this->add('xepan\projects\View_TopView',null,'topview');
 		$top_view->setModel($model_project,['name']);
