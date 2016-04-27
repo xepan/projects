@@ -39,7 +39,7 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 						->addCondition('project_id',$project_id);
 
 	    $filter = $this->api->stickyGET('filter')?:'Pending';
-	    $employee_name = $this->api->stickyGET('employee')/*?:$this->app->employee->id*/;
+	    $employee_name = $this->api->stickyGET('employee')?:$this->app->employee->id;
 	    
 	    if($employee_name And $employee_name!= 'null'){
 	    	$task_list_m->addCondition('employee_id',$employee_name);
@@ -152,7 +152,7 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 
 		});
 
-		$task_list_view->js(true)->_load('jquery.nestable')->nestable(['group'=>1]);
+		// $task_list_view->js(true)->_load('jquery.nestable')->nestable(['group'=>1]);
 
 	/***************************************************************************
 	  Timesheet PLAY/STOP

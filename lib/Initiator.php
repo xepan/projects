@@ -15,6 +15,15 @@ class Initiator extends \Controller_Addon {
 		if($this->app->is_admin){
 			$m = $this->app->top_menu->addMenu('Projects');
 			$m->addItem(['Dashboard','icon'=>'fa fa-dashboard'],'xepan_projects_projectdashboard');
+			$projects = $this->add('xepan\projects\Model_Project');
+			foreach ($projects as $project) {
+				$project_name = $project['name'];
+				$project_id = $project['id'];
+
+				$task_count = $project->ref('xepan\projects\Task')->addCondition('employee_id',$this->app->employee->id)->addCondition('status','Pending')->count()->getOne();
+				
+				$m->addItem([$project_name,'icon'=>' fa fa-tasks'],$this->app->url('xepan_projects_projectdetail',['project_id'=>$project_id]));
+			}
 		}
 	}
 

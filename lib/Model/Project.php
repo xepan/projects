@@ -22,12 +22,14 @@ class Model_Project extends \xepan\base\Model_Table
 	{
 		parent::init();
 		
+		$this->hasOne('xepan\hr\Employee','created_by_id');
 		$this->addField('name');
 		$this->addField('description');	
 		$this->addField('status')->defaultValue('Draft');
 		$this->addField('type');
-		
+
 		$this->addCondition('type','project');
+
 
 		$this->hasMany('xepan\projects\Task','project_id');
 		$this->hasMany('xepan\projects\Team_Project_Association','project_id');
