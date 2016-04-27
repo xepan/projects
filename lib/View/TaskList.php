@@ -20,6 +20,8 @@ class View_TaskList extends \xepan\base\Grid{
 			$this->current_row['event_action'] = 'start';
 			$this->current_row['running_class'] = '';
 		}
+
+		// $this->current_row['total_duration']= date('H:i:s',strtotime($this->current_row['total_duration']));
 				
 		return parent::formatRow();
 	}

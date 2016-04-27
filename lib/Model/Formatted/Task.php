@@ -21,7 +21,11 @@ class Model_Formatted_Task extends \xepan\projects\Model_Task{
 					);
 		});
 
-		$this->addExpression('duration')->set('"123"');
+		$this->addExpression('total_duration')->set(function($m,$q){
+			$time_sheet = $this->add('xepan\projects\Model_Timesheet',['table_alias'=>'total_duration']);
+			$time_sheet->addCondition('task_id',$q->getField('id'));
+			return $time_sheet->dsql()->del('fields')->field($q->expr('sec_to_time(SUM([0]))',[$time_sheet->getElement('duration')]));
+		});
 
 
 	}

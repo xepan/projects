@@ -23,7 +23,8 @@ class page_calendar extends \xepan\projects\page_sidemenu{
 		foreach ($model_task as $task) {
 			$rows[$task->id] = [];
 			$rows[$task->id]['title'] = $task['task_name'];
-			$rows[$task->id]['start'] = $task['created_at'];
+			$rows[$task->id]['start'] = $task['created_at']?:'1970-01-01';
+			$rows[$task->id]['end'] = $task['deadline'];
 		}
 		
 		$task = array_values($rows);

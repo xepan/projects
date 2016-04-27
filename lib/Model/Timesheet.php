@@ -14,7 +14,7 @@ class Model_Timesheet extends \xepan\base\Model_Table{
 		$this->addField('remark');
 
 		$this->addExpression('duration')->set(function($m,$q){
-			return $q->expr("(TIMEDIFF(IFNULL([1],'[2]'),[0]))",[$m->getElement('starttime'),$m->getElement('endtime'),$this->app->now]);
+			return $q->expr("(TIMESTAMPDIFF(SECOND,[0], IFNULL([1],'[2]')))",[$m->getElement('starttime'),$m->getElement('endtime'),$this->app->now]);
 		});
 
 	}
