@@ -11,8 +11,10 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 
 		$project_id = $this->app->stickyGET('project_id');
 		$task_id = $this->app->stickyGET('task_id');
+		$search = $this->app->stickyGET('search');
 
 		$model_project = $this->add('xepan\projects\Model_Formatted_Project')->load($project_id);
+
 
 		/***************************************************************************
 			Adding views
@@ -58,10 +60,18 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 	    $task_list_view = $this->add('xepan\projects\View_TaskList',['running_task_id'=>$running_task_id],'leftview');	    
 
 	    if($option_form->isSubmitted()){	
-
-    		$task_list_view->js()->reload(['filter'=>$option_form['filter']?:'', 'employee'=>$option_form['name']?:'null'])->execute();
+	    	
+    		$task_list_view->js()->reload(['search'=>$option_form['search'],'filter'=>$option_form['filter']?:'', 'employee'=>$option_form['name']?:'null'])->execute();
 	    }
 		
+		/***************************************************************************
+			Relevancy Search
+		***************************************************************************/
+		if($search){	
+			$task_list_m->addExpression('Relevance')->set('MATCH(task_name, description) AGAINST ("'.$search.'" IN BOOLEAN MODE)');
+			$task_list_m->addCondition('Relevance','>',0);
+	 		$task_list_m->setOrder('Relevance','Desc');
+		}
 	    
 		$task_list_view->setModel($task_list_m);
 		$task_list_view->add('xepan\hr\Controller_ACL',['action_btn_group'=>'xs']);
