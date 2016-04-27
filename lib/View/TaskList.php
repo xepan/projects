@@ -21,8 +21,12 @@ class View_TaskList extends \xepan\base\Grid{
 			$this->current_row['running_class'] = '';
 		}
 
-		// $this->current_row['total_duration']= date('H:i:s',strtotime($this->current_row['total_duration']));
-				
+		if($this->model['is_started'] && $this->model['is_running']){
+			$this->current_row['running-task']='text-danger';
+		}else{
+			$this->current_row['running-task']='';
+		}
+
 		return parent::formatRow();
 	}
 	function defaultTemplate(){
