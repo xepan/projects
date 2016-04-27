@@ -33,7 +33,7 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 	    $emp_name = $option_form->addField('dropdown','name')->setEmptyText('All');
 	    $emp_name->setModel($employee);
 	    $emp_name->set($this->app->employee->id);
-	    $option_form->addSubmit('Apply Filters');
+	    $option_form->addSubmit('Apply Filters')->addClass('btn btn-primary');
 
 	    $task_list_m = $this->add('xepan\projects\Model_Formatted_Task')
 						->addCondition('project_id',$project_id);
