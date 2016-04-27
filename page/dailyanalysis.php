@@ -16,23 +16,24 @@ class page_dailyanalysis extends \xepan\projects\page_sidemenu{
 		$model_timesheet = $this->add('xepan\projects\Model_Timesheet')->addCondition('employee_id',$employee_id);
 
 		$form = $this->add('Form',null,'form');
-		$form->addField('DatePicker','date');
+		$form->addField('dropdown','name','Project Name')->setEmptyText('All')->setModel($model_project);
+		$form->addField('DatePicker','date','Start Date');
 		$form->addSubmit('Check');
-		
+		$view_task = $this->add('View',null,'task');
 		
 		if($date){
 			if($project)
-				$model_timesheet->addCondition('');
-
-			foreach ($model_timesheet as $persued_tasks) {
-				$view_task = $this->add('View',null,'task');
-				$startdate = date('Y-m-d',strtotime($model_timesheet['starttime']));
-				if($startdate == $date)
-				{
-					$view_task->set($persued_tasks['task']); 
-				}
+			{
+				//condition for project
 			}
+
+			$model_timesheet->addCondition('starttime','>=',$date);
+			// $model_timesheet->addCondition('endtime','<=',$date);
+
+			$grid = $view_task->add('xepan\hr\Grid',null,null,['view\task_timeline'])->setModel($model_timesheet,['task','duration'],['task_id','duration']);
 		}
+
+		
 		
 		$view_task_url = $view_task->app->url(null,['cut_object'=>$view_task->name]);
 		if($form->isSubmitted()){
