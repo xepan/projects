@@ -16,8 +16,8 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 			$model_project->load($project_id);
 		}
 
-		$top_view = $this->add('xepan\projects\View_TopView',null,'topview');
-		$top_view->setModel($model_project,['name']);
+		// $top_view = $this->add('xepan\projects\View_TopView',null,'topview');
+		// $top_view->setModel($model_project,['name']);
 
 		$model_employee = $this->add('xepan\projects\Model_Employee');
 		$model_employee->getElement('pending_tasks_count')->destroy();
