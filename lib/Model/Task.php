@@ -7,14 +7,14 @@ class Model_Task extends \xepan\base\Model_Table
 	public $table = "task";
 	public $title_field ='task_name';
 
-	public $status=['Pending','Assigned','Submitted','On-Hold','Completed','Reopened'];
+	public $status=['Pending','Completed','Reopened'];
 
 	public $actions =[
-		'Submitted'=>['view','edit','delete','assign','mark_complete','onhold'],
-		'Assigned'=>['view','edit','delete','submit','mark_complete','onhold'],
-		'Completed'=>['view','edit','delete','submit','assign','re_open'],
-		'Pending'=>['view','edit','delete','submit','assign','mark_complete','onhold'],
-		'On-Hold'=>['view','edit','delete','submit','assign','mark_complete'],
+		'Submitted'=>['view','edit','delete','mark_complete'],
+		'Assigned'=>['view','edit','delete','mark_complete'],
+		'Completed'=>['view','edit','delete','re_open'],
+		'Pending'=>['view','edit','delete','mark_complete'],
+		'On-Hold'=>['view','edit','delete','mark_complete'],
 	];
 	
 	function init()
