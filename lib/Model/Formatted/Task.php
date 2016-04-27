@@ -21,5 +21,8 @@ class Model_Formatted_Task extends \xepan\projects\Model_Task{
 					);
 		});
 
+		$this->addExpression('duration')->set('"123"');
+
+
 	}
 }
