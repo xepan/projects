@@ -136,9 +136,8 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 				return $js->univ()->dialogURL("TASK DETAIL",$this->api->url($vp->getURL(),['task_id'=>$data['id']]));
 			});
 
-		$top_view->on('click','.add-task',function($js,$data)use($vp){
-				return $js->univ()->dialogURL("TASK DETAIL",$this->api->url($vp->getURL()));
-			});
+
+		$top_view->js('click',$this->js()->univ()->dialogURL("ADD NEW TASK",$this->api->url($vp->getURL())))->_selector('.add-task');
 		
 		$task_list_view->on('click','.do-delete',function($js,$data){
 			$delete_task=$this->add('xepan\projects\Model_Task');

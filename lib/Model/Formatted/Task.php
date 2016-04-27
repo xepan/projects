@@ -28,12 +28,10 @@ class Model_Formatted_Task extends \xepan\projects\Model_Task{
 		});
 
 		$this->addExpression('is_running')->set(function($m,$q){							
-			return $q->expr('IF(IFNULL([0],false),0,1)',[
-							$m->refSQL('xepan\projects\Timesheet')
-							->setOrder('id','desc')
-							->setLimit(1)
-							->fieldQuery('endtime')
-							]);
+			return $m->refSQL('xepan\projects\Timesheet')
+							->addCondition('endtime',null)
+							->count()
+							;
 		});
 
 		// $this->debug();

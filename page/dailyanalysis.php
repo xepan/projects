@@ -7,38 +7,42 @@ class page_dailyanalysis extends \xepan\projects\page_sidemenu{
 		parent::init();
 
 		$employee_id = $this->app->stickyGET('contact_id');
-		$project = $this->app->stickyGET('project_id');
+		$project_id = $this->app->stickyGET('project_id');
+		$on_date = $this->app->stickyGET('on_date');
 		
-		$date = $this->app->stickyGET('date');
 		
-		$model_employee = $this->add('xepan\projects\Model_Employee')->load($employee_id);
+		$model_employee = $this->add('xepan\projects\Model_Employee');
 		$model_project = $this->add('xepan\projects\Model_Project');
-		$model_timesheet = $this->add('xepan\projects\Model_Timesheet')->addCondition('employee_id',$employee_id);
+		$model_timesheet = $this->add('xepan\projects\Model_Timesheet');
 
 		$form = $this->add('Form',null,'form');
-		$form->addField('dropdown','name','Project Name')->setEmptyText('All')->setModel($model_project);
-		$form->addField('DatePicker','date','Start Date');
-		$form->addSubmit('Check');
-		$view_task = $this->add('View',null,'task');
 		
-		if($date){
-			if($project)
-			{
-				//condition for project
-			}
+		$emp_field = $form->addField('dropdown','employee')->setEmptyText('All');
+		$emp_field->setModel($model_employee);
+		$emp_field->set($this->api->stickyGET('contact_id'));
 
-			$model_timesheet->addCondition('starttime','>=',$date);
-			// $model_timesheet->addCondition('endtime','<=',$date);
+		$form->addField('dropdown','project')->setEmptyText('All')->setModel($model_project);
+		$form->addField('DatePicker','on_date');
+		$form->addSubmit('Check');
 
-			$grid = $view_task->add('xepan\hr\Grid',null,null,['view\task_timeline'])->setModel($model_timesheet,['task','duration'],['task_id','duration']);
+		if($employee_id){
+			$model_timesheet->addCondition('employee_id',$employee_id);
 		}
 
-		
-		
-		$view_task_url = $view_task->app->url(null,['cut_object'=>$view_task->name]);
-		if($form->isSubmitted()){
+		if($project_id){
+			$model_timesheet->addCondition('project_id',$project_id);
+		}
 
-			return $view_task->js()->univ()->reload(['project_id'=>$form['name'],'date'=>$form['date']],null,$view_task_url)->execute();
+		if($on_date){
+			
+		}
+
+		$grid = $this->add('xepan\hr\Grid',null,'task',['view\task_timeline']);
+		$grid->setModel($model_timesheet,['task','duration']);
+		
+		
+		if($form->isSubmitted()){
+			return $grid->js()->reload(['project_id'=>$form['project'],'on_data'=>$form['on_date']?:0,'employee_id'=>$form['employee']])->execute();
 		}
 	}
 
