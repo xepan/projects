@@ -13,6 +13,10 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 		$task_id = $this->app->stickyGET('task_id');
 		$search = $this->app->stickyGET('search');
 
+		$employee_id = $this->recall('employee',$this->app->employee->id);
+		$status_searched = $this->recall('status_searched','Pending');
+		$search_string = $this->recall('search_string',false);
+
 		$model_project = $this->add('xepan\projects\Model_Formatted_Project')->load($project_id);
 
 
@@ -30,28 +34,33 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 		***************************************************************************/
 	    $option_form = $this->add('Form',null,'leftview');
 	    $option_form->setLayout('view\option_form');
-	    $option_form->addField('dropdown','filter','')->setValueList(['All'=>'All','Completed'=>'Completed','Pending'=>'Pending'])->set('Pending');
-	    $option_form->addField('search');
-	    $emp_name = $option_form->addField('dropdown','name')->setEmptyText('All');
+	    $option_form->addField('dropdown','status','')
+	    	->setValueList(['Completed'=>'Completed','Pending'=>'Pending'])
+	    	->setEmptyText('All')
+	    	->set($status_searched);
+	    $option_form->addField('Line','search_string','Search')->set($search_string);
+	    $emp_name = $option_form->addField('dropdown','employee')->setEmptyText('All');
 	    $emp_name->setModel($employee);
-	    $emp_name->set($this->app->employee->id);
+	    $emp_name->set($employee_id);
 	    $option_form->addSubmit('Apply Filters')->addClass('btn btn-primary');
 
 	    $task_list_m = $this->add('xepan\projects\Model_Formatted_Task')
 						->addCondition('project_id',$project_id);
-
-	    $filter = $this->api->stickyGET('filter')?:'Pending';
-	    $employee_name = $this->api->stickyGET('employee')?:$this->app->employee->id;
 	    
-	    if($employee_name And $employee_name!= 'null'){
-	    	$task_list_m->addCondition('employee_id',$employee_name);
-	    }
 
-	    if($filter == 'Completed'){
-	    	$task_list_m->addCondition('status','Completed');	
-	    }else if($filter == 'Pending'){
-	    	$task_list_m->addCondition('status','Pending');
-	    }
+	    if($employee_id)
+	    	$task_list_m->addCondition('employee_id',$employee_id);
+
+	    if($status_searched)
+	    	$task_list_m->addCondition('status',$status_searched);
+
+		if($search_string){	
+
+			$task_list_m->addExpression('Relevance')->set('MATCH(task_name, description) AGAINST ("'.$search_string.'" IN NATURAL LANGUAGE MODE)');
+			$task_list_m->addCondition('Relevance','>',0);
+	 		$task_list_m->setOrder('Relevance','Desc');
+		}
+	    
 
 	    $running_task_id = $this->add('xepan\projects\Model_Employee')
 	    					->load($this->app->employee->id)
@@ -61,18 +70,16 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 
 	    if($option_form->isSubmitted()){	
 	    	
-    		$task_list_view->js()->reload(['search'=>$option_form['search'],'filter'=>$option_form['filter']?:'', 'employee'=>$option_form['name']?:'null'])->execute();
+	    	$this->memorize('status_searched',$option_form['status']);
+		    $this->memorize('employee',$option_form['employee']);
+		    $this->memorize('search_string',$option_form['search_string']);
+
+    		$task_list_view->js()->reload()->execute();
 	    }
 		
 		/***************************************************************************
 			Relevancy Search
 		***************************************************************************/
-		if($search){	
-			$task_list_m->addExpression('Relevance')->set('MATCH(task_name, description) AGAINST ("'.$search.'" IN BOOLEAN MODE)');
-			$task_list_m->addCondition('Relevance','>',0);
-	 		$task_list_m->setOrder('Relevance','Desc');
-		}
-	    
 		$task_list_view->setModel($task_list_m);
 		$task_list_view->add('xepan\hr\Controller_ACL',['action_btn_group'=>'xs']);
 
