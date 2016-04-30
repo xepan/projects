@@ -25,11 +25,14 @@ class Initiator extends \Controller_Addon {
 				$m->addItem([$project_name,'icon'=>' fa fa-tasks'],$this->app->url('xepan_projects_projectdetail',['project_id'=>$project_id]));
 			}
 		}
+		return $this;
+
 	}
 	function setup_frontend(){
 		$this->routePages('xepan_projects');
 		$this->addLocation(array('template'=>'templates','js'=>'templates/js'))
-		->setBaseURL('./vendor/xepan/projects/');		
+		->setBaseURL('./vendor/xepan/projects/');	
+		return $this;	
 	}
 
 	function resetDB(){
