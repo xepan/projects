@@ -5,14 +5,13 @@ namespace xepan\projects;
 class Initiator extends \Controller_Addon {
 	public $addon_name = 'xepan_projects';
 
-	function init(){
-		parent::init();
+	function setup_admin(){
 		
 		$this->routePages('xepan_projects');
 		$this->addLocation(array('template'=>'templates','js'=>'templates/js'))
 		->setBaseURL('../vendor/xepan/projects/');
 
-		if($this->app->is_admin && $this->app->auth->isLoggedIn()){
+		if($this->app->auth->isLoggedIn()){
 			$m = $this->app->top_menu->addMenu('Projects');
 			$m->addItem(['Dashboard','icon'=>'fa fa-dashboard'],'xepan_projects_projectdashboard');
 			$m->addItem(['Trace Employee','icon'=>' fa fa-paw'],'xepan_projects_projectlive');
@@ -26,6 +25,11 @@ class Initiator extends \Controller_Addon {
 				$m->addItem([$project_name,'icon'=>' fa fa-tasks'],$this->app->url('xepan_projects_projectdetail',['project_id'=>$project_id]));
 			}
 		}
+	}
+	function setup_frontend(){
+		$this->routePages('xepan_projects');
+		$this->addLocation(array('template'=>'templates','js'=>'templates/js'))
+		->setBaseURL('./vendor/xepan/projects/');		
 	}
 
 	function resetDB(){
