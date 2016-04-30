@@ -41,7 +41,7 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 	    	->set($status_searched);
 
 	    $option_form->addField('dropdown','createdby','')
-	    	->setValueList(['1'=>'Both','2'=>'Created By Me','3'=>'Created By Or Assigned To Me'])
+	    	->setValueList(['1'=>'Assigned To Me','2'=>'Created By Me','3'=>'Created By Or Assigned To Me'])
 	    	->setEmptyText('Select An Option')
 	    	->set($status_searched);
 
@@ -76,11 +76,7 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 	    if($created_by){
 
 	    	if($created_by == '1'){
-	    		$task_list_m->addCondition(
-						$task_list_m->dsql()->andExpr()
-						->where('created_by_id',$this->app->employee->id)
-						->where('employee_id',$this->app->employee->id)
-					);
+	    		$task_list_m->addCondition('employee_id',$this->app->employee->id);
 	    	}else if($created_by == '2'){
 	    		$task_list_m->addCondition('created_by_id',$this->app->employee->id);
 	    	}
