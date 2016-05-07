@@ -9,11 +9,11 @@
   <div class="main-box-body clearfix table">
     <table style="width:100%" class="table user-list table-hover">{header}
       <thead>{cols}{col}
-        <th><span>Team Members</span></th>
-        <th><span>Project</span></th>
-        <th><span>Current Task</span></th>
-        <th><span>Time Elapsed</span></th>
-        <th><span>Pending Tasks</span></th>{/}{/}
+        <th id="{$name_sortid}"><span>Employee </span><span style="cursor:pointer; cursor: hand; max-width:600px;">{$name_sort}</span></th>
+        <th id="{$project_sortid}"><span>Project </span><span style="cursor:pointer; cursor: hand; max-width:600px;">{$project_sort}</span></th>
+        <th id="{$runnning_task_sortid}"><span>Current Task </span><span style="cursor:pointer; cursor: hand; max-width:600px;">{$running_task_sort}</span></th>
+        <th id="{$running_task_since_sortid}"><span>Time Elapsed </span><span style="cursor:pointer; cursor: hand; max-width:600px;">{$running_task_since_sort}</span></th>
+        <th id="{$pending_tasks_count_sortid}"><span>Pending Tasks </span><span style="cursor:pointer; cursor: hand; max-width:600px;">{$pending_tasks_count_sort}</span></th>{/}{/}
       </thead>{/}
       {$subheader}
       <tbody>{rows}{row}

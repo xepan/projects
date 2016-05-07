@@ -12,16 +12,21 @@
             {header}
             thead
                 {cols}{col}
-                th
-                    span Team Members
-                th
-                    span Project
-                th
-                    span Current Task
-                th
-                    span Time Elapsed
-                th
-                    span Pending Tasks
+                th(id="{$name_sortid}")
+                    span Employee 
+                    span(style= "cursor:pointer; cursor: hand; max-width:600px;"){$name_sort}
+                th(id="{$project_sortid}")
+                    span Project 
+                    span(style= "cursor:pointer; cursor: hand; max-width:600px;"){$project_sort}
+                th(id="{$runnning_task_sortid}")
+                    span Current Task 
+                    span(style= "cursor:pointer; cursor: hand; max-width:600px;"){$running_task_sort}
+                th(id="{$running_task_since_sortid}")
+                    span Time Elapsed 
+                    span(style= "cursor:pointer; cursor: hand; max-width:600px;"){$running_task_since_sort}
+                th(id="{$pending_tasks_count_sortid}")
+                    span Pending Tasks 
+                    span(style= "cursor:pointer; cursor: hand; max-width:600px;"){$pending_tasks_count_sort}
                 {/}{/}
             {/}
             {$subheader}
