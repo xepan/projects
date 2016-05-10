@@ -60,20 +60,20 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 
 	    if($created_by){
 	    	if($created_by == '1'){
-	    		$task_list_m->addCondition('created_by_id',$this->app->employee->id);
+	    		$task_list_m->addCondition('created_by_id',$employee_id);
 	    	}else if($created_by == '2'){
-	    		$task_list_m->addCondition('employee_id',$this->app->employee->id);
+	    		$task_list_m->addCondition('employee_id',$employee_id);
 	    	}else if($created_by == '3'){
 	    		$task_list_m->addCondition(
 						$task_list_m->dsql()->andExpr()
-						->where('created_by_id',$this->app->employee->id)
-						->where('employee_id',$this->app->employee->id)
+						->where('created_by_id',$employee_id)
+						->where('employee_id',$employee_id)
 					);
 	    	}else if($created_by == '4'){
 	    		$task_list_m->addCondition(
 						$task_list_m->dsql()->orExpr()
-						->where('created_by_id',$this->app->employee->id)
-						->where('employee_id',$this->app->employee->id)
+						->where('created_by_id',$employee_id)
+						->where('employee_id',$employee_id)
 					);
 	    	}
 	    	else{
