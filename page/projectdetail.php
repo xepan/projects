@@ -69,16 +69,16 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 						->where('created_by_id',$this->app->employee->id)
 						->where('employee_id',$this->app->employee->id)
 					);
-	    	}else{
+	    	}else if($created_by == '4'){
 	    		$task_list_m->addCondition(
 						$task_list_m->dsql()->orExpr()
 						->where('created_by_id',$this->app->employee->id)
 						->where('employee_id',$this->app->employee->id)
 					);
 	    	}
-	    }
-	    if(!$created_by){
-	    	$task_list_m->addCondition('employee_id',$this->app->employee->id);
+	    	else{
+	    		break;
+	    	}
 	    }
 
 	    if($status_searched)	    	
