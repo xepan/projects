@@ -76,9 +76,6 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 						->where('employee_id',$employee_id)
 					);
 	    	}
-	    	else{
-	    		break;
-	    	}
 	    }
 	}
 
