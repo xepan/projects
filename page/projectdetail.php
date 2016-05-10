@@ -36,19 +36,16 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 	    $option_form = $this->add('Form',null,'leftview');
 	    $option_form->setLayout('view\option_form');
 	    $option_form->addField('dropdown','status','')
-	    	->setValueList(['Completed'=>'Completed','Pending'=>'Pending'])
-	    	->setEmptyText('All')
-	    	->set($status_searched);
+	    	->setValueList(['Pending'=>'Pending','Completed'=>'Completed'])
+	    	->setEmptyText('All');
 
 	    $option_form->addField('dropdown','createdby','')
-	    	->setValueList(['1'=>'Both','2'=>'Created By Me','3'=>'Created By Or Assigned To Me'])
-	    	->setEmptyText('Select An Option')
-	    	->set($status_searched);
+	    	->setValueList(['1'=>'Created By','2'=>'Assigned To','3'=>'Created By And Assigned To','4'=>'Created By Or Assigned To'])
+	    	->setEmptyText('Select An Option');
 
 	    $option_form->addField('dropdown','priority','')
 	    	->setValueList(['25'=>'Low','50'=>'Medium','75'=>'High','90'=>'Critical'])
-	    	->setEmptyText('All')
-	    	->set($status_searched);	
+	    	->setEmptyText('All');	
 	    		
 	    $option_form->addField('Line','search_string','Search')->set($search_string);
 	    $emp_name = $option_form->addField('dropdown','employee')->setEmptyText('All');
@@ -60,11 +57,36 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 						->addCondition('project_id',$project_id);
 	    
 
-	    if($employee_id)
-	    	$task_list_m->addCondition('employee_id',$employee_id);
 
-	    if($status_searched)
+	    if($created_by){
+	    	if($created_by == '1'){
+	    		$task_list_m->addCondition('created_by_id',$this->app->employee->id);
+	    	}else if($created_by == '2'){
+	    		$task_list_m->addCondition('employee_id',$this->app->employee->id);
+	    	}else if($created_by == '3'){
+	    		$task_list_m->addCondition(
+						$task_list_m->dsql()->andExpr()
+						->where('created_by_id',$this->app->employee->id)
+						->where('employee_id',$this->app->employee->id)
+					);
+	    	}else{
+	    		$task_list_m->addCondition(
+						$task_list_m->dsql()->orExpr()
+						->where('created_by_id',$this->app->employee->id)
+						->where('employee_id',$this->app->employee->id)
+					);
+	    	}
+	    }
+	    if(!$created_by){
+	    	$task_list_m->addCondition('employee_id',$this->app->employee->id);
+	    }
+
+	    if($status_searched)	    	
 	    	$task_list_m->addCondition('status',$status_searched);
+
+	    if($priority){
+	    	$task_list_m->addCondition('priority',$priority);
+	    }
 
 		if($search_string){	
 
@@ -73,30 +95,6 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 	 		$task_list_m->setOrder('Relevance','Desc');
 		}
 	    
-	    if($created_by){
-
-	    	if($created_by == '1'){
-	    		$task_list_m->addCondition(
-						$task_list_m->dsql()->andExpr()
-						->where('created_by_id',$this->app->employee->id)
-						->where('employee_id',$this->app->employee->id)
-					);
-	    	}else if($created_by == '2'){
-	    		$task_list_m->addCondition('created_by_id',$this->app->employee->id);
-	    	}
-	    	else{
-	    		$task_list_m->addCondition(
-						$task_list_m->dsql()->orExpr()
-						->where('created_by_id',$this->app->employee->id)
-						->where('employee_id',$this->app->employee->id)
-					);
-	    	}
-	    }
-
-	    if($priority){
-	    	$task_list_m->addCondition('priority',$priority);
-	    }
-
 	    $running_task_id = $this->add('xepan\projects\Model_Employee')
 	    					->load($this->app->employee->id)
 	    					->get('running_task_id');
@@ -114,9 +112,6 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
     		$task_list_view->js()->reload()->execute();
 	    }
 		
-		/***************************************************************************
-			Relevancy Search
-		***************************************************************************/
 		$task_list_view->setModel($task_list_m);
 		$task_list_view->add('xepan\hr\Controller_ACL',['action_btn_group'=>'xs']);
 
