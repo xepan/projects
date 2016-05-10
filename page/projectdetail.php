@@ -57,7 +57,7 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 						->addCondition('project_id',$project_id);
 	    
 
-
+	if($employee_id){
 	    if($created_by){
 	    	if($created_by == '1'){
 	    		$task_list_m->addCondition('created_by_id',$employee_id);
@@ -80,6 +80,7 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 	    		break;
 	    	}
 	    }
+	}
 
 	    if($status_searched)	    	
 	    	$task_list_m->addCondition('status',$status_searched);
