@@ -1,6 +1,7 @@
 <?php
 namespace xepan\projects;
 class page_sidemenu extends \xepan\base\Page{
+	
 	function init(){
 		parent::init();
 

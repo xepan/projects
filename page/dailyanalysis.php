@@ -3,6 +3,7 @@
 namespace xepan\projects;
 
 class page_dailyanalysis extends \xepan\projects\page_sidemenu{
+	public $title="Daily Routine";
 	function init(){
 		parent::init();
 
