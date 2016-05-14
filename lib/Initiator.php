@@ -26,6 +26,9 @@ class Initiator extends \Controller_Addon {
 				$m->addItem([$project_name,'icon'=>' fa fa-tasks'],$this->app->url('xepan_projects_projectdetail',['project_id'=>$project_id]));
 			}
 		}
+
+		$search_project = $this->add('xepan\projects\Model_Project');
+		$this->app->addHook('quick_searched',[$search_project,'quickSearch']);
 		return $this;
 
 	}
