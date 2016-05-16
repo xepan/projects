@@ -42,16 +42,12 @@ class Model_Task extends \xepan\base\Model_Table
 		$this->addField('is_recurring')->type('boolean');
 		$this->addField('recurring_span')->setValueList(['Weekely'=>'Weekely','Fortnight'=>'Fortnight','Monthly'=>'Monthly','Quarterly'=>'Quarterly','Halferly'=>'Halferly','Yearly'=>'Yearly']);
 	
-
 		$this->addCondition('type','Task');
-
-		
 
 		$this->hasMany('xepan\projects\Follower_Task_Association','task_id');
 		$this->hasMany('xepan\projects\Comment','task_id');	
 		$this->hasMany('xepan\projects\Timesheet','task_id');	
 		$this->hasMany('xepan\projects\Task_Attachment','task_id');	
-		// $this->hasMany('xepan\projects\Task','parent_id',null,'SubTasks');
 
 		$this->addHook('beforeSave',[$this,'notifyAssignement']);
 		$this->addHook('beforeDelete',[$this,'checkExistingFollwerTaskAssociation']);
@@ -127,5 +123,40 @@ class Model_Task extends \xepan\base\Model_Table
 
 	function removeAssociateFollowers(){
 		$this->ref('xepan\projects\Follower_Task_Association')->deleteAll();
+	}
+
+	function reminder(){
+		// if($this['set_reminder']){}
+	}
+
+	function recurring(){		
+		$recurring_task = $this->add('xepan\projects\Model_Task');
+		$recurring_task->addCondition('is_recurring',true);
+		$recurring_task->addCondition('deadline',$this->app->today);
+		
+		foreach ($recurring_task as $task) {
+			$model_task = $this->add('xepan\projects\Model_Task');
+			$model_task['project_id'] = $task['project_id']; 
+			$model_task['task_name']  = $task['task_name'];
+			$model_task['employee_id'] = $task['employee_id'];
+			$model_task['description'] = $task['description'];
+			$model_task['starting_date'] = $task['starting_date'];
+			$model_task['status'] = $task['status'];
+			$model_task['created_at'] = $task['created_at'];
+			$model_task['priority'] = $task['priority'];
+			$model_task['estimate_time'] = $task['estimate_time'];
+			$model_task['set_reminder'] = $task['set_reminder'];
+			$model_task['remind_via'] = $task['remind_via'];
+			$model_task['remind_value'] = $task['remind_value'];
+			$model_task['remind_unit'] = $task['remind_unit'];
+			$model_task['is_recurring'] = $task['is_recurring'];
+			$model_task['recurring_span'] = $task['recurring_span'];
+			$model_task->addCondition('created_by_id',$this->app->employee->id);
+			$model_task->save();
+
+			// TWO THINGS LEFT
+			// 1. CALCULATING AND SETTING DEADLINE BASED ON RECURRING_SPAN
+			// 2. CALLING THIS FUNCTION VIA CRON JOB
+		}
 	}
 }
