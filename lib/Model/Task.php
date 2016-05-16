@@ -135,11 +135,11 @@ class Model_Task extends \xepan\base\Model_Table
 
 		foreach ($reminder_task as $task) {
 			//$reminder_time = CALCULATE TIME AND ADD CONDITION ACCORDINGLY
-			if(($reminder_time <= ($this->app->now)) AND $task['is_reminded']==false)){
+			if(($reminder_time <= ($this->app->now)) AND $task['is_reminded']==false){
 				if($task['remind_via'] =='Email'){
 					$communication = $this->add('xepan\communication\Model_Communication_Abstract_Email');
 					$communication->setSubject("Task Reminder");
-					$communication->setBody("Reminder for task: ".$task['task_name']." assigned to you on: ".$task['created_at']." with deadline: "$task['deadline']);
+					$communication->setBody("Reminder for task: ".$task['task_name']." assigned to you on: ".$task['created_at']." with deadline: ".$task['deadline']);
 					$communication->setRelatedDocument($this);
 					foreach ($emails as $email) {
 						$communication->addTo($email,$this->app->employee['name']);
@@ -162,7 +162,7 @@ class Model_Task extends \xepan\base\Model_Table
 					$notify_to = $this->app->employee->id;
 
 					$activity = $this->add('xepan\base\Model_Activity');
-					$activity['notify_to'] = $notify_to  
+					$activity['notify_to'] = $notify_to; 
 					$activity['notification'] = "Task reminder for: ".$task['task_name'];
 					$activity->save();  
 					$task->addCondition('is_reminded',true);
