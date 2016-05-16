@@ -41,7 +41,7 @@ class Model_Task extends \xepan\base\Model_Table
 		$this->addField('remind_unit')->setValueList(['Minutes'=>'Minutes','Hours'=>'Hours','Days'=>'Days','Weeks'=>'Weeks','Months'=>'Months']);
 		$this->addField('is_recurring')->type('boolean');
 		$this->addField('recurring_span')->setValueList(['Weekely'=>'Weekely','Fortnight'=>'Fortnight','Monthly'=>'Monthly','Quarterly'=>'Quarterly','Halferly'=>'Halferly','Yearly'=>'Yearly']);
-	
+		$this->addField('is_reminded')->type('boolean');
 		$this->addCondition('type','Task');
 
 		$this->hasMany('xepan\projects\Follower_Task_Association','task_id');
@@ -136,12 +136,9 @@ class Model_Task extends \xepan\base\Model_Table
 					//SEND TASK REMINDER/INFO VIA MAIL
 				}
 				if($task['remind_via'] =='SMS'){
-					//SEND TASK REMINDER/INFO VIA SMS
+					throw new \Exception("YET TO IMPLEMENT");					
 				}
-				if($task['remind_via'] =='Notification'){
-					//SEND TASK REMINDER VIA NOTIFICATION
-					$notify = $this->add('xepan\hr\Model_Activity');
-					
+				if($task['remind_via'] =='Notification'){					
 				}
 			}
 		}
