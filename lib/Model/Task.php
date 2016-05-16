@@ -126,7 +126,25 @@ class Model_Task extends \xepan\base\Model_Table
 	}
 
 	function reminder(){
-		// if($this['set_reminder']){}
+		$reminder_task = $this->add('xepan\projects\Model_Task');
+		$reminder_task->addCondition('set_reminder',true);
+
+		foreach ($reminder_task as $task) {
+			//$reminder_time = CALCULATE TIME AND ADD CONDITION ACCORDINGLY
+			if(($this->app->now) == $reminder_time){
+				if($task['remind_via'] =='Email'){
+					//SEND TASK REMINDER/INFO VIA MAIL
+				}
+				if($task['remind_via'] =='SMS'){
+					//SEND TASK REMINDER/INFO VIA SMS
+				}
+				if($task['remind_via'] =='Notification'){
+					//SEND TASK REMINDER VIA NOTIFICATION
+					$notify = $this->add('xepan\hr\Model_Activity');
+					
+				}
+			}
+		}
 	}
 
 	function recurring(){		
