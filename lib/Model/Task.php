@@ -158,8 +158,11 @@ class Model_Task extends \xepan\base\Model_Table
 					$task->save();
 				}
 				if($task['remind_via'] =='Notification'){					
+					$notify_to = [];
+					$notify_to = $this->app->employee->id;
+
 					$activity = $this->add('xepan\base\Model_Activity');
-					$activity['notify_to'] =  
+					$activity['notify_to'] = $notify_to  
 					$activity['notification'] = "Task reminder for: ".$task['task_name'];
 					$activity->save();  
 					$task->addCondition('is_reminded',true);
