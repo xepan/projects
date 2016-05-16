@@ -129,16 +129,41 @@ class Model_Task extends \xepan\base\Model_Table
 		$reminder_task = $this->add('xepan\projects\Model_Task');
 		$reminder_task->addCondition('set_reminder',true);
 
+		foreach ($this->app->employee->ref('Emails') as $emp_emails) {
+			$emails[]=$emp_emails['value'];
+		}
+
 		foreach ($reminder_task as $task) {
 			//$reminder_time = CALCULATE TIME AND ADD CONDITION ACCORDINGLY
-			if(($this->app->now) == $reminder_time){
+			if(($reminder_time <= ($this->app->now)) AND $task['is_reminded']==false)){
 				if($task['remind_via'] =='Email'){
-					//SEND TASK REMINDER/INFO VIA MAIL
+					$communication = $this->add('xepan\communication\Model_Communication_Abstract_Email');
+					$communication->setSubject("Task Reminder");
+					$communication->setBody("Reminder for task: ".$task['task_name']." assigned to you on: ".$task['created_at']." with deadline: "$task['deadline']);
+					$communication->setRelatedDocument($this);
+					foreach ($emails as $email) {
+						$communication->addTo($email,$this->app->employee['name']);
+					}
+
+					$email_settings = $this->add('xepan\communication\Model_Communication_EmailSetting')->tryLoadAny();	
+					$communication->setfrom($email_settings['from_email'],$email_settings['from_name']);
+					$communication->send($email_settings);
+					
+					$task->addCondition('is_reminded',true);
+					$task->save();
 				}
 				if($task['remind_via'] =='SMS'){
-					throw new \Exception("YET TO IMPLEMENT");					
+					// SMS CONFIGURATION REMAINING
+					$task->addCondition('is_reminded',true);
+					$task->save();
 				}
 				if($task['remind_via'] =='Notification'){					
+					$activity = $this->add('xepan\base\Model_Activity');
+					$activity['notify_to'] =  
+					$activity['notification'] = "Task reminder for: ".$task['task_name'];
+					$activity->save();  
+					$task->addCondition('is_reminded',true);
+					$task->save();
 				}
 			}
 		}
