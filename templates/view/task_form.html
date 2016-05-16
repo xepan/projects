@@ -1,22 +1,68 @@
 
 <div class="row"> 
-  <div class="row xepan-push-large">
-    <div class="col-md-6">{$task_name}</div>
-    <div class="col-md-3">{$employee_id}</div>
-    <div class="col-md-3">{$estimate_time}</div>
-  </div>
-  <div class="row xepan-push-large">
-    <div class="col-md-6">{$description}</div>
-    <div class="col-md-3">{$starting_date}</div>
-    <div class="col-md-3">
-         
-      {$deadline}
+  <div class="row xepan-push">
+    <div class="col-md-6">Task Name:
+      <div>{$task_name}</div>
+    </div>
+    <div class="col-md-3">Employee:
+      <div>{$employee_id}</div>
+    </div>
+    <div class="col-md-3">Estimate Time:
+      <div>{$estimate_time}</div>
     </div>
   </div>
-  <div class="row xepan-push-large">
-    <div class="col-md-3">
-         
-      {$priority}
+  <div class="row xepan-push">
+    <div class="col-md-12">Task Description:
+      <div>{$description}</div>
     </div>
-  </div>{$form_buttons}
+  </div>
+  <div class="row xepan-push">
+    <div class="col-md-4">Starting Date:
+      <div>{$starting_date}</div>
+    </div>
+    <div class="col-md-4">
+       
+      Deadline:
+      <div>
+         
+        {$deadline}
+      </div>
+    </div>
+    <div class="col-md-4">Task Priority:
+      <div>
+           
+        {$priority}
+      </div>
+    </div>
+  </div>
+  <div class="row xepan-push">
+    <div class="col-md-4">{$is_recurring}</div>
+    <div class="col-md-4">Recurring Time Span: 
+      <div>
+         
+        {$recurring_span}    
+      </div>
+    </div>
+  </div>
+  <div class="row col-md-12 xepan-push">
+    <div class="col-md-4">{$set_reminder}</div>
+    <div class="col-md-4">Remind Via:
+      <div>
+         
+        {$remind_via}
+      </div>
+    </div>
+  </div>
+  <div class="row col-md-12 xepan-push">   
+    <div class="col-md-4">Remind Time:
+      <div>{$remind_value}</div>
+    </div>
+    <div class="col-md-4">Remind Before:
+      <div>
+         
+        {$remind_unit}
+      </div>
+    </div>
+  </div>
+  <div class="row xepan-push">   </div>
 </div>

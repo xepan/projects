@@ -143,7 +143,7 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 			$task_form = $detail_view->add('Form',null,'task_form');
 			$task_form->setLayout('view\task_form');
 
-			$task_form->setModel($model_task,['employee_id','task_name','description','starting_date','deadline','priority','estimate_time']);
+			$task_form->setModel($model_task,['employee_id','task_name','description','starting_date','deadline','priority','estimate_time','set_reminder','remind_via','remind_value','remind_unit','is_recurring','recurring_span']);
 
 
 			if($task_form->isSubmitted()){

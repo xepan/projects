@@ -24,19 +24,28 @@ class Model_Task extends \xepan\base\Model_Table
 		$this->hasOne('xepan\base\Epan');
 		$this->hasOne('xepan\projects\Project','project_id');
 		$this->hasOne('xepan\hr\Employee','employee_id');
+		$this->hasOne('xepan\hr\Employee','created_by_id')->defaultValue($this->app->employee->id);
+		
 		$this->addField('task_name');
 		$this->addField('description')->type('text');
 		$this->addField('deadline')->type('date');
 		$this->addField('starting_date')->type('date');
 		$this->addField('estimate_time')/*->display(['form'=>'TimePicker'])*/;
-		
+		$this->addField('created_at')->type('datetime')->defaultValue($this->app->now);
 		$this->addField('status')->defaultValue('Pending');
 		$this->addField('type');
 		$this->addField('priority')->setValueList(['25'=>'Low','50'=>'Medium','75'=>'High','90'=>'Critical'])->EmptyText('Priority')->defaultValue(50);
+		$this->addField('set_reminder')->type('boolean');
+		$this->addField('remind_via')->setValueList(['Email'=>'Email','SMS'=>'SMS','Notification'=>'Notification']);
+		$this->addField('remind_value')->type('number');
+		$this->addField('remind_unit')->setValueList(['Minutes'=>'Minutes','Hours'=>'Hours','Days'=>'Days','Weeks'=>'Weeks','Months'=>'Months']);
+		$this->addField('is_recurring')->type('boolean');
+		$this->addField('recurring_span')->setValueList(['Weekely'=>'Weekely','Fortnight'=>'Fortnight','Monthly'=>'Monthly','Quarterly'=>'Quarterly','Halferly'=>'Halferly','Yearly'=>'Yearly']);
+	
+
 		$this->addCondition('type','Task');
 
-		$this->addField('created_at')->type('datetime')->defaultValue($this->app->now);
-		$this->hasOne('xepan\hr\Employee','created_by_id')->defaultValue($this->app->employee->id);
+		
 
 		$this->hasMany('xepan\projects\Follower_Task_Association','task_id');
 		$this->hasMany('xepan\projects\Comment','task_id');	
