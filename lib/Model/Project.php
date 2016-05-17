@@ -25,7 +25,7 @@ class Model_Project extends \xepan\base\Model_Table
 		$this->hasOne('xepan\hr\Employee','created_by_id')->defaultValue($this->app->employee->id);
 		$this->addField('name')->sortable(true);
 		$this->addField('description');	
-		$this->addField('status')->defaultValue('Draft');
+		$this->addField('status')->defaultValue('Running');
 		$this->addField('type');
 
 		$this->addCondition('type','project');
