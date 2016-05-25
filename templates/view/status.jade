@@ -8,23 +8,23 @@
                     i(class="fa fa-search search-icon")
     {/Pannel}
     .main-box-body.clearfix.table-responsive
-        table.table.user-list.table-hover(style="width:100%")
+        table.table.user-list.table-hover.footable.toggle-circle-filled(style="width:100%")
             {header}
             thead.xepan-hover-hand
                 {cols}{col}
                 th(id="{$name_sortid}")
                     span Employee 
                     span(style= "cursor:pointer; cursor: hand; max-width:600px;"){$name_sort}
-                th(id="{$project_sortid}")
+                th(id="{$project_sortid}" data-hide="phone")
                     span Project 
                     span(style= "cursor:pointer; cursor: hand; max-width:600px;"){$project_sort}
-                th(id="{$runnning_task_sortid}")
+                th(id="{$runnning_task_sortid}" data-hide="phone")
                     span Current Task 
                     span(style= "cursor:pointer; cursor: hand; max-width:600px;"){$running_task_sort}
-                th(id="{$running_task_since_sortid}")
+                th(id="{$running_task_since_sortid}" data-hide="phone")
                     span Time Elapsed 
                     span(style= "cursor:pointer; cursor: hand; max-width:600px;"){$running_task_since_sort}
-                th(id="{$pending_tasks_count_sortid}")
+                th(id="{$pending_tasks_count_sortid}" data-hide="phone")
                     span Pending Tasks 
                     span(style= "cursor:pointer; cursor: hand; max-width:600px;"){$pending_tasks_count_sort}
                 {/}{/}
