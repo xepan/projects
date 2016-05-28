@@ -63,7 +63,7 @@ class View_InstantTaskFeed extends \View{
 
 				$model_timesheet->addCondition('employee_id',$this->app->employee->id);
 				$model_timesheet->addCondition('task_id',$model_task->id);
-				$model_timesheet['starttime'] = $time;
+				$model_timesheet['starttime'] = $this->app->now;
 				$model_timesheet->save();
 				return;
 			}
@@ -71,7 +71,7 @@ class View_InstantTaskFeed extends \View{
 			$model_timesheet->addCondition('employee_id',$this->app->employee->id);
 			$model_timesheet->addCondition('task_id',$form['task']);
 			$model_timesheet['remark'] = $form['remark'];
-			$model_timesheet['starttime'] = $time;
+			$model_timesheet['starttime'] = $this->app->now;
 			$model_timesheet->save();
 			return;
 		}

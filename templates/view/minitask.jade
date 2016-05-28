@@ -1,11 +1,15 @@
-.main-box-body
-    table.table-hover(style="width:100%")
-        tbody(style="font-size:10px")
-            tr(class="{$odd_even}" data-id="{$id}")
-                td(style="width:50%;")
-                    span(class='{$running_class}', data-id='{$id}')
-                    span.task-item.instant-task-feed(class='text-{$color}', data-id='{$id}', style='cursor:pointer; cursor: hand; max-width:600px;') {task_name}No Active Task{/}
-                td(style="width:40%;")
-                    div(style='color: #767676;display: block;font-size: 13px;font-weight: 500;') {$total_duration}
-                td(style="width:10%;")
-                    span.fa.current_task_btn(class='{$icon} {$running-task}', data-action='{$event_action}', data-id='{$id}', style='cursor:pointer; cursor: hand; ')
+.xepan-grid(id="{$_name}" class="{$class}")
+    .main-box-body
+        table.table-hover(style="width:100%")
+            tbody(style="font-size:10px")
+                tr(class="{$odd_even}" data-id="{$id}")
+                    td(style="width:50%;")
+                        span(data-id='{$id}')
+                        span.task-item.instant-task-feed(class='text-{$color}', data-id='{$id}', style='cursor:pointer; cursor: hand; max-width:600px;') 
+                            {task_name}
+                            span.text-danger No Active Task 
+                            {/}
+                    td(style="width:40%;")
+                        div(style='color: #767676;display: block;font-size: 13px;font-weight: 500;') {$idle}{$total_duration} 
+                    td(style="width:10%;")
+                        span.current_task_btn(class='{$icon}', data-action='{$event_action}', data-id='{$id}', style='cursor:pointer; cursor: hand; ')
