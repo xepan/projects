@@ -5,8 +5,8 @@
       <tbody style="font-size:12px">
         {nested_template}
         {rows}{row}
-        <tr data-id="{$id}" class="{$odd_even}">{cols}
-          <td><span data-id="{$id}" class="{$running_class}"></span><span data-id="{$id}" style="cursor:pointer; cursor: hand; max-width:600px;" class="task-item text-{$color}">[{$task_no}] {$task_name}</span></td>
+        <tr data-id="{$id}" class="{$odd_even} {$running_class}">{cols}
+          <td><span data-id="{$id}"></span><span data-id="{$id}" style="cursor:pointer; cursor: hand; max-width:600px;" class="task-item text-{$color}">[{$task_no}] {$task_name}</span></td>
           <td>{$created_by}</td>
           <td style="width:5%;">
             <div style="color: #767676;display: block;font-size: 13px;font-weight: 500;">{$total_duration}  </div>

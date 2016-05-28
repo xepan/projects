@@ -8,7 +8,7 @@ class View_InstantTaskFeed extends \View{
 		$model_task = $this->add('xepan\projects\Model_Task');
 		$model_project = $this->add('xepan\projects\Model_Project');
 		$model_timesheet = $this->add('xepan\projects\Model_Timesheet');
-
+		
 		$form = $this->add('Form',null,'form');
 		$form->addField('DropDown','project')->setModel($model_project);
 		$task_field = $form->addField('xepan\base\DropDown','task');
@@ -54,6 +54,19 @@ class View_InstantTaskFeed extends \View{
 			];
 
 		if($form->isSubmitted()){
+			$model_close_timesheet = $this->add('xepan\projects\Model_Timesheet');
+
+			$model_close_timesheet->addCondition('employee_id',$this->app->employee->id);
+			$model_close_timesheet->setOrder('starttime','desc');
+			$model_close_timesheet->tryLoadAny();
+
+			if($model_close_timesheet->loaded()){
+				if(!$model_close_timesheet['endtime']){
+					$model_close_timesheet['endtime'] = $this->app->now;
+					$model_close_timesheet->save();
+				}
+			}
+			
 			if(!is_numeric($form['task'])){
 				$model_task->addCondition('employee_id',$this->app->employee->id);
 				$model_task['task_name'] = $form['task'];
@@ -63,7 +76,7 @@ class View_InstantTaskFeed extends \View{
 
 				$model_timesheet->addCondition('employee_id',$this->app->employee->id);
 				$model_timesheet->addCondition('task_id',$model_task->id);
-				$model_timesheet['starttime'] = $time;
+				$model_timesheet['starttime'] = $this->app->now;
 				$model_timesheet->save();
 				return;
 			}
@@ -71,7 +84,7 @@ class View_InstantTaskFeed extends \View{
 			$model_timesheet->addCondition('employee_id',$this->app->employee->id);
 			$model_timesheet->addCondition('task_id',$form['task']);
 			$model_timesheet['remark'] = $form['remark'];
-			$model_timesheet['starttime'] = $time;
+			$model_timesheet['starttime'] = $this->app->now;
 			$model_timesheet->save();
 			return;
 		}

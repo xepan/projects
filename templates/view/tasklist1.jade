@@ -4,10 +4,10 @@
             tbody(style="font-size:12px")
                 {nested_template}
                 {rows}{row}
-                tr(class="{$odd_even}" data-id="{$id}")
+                tr(class="{$odd_even} {$running_class}" data-id="{$id}")
                     {cols}
                     td
-                        span(class='{$running_class}', data-id='{$id}')
+                        span(data-id='{$id}')
                         span.task-item(class='text-{$color}', data-id='{$id}', style='cursor:pointer; cursor: hand; max-width:600px;') [{$task_no}] {$task_name}
                     td
                         {$created_by}
