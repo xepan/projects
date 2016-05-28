@@ -13,7 +13,7 @@ class Initiator extends \Controller_Addon {
 
 		if($this->app->auth->isLoggedIn()){
 
-			$this->app->layout->add('xepan\projects\View_MiniTask',null,'task_status',['view\minitask'])->set('hi');
+			$this->app->layout->add('xepan\projects\View_MiniTask',null,'task_status');
 			$m = $this->app->top_menu->addMenu('Projects');
 			$m->addItem(['Dashboard','icon'=>'fa fa-dashboard'],'xepan_projects_projectdashboard');
 			$m->addItem(['Project','icon'=>'fa fa-sitemap'],'xepan_projects_project');

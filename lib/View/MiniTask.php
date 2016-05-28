@@ -18,16 +18,15 @@ class View_MiniTask extends \View{
 
 		$this->on('click','.current_task_btn',function($js,$data){
 		
-		$model_timesheet = $this->add('xepan\projects\Model_Timesheet');
+		$timesheet = $this->add('xepan\projects\Model_Timesheet');
+		$timesheet->addCondition('employee_id',$this->app->employee->id);
+		$timesheet->setOrder('starttime','desc');
+		$timesheet->tryLoadAny();
 
-		$model_timesheet->addCondition('employee_id',$this->app->employee->id);
-		$model_timesheet->setOrder('starttime','desc');
-		$model_timesheet->tryLoadAny();
-
-		if($model_timesheet->loaded()){
-			if(!$model_timesheet['endtime']){
-				$model_timesheet['endtime'] = $this->app->now;
-				$model_timesheet->save();
+		if($timesheet->loaded()){			
+			if(!$timesheet['endtime']){
+				$timesheet['endtime'] = $this->app->now;
+				$timesheet->save();
 			}
 		}
 
@@ -57,9 +56,13 @@ class View_MiniTask extends \View{
 
 		$vp = $this->add('VirtualPage');
 		$vp->set(function($p){
-			$p->add('xepan\projects\View_InstantTaskFeed');		
+			$p->add('xepan\projects\View_InstantTaskFeed');			
 		});
 
-		$this->js('click',$this->app->js()->univ()->dialogURL("INSTANT TASK FEED",$this->api->url($vp->getURL())))->_selector('.instant-task-feed');
+		$this->js('click')->univ()->dialogURL("INSTANT TASK FEED",$this->api->url($vp->getURL()))->_selector('.instant-task-feed');
+	}
+
+	function defaultTemplate(){
+		return ['view\minitask'];
 	}
 }
