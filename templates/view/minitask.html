@@ -1,0 +1,14 @@
+
+<div class="main-box-body">
+  <table style="width:100%" class="table-hover">
+    <tbody style="font-size:12px">
+      <tr data-id="{$id}" class="{$odd_even}">
+        <td style="width:50%;"><span data-id="{$id}" class="{$running_class}"></span><span data-id="{$id}" style="cursor:pointer; cursor: hand; max-width:600px;" class="task-item instant-task-feed text-{$color}">{$task_name}</span></td>
+        <td style="width:40%;">
+          <div style="color: #767676;display: block;font-size: 13px;font-weight: 500;">{$total_duration}</div>
+        </td>
+        <td style="width:10%;"><span data-action="{$event_action}" data-id="{$id}" style="cursor:pointer; cursor: hand; " class="fa current_task_btn {$icon} {$running-task}"></span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
