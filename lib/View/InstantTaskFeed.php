@@ -8,7 +8,7 @@ class View_InstantTaskFeed extends \View{
 		$model_task = $this->add('xepan\projects\Model_Task');
 		$model_project = $this->add('xepan\projects\Model_Project');
 		$model_timesheet = $this->add('xepan\projects\Model_Timesheet');
-
+		
 		$form = $this->add('Form',null,'form');
 		$form->addField('DropDown','project')->setModel($model_project);
 		$task_field = $form->addField('xepan\base\DropDown','task');
