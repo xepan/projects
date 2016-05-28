@@ -13,7 +13,7 @@ class View_TaskList extends \xepan\base\Grid{
 		if($this->running_task_id == $this->model->id){
 			$this->current_row['icon'] = 'fa-stop';
 			$this->current_row['event_action'] = 'stop';
-			$this->current_row['running_class'] = ' text-info';
+			$this->current_row['running_class'] = ' alert alert-info';
 
 		}else{
 			$this->current_row['icon'] = 'fa-play';
