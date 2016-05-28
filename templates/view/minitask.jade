@@ -10,6 +10,6 @@
                             span.text-danger No Active Task 
                             {/}
                     td(style="width:40%;")
-                        div(style='color: #767676;display: block;font-size: 13px;font-weight: 500;') {$idle}{$total_duration} 
+                        span {$idle}{$total_duration} 
                     td(style="width:10%;")
                         span.current_task_btn(class='{$icon}', data-action='{$event_action}', data-id='{$id}', style='cursor:pointer; cursor: hand; ')
