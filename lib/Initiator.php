@@ -18,10 +18,11 @@ class Initiator extends \Controller_Addon {
 			$model_timesheet = $this->add('xepan\projects\Model_Timesheet');
 			$model_timesheet->addCondition('employee_id',$this->app->employee->id);
 			$model_timesheet->setOrder('starttime','desc');
-			$model_timesheet->tryLoadAny();
+			$model_timesheet->setLimit(1);
 
 			$model_task = $this->add('xepan\projects\Model_Formatted_Task');
-			$model_task->tryload($model_timesheet['task_id']);				
+			$model_task->addCondition('id',$model_timesheet->fieldQuery('task_id'));				
+			$model_task->tryLoadAny();
 			$mini_task_view->setModel($model_task);
 
 			$mini_task_view->on('click','.current_task_btn',function($js,$data)use($mini_task_view){
