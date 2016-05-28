@@ -1,0 +1,63 @@
+.xepan-grid(id="{$_name}" class="{$class}")
+    .main-box-body
+        table.table-hover(style="width:100%")
+            tbody(style="font-size:12px")
+                {nested_template}
+                {rows}{row}
+                tr(class="{$odd_even}" data-id="{$id}")
+                    {cols}
+                    td
+                        span(class='{$running_class}', data-id='{$id}')
+                        span.task-item(class='text-{$color}', data-id='{$id}', style='cursor:pointer; cursor: hand; max-width:600px;') [{$task_no}] {$task_name}
+                    td
+                        {$created_by}
+                    td(style="width:5%;")
+                        div(style='color: #767676;display: block;font-size: 13px;font-weight: 500;') {$total_duration}  
+                    td(style="width:5%;")
+                        span.fa.current_task_btn(class='{$icon} {$running-task}', data-action='{$event_action}', data-id='{$id}', style='cursor:pointer; cursor: hand; ')  
+                    td(style="width:10%;") 
+                        {$action}
+                    td(style="width: 5%;")
+                      a.table-link.danger.do-delete.nested-link(href='#', data-id='{$id}')
+                        span.fa-stack
+                          i.fa.fa-square.fa-stack-2x
+                          i.fa.fa-trash-o.fa-stack-1x.fa-inverse
+                    td
+                        span.text-muted(class='text-{$color}') {$sub_tasks}    
+                    {/}
+                {/}{/}
+                {not_found}
+                div.row
+                    .col-md-12.text-center.alert.alert-warning(role="alert")
+                        span.icon-attention.fa.fa-exclamation-triangle  &nbsp;{$not_found_message}
+                {/}
+                {/}
+
+
+style(type='text/css', media='screen').
+  .dd3-handle::before {
+  color: #fff;
+  left: 0;
+  text-align: center;
+  text-indent: 0;
+  width: 100%;
+  }
+  .dd3-handle {
+  cursor: pointer;
+  left: 0;
+  margin: 0;
+  top: 0;
+  float: left;
+  height: 0px!important;
+  }
+  .dd3-content {
+  border: 1px solid #eee;
+  border-radius: 3px;
+  box-sizing: border-box;
+  color: #333;
+  display: block;
+  height: 30px;
+  margin: 5px 0;
+  padding: 5px 10px 5px 40px;
+  text-decoration: none;
+  }                

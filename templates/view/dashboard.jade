@@ -1,0 +1,111 @@
+.panel.panel-default
+  .panel-body
+    .col-md-8
+      input#inputSuccess.form-control(type='text' placeholder="'Most' Productive 'Task'")  
+    .col-md-2
+        .container
+          .dropdown.pull-right
+            button#menu1.btn.btn-primary.dropdown-toggle(type='button', data-toggle='dropdown')
+              | From Date
+              span.caret
+    .col-md-2
+      .container    
+          .dropdown.pull-right
+            button#menu1.btn.btn-primary.dropdown-toggle(type='button', data-toggle='dropdown')
+              | To Date
+              span.caret 
+.row.xepan-push-large
+  img(src="img/samples/header1.png")
+.row.xepan-push-large
+  .col-md-6.col-sm-6.col-xs-12.hidden-sm
+    .main-box.small-graph-box.green-bg
+      span.value xEpan Gen 2
+      span.headline 10 Employees
+      .progress
+        .progress-bar(role='progressbar', aria-valuenow='42', aria-valuemin='0', aria-valuemax='100', style='width: 100%;')
+          span.sr-only 100% Complete
+      span.subinfo
+        i.fa.fa-arrow-circle-o-up
+        |  15% higher than others
+      span.subinfo
+        i.fa.fa-shopping-cart
+        |  118 Invoices cleared 2 Left
+
+  .col-md-6.col-sm-6.col-xs-12.hidden-sm
+    .main-box.small-graph-box.red-bg
+      span.value Abc project
+      span.headline 0 Employees
+      .progress
+        .progress-bar(role='progressbar', aria-valuenow='42', aria-valuemin='0', aria-valuemax='100', style='width: 100%;')
+          span.sr-only 100% Complete
+      span.subinfo
+        i.fa.fa-arrow-circle-o-up
+        |  10% Lower than others
+      span.subinfo
+        i.fa.fa-shopping-cart
+        |  0 Invoices cleared 0 Left      
+
+
+  .row.xepan-push-large
+    .col-md-6.col-sm-6.col-xs-12.hidden-sm
+      img(src="img/samples/project.png")  
+    .col-md-6.col-sm-6.col-xs-12.hidden-sm
+      .main-box
+        .clearfix
+          .infographic-box.merged.merged-top.pull-left
+            i.fa.fa-long-arrow-down.purple-bg
+            span.value.purple Low
+            span.headline 700
+          .infographic-box.merged.merged-top.merged-right.pull-left
+            i.fa.fa-arrows-h.green-bg
+            span.value.green Medium
+            span.headline 512
+        .clearfix
+          .infographic-box.merged.pull-left
+            i.fa.fa-long-arrow-up.yellow-bg
+            span.value.yellow High
+            span.headline 120
+          .infographic-box.merged.merged-right.pull-left
+            i.fa.fa-arrows.red-bg
+            span.value.red Critical
+            span.headline 70
+  .row.xepan-push-large
+    .col-md-12
+      .map-stats
+        .table-responsive
+          table.table.table-condensed.table-hover
+            thead
+              tr
+                th
+                  span Project
+                th.text-center
+                  span Time Span
+                th.text-center
+                  span Team Performance
+            tbody
+              tr
+                td
+                  | Project A
+                td.text-center
+                  | 2013/08/08 - 2013/08/08
+                td.text-center.status.green
+                  i.fa.fa-level-up
+                  |  27%
+              tr
+                td
+                  | Project B
+                td.text-center
+                  | 2013/08/08 - 2013/08/08
+                td.text-center.status.red
+                  i.fa.fa-level-down
+                  |  43%
+              
+  .row.xepan-push-large
+    .col-md-12
+      .main-box.infographic-box.colored.emerald-bg
+        i.fa.fa-envelope
+        span.headline You are employing less/more task force on these projects
+        span.value Project A, Project B
+
+
+            

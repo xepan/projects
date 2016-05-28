@@ -7,6 +7,9 @@ class page_projectdashboard extends \xepan\projects\page_sidemenu{
 	function init(){
 		parent::init();
 
-		$this->add('View_Info')->set('Graphical information about projects');
+	}
+
+	function defaultTemplate(){
+		return ['view\dashboard'];
 	}
 }

@@ -1,59 +1,58 @@
-<div id="{$_name}" class=""><!--class=" cf nestable-lists" -->
-    {$header}
-    {nested_template}
-    <ol class="dd-list">
+
+<div id="{$_name}" class="xepan-grid {$class}">
+  <div class="main-box-body">
+    <table style="width:100%" class="table-hover">
+      <tbody style="font-size:12px">
+        {nested_template}
         {rows}{row}
-        <li class="dd-item" data-id="{$id}">
-            {$avatar}
-            <div class="dd3-content {$running_class}" data-id="{$id}">
-                <span class="task-item text-{$color}" data-id="{$id}" style= "cursor:pointer; cursor: hand; max-width:600px;">[{$task_no}] {$task_name}</span>
-                
-                <span class="">
-                    <span class="text-muted">{$created_by}</span>
-                </span>
-                
-                <span class="pull-right" style="margin-top:-4px ">
-                <span class="fa {$icon} current_task_btn {$running-task} " data-action="{$event_action}" data-id="{$id}" style= "cursor:pointer; cursor: hand; "><div style="color: #767676;display: block;font-size: 13px;font-weight: 500;">{$total_duration}</div></span>
-                <span class="">{$action}</span>
-                    <!-- <a href="#" class="nested-link"><i class="fa fa-pencil"></i></a>
-                    <a href="#" class="nested-link"><i class="fa fa-cog" ></i></a> -->
-                    <!-- <a href="#" class="nested-link"><i class="fa fa-trash-o delete-item" data-id="{$id}"></i></a> -->
-                    <a class="table-link danger do-delete nested-link" href="#" data-id="{$id}"><span class="fa-stack"><i class="fa fa-square fa-stack-2x"></i><i class="fa fa-trash-o fa-stack-1x fa-inverse"></i></span></a>
-                </span>
-            </div>
-            <span class="text-{$color} text-muted">{$sub_tasks}</span>
-        </li>
-        {/}{/}
-    </ol>
-    {not_found}{not_found_message}No Task{/}{/}
-    {/nested_template}
+        <tr data-id="{$id}" class="{$odd_even}">{cols}
+          <td><span data-id="{$id}" class="{$running_class}"></span><span data-id="{$id}" style="cursor:pointer; cursor: hand; max-width:600px;" class="task-item text-{$color}">[{$task_no}] {$task_name}</span></td>
+          <td>{$created_by}</td>
+          <td style="width:5%;">
+            <div style="color: #767676;display: block;font-size: 13px;font-weight: 500;">{$total_duration}  </div>
+          </td>
+          <td style="width:5%;"><span data-action="{$event_action}" data-id="{$id}" style="cursor:pointer; cursor: hand; " class="fa current_task_btn {$icon} {$running-task}"> </span></td>
+          <td style="width:10%;">
+             
+            {$action}
+          </td>
+          <td style="width: 5%;"><a href="#" data-id="{$id}" class="table-link danger do-delete nested-link"><span class="fa-stack"><i class="fa fa-square fa-stack-2x"></i><i class="fa fa-trash-o fa-stack-1x fa-inverse"></i></span></a></td>
+          <td><span class="text-muted text-{$color}">{$sub_tasks}    </span></td>{/}
+        </tr>{/}{/}
+        {not_found}
+        <div class="row">
+          <div role="alert" class="col-md-12 text-center alert alert-warning"><span class="icon-attention fa fa-exclamation-triangle"> &nbsp;{$not_found_message}</span></div>
+        </div>{/}
+        {/}
+      </tbody>
+    </table>
+  </div>
 </div>
 <style type="text/css" media="screen">
-.dd3-handle::before {
-    color: #fff;
-    left: 0;
-    text-align: center;
-    text-indent: 0;
-    width: 100%;
-}
-.dd3-handle {
-    cursor: pointer;
-    left: 0;
-    margin: 0;
-    top: 0;
-    float: left;
-    height: 0px!important;
-}
-.dd3-content {
-    border: 1px solid #eee;
-    border-radius: 3px;
-    box-sizing: border-box;
-    color: #333;
-    display: block;
-    height: 30px;
-    margin: 5px 0;
-    padding: 5px 10px 5px 40px;
-    text-decoration: none;
-}
-</style>             
-
+  .dd3-handle::before {
+  color: #fff;
+  left: 0;
+  text-align: center;
+  text-indent: 0;
+  width: 100%;
+  }
+  .dd3-handle {
+  cursor: pointer;
+  left: 0;
+  margin: 0;
+  top: 0;
+  float: left;
+  height: 0px!important;
+  }
+  .dd3-content {
+  border: 1px solid #eee;
+  border-radius: 3px;
+  box-sizing: border-box;
+  color: #333;
+  display: block;
+  height: 30px;
+  margin: 5px 0;
+  padding: 5px 10px 5px 40px;
+  text-decoration: none;
+  }                
+</style>
