@@ -2,34 +2,31 @@
 	.panel-body
 		.row.col-md-12
 			h4 Task Filters:
-		.row.col-md-12
+		.row.xepan-push.col-md-12
 			.col-md-4
-				span Created By\Assigned To			 
+				label
+				strong Created By\Assigned To
+				div {$createdby}			 
 			.col-md-3
-				span Employee			 
+				label
+				strong Employee			 
+				div {$employee}			 
 			.col-md-2
-				span Status
+				label
+				strong Status
+				div {$status}			 
 			.col-md-3
-				span Priority
-		.row.col-md-12.xepan-push
-			.col-md-4
-				span {$createdby}	 			 
-			.col-md-3
-				span{$employee}	 			 
-			.col-md-2
-				span{$status} 
-			.col-md-3					
-				span {$priority}
+				label
+				strong Priority
+				div {$priority}
 		
 		.row.col-md-12
 			.col-md-3
-				span Quick Search
+				label
+				strong Quick Search
+				div {$search_string}
 			.col-md-1 	
 			.col-md-3
-		.row.col-md-12
+				div {$FormButtons}
 			.col-md-3
-				span {$search_string}
-			.col-md-1
-			.col-md-3
-				span {$FormButtons}
 												
