@@ -19,9 +19,11 @@ class View_MiniTask extends \View{
 		$data=[];
 		if($model_task['is_running']){
 			$this->template->trySet('icon','fa fa-stop');
+			$this->template->trySet('running-task','text-danger');
 			$data['action'] == 'stop';
 		}else{			
 			$this->template->trySet('icon','fa fa-play');
+			$this->template->trySet('running-task','text-success');
 			$data['action'] == 'start';
 		}
 
