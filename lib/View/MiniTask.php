@@ -50,9 +50,9 @@ class View_MiniTask extends \View{
 
 				return [
 						$this->js()->_selector('.current_task_btn')->removeClass('fa-stop')->addClass('fa-play'),
-						$this->js()->_selector('.dd3-content')->removeClass('alert alert-info'),
 						$js->removeClass('fa-play')->addClass('fa-stop')->data('action','stop'),
-						$this->js()->_selector('.dd3-content[data-id='.$data['id'].']')->addClass('alert alert-info'),
+						$this->js()->_selector('.fa-play .duration')->timer('remove'),
+						$this->js()->_selector('.fa-stop .duration')->timer(['seconds'=>$model_timesheet['duration']]),
 					];
 			}
 
@@ -65,6 +65,9 @@ class View_MiniTask extends \View{
 		});
 
 		$this->js('click')->univ()->dialogURL("INSTANT TASK FEED",$this->api->url($vp->getURL()))->_selector('.instant-task-feed');
+		$this->js(true)->_load('timer.jquery');
+
+		$this->js(true)->_selector('.fa-stop .duration')->timer(['seconds'=>$model_timesheet['duration']]);
 	}
 
 	function defaultTemplate(){
