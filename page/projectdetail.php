@@ -5,7 +5,6 @@ namespace xepan\projects;
 class page_projectdetail extends \xepan\projects\page_sidemenu{
 	public $title = "Project Detail";
 	public $breadcrumb=['Home'=>'index','Project'=>'xepan_projects_project','Detail'=>'#'];
-
 	function init(){
 		parent::init();
 
@@ -235,9 +234,11 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 
 				return [
 						$this->js()->_selector('.current_task_btn')->removeClass('fa-stop')->addClass('fa-play'),
-						$this->js()->_selector('.dd3-content')->removeClass('alert alert-info'),
 						$js->removeClass('fa-play')->addClass('fa-stop')->data('action','stop'),
-						$this->js()->_selector('.dd3-content[data-id='.$data['id'].']')->addClass('alert alert-info'),
+						$this->js()->_selector('.fa-play'),
+						$this->js()->_selector('.fa-stop[data-id='.$data['id'].']'),
+						$this->js()->_selector('.fa-play .duration')->timer('remove'),
+						$this->js()->_selector('.fa-stop .duration')->timer(['seconds'=>$model_timesheet['duration']]),
 					];
 			}
 
@@ -245,6 +246,8 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 
 
 		});
+
+	$this->js(true)->_load('timer.jquery');
 
 	}
 

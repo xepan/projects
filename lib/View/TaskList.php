@@ -13,7 +13,10 @@ class View_TaskList extends \xepan\base\Grid{
 		if($this->running_task_id == $this->model->id){
 			$this->current_row['icon'] = 'fa-stop';
 			$this->current_row['event_action'] = 'stop';
-			$this->current_row['running_class'] = ' alert alert-info';
+			$this->current_row['running_class'] = '';
+
+			$timesheet  = $this->add('xepan\projects\Model_Timesheet')->loadBy('task_id',$this->model->id);			
+			$this->js(true)->_selector('.fa-stop .duration')->timer(['seconds'=>$timesheet['duration']]);
 
 		}else{
 			$this->current_row['icon'] = 'fa-play';
