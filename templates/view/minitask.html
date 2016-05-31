@@ -4,11 +4,14 @@
     <table style="width:100%" class="table-hover">
       <tbody style="font-size:10px">{rows}{row}
         <tr data-id="{$id}" class="{$odd_even}">
-          <td style="width:46%;"><span data-id="{$id}"></span><span data-id="{$id}" style="cursor:pointer; cursor: hand; max-width:600px; margin-left:6px" class="task-item instant-task-feed text-{$color}">
+          <td style="width:70%"><span data-id="{$id}"></span><span data-id="{$id}" style="cursor:pointer; cursor: hand; max-width:600px; margin-left:6px; display:block;" class="text-center task-item instant-task-feed text-{$color}">
                
               {task_name}<span class="text-danger">No Active Task </span>{/}</span></td>
-          <td style="width:25%;"><span>{$total_duration}</span></td>
-          <td style="width:29%;"><span data-action="{$possible_action}" data-id="{$id}" style="cursor:pointer; cursor: hand; " class="current_task_btn fa {$icon} {$running-task}"><span style="margin-left:5px;" class="duration">{$current_duration}</span></span></td>
+          <td style="width:30%">       </td>
+        </tr>
+        <tr>
+          <td style="width:70%"><span style="margin-right:10px;margin-left:6px">{$total_duration}</span></td>
+          <td style="width:30%"><span data-action="{$possible_action}" data-id="{$id}" style="cursor:pointer; cursor: hand; " class="pull-left current_task_btn fa {$icon} {$running-task}"><span class="duration">           </span></span></td>
         </tr>{/rows}{/row}
       </tbody>
     </table>
