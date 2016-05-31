@@ -1,12 +1,12 @@
 .xepan-grid(id="{$_name}" class="{$class}")
     .main-box-body
         table.table-hover(style="width:100%")
-            tbody(style="font-size:10px")
+            tbody(style="font-size:9px")
                 {rows}{row}
                 tr(class="{$odd_even}" data-id="{$id}")
                     td(style="width:70%")
                         span(data-id='{$id}')
-                        span.text-center.task-item.instant-task-feed(class='text-{$color}', data-id='{$id}', style='cursor:pointer; cursor: hand; max-width:600px; margin-left:6px; display:block;') 
+                        span.text-center.task-item.instant-task-feed(class='text-{$color}', data-id='{$id}', style='cursor:pointer; cursor: hand; max-width:600px; margin-left:6px; display:block; margin-bottom:4px;') 
                             {task_name}
                             span.text-danger No Active Task 
                             {/}
@@ -15,8 +15,8 @@
                     td(style="width:70%")
                         span(style="margin-right:10px;margin-left:6px" ) {$total_duration}
                     td(style="width:30%")
-                        span.pull-left.current_task_btn(class='fa {$icon} {$running-task}', data-action='{$possible_action}', data-id='{$id}', style='cursor:pointer; cursor: hand; ')
-                            span.duration            
+                        span.pull-left.current_task_btn(class='fa {$icon} {$running-task}', data-action='{$possible_action}', data-id='{$id}', style='cursor:pointer; cursor: hand;')
+                            span.duration(style="margin-left:3px;")            
                 {/rows}{/row}
     {not_found}
     div.row
