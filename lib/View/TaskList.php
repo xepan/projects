@@ -62,7 +62,13 @@ class View_TaskList extends \xepan\base\Grid{
 			$this->current_row['running-task']='text-danger';
 		}
 
-		$this->js(true)->_selector('#'.$this->name.' .current_task_btn[data-id='.$this->model->id.'] .duration')->timer(['seconds'=>$this->model['duration']]);
+		$timesheet = $this->add('xepan\projects\Model_Timesheet')
+						  ->addCondition('employee_id',$this->app->employee->id) 	
+						  ->addCondition('task_id',$this->model->id) 	
+						  ->setOrder('starttime','desc')
+						  ->tryLoadAny();
+						  			    
+		$this->js(true)->_selector('#'.$this->name.' .current_task_btn[data-id='.$this->model->id.'] .duration')->timer(['seconds'=>$timesheet['duration']]);
 	}
 
 	function createStopped(){
