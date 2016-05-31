@@ -2,6 +2,7 @@
     .main-box-body
         table.table-hover(style="width:100%")
             tbody(style="font-size:10px")
+                {rows}{row}
                 tr(class="{$odd_even}" data-id="{$id}")
                     td(style="width:46%;")
                         span(data-id='{$id}')
@@ -12,5 +13,11 @@
                     td(style="width:25%;")
                         span {$total_duration}
                     td(style="width:29%;")
-                        span.current_task_btn(class='{$icon} {$running-task}', data-action='{$possible_action}', data-id='{$id}', style='cursor:pointer; cursor: hand; ')
-                            span.duration(style="margin-left:5px;") {$current_duration}         
+                        span.current_task_btn(class='fa {$icon} {$running-task}', data-action='{$possible_action}', data-id='{$id}', style='cursor:pointer; cursor: hand; ')
+                            span.duration(style="margin-left:5px;") {$current_duration}
+                {/rows}{/row}
+    {not_found}
+    div.row
+        .col-md-12.text-center.alert.alert-warning(role="alert")
+            span.icon-attention.fa.fa-exclamation-triangle  &nbsp;{$not_found_message}
+    {/}

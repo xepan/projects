@@ -5,10 +5,15 @@ namespace xepan\projects;
 class page_projectdetail extends \xepan\projects\page_sidemenu{
 	public $title = "Project Detail";
 	public $breadcrumb=['Home'=>'index','Project'=>'xepan_projects_project','Detail'=>'#'];
+
 	function init(){
 		parent::init();
 
+		$this->js(true)->_load('timer.jquery');
+
 		$project_id = $this->app->stickyGET('project_id');
+		if(!$project_id) return;
+		
 		$task_id = $this->app->stickyGET('task_id');
 		$search = $this->app->stickyGET('search');
 
@@ -91,12 +96,8 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 			$task_list_m->addCondition('Relevance','>',0);
 	 		$task_list_m->setOrder('Relevance','Desc');
 		}
-	    
-	    $running_task_id = $this->add('xepan\projects\Model_Employee')
-	    					->load($this->app->employee->id)
-	    					->get('running_task_id');
 
-	    $task_list_view = $this->add('xepan\projects\View_TaskList',['running_task_id'=>$running_task_id],'leftview');	    
+	    $task_list_view = $this->add('xepan\projects\View_TaskList',null,'leftview');	    
 
 	    if($option_form->isSubmitted()){	
 
@@ -204,50 +205,6 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 		});
 
 		// $task_list_view->js(true)->_load('jquery.nestable')->nestable(['group'=>1]);
-
-	/***************************************************************************
-	  Timesheet PLAY/STOP
-	***************************************************************************/
-	$task_list_view->on('click','.current_task_btn',function($js,$data)use($task_list_view){
-			
-			$model_close_timesheet = $this->add('xepan\projects\Model_Timesheet');
-
-			$model_close_timesheet->addCondition('employee_id',$this->app->employee->id);
-			$model_close_timesheet->setOrder('starttime','desc');
-			$model_close_timesheet->tryLoadAny();
-
-			if($model_close_timesheet->loaded()){
-				if(!$model_close_timesheet['endtime']){
-					$model_close_timesheet['endtime'] = $this->app->now;
-					$model_close_timesheet->save();
-				}
-			}
-
-			if($data['action']=='start'){
-
-				$model_timesheet = $this->add('xepan\projects\Model_Timesheet');
-					
-				$model_timesheet['task_id'] = $data['id'];
-				$model_timesheet['employee_id'] = $this->app->employee->id;
-				$model_timesheet['starttime'] = $this->app->now;
-				$model_timesheet->save();
-
-				return [
-						$this->js()->_selector('.current_task_btn')->removeClass('fa-stop')->addClass('fa-play'),
-						$js->removeClass('fa-play')->addClass('fa-stop')->data('action','stop'),
-						$this->js()->_selector('.fa-play'),
-						$this->js()->_selector('.fa-stop[data-id='.$data['id'].']'),
-						$this->js()->_selector('.fa-play .duration')->timer('remove'),
-						$this->js()->_selector('.fa-stop .duration')->timer(['seconds'=>$model_timesheet['duration']]),
-					];
-			}
-
-			return $js->removeClass('fa-stop')->addClass('fa-play')->data('action','start');	
-
-
-		});
-
-	$this->js(true)->_load('timer.jquery');
 
 	}
 
