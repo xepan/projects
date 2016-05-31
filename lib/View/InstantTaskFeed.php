@@ -22,11 +22,12 @@ class View_InstantTaskFeed extends \View{
 		$time_field = $form->addField('TimePicker','time');
 		$time_field->options=['showMeridian'=>false];
 		$form->addSubmit('Start');
-		
+
+
 		if($_GET[$this->name]){
 			$results = [];
-			$task_list_m = $this->add('xepan\projects\Model_Task');
-
+			$task_list_m = $this->add('xepan\projects\Model_Task');			
+			$task_list_m->addCondition('project_id',$_GET['project']);			
 
 			$task_list_m->addExpression('Relevance')->set('MATCH(task_name, description) AGAINST ("'.$_GET['q'].'" IN NATURAL LANGUAGE MODE)');
 			$task_list_m->addCondition('Relevance','>',0);
@@ -54,7 +55,7 @@ class View_InstantTaskFeed extends \View{
 				// 'tokenSeparators'=>["\t","\n\r",","],
 				'ajax'=>[
 					'url' => $this->api->url(null,[$this->name=>true])->getURL(),
-					'data'=>$task_field->js(null,'return {q: $("#'.$task_field->name.'").select2("val"), project: $("#'.$project_field->name.'").select2("val")};')->_enclose(),
+					'data'=>$task_field->js(null,'function (param){return {q: param.term, project: $("#'.$project_field->name.'").select2("val")};}'),
 					'dataType'=>'json'
 				]
 			];
