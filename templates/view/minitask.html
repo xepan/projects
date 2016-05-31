@@ -2,7 +2,9 @@
 <div id="{$_name}" class="xepan-grid {$class}">
   <div class="main-box-body">
     <table style="width:100%" class="table-hover">
-      <tbody style="font-size:9px">{rows}{row}
+      <tbody style="font-size:9px">
+        {$header}
+        {rows}{row}
         <tr data-id="{$id}" class="{$odd_even}">
           <td style="width:70%"><span data-id="{$id}"></span><span data-id="{$id}" style="cursor:pointer; cursor: hand; max-width:600px; margin-left:6px; display:block; margin-bottom:4px;" class="text-center task-item instant-task-feed text-{$color}">
                
