@@ -5,16 +5,21 @@ class View_InstantTaskFeed extends \View{
 	function init(){
 		parent::init();
 
+		// $this->js(true)->_load('select2.min')->_css('libs/select2');
+
 		$model_task = $this->add('xepan\projects\Model_Task');
 		$model_project = $this->add('xepan\projects\Model_Project');
 		$model_timesheet = $this->add('xepan\projects\Model_Timesheet');
 		
 		$form = $this->add('Form',null,'form');
-		$form->addField('DropDown','project')->setModel($model_project);
+		$project_field = $form->addField('DropDown','project');
+		$project_field->setModel($model_project);
+
 		$task_field = $form->addField('xepan\base\DropDown','task');
 		$task_field->validate_values = false;
+		
 		$form->addField('text','remark');
-		$time_field = $form->addField('line','time','Minutes Elapsed');
+		$time_field = $form->addField('TimePicker','time');
 		$time_field->options=['showMeridian'=>false];
 		$form->addSubmit('Start');
 		
@@ -49,22 +54,21 @@ class View_InstantTaskFeed extends \View{
 				// 'tokenSeparators'=>["\t","\n\r",","],
 				'ajax'=>[
 					'url' => $this->api->url(null,[$this->name=>true])->getURL(),
+					'data'=>$task_field->js(null,'return {q: $("#'.$task_field->name.'").select2("val"), project: $("#'.$project_field->name.'").select2("val")};')->_enclose(),
 					'dataType'=>'json'
 				]
 			];
 
 		if($form->isSubmitted()){
-			$current_time = $this->app->now;
-			$current_time = date('Y-m-d H:i:s',strtotime('+0 hour +'.$form['time'].' minutes',strtotime($current_time)));
-			
 			$model_close_timesheet = $this->add('xepan\projects\Model_Timesheet');
+
 			$model_close_timesheet->addCondition('employee_id',$this->app->employee->id);
 			$model_close_timesheet->setOrder('starttime','desc');
 			$model_close_timesheet->tryLoadAny();
 
 			if($model_close_timesheet->loaded()){
 				if(!$model_close_timesheet['endtime']){
-					$model_close_timesheet['endtime'] = $current_time;
+					$model_close_timesheet['endtime'] = $this->app->now;
 					$model_close_timesheet->save();
 				}
 			}
@@ -78,7 +82,7 @@ class View_InstantTaskFeed extends \View{
 
 				$model_timesheet->addCondition('employee_id',$this->app->employee->id);
 				$model_timesheet->addCondition('task_id',$model_task->id);
-				$model_timesheet['starttime'] = $current_time;
+				$model_timesheet['starttime'] = $this->app->now;
 				$model_timesheet->save();
 				return;
 			}
@@ -86,7 +90,7 @@ class View_InstantTaskFeed extends \View{
 			$model_timesheet->addCondition('employee_id',$this->app->employee->id);
 			$model_timesheet->addCondition('task_id',$form['task']);
 			$model_timesheet['remark'] = $form['remark'];
-			$model_timesheet['starttime'] = $current_time;
+			$model_timesheet['starttime'] = $this->app->now;
 			$model_timesheet->save();
 			return;
 		}
