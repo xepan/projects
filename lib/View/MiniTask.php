@@ -10,12 +10,14 @@ class View_MiniTask extends \View{
 		$model_timesheet->addCondition('employee_id',$this->app->employee->id);
 		$model_timesheet->setOrder('starttime','desc');
 		$model_timesheet->setLimit(1);
+		$model_timesheet->tryLoadAny();
 
 		$model_task = $this->add('xepan\projects\Model_Formatted_Task');
 		$model_task->addCondition('id',$model_timesheet->fieldQuery('task_id'));				
 		$model_task->tryLoadAny();
 		$this->setModel($model_task);
-
+		// throw new \Exception($model_timesheet['duration']);
+		
 		$data=[];
 		if($model_task['is_running']){
 			$this->template->trySet('icon','fa fa-stop');

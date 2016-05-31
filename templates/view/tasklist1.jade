@@ -2,6 +2,7 @@
     .main-box-body
         table.table-hover(style="width:100%")
             tbody(style="font-size:12px")
+                {$header}
                 {nested_template}
                 {rows}{row}
                 tr(class="{$odd_even} {$running_class}" data-id="{$id}")
