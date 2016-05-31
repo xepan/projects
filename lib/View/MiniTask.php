@@ -6,6 +6,8 @@ class View_MiniTask extends \View{
 	function init(){
 		parent::init();
 
+		$this->js(true)->_load('timer.jquery');
+
 		$model_timesheet = $this->add('xepan\projects\Model_Timesheet');
 		$model_timesheet->addCondition('employee_id',$this->app->employee->id);
 		$model_timesheet->setOrder('starttime','desc');
@@ -16,20 +18,26 @@ class View_MiniTask extends \View{
 		$model_task->addCondition('id',$model_timesheet->fieldQuery('task_id'));				
 		$model_task->tryLoadAny();
 		$this->setModel($model_task);
-		// throw new \Exception($model_timesheet['duration']);
 		
-		$data=[];
-		if($model_task['is_running']){
+		if($model_task['is_running']){			
 			$this->template->trySet('icon','fa fa-stop');
 			$this->template->trySet('running-task','text-danger');
-			$data['action'] == 'stop';
+			$this->template->trySet('possible_action','stop');
+			$this->js(true)->_selector('.current_task_btn .duration')->timer(['seconds'=>$model_timesheet['duration']]);
 		}else{			
 			$this->template->trySet('icon','fa fa-play');
 			$this->template->trySet('running-task','text-success');
-			$data['action'] == 'start';
+			$this->template->trySet('possible_action','start');
 		}
 
+		$vp = $this->add('VirtualPage');
+		$vp->set(function($p){
+			$p->add('xepan\projects\View_InstantTaskFeed');			
+		});
+
+
 		$this->on('click','.current_task_btn',function($js,$data){
+			
 			$model_close_timesheet = $this->add('xepan\projects\Model_Timesheet');
 
 			$model_close_timesheet->addCondition('employee_id',$this->app->employee->id);
@@ -43,33 +51,31 @@ class View_MiniTask extends \View{
 				}
 			}
 
-			if($data['action']=='start'){					
+			if($data['action']==='start'){	
+											
 				$model_timesheet = $this->add('xepan\projects\Model_Timesheet');
 				$model_timesheet['task_id'] = $data['id'];
 				$model_timesheet['employee_id'] = $this->app->employee->id;
 				$model_timesheet['starttime'] = $this->app->now;
 				$model_timesheet->save();
-
 				return [
-						$this->js()->_selector('.current_task_btn')->removeClass('fa-stop')->addClass('fa-play'),
-						$js->removeClass('fa-play')->addClass('fa-stop')->data('action','stop'),
-						$this->js()->_selector('.fa-play .duration')->timer('remove'),
-						$this->js()->_selector('.fa-stop .duration')->timer(['seconds'=>$model_timesheet['duration']]),
+						$this->js()->_selector('.current_task_btn')->removeClass('fa-play')->addClass('fa-stop'),
+						$this->js()->_selector('.current_task_btn .duration')->timer(['seconds'=>$model_timesheet['duration']]),
+						$js->data('action','stop'), // next possible_action
 					];
 			}
 
-			return $js->removeClass('fa-stop')->addClass('fa-play')->data('action','start');
+			return [	
+						$this->js()->_selector('.current_task_btn')->removeClass('fa-stop')->addClass('fa-play'),
+						$this->js()->_selector('.current_task_btn .duration')->timer('remove'),
+						$js->data('action','start') // next possible_action
+					];
+
 		});
 
-		$vp = $this->add('VirtualPage');
-		$vp->set(function($p){
-			$p->add('xepan\projects\View_InstantTaskFeed');			
-		});
 
 		$this->js('click')->univ()->dialogURL("INSTANT TASK FEED",$this->api->url($vp->getURL()))->_selector('.instant-task-feed');
-		$this->js(true)->_load('timer.jquery');
 
-		$this->js(true)->_selector('.fa-stop .duration')->timer(['seconds'=>$model_timesheet['duration']]);
 	}
 
 	function defaultTemplate(){
