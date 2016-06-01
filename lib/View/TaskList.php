@@ -65,9 +65,9 @@ class View_TaskList extends \xepan\base\Grid{
 		$timesheet = $this->add('xepan\projects\Model_Timesheet')
 						  ->addCondition('employee_id',$this->app->employee->id) 	
 						  ->addCondition('task_id',$this->model->id) 	
-						  ->setOrder('starttime','desc')
+						  ->addCondition('endtime',null)
 						  ->tryLoadAny();
-						  			    
+						  			       
 		$this->js(true)->_selector('#'.$this->name.' .current_task_btn[data-id='.$this->model->id.'] .duration')->timer(['seconds'=>$timesheet['duration']]);
 	}
 
@@ -111,13 +111,13 @@ class View_TaskList extends \xepan\base\Grid{
 		$model_close_timesheet = $this->add('xepan\projects\Model_Timesheet');
 
 		$model_close_timesheet->addCondition('employee_id',$this->app->employee->id);
-		$model_close_timesheet->setOrder('starttime','desc');
+		$model_close_timesheet->addCondition('endtime',null);
 		$model_close_timesheet->tryLoadAny();
 
 		if($model_close_timesheet->loaded()){
 			if(!$model_close_timesheet['endtime']){
 				$model_close_timesheet['endtime'] = $this->app->now;
-				$model_close_timesheet->save();
+				$model_close_timesheet->saveAndUnload();
 			}
 		}
 	}

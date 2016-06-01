@@ -19,10 +19,11 @@ class View_InstantTaskFeed extends \View{
 		$task_field->validate_values = false;
 		
 		$form->addField('text','remark');
-		$time_field = $form->addField('TimePicker','time');
-		$time_field->options=['showMeridian'=>false];
-		$form->addSubmit('Start');
-
+		$time_field = $form->addField('TimePicker','time','Working on it since');
+			$time_field
+				->setOption('showMeridian',false)
+				->setOption('minuteStep',1)
+				->setOption('showSeconds',true);
 
 		if($_GET[$this->name]){
 			$results = [];
@@ -61,16 +62,19 @@ class View_InstantTaskFeed extends \View{
 			];
 
 		if($form->isSubmitted()){
-			$model_close_timesheet = $this->add('xepan\projects\Model_Timesheet');
+			$timestamp = $this->app->today;
+			$timestamp .= ' 0'.$form['time'];
 
+			$model_close_timesheet = $this->add('xepan\projects\Model_Timesheet');
 			$model_close_timesheet->addCondition('employee_id',$this->app->employee->id);
-			$model_close_timesheet->setOrder('starttime','desc');
-			$model_close_timesheet->tryLoadAny();
+			$model_close_timesheet->addCondition('endtime',null);
+			$model_close_timesheet->tryLoadAny();			
 
 			if($model_close_timesheet->loaded()){
 				if(!$model_close_timesheet['endtime']){
+					
 					$model_close_timesheet['endtime'] = $this->app->now;
-					$model_close_timesheet->save();
+					$model_close_timesheet->saveAndUnload();
 				}
 			}
 			
@@ -83,7 +87,7 @@ class View_InstantTaskFeed extends \View{
 
 				$model_timesheet->addCondition('employee_id',$this->app->employee->id);
 				$model_timesheet->addCondition('task_id',$model_task->id);
-				$model_timesheet['starttime'] = $this->app->now;
+				$model_timesheet['starttime'] = $timestamp;
 				$model_timesheet->save();
 				return;
 			}
@@ -91,7 +95,7 @@ class View_InstantTaskFeed extends \View{
 			$model_timesheet->addCondition('employee_id',$this->app->employee->id);
 			$model_timesheet->addCondition('task_id',$form['task']);
 			$model_timesheet['remark'] = $form['remark'];
-			$model_timesheet['starttime'] = $this->app->now;
+			$model_timesheet['starttime'] = $timestamp;
 			$model_timesheet->save();
 			return;
 		}
