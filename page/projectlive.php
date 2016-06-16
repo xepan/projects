@@ -33,6 +33,9 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 		$project_detail_grid->addPaginator(50);
 		$project_detail_grid->addQuickSearch(['name']);
 		$project_detail_grid->setModel($model_employee,['name','running_task','project','pending_tasks_count','running_task_since']); 
+		
+		$project_detail_grid->js('click')->_selector('.view-frame')->univ()->frameURL('Employee Project Status',[$this->api->url('xepan_projects_dailyanalysis'),'contact_id'=>$this->js()->_selectorThis()->closest('[data-id]')->data('id')]);
+
 	}
 
 	function defaultTemplate(){

@@ -37,7 +37,8 @@
                     {cols}
                     td
                       {$avatar}                   
-                      a.user-link(href='{url}index.php?page=xepan_projects_dailyanalysis&contact_id={$id}{/}'){$name}
+                      //- a.user-link(href='{url}index.php?page=xepan_projects_dailyanalysis&contact_id={$id}{/}')
+                      a.user-link.view-frame(href='#',data-id="{$id}"){$name}
                     td
                       | {$project}
                     td
