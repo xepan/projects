@@ -16,15 +16,16 @@
         <div class="col-md-6">
           <div class="text-center"> <a href="?page=xepan_projects_projectdetail&project_id={$id}">
                
-              Tasks</a><a href="{url}index.php?page=xepan_projects_projectlive&project_id={$id}{/}">
+              Tasks</a><a href="#" data-id="{$id}" class="do-view-project-lives-details">
                
-              Status</a><a href="?page=xepan_projects_calendar&project_id={$id}">
+              Status</a><a href="#" data-id="{$id}" class="do-view-project-calendar">
                
-              Calendar</a><a href="?page=xepan_projects_progress&project_id={$id}">
+              Calendar</a><a href="#" data-id="{$id}" class="do-view-project-progress">
                
-              Conversation</a><a href="?page=xepan_projects_conversation&project_id={$id}">
+              Conversation</a><a href="#" data-id="{$id}" class="do-view-project-conversion">
                
-              Files</a></div>
+              Files</a>
+          </div>
         </div>
         <div class="col-md-3">{$totalprogress}</div>
       </div>
