@@ -87,6 +87,7 @@ class Model_Project extends \xepan\base\Model_Table
  					'title'=>$data['name'],
  					'relevency'=>$data['Relevance'],
  					'url'=>$this->app->url('xepan_projects_projectdetail',['status'=>$data['status'],'project_id'=>$data['id']])->getURL(),
+ 					'type_status'=>$data['type'].' '.'['.$data['status'].']',
  				];
  			}
 		}
@@ -103,6 +104,7 @@ class Model_Project extends \xepan\base\Model_Table
  					'title'=>$data['task_name'],
  					'relevency'=>$data['Relevance'],
  					'url'=>$this->app->url('xepan_projects_projectdetail',['status'=>$data['status'],'project_id'=>$data['id']])->getURL(),
+ 					'type_status'=>$data['type'].' '.'['.$data['status'].']',
  				];
  			}
 		}
