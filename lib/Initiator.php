@@ -25,7 +25,7 @@ class Initiator extends \Controller_Addon {
 
 				$task_count = $project->ref('xepan\projects\Task')->addCondition('employee_id',$this->app->employee->id)->addCondition('status','Pending')->count()->getOne();
 				
-				$m->addItem([$project_name,'icon'=>' fa fa-tasks'],$this->app->url('xepan_projects_projectdetail',['project_id'=>$project_id]));
+				$m->addItem([$project_name,'icon'=>' fa fa-tasks'],$this->app->url('xepan_projects_projectdetail',['project_id'=>$project_id]),['project_id']);
 			}
 		}
 
