@@ -75,8 +75,8 @@ class Model_Project extends \xepan\base\Model_Table
 		}
 	}
 
-	function quickSearch($app,$search_string,&$result_array){		
-		$this->addExpression('Relevance')->set('MATCH(name, description, type) AGAINST ("'.$search_string.'" IN NATURAL LANGUAGE MODE)');
+	function quickSearch($app,$search_string,&$result_array,$relevency_mode){		
+		$this->addExpression('Relevance')->set('MATCH(name, description, type) AGAINST ("'.$search_string.'" '.$relevency_mode.')');
 		$this->addCondition('Relevance','>',0);
  		$this->setOrder('Relevance','Desc');
  		
@@ -93,7 +93,7 @@ class Model_Project extends \xepan\base\Model_Table
 		}
 
 		$task = $this->add('xepan\projects\Model_Task');
-		$task->addExpression('Relevance')->set('MATCH(task_name, description, status, type) AGAINST ("'.$search_string.'" IN NATURAL LANGUAGE MODE)');
+		$task->addExpression('Relevance')->set('MATCH(task_name, description, status, type) AGAINST ("'.$search_string.'" '.$relevency_mode.')');
 		$task->addCondition('Relevance','>',0);
  		$task->setOrder('Relevance','Desc');
  		
