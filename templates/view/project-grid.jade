@@ -19,21 +19,21 @@
                     a(href='{url}index.php?page=xepan_projects_projectdetail&project_id={$id}{/}')
                       {$name}
                 .project-box-content
-                  span.chart(data-percent="39")
+                  span.chart(data-percent="{completed_percentage}0{/}")
                     span.percent
-                    | %
+                    | {completed_percentage}0{/} %
                     br
                     span.lbl completed
                 .project-box-footer.clearfix
                   a(href='#')
-                    span.value 12
-                    span.label Tasks
+                    span.value {total_task}0{/}
+                    span.label Total Task
                   a(href='#')
-                    span.value 1
-                    span.label Alerts
+                    span.value {completed_task_count}0{/}
+                    span.label Completed Task
                   a(href='#')
-                    span.value 82
-                    span.label Messages
+                    span.value {pending_task_count}0{/}
+                    span.label Pending Task
                 .project-box-ultrafooter.clearfix
                   {$action}
                   button.team.btn.btn-primary#addteam(data-project_id="{$id}") Add/Edit Team     

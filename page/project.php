@@ -8,7 +8,7 @@ class page_project extends \xepan\projects\page_sidemenu{
 		parent::init();
 
 		$project = $this->add('xepan\projects\Model_Formatted_Project');
-		$crud=$this->add('xepan\hr\CRUD',null,null,['view\project-grid']);
+		$crud=$this->add('xepan\hr\CRUD',['entity_name'=>'Project'],null,['view\project-grid']);
 		$crud->setModel($project);
 
 		$crud->grid->addQuickSearch('name');
