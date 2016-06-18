@@ -93,7 +93,7 @@ class View_InstantTaskFeed extends \View{
 				$model_timesheet->addCondition('task_id',$model_task->id);
 				$model_timesheet['starttime'] = $timestamp;
 				$model_timesheet->save();
-				return;
+				return $form->js(null,$this->js()->univ()->successMessage('Task started'))->reload()->execute();
 			}
 
 			$model_timesheet->addCondition('employee_id',$this->app->employee->id);
@@ -101,7 +101,7 @@ class View_InstantTaskFeed extends \View{
 			$model_timesheet['remark'] = $form['remark'];
 			$model_timesheet['starttime'] = $timestamp;
 			$model_timesheet->save();
-			return;
+			return $form->js(null,$this->js()->univ()->successMessage('Task started'))->reload()->execute();
 		}
 	}
 	function defaultTemplate(){

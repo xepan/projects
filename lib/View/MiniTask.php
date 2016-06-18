@@ -30,14 +30,6 @@ class View_MiniTask extends \View{
 		
 
 		$task_list->setModel($model_task);
-
-		// $vp = $this->add('VirtualPage');
-		// $vp->set(function($p){
-		// 	$p->add('xepan\projects\View_InstantTaskFeed');			
-		// });
-
-		// $this->js('click')->univ()->dialogURL("INSTANT TASK FEED",$this->api->url('xepan_projects_minitask'))->_selector('.instant-task-feed');
-
 	}
 
 }
