@@ -7,31 +7,61 @@
                 div(class="form-control pull-left")|{$quick_search}
                     i(class="fa fa-search search-icon")
     {/Pannel}
-    .main-box-body.clearfix
-        .row
-            {header}{cols}{col}{/}{/}{/}
-            {rows}{row}
-            div(class="{$odd_even} col-md-{col-width}4{/}" data-id="{$id}")
-                {cols}
-                .panel.panel-default
-                    .panel-body
-                        h3.text-muted.text-center(style="width: 100%;white-space:nowrap;overflow: hidden;text-overflow: ellipsis;") 
-                            a(href='{url}index.php?page=xepan_projects_projectdetail&project_id={$id}{/}'){$name}
+    .row
+        {header}{cols}{col}{/}{/}{/}
+        {rows}{row}
+        div(class="{$odd_even} col-md-{col-width}4{/}" data-id="{$id}")
+            {cols}
+            .main-box.clearfix.project-box(class="{$box}")
+              .main-box-body.clearfix
+                .project-box-header(class="{$bg}")
+                  .name
+                    a(href='{url}index.php?page=xepan_projects_projectdetail&project_id={$id}{/}')
+                      {$name}
+                .project-box-content
+                  span.chart(data-percent="{completed_percentage}0{/}")
+                    span.percent
+                    | {completed_percentage}0{/} %
+                    br
+                    span.lbl completed
+                .project-box-footer.clearfix
+                  a(href='#')
+                    span.value {total_task}0{/}
+                    span.label Total Task
+                  a(href='#')
+                    span.value {completed_task_count}0{/}
+                    span.label Completed Task
+                  a(href='#')
+                    span.value {pending_task_count}0{/}
+                    span.label Pending Task
+                .project-box-ultrafooter.clearfix
+                  {$action}
+                  button.team.btn.btn-primary#addteam(data-project_id="{$id}") Add/Edit Team     
+                  {$edit}
+                  {$delete}
 
-                        .text-muted.text-center {$description}
-                        .row.xepan-push-large
-                        .row.text-center
-                            {$action}
-                            button.team.btn.btn-primary#addteam(data-project_id="{$id}") Add/Edit Team     
-                            {$edit}
-                            {$delete}
-            {/}
-            {/}{/}
-            {not_found}
-            div.row
-                .col-md-12.text-center.alert.alert-warning(role="alert")
-                    span.icon-attention.fa.fa-exclamation-triangle  &nbsp;{$not_found_message}
-            {/}
+        {/}
+        {/}{/}
+        {not_found}
+        div.row
+            .col-md-12.text-center.alert.alert-warning(role="alert")
+                span.icon-attention.fa.fa-exclamation-triangle  &nbsp;{$not_found_message}
+        {/}
 
-            {totals}{cols}{col}{$content}{/}{/}{/}
-        {$Paginator}
+        {totals}{cols}{col}{$content}{/}{/}{/}
+    {$Paginator}
+
+script.
+  $('.chart').easyPieChart({
+  easing: 'easeOutBounce',
+  onStep: function(from, to, percent) {
+    console.log(percent);
+    $(this.el).find('.percent').text(Math.round(percent));
+  },
+  barColor: '#3498db',
+  trackColor: '#f2f2f2',
+  scaleColor: false,
+  lineWidth: 8,
+  size: 130,
+  animate: 1500
+  });

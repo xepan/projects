@@ -8,29 +8,44 @@
       </div>
     </div>
   </header>{/Pannel}
-  <div class="main-box-body clearfix">
-    <div class="row">
-      {header}{cols}{col}{/}{/}{/}
-      {rows}{row}
-      <div data-id="{$id}" class="{$odd_even} col-md-{col-width}4{/}">{cols}
-        <div class="panel panel-default">
-          <div class="panel-body">
-            <h3 style="width: 100%;white-space:nowrap;overflow: hidden;text-overflow: ellipsis;" class="text-muted text-center"> <a href="{url}index.php?page=xepan_projects_projectdetail&amp;project_id={$id}{/}">{$name}</a></h3>
-            <div class="text-muted text-center">{$description}</div>
-            <div class="row xepan-push-large"></div>
-            <div class="row text-center">{$action}
-              <button id="addteam" data-project_id="{$id}" class="team btn btn-primary">Add/Edit Team     </button>{$edit}
-              {$delete}
-            </div>
+  <div class="row">
+    {header}{cols}{col}{/}{/}{/}
+    {rows}{row}
+    <div data-id="{$id}" class="{$odd_even} col-md-{col-width}4{/}">{cols}
+      <div class="main-box clearfix project-box {$box}">
+        <div class="main-box-body clearfix">
+          <div class="project-box-header {$bg}">
+            <div class="name"><a href="{url}index.php?page=xepan_projects_projectdetail&amp;project_id={$id}{/}">{$name}</a></div>
+          </div>
+          <div class="project-box-content"><span data-percent="{completed_percentage}0{/}" class="chart"><span class="percent"></span>{completed_percentage}0{/} %<br/><span class="lbl">completed</span></span></div>
+          <div class="project-box-footer clearfix"><a href="#"><span class="value">{total_task}0{/}</span><span class="label">Total Task</span></a><a href="#"><span class="value">{completed_task_count}0{/}</span><span class="label">Completed Task</span></a><a href="#"><span class="value">{pending_task_count}0{/}</span><span class="label">Pending Task</span></a></div>
+          <div class="project-box-ultrafooter clearfix">{$action}
+            <button id="addteam" data-project_id="{$id}" class="team btn btn-primary">Add/Edit Team     </button>{$edit}
+            {$delete}
           </div>
         </div>
-      </div>{/}
-      {/}{/}
-      {not_found}
-      <div class="row">
-        <div role="alert" class="col-md-12 text-center alert alert-warning"><span class="icon-attention fa fa-exclamation-triangle"> &nbsp;{$not_found_message}</span></div>
-      </div>{/}
-      {totals}{cols}{col}{$content}{/}{/}{/}
-    </div>{$Paginator}
-  </div>
+      </div>
+    </div>{/}
+    {/}{/}
+    {not_found}
+    <div class="row">
+      <div role="alert" class="col-md-12 text-center alert alert-warning"><span class="icon-attention fa fa-exclamation-triangle"> &nbsp;{$not_found_message}</span></div>
+    </div>{/}
+    {totals}{cols}{col}{$content}{/}{/}{/}
+  </div>{$Paginator}
 </div>
+<script>
+  $('.chart').easyPieChart({
+  easing: 'easeOutBounce',
+  onStep: function(from, to, percent) {
+    console.log(percent);
+    $(this.el).find('.percent').text(Math.round(percent));
+  },
+  barColor: '#3498db',
+  trackColor: '#f2f2f2',
+  scaleColor: false,
+  lineWidth: 8,
+  size: 130,
+  animate: 1500
+  });
+</script>
