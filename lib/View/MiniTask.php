@@ -10,8 +10,15 @@ class View_MiniTask extends \View{
 		$this->addClass('xepan-mini-task');
 		$this->js('reload')->reload();
 
+		$model_view = $this->add('xepan\base\View_ModelPopup');
+		$model_view->setTitle("INSTANT TASK FEED");
+		
+		$model_view->add('xepan\projects\View_InstantTaskFeed');	
 		$task_list = $this->add('xepan\projects\View_TaskList',['no_records_message'=>'You Are Sitting Idle'],null,['view\minitask']);
-
+		$task_list
+				->setAttr("data-toggle","modal")
+				->setAttr( "data-target",".".$model_view->name);
+		
 		$model_timesheet = $this->add('xepan\projects\Model_Timesheet');
 		$model_timesheet->addCondition('employee_id',$this->app->employee->id);
 		$model_timesheet->addCondition('endtime',null);
@@ -29,7 +36,7 @@ class View_MiniTask extends \View{
 		// 	$p->add('xepan\projects\View_InstantTaskFeed');			
 		// });
 
-		$this->js('click')->univ()->dialogURL("INSTANT TASK FEED",$this->api->url('xepan_projects_minitask'))->_selector('.instant-task-feed');
+		// $this->js('click')->univ()->dialogURL("INSTANT TASK FEED",$this->api->url('xepan_projects_minitask'))->_selector('.instant-task-feed');
 
 	}
 
