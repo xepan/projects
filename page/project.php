@@ -79,8 +79,6 @@ class page_project extends \xepan\projects\page_sidemenu{
 	}
 
 	function render(){
-
-		$this->app->jui->addStaticInclude('pace.min');
 		$this->app->jui->addStaticInclude('jquery.easypiechart.min');
 		parent::render();
 	}	

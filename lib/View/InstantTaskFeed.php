@@ -30,7 +30,7 @@ class View_InstantTaskFeed extends \View{
 			$task_list_m = $this->add('xepan\projects\Model_Task');			
 			$task_list_m->addCondition('project_id',$_GET['project']);			
 
-			$task_list_m->addExpression('Relevance')->set('MATCH(task_name, description) AGAINST ("'.$_GET['q'].'" IN NATURAL LANGUAGE MODE)');
+			$task_list_m->addExpression('Relevance')->set('MATCH(task_name, description, status, type) AGAINST ("'.$_GET['q'].'" IN NATURAL LANGUAGE MODE)');
 			$task_list_m->addCondition('Relevance','>',0);
 	 		$task_list_m->setOrder('Relevance','Desc');
 			$task_list_m->setLimit(20);
@@ -62,6 +62,10 @@ class View_InstantTaskFeed extends \View{
 			];
 
 		if($form->isSubmitted()){
+			if(!$form['task'])
+				$form->error('task','Please add or select a task');
+				
+
 			$timestamp = $this->app->today;
 			$timestamp .= ' 0'.$form['time'];
 
