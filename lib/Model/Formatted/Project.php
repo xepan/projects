@@ -12,6 +12,8 @@ class Model_Formatted_Project extends \xepan\projects\Model_Project{
 		});
 		
 		$this->addExpression('pending_task_count')->set($this->refSQL('xepan\projects\Task')->addCondition('status',['Pending'])->addCondition('project_id',$_GET['project_id'])->count())->sortable(true);
+		
+		$this->addExpression('completed_task_count')->set($this->refSQL('xepan\projects\Task')->addCondition('status',['Completed'])->addCondition('project_id',$_GET['project_id'])->count())->sortable(true);
 
 		$this->addExpression('completed_percentage')->set(function($m, $q){
 			return $m->dsql()->expr("ROUND(([1]-[0])/[1]*100,0)",[$m->getElement('pending_task_count'),$m->getElement('total_task')]);

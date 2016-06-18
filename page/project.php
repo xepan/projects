@@ -7,12 +7,30 @@ class page_project extends \xepan\projects\page_sidemenu{
 	function init(){
 		parent::init();
 
-		$project = $this->add('xepan\projects\Model_Project');
+		$project = $this->add('xepan\projects\Model_Formatted_Project');
 		$crud=$this->add('xepan\hr\CRUD',null,null,['view\project-grid']);
 		$crud->setModel($project);
 
 		$crud->grid->addQuickSearch('name');
 
+		// $color = array("emerald", "green","red","yellow","purple","gray");
+		$color = [
+					0=>"emerald", 
+					1=>"green",
+					2=>"red",
+					3=>"yellow",
+					4=>"purple",
+					5=>"gray" 
+				 ];
+		$this->count = 0;		 
+		$crud->grid->addHook('formatRow',function($g) use($color){
+			if($this->count > 5) $this->count = 0;
+
+			$g->current_row_html['box'] = $color[$this->count].'-box'; 	
+			$g->current_row_html['bg'] = $color[$this->count].'-bg';	
+
+			$this->count++;									
+		});
 
 		/***************************************************************************
 			Virtual page for assigning TEAM
@@ -58,5 +76,12 @@ class page_project extends \xepan\projects\page_sidemenu{
 			return $js->univ()->dialogURL("ADD Team",$this->api->url($vp->getURL(),['project_id'=>$data['project_id']]));
 		});
 		
+	}
+
+	function render(){
+
+		$this->app->jui->addStaticInclude('pace.min');
+		$this->app->jui->addStaticInclude('jquery.easypiechart.min');
+		parent::render();
 	}	
 }
