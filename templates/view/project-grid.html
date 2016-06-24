@@ -36,7 +36,7 @@
 </div>
 <script>
   $('.chart').easyPieChart({
-  easing: 'easeOutBounce',
+  easing: 'Linear',
   onStep: function(from, to, percent) {
     console.log(percent);
     $(this.el).find('.percent').text(Math.round(percent));
