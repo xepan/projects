@@ -45,7 +45,7 @@ class page_project extends \xepan\projects\page_sidemenu{
 			$model_team_project_association = $p->add('xepan\projects\Model_Team_Project_Association');
 
 			$form = $p->add('Form');
-			$team_field = $form->addField('line','team')->set(json_encode($model_project->getAssociatedTeam()));
+			$team_field = $form->addField('hidden','team')->set(json_encode($model_project->getAssociatedTeam()));
 
 			// Selectable for "Team" 
 
