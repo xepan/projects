@@ -57,7 +57,9 @@ class View_InstantTaskFeed extends \View{
 				'ajax'=>[
 					'url' => $this->api->url(null,[$this->name=>true])->getURL(),
 					'data'=>$task_field->js(null,'function (param){return {q: param.term, project: $("#'.$project_field->name.'").select2("val")};}'),
-					'dataType'=>'json'
+					'dataType'=>'json',
+					'quietMillis'=>500,
+					'delay'=>500
 				]
 			];
 
