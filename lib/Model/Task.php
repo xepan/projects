@@ -28,8 +28,8 @@ class Model_Task extends \xepan\base\Model_Table
 		
 		$this->addField('task_name');
 		$this->addField('description')->type('text');
-		$this->addField('deadline')->type('date');
-		$this->addField('starting_date')->type('date');
+		$this->addField('deadline')->display(['form'=>'DateTimePicker'])->type('datetime');
+		$this->addField('starting_date')->display(['form'=>'DateTimePicker'])->type('date');
 		$this->addField('estimate_time')/*->display(['form'=>'TimePicker'])*/;
 		$this->addField('created_at')->type('datetime')->defaultValue($this->app->now);
 		$this->addField('status')->defaultValue('Pending');
@@ -38,7 +38,7 @@ class Model_Task extends \xepan\base\Model_Table
 		$this->addField('set_reminder')->type('boolean');
 		$this->addField('remind_via')->setValueList(['Email'=>'Email','SMS'=>'SMS','Notification'=>'Notification']);
 		$this->addField('remind_value')->type('number');
-		$this->addField('remind_unit')->setValueList(['Minutes'=>'Minutes','Hours'=>'Hours','Days'=>'Days','Weeks'=>'Weeks','Months'=>'Months']);
+		$this->addField('remind_unit')->setValueList(['Minutes'=>'Minutes','hours'=>'Hours','day'=>'Days','Weeks'=>'Weeks','months'=>'Months']);
 		$this->addField('is_recurring')->type('boolean');
 		$this->addField('recurring_span')->setValueList(['Weekely'=>'Weekely','Fortnight'=>'Fortnight','Monthly'=>'Monthly','Quarterly'=>'Quarterly','Halferly'=>'Halferly','Yearly'=>'Yearly']);
 		$this->addField('is_reminded')->type('boolean');
@@ -128,46 +128,53 @@ class Model_Task extends \xepan\base\Model_Table
 	function reminder(){
 		$reminder_task = $this->add('xepan\projects\Model_Task');
 		$reminder_task->addCondition('set_reminder',true);
-
-		foreach ($this->app->employee->ref('Emails') as $emp_emails) {
-			$emails[]=$emp_emails['value'];
-		}
+		$reminder_task->addCondition('is_reminded',false);
 
 		foreach ($reminder_task as $task) {
-			//$reminder_time = CALCULATE TIME AND ADD CONDITION ACCORDINGLY
-			if(($reminder_time <= ($this->app->now)) AND $task['is_reminded']==false){
-				if($task['remind_via'] =='Email'){
-					$communication = $this->add('xepan\communication\Model_Communication_Abstract_Email');
-					$communication->setSubject("Task Reminder");
-					$communication->setBody("Reminder for task: ".$task['task_name']." assigned to you on: ".$task['created_at']." with deadline: ".$task['deadline']);
-					$communication->setRelatedDocument($this);
-					foreach ($emails as $email) {
-						$communication->addTo($email,$this->app->employee['name']);
-					}
+			$reminder_time = date("Y-m-d H:i:s", strtotime('-'.$task['remind_value'].' '.$task['remind_unit'], strtotime($task['starting_date'])));
+			
+			if(!($reminder_time <= ($this->app->now)) AND !$task['is_reminded']==false){
+				continue;
+			}
 
-					$email_settings = $this->add('xepan\communication\Model_Communication_EmailSetting')->tryLoadAny();	
-					$communication->setfrom($email_settings['from_email'],$email_settings['from_name']);
-					$communication->send($email_settings);
+				$remind_via_array = [];
+				$remind_via_array = explode(',', $task['remind_via']);
+
+				if(in_array("Email", $remind_via_array)){
+					$emp = $this->add('xepan\base\Model_Contact')->load($this->app->employee->id);
+					$emails = $emp->getEmails();
+
+					$email_settings = $this->add('xepan\communication\Model_Communication_EmailSetting')->tryLoadAny();
+					$mail = $this->add('xepan\communication\Model_Communication_Email');
 					
-					$task->addCondition('is_reminded',true);
-					$task->save();
+					$email_subject = "Task Reminder";
+					$email_body = "Reminder";
+									
+					$mail->setfrom($email_settings['from_email'],$email_settings['from_name']);
+					$mail->addTo($emails[0]);
+					$mail->setSubject($email_subject);
+					$mail->setBody($email_body);
+					$mail->send($email_settings);
 				}
-				if($task['remind_via'] =='SMS'){
+
+				if(in_array("SMS", $remind_via_array)){
 					// SMS CONFIGURATION REMAINING
-					$task->addCondition('is_reminded',true);
-					$task->save();
 				}
-				if($task['remind_via'] =='Notification'){					
+
+				if(in_array("Notification", $remind_via_array)){					
 					$notify_to = [];
 					$notify_to = $this->app->employee->id;
+					$notify_to = json_encode($notify_to);
 
 					$activity = $this->add('xepan\base\Model_Activity');
 					$activity['notify_to'] = $notify_to; 
 					$activity['notification'] = "Task reminder for: ".$task['task_name'];
+					$activity['Created_at'] = $reminder_time;
 					$activity->save();  
-					$task->addCondition('is_reminded',true);
-					$task->save();
 				}
+
+				$task->addCondition('is_reminded',true);
+				$task->save();
 			}
 		}
 	}
