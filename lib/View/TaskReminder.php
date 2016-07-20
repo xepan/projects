@@ -12,11 +12,10 @@ class View_TaskReminder extends \View{
 		$task->addCondition('created_by_id',$this->app->employee->id);
 		
 		$reminder_crud = $this->add('xepan\hr\CRUD',['no_records_message'=>'No Reminders'],null,['view\taskreminder']);
-		$reminder_crud->setModel($task,['task_name','description','starting_date','deadline','set_reminder','remind_via','remind_value','remind_unit']);
+		$reminder_crud->setModel($task);
 
 
 		if($reminder_crud->isEditing()){
-			$reminder_crud->form->setLayout('view\reminder_form');
 			$reminder_crud->form->getElement('remind_via')
 							->addClass('multiselect-full-width')
 							->setAttr(['multiple'=>'multiple']);
