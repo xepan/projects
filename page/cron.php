@@ -1,7 +1,7 @@
 <?php
 namespace xepan\projects;
 
-class page_test extends \Page{
+class page_cron extends \Page{
 	function init(){
 		parent::init();
 
