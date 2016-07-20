@@ -5,6 +5,8 @@ class page_test extends \Page{
 	function init(){
 		parent::init();
 
-		$reminder_view = $this->add('xepan\projects\View_TaskReminder');
+		$this->add('xepan\projects\View_TaskReminder');
+
+		$this->add('xepan\projects\Model_Task')->reminder()	;
 	}
 }
