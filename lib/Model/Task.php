@@ -130,30 +130,38 @@ class Model_Task extends \xepan\base\Model_Table
 		$reminder_task->addCondition('set_reminder',true);
 		$reminder_task->addCondition('is_reminded',false);
 
-		foreach ($reminder_task as $task) {
+		foreach ($reminder_task as $task) {			
 			$reminder_time = date("Y-m-d H:i:s", strtotime('-'.$task['remind_value'].' '.$task['remind_unit'], strtotime($task['starting_date'])));
 			
-			if(!($reminder_time <= ($this->app->now)) AND !$task['is_reminded']==false){
-				continue;
-			}
-
+			if(($reminder_time <= ($this->app->now)) AND $task['is_reminded']==false){
 				$remind_via_array = [];
 				$remind_via_array = explode(',', $task['remind_via']);
 
 				if(in_array("Email", $remind_via_array)){
 					$emp = $this->add('xepan\base\Model_Contact')->load($this->app->employee->id);
 					$emails = $emp->getEmails();
-
+					
 					$email_settings = $this->add('xepan\communication\Model_Communication_EmailSetting')->tryLoadAny();
 					$mail = $this->add('xepan\communication\Model_Communication_Email');
+
+					$email_subject = file_get_contents(realpath(getcwd().'/vendor/xepan/projects/templates/default/reminder_subject.html'));
+        			$email_body = file_get_contents(realpath(getcwd().'/vendor/xepan/projects/templates/default/reminder_body.html'));
+						
+					$temp=$this->add('GiTemplate');
+					$temp->loadTemplateFromString($email_body);
+				
+					$subject_temp=$this->add('GiTemplate');
+					$subject_temp->loadTemplateFromString($email_subject);
+					$subject_v=$this->add('View',null,null,$subject_temp);
+
+					$body_v=$this->add('View',null,null,$temp);
+					$body_v->template->trySetHTML('task',$task['task_name']);
+					$body_v->template->trySetHTML('name',$this->app->employee['name']);
 					
-					$email_subject = "Task Reminder";
-					$email_body = "Reminder";
-									
 					$mail->setfrom($email_settings['from_email'],$email_settings['from_name']);
 					$mail->addTo($emails[0]);
-					$mail->setSubject($email_subject);
-					$mail->setBody($email_body);
+					$mail->setSubject($subject_v->getHtml());
+					$mail->setBody($body_v->getHtml());
 					$mail->send($email_settings);
 				}
 
@@ -162,9 +170,8 @@ class Model_Task extends \xepan\base\Model_Table
 				}
 
 				if(in_array("Notification", $remind_via_array)){					
-					$notify_to = [];
-					$notify_to = $this->app->employee->id;
-					$notify_to = json_encode($notify_to);
+					$notify_to_array[] = $this->app->employee->id;
+					$notify_to = json_encode($notify_to_array);
 
 					$activity = $this->add('xepan\base\Model_Activity');
 					$activity['notify_to'] = $notify_to; 
@@ -173,8 +180,8 @@ class Model_Task extends \xepan\base\Model_Table
 					$activity->save();  
 				}
 
-				$task->addCondition('is_reminded',true);
-				$task->save();
+				$task['is_reminded'] = true;
+				$task->saveAs('xepan\projects\Model_Task');
 			}
 		}
 	}
