@@ -17,7 +17,6 @@ class View_TaskReminder extends \View{
 
 		if($reminder_crud->isEditing()){
 			$reminder_crud->form->setLayout('view\reminder_form');
-			$reminder_crud->form->getElement('Add')->addClass('btn btn-primary');
 			$reminder_crud->form->getElement('remind_via')
 							->addClass('multiselect-full-width')
 							->setAttr(['multiple'=>'multiple']);
