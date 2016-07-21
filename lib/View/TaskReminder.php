@@ -19,16 +19,18 @@ class View_TaskReminder extends \View{
 		$reminder_crud->setModel($task,['task_name','notify_to','employee_id','starting_date','remind_via','remind_value','remind_unit']);
 
 		if($reminder_crud->isEditing()){
-			$task = $this->add('xepan\projects\Model_Task')->load($reminder_crud->model->id);
+			if($crud->model->id){
+				$task = $this->add('xepan\projects\Model_Task')->load($reminder_crud->model->id);
+				$temp = [];
+				$temp = explode(',', $task['notify_to']);
 
-			$temp = [];
-			$temp = explode(',', $task['notify_to']);
+				$temp1 = [];
+				$temp1 = explode(',', $task['remind_via']);
 
-			$temp1 = [];
-			$temp1 = explode(',', $task['remind_via']);
+				$reminder_crud->form->getElement('notify_to')->set($temp)->js(true)->trigger('changed');
+				$reminder_crud->form->getElement('remind_via')->set($temp1)->js(true)->trigger('changed');
+			}
 
-			$reminder_crud->form->getElement('notify_to')->set($temp)->js(true)->trigger('changed');
-			$reminder_crud->form->getElement('remind_via')->set($temp1)->js(true)->trigger('changed');
 
 			$reminder_crud->form->getElement('notify_to')
 							->setAttr(['multiple'=>'multiple']);
