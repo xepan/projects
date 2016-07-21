@@ -38,7 +38,7 @@ class Model_Task extends \xepan\base\Model_Table
 		$this->addField('type');
 		$this->addField('priority')->setValueList(['25'=>'Low','50'=>'Medium','75'=>'High','90'=>'Critical'])->EmptyText('Priority')->defaultValue(50);
 		$this->addField('set_reminder')->type('boolean');
-		$this->addField('remind_via')->setValueList(['Email'=>'Email','SMS'=>'SMS','Notification'=>'Notification']);
+		$this->addField('remind_via')->display(['form'=>'xepan\base\DropDown'])->setValueList(['Email'=>'Email','SMS'=>'SMS','Notification'=>'Notification']);
 		$this->addField('remind_value')->type('number');
 		$this->addField('remind_unit')->setValueList(['Minutes'=>'Minutes','hours'=>'Hours','day'=>'Days','Weeks'=>'Weeks','months'=>'Months']);
 		$this->addField('is_recurring')->type('boolean');

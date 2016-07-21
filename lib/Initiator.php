@@ -21,7 +21,7 @@ class Initiator extends \Controller_Addon {
 
 			
 			$reminder->on('click','.xepan-reminder',function($js,$data)use($vp){
-				return $js->univ()->dialogURL("REMINDERS",$this->api->url($vp->getURL()));	
+				return $js->univ()->frameURL("REMINDERS",$this->api->url($vp->getURL()));	
 			});	
 
 			$this->app->layout->add('xepan\projects\View_MiniTask',null,'task_status');
