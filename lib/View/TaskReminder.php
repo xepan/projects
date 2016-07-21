@@ -19,12 +19,14 @@ class View_TaskReminder extends \View{
 		$reminder_crud->setModel($task,['task_name','notify_to','employee_id','starting_date','remind_via','remind_value','remind_unit']);
 
 		if($reminder_crud->isEditing()){
-
+			// $crud->form->getElement('employee_id')->
 			$reminder_crud->form->getElement('notify_to')
 							->setAttr(['multiple'=>'multiple']);
 
 			$reminder_crud->form->getElement('remind_via')
 							->setAttr(['multiple'=>'multiple']);
+
+			$reminder_crud->form->getElement('employee_id')->getModel()->addCondition('status',"Active");
 		}
 
 		$reminder_crud->grid->addHook('formatRow',function($g){						
