@@ -19,7 +19,7 @@ class View_TaskReminder extends \View{
 		$reminder_crud->setModel($task,['task_name','notify_to','employee_id','starting_date','remind_via','remind_value','remind_unit']);
 
 		if($reminder_crud->isEditing()){
-			if($crud->model->id){
+			if($reminder_crud->model->id){
 				$task = $this->add('xepan\projects\Model_Task')->load($reminder_crud->model->id);
 				$temp = [];
 				$temp = explode(',', $task['notify_to']);
