@@ -28,7 +28,8 @@ class Model_Task extends \xepan\base\Model_Table
 		$this->hasOne('xepan\hr\Employee','created_by_id')->defaultValue($this->app->employee->id);
 		
 		$this->addField('task_name');
-		$this->addField('notify_to')->display(['form'=>'xepan\base\DropDown'])->setModel('xepan\hr\Employee');
+		$employee_model = $this->add('xepan\hr\Model_Employee')->addCondition('status','Active');		
+		$this->addField('notify_to')->display(['form'=>'xepan\base\DropDown'])->setModel($employee_model);
 		$this->addField('description')->type('text');
 		$this->addField('deadline')->display(['form'=>'DateTimePicker'])->type('datetime');
 		$this->addField('starting_date')->display(['form'=>'DateTimePicker'])->type('datetime');
@@ -130,9 +131,10 @@ class Model_Task extends \xepan\base\Model_Table
 	function reminder(){
 		$reminder_task = $this->add('xepan\projects\Model_Task');
 		$reminder_task->addCondition('set_reminder',true);
-		$reminder_task->addCondition('is_reminded',false);
+		$reminder_task->addCondition('is_reminded',null);
 
-		foreach ($reminder_task as $task) {			
+		foreach ($reminder_task as $task) {	
+							
 			$reminder_time = date("Y-m-d H:i:s", strtotime('-'.$task['remind_value'].' '.$task['remind_unit'], strtotime($task['starting_date'])));
 			
 			if(($reminder_time <= ($this->app->now)) AND $task['is_reminded']==false){
@@ -166,7 +168,7 @@ class Model_Task extends \xepan\base\Model_Table
 
 					$body_v=$this->add('View',null,null,$temp);
 					$body_v->template->trySetHTML('task',$task['task_name']);
-					$body_v->template->trySetHTML('name',$this->app->employee['name']);
+					$body_v->template->trySetHTML('name',$task['employee']);
 					
 					$mail->setfrom($email_settings['from_email'],$email_settings['from_name']);
 					foreach ($emails as  $email) {
