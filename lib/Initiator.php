@@ -12,17 +12,10 @@ class Initiator extends \Controller_Addon {
 		->setBaseURL('../vendor/xepan/projects/');
 
 		if($this->app->auth->isLoggedIn()){ 
-			$reminder = $this->app->layout->add('View',null,'page_top_right',['view\reminder']);
-			
-			$vp = $this->add('VirtualPage');
-			$vp->set(function($p){
-				$p->add('xepan\projects\View_TaskReminder');
-			});
 
-			
-			$reminder->on('click','.xepan-reminder',function($js,$data)use($vp){
-				return $js->univ()->frameURL("REMINDERS",$this->api->url($vp->getURL()));	
-			});	
+			$reminder = $this->app->layout->add('View',null,'page_top_right',['view\reminder']);
+			$reminder->js('click')->univ()->frameURL("REMINDERS",$this->api->url('xepan_projects_reminder'));
+
 
 			$this->app->layout->add('xepan\projects\View_MiniTask',null,'task_status');
 			
