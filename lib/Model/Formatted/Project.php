@@ -25,21 +25,25 @@ class Model_Formatted_Project extends \xepan\projects\Model_Project{
 											]);
 		});
 
-		$this->addExpression('progress')->set(function($m,$q){
-			// if !end_date return 0
-				// if status complete then
-					// actual_days /proposed_days
-				// else
-					// days_past / proposed_days
+		$this->addExpression('get_progress')->set(function($m,$q){
+			return $q->expr('IF(IFNULL([0],false) AND IFNULL([1],false),1,0)',[$m->getElement('starting_date'),$m->getElement('ending_date')]);
+		});
 
-			return $m->dsql()->expr("IF([0],(if([1]='Completed',(ROUND([2]/[3])*100),ROUND(([4]/[3])*100))),0)",
-											[
-												$m->getElement('ending_date'),
-												$m->getElement('status'),
-												$m->getElement('actual_days'),
-												$m->getElement('proposed_days'),
-												$m->getElement('days_past')
-											]);
+		$this->addExpression('progress')->set(function($m,$q){
+			return $q->expr('IF([get_progress] = 0,
+								0,
+								if([status]="Completed", 
+									ROUND([actual_days]/[proposed_days]*100),
+									ROUND([days_past]/[proposed_days]*100)
+								)
+							)',
+							[
+								'get_progress'=>$m->getElement('get_progress'),
+								'proposed_days'=> $m->getElement('proposed_days'),
+								'days_past' => $m->getElement('days_past'),
+								'actual_days' => $m->getElement('actual_days'),
+								'status' => $m->getElement('status')
+							]);
 		});
 
 		$this->addExpression('progress_class')->set(function($m,$q){
