@@ -34,6 +34,9 @@
                   a(href='#')
                     span.value {pending_task_count}0{/}
                     span.label Pending Task
+                .progress
+                  .progress-bar(class="{$class}" role='progressbar', aria-valuenow='{$progress}', aria-valuemin='0', aria-valuemax='100', style='width: {$progress}%;')
+  
                 .project-box-ultrafooter.clearfix
                   {$action}
                   button.team.btn.btn-primary#addteam(data-project_id="{$id}") Add/Edit Team     

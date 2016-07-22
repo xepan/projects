@@ -19,6 +19,9 @@
           </div>
           <div class="project-box-content"><span data-percent="{completed_percentage}0{/}" class="chart"><span class="percent"></span>% <br/><span class="lbl">completed</span></span></div>
           <div class="project-box-footer clearfix"><a href="#"><span class="value">{total_task}0{/}</span><span class="label">Total Task</span></a><a href="#"><span class="value">{completed_task_count}0{/}</span><span class="label">Completed Task</span></a><a href="#"><span class="value">{pending_task_count}0{/}</span><span class="label">Pending Task</span></a></div>
+          <div class="progress">
+            <div role="progressbar" aria-valuenow="{$progress}" aria-valuemin="0" aria-valuemax="100" style="width: {$progress}%;" class="progress-bar {$class}"></div>
+          </div>
           <div class="project-box-ultrafooter clearfix">{$action}
             <button id="addteam" data-project_id="{$id}" class="team btn btn-primary">Add/Edit Team     </button>{$edit}
             {$delete}

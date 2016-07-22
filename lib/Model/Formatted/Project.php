@@ -6,6 +6,40 @@ class Model_Formatted_Project extends \xepan\projects\Model_Project{
 	function init(){
 		parent::init();
 
+		$this->addExpression('total_days')->set(function($m,$q){
+			return $q->expr('DATEDIFF([0],[1])',[$m->getElement('ending_date'),$m->getElement('starting_date')]);
+		});
+
+		$this->addExpression('working_days')->set(function($m,$q){
+			// if startingdate > today to 0 
+			return $q->expr('IF([0] > [1], 0 , DATEDIFF("'.$this->app->now.'",[2]))',[$m->getElement('starting_date'),"'".$this->app->now."'",$m->getElement('starting_date')]);
+		});
+
+		$this->addExpression('progress')->set(function($m,$q){
+			// if today > ending date 100 
+			return $m->dsql()->expr("IF([2] > [3], 100 , ROUND(([0]/[1])* 100))",
+											[
+												$m->getElement('working_days'),
+												$m->getElement('total_days'),
+												"'".$this->app->now."'",
+												$m->getElement('ending_date')
+											]);
+		});
+
+		$this->addExpression('progress_class')->set(function($m,$q){
+			return $m->dsql()->expr(
+					"IF([0]>75,'progress-bar-success',
+						if([0]>50,'progress-bar',
+						if([0]>25,'progress-bar-warning','progress-bar-danger'
+						)))",
+
+					  [
+						$m->getElement('progress'),
+					  ]
+
+					);
+		});
+
 		$this->addExpression('total_task')->set(function ($m){
 			return  $m->add('xepan\projects\Model_Task')->addCondition('project_id',$m->getElement('id'))->count();
 		});

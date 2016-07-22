@@ -8,8 +8,10 @@ class page_project extends \xepan\projects\page_sidemenu{
 		parent::init();
 
 		$project = $this->add('xepan\projects\Model_Formatted_Project');
-		$crud=$this->add('xepan\hr\CRUD',['entity_name'=>'Project'],null,['view\project-grid']);
-		$crud->setModel($project,['name','description','status']);
+		$crud=$this->add('xepan\hr\CRUD',['entity_name'=>'Project'],null);
+		// $crud=$this->add('xepan\hr\CRUD',['entity_name'=>'Project'],null,['view\project-grid']);
+		// $crud->setModel($project,['name','description','status','starting_date','ending_date']);
+		$crud->setModel($project);
 
 		$crud->grid->addQuickSearch('name');
 
@@ -29,7 +31,13 @@ class page_project extends \xepan\projects\page_sidemenu{
 			$g->current_row_html['box'] = $color[$this->count].'-box'; 	
 			$g->current_row_html['bg'] = $color[$this->count].'-bg';	
 
-			$this->count++;									
+			$this->count++;
+
+			$fp = $this->add('xepan\projects\Model_Formatted_Project')->load($g->model->id);
+			$g->current_row_html['progress_color'] = $fp['class'];
+			// throw new \Exception($fp['progress']);
+			
+			$g->current_row_html['progress'] = $fp['progress'];								
 		});
 
 		/***************************************************************************

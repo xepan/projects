@@ -13,9 +13,9 @@ class Model_Project extends \xepan\base\Model_Table
 	];
 	
 	public $actions=[
-		'Running'=>['view','edit','delete','onhold','completed'],
-		'Onhold'=>['view','edit','delete','running','completed'],
-		'Completed'=>['view','edit','delete','running']
+		'Running'=>['view','edit','delete','onhold','complete'],
+		'Onhold'=>['view','edit','delete','run','complete'],
+		'Completed'=>['view','edit','delete','run']
 	];
 
 	function init()
@@ -25,6 +25,9 @@ class Model_Project extends \xepan\base\Model_Table
 		$this->hasOne('xepan\hr\Employee','created_by_id')->defaultValue($this->app->employee->id);
 		$this->addField('name')->sortable(true);
 		$this->addField('description');	
+		$this->addField('starting_date')->type('date');	
+		$this->addField('ending_date')->type('date');	
+		$this->addField('actual_completion_date')->type('date');	
 		$this->addField('status')->enum(['Running','Onhold','Completed'])->defaultValue('Running');
 		$this->addField('type');
 
@@ -36,6 +39,30 @@ class Model_Project extends \xepan\base\Model_Table
 
 		$this->addHook('beforeDelete',[$this,'checkExistingTask']);
 		$this->addHook('beforeDelete',[$this,'checkExistingTeamProjectAssociation']);
+	}
+
+	function run(){
+		$this['status']='Running';
+		$this->app->employee
+            ->addActivity("Project Running", null/* Related Document ID*/, $this->id /*Related Contact ID*/)
+            ->notifyWhoCan('complete,onhold','Running',$this);
+		$this->save();
+	}
+
+	function onhold(){
+		$this['status']='Onhold';
+		$this->app->employee
+            ->addActivity("Project onhold", null/* Related Document ID*/, $this->id /*Related Contact ID*/)
+            ->notifyWhoCan('complete,run','Onhold',$this);
+		$this->save();
+	}
+
+	function complete(){
+		$this['status']='Completed';
+		$this->app->employee
+            ->addActivity("Lead has deactivated", null/* Related Document ID*/, $this->id /*Related Contact ID*/)
+            ->notifyWhoCan('run','Completed',$this);
+		$this->save();
 	}
 
 	function getAssociatedTeam(){
