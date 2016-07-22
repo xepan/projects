@@ -8,9 +8,8 @@ class page_project extends \xepan\projects\page_sidemenu{
 		parent::init();
 
 		$project = $this->add('xepan\projects\Model_Formatted_Project');
-		$crud=$this->add('xepan\hr\CRUD',['entity_name'=>'Project'],null,null/*['view\project-grid']*/);
-		// $crud->setModel($project,['name','description','status','starting_date','ending_date']);
-		$crud->setModel($project);
+		$crud=$this->add('xepan\hr\CRUD',['entity_name'=>'Project'],null,['view\project-grid']);
+		$crud->setModel($project,['name','description','status','starting_date','ending_date']);
 		$crud->grid->addQuickSearch('name');
 
 		$color = [
@@ -21,6 +20,7 @@ class page_project extends \xepan\projects\page_sidemenu{
 					4=>"purple",
 					5=>"gray" 
 				 ];
+				 
 		$this->count = 0;		 
 		$crud->grid->addHook('formatRow',function($g) use($color){
 			if($this->count > 5) $this->count = 0;
