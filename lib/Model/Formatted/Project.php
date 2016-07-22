@@ -6,15 +6,27 @@ class Model_Formatted_Project extends \xepan\projects\Model_Project{
 	function init(){
 		parent::init();
 
-		$this->addExpression('total_days')->set(function($m,$q){
+		$this->addExpression('proposed_days')->set(function($m,$q){
 			return $q->expr('DATEDIFF([0],[1])',[$m->getElement('ending_date'),$m->getElement('starting_date')]);
 		});
 
-		$this->addExpression('working_days')->set(function($m,$q){
-			return $q->expr('IF([0] > [1], 0 , DATEDIFF("'.$this->app->now.'",[2]))',[$m->getElement('starting_date'),"'".$this->app->now."'",$m->getElement('starting_date')]);
+		$this->addExpression('days_past')->set(function($m,$q){
+			return $q->expr('DATEDIFF("'.$this->app->now.'",[0]))',[$m->getElement('starting_date')]);
 		});
 
+		$this->addExpression('actual_days')->set(function($m,$q){
+			// if !end_days return 0
+			// date_diff (completed_on, start_date)
+			return $q->expr('DATEDIFF("'.$this->app->now.'",[0]))',[$m->getElement('starting_date')]);
+		});
+
+
 		$this->addExpression('progress')->set(function($m,$q){
+			// if !end_date return 0
+				// if status complete then
+					// actual_days /proposed_days
+				// else
+					// days_past / proposed_days
 			return $m->dsql()->expr("IF([2] > [3], 100 , ROUND(([0]/[1])* 100))",
 											[
 												$m->getElement('working_days'),
