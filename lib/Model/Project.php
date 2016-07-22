@@ -15,7 +15,7 @@ class Model_Project extends \xepan\base\Model_Table
 	public $actions=[
 		'Running'=>['view','edit','delete','onhold','complete'],
 		'Onhold'=>['view','edit','delete','run','complete'],
-		'Completed'=>['view','edit','delete','run']
+		'Completed'=>['view','edit','delete']
 	];
 
 	function init()
@@ -41,8 +41,9 @@ class Model_Project extends \xepan\base\Model_Table
 		$this->addHook('beforeDelete',[$this,'checkExistingTeamProjectAssociation']);
 	}
 
-	function run(){
+	function run(){		
 		$this['status']='Running';
+		
 		$this->app->employee
             ->addActivity("Project Running", null/* Related Document ID*/, $this->id /*Related Contact ID*/)
             ->notifyWhoCan('complete,onhold','Running',$this);
@@ -59,9 +60,10 @@ class Model_Project extends \xepan\base\Model_Table
 
 	function complete(){
 		$this['status']='Completed';
+		$this['actual_completion_date'] = $this->app->today;
 		$this->app->employee
             ->addActivity("Lead has deactivated", null/* Related Document ID*/, $this->id /*Related Contact ID*/)
-            ->notifyWhoCan('run','Completed',$this);
+            ->notifyWhoCan('run,onhold','Completed',$this);
 		$this->save();
 	}
 

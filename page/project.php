@@ -8,14 +8,10 @@ class page_project extends \xepan\projects\page_sidemenu{
 		parent::init();
 
 		$project = $this->add('xepan\projects\Model_Formatted_Project');
-		$crud=$this->add('xepan\hr\CRUD',['entity_name'=>'Project'],null);
-		// $crud=$this->add('xepan\hr\CRUD',['entity_name'=>'Project'],null,['view\project-grid']);
-		// $crud->setModel($project,['name','description','status','starting_date','ending_date']);
-		$crud->setModel($project);
-
+		$crud=$this->add('xepan\hr\CRUD',['entity_name'=>'Project'],null,['view\project-grid']);
+		$crud->setModel($project,['name','description','status','starting_date','ending_date']);
 		$crud->grid->addQuickSearch('name');
 
-		// $color = array("emerald", "green","red","yellow","purple","gray");
 		$color = [
 					0=>"emerald", 
 					1=>"green",
@@ -32,12 +28,14 @@ class page_project extends \xepan\projects\page_sidemenu{
 			$g->current_row_html['bg'] = $color[$this->count].'-bg';	
 
 			$this->count++;
-
-			$fp = $this->add('xepan\projects\Model_Formatted_Project')->load($g->model->id);
-			$g->current_row_html['progress_color'] = $fp['class'];
-			// throw new \Exception($fp['progress']);
 			
+			$fp = $this->add('xepan\projects\Model_Formatted_Project')->load($g->model->id);
+			$g->current_row_html['progress_color'] = $fp['class'];			
 			$g->current_row_html['progress'] = $fp['progress'];								
+			$g->current_row_html['total_task'] = $fp['total_task'];								
+			$g->current_row_html['completed_task_count'] = $fp['completed_task_count'];								
+			$g->current_row_html['pending_task_count'] = $fp['pending_task_count'];								
+			$g->current_row_html['completed_percentage'] = $fp['completed_percentage'];								
 		});
 
 		/***************************************************************************
