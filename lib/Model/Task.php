@@ -16,7 +16,7 @@ class Model_Task extends \xepan\base\Model_Table
 		'Pending'=>['view','edit','delete','mark_complete'],
 		'On-Hold'=>['view','edit','delete','mark_complete'],
 	];
-	public $acl=false;
+	// public $acl=false;
 	
 	function init()
 	{

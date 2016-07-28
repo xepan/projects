@@ -57,7 +57,7 @@ class page_project extends \xepan\projects\page_sidemenu{
 			// Selectable for "Team" 
 
 			$team_grid = $p->add('xepan\base\Grid');
-			$team_grid->setModel($model_employee,['name']);
+			$team_grid->setModel($model_employee,['name','posts']);
 			$team_grid->addSelectable($team_field);
 
 			if($form->isSubmitted()){
