@@ -88,7 +88,7 @@ class Model_Task extends \xepan\base\Model_Table
 	function notifyAssignement(){
 		if($this->dirty['employee_id'] and $this['employee_id']){
 			$this->app->employee
-	            ->addActivity("Task '".$this['task_name']."' assigned to '".$this->app->employee['name']."'",null, $this['created_by_id'] /*Related Contact ID*/,null,null,"xepan_projects_projectdetail&project_id=".$this['project_id']."&task_id=".$this->id."")
+	            ->addActivity("Task '".$this['task_name']."' assigned to '".$this['employee_id']."'",null, $this['created_by_id'] /*Related Contact ID*/,null,null,null)
 	            ->notifyTo([$this['employee_id']],"Task Assigend to you : " . $this['task_name']);
 		}
 	}
@@ -100,9 +100,10 @@ class Model_Task extends \xepan\base\Model_Table
 	function mark_complete(){		
 		$this['status']='Completed';
 		$this->save();
+		
 		if($this['employee_id']){
 			$this->app->employee
-		            ->addActivity("Task '".$this['task_name']."' completed by '".$this->app->employee['name']."'",null, $this['employee_id'] /*Related Contact ID*/,null,null,"xepan_projects_projectdetail&project_id=".$this['project_id']."&task_id=".$this->id."")
+		            ->addActivity("Task '".$this['task_name']."' completed by '".$this->app->employee['name']."'",null, $this['employee_id'] /*Related Contact ID*/,null,null,null)
 		            ->notifyTo([$this['created_by_id']],"Task Completed : " . $this['task_name']);
 		}
 	}
@@ -112,7 +113,7 @@ class Model_Task extends \xepan\base\Model_Table
 		$this->save();
 		if($this['employee_id']){
 			$this->app->employee
-		            ->addActivity("Task '".$this['task_name']."' reopen by '".$this->app->employee['name']."'",null, $this['employee_id'] /*Related Contact ID*/,null,null,"xepan_projects_projectdetail&project_id=".$this['project_id']."&task_id=".$this->id."")
+		            ->addActivity("Task '".$this['task_name']."' reopen by '".$this->app->employee['name']."'",null, $this['employee_id'] /*Related Contact ID*/,null,null,null)
 		            ->notifyTo([$this['employee_id']],"Task ReOpenned : " . $this['task_name']);
 		}
 	}
