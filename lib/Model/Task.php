@@ -88,7 +88,7 @@ class Model_Task extends \xepan\base\Model_Table
 	function notifyAssignement(){
 		if($this->dirty['employee_id'] and $this['employee_id']){
 			$this->app->employee
-	            ->addActivity("Task Assigned", $this->id, $this['created_by_id'] /*Related Contact ID*/)
+	            ->addActivity("Task '".$this['task_name']."' assigned to '".$this->app->employee['name']."'",null, $this['created_by_id'] /*Related Contact ID*/,null,null,"xepan_projects_projectdetail&project_id=".$this['project_id']."&task_id=".$this->id."")
 	            ->notifyTo([$this['employee_id']],"Task Assigend to you : " . $this['task_name']);
 		}
 	}
@@ -102,7 +102,7 @@ class Model_Task extends \xepan\base\Model_Table
 		$this->save();
 		if($this['employee_id']){
 			$this->app->employee
-		            ->addActivity("Task Completed", $this->id, $this['employee_id'] /*Related Contact ID*/)
+		            ->addActivity("Task '".$this['task_name']."' completed by '".$this->app->employee['name']."'",null, $this['employee_id'] /*Related Contact ID*/,null,null,"xepan_projects_projectdetail&project_id=".$this['project_id']."&task_id=".$this->id."")
 		            ->notifyTo([$this['created_by_id']],"Task Completed : " . $this['task_name']);
 		}
 	}
@@ -112,7 +112,7 @@ class Model_Task extends \xepan\base\Model_Table
 		$this->save();
 		if($this['employee_id']){
 			$this->app->employee
-		            ->addActivity("Task ReOpenned", $this->id, $this->app->employee->id /*Related Contact ID*/)
+		            ->addActivity("Task '".$this['task_name']."' reopen by '".$this->app->employee['name']."'",null, $this['employee_id'] /*Related Contact ID*/,null,null,"xepan_projects_projectdetail&project_id=".$this['project_id']."&task_id=".$this->id."")
 		            ->notifyTo([$this['employee_id']],"Task ReOpenned : " . $this['task_name']);
 		}
 	}
