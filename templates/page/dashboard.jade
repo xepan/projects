@@ -1,0 +1,23 @@
+.row
+  .main-box
+    .clearfix
+      .infographic-box.merged.merged-top.pull-left
+        i.fa.fa-sitemap.purple-bg
+        span.value.purple {$projects}
+        span.headline Total Projects
+      .infographic-box.merged.merged-top.merged-right.pull-left
+        i.fa.fa-tasks.green-bg
+        span.value.green {$tasks}
+        span.headline Total Tasks
+    .clearfix
+      .infographic-box.merged.pull-left
+        i.fa.fa-tasks.yellow-bg
+        span.value.yellow {$completed_tasks}
+        span.headline Completed Tasks
+      .infographic-box.merged.merged-right.pull-left
+        i.fa.fa-tasks.red-bg
+        span.value.green {$pending_tasks}
+        span.headline Pending Tasks
+
+.row
+  {$project_overview}
