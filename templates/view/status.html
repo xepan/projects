@@ -6,19 +6,20 @@
       <div class="form-group pull-right xepan-filter-form"><span class="form-control pull-left">{$quick_search}<i class="fa fa-search search-icon"></i></span></div>
     </div>
   </header>{/Pannel}
-  <div class="main-box-body clearfix table">
-    <table style="width:100%" class="table user-list table-hover">{header}
-      <thead>{cols}{col}
-        <th><span>Team Members</span></th>
-        <th><span>Project</span></th>
-        <th><span>Current Task</span></th>
-        <th><span>Time Elapsed</span></th>
-        <th><span>Pending Tasks</span></th>{/}{/}
+  <div class="main-box-body clearfix table-responsive">
+    <table style="width:100%" class="table user-list table-hover footable toggle-circle-filled">{header}
+      <thead class="xepan-hover-hand">{cols}{col}
+        <th id="{$name_sortid}"><span>Employee </span><span style="cursor:pointer; cursor: hand; max-width:600px;">{$name_sort}</span></th>
+        <th id="{$project_sortid}" data-hide="phone"><span>Project </span><span style="cursor:pointer; cursor: hand; max-width:600px;">{$project_sort}</span></th>
+        <th id="{$runnning_task_sortid}" data-hide="phone"><span>Current Task </span><span style="cursor:pointer; cursor: hand; max-width:600px;">{$running_task_sort}</span></th>
+        <th id="{$running_task_since_sortid}" data-hide="phone"><span>Time Elapsed </span><span style="cursor:pointer; cursor: hand; max-width:600px;">{$running_task_since_sort}</span></th>
+        <th id="{$pending_tasks_count_sortid}" data-hide="phone"><span>Pending Tasks </span><span style="cursor:pointer; cursor: hand; max-width:600px;">{$pending_tasks_count_sort}</span></th>{/}{/}
       </thead>{/}
       {$subheader}
       <tbody>{rows}{row}
         <tr data-id="{$id}" class="{$odd_even}">{cols}
-          <td>{$avatar}                   <a href="{url}index.php?page=xepan_projects_dailyanalysis&amp;contact_id={$id}{/}" class="user-link">{$name}</a></td>
+          <td>{$avatar}                   <a href="#" data-id="{$id}" class="user-link do-view-project-live">{$name}</a>
+          </td>
           <td>{$project}</td>
           <td>{$running_task}</td>
           <td>{$running_task_since}</td>

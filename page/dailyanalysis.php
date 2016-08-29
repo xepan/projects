@@ -3,6 +3,7 @@
 namespace xepan\projects;
 
 class page_dailyanalysis extends \xepan\projects\page_sidemenu{
+	public $title="Daily Routine";
 	function init(){
 		parent::init();
 
@@ -37,7 +38,7 @@ class page_dailyanalysis extends \xepan\projects\page_sidemenu{
 			
 		}
 
-		$grid = $this->add('xepan\hr\Grid',null,'task',['view\task_timeline']);
+		$grid = $this->add('xepan\hr\Grid',['no_records_message'=>'No task found'],'task',['view\task_timeline']);
 		$grid->setModel($model_timesheet,['task','duration']);
 		
 		

@@ -11,9 +11,17 @@ class Initiator extends \Controller_Addon {
 		$this->addLocation(array('template'=>'templates','js'=>'templates/js'))
 		->setBaseURL('../vendor/xepan/projects/');
 
-		if($this->app->auth->isLoggedIn()){
+		if($this->app->auth->isLoggedIn()){ 
+
+			$reminder = $this->app->layout->add('View',null,'page_top_right',['view\reminder']);
+			$reminder->js('click')->univ()->frameURL("REMINDERS",$this->api->url('xepan_projects_reminder'));
+
+
+			$this->app->layout->add('xepan\projects\View_MiniTask',null,'task_status');
+			
 			$m = $this->app->top_menu->addMenu('Projects');
 			$m->addItem(['Dashboard','icon'=>'fa fa-dashboard'],'xepan_projects_projectdashboard');
+			$m->addItem(['Project','icon'=>'fa fa-sitemap'],'xepan_projects_project');
 			$m->addItem(['Trace Employee','icon'=>' fa fa-paw'],'xepan_projects_projectlive');
 			$projects = $this->add('xepan\projects\Model_Project');
 			foreach ($projects as $project) {
@@ -22,16 +30,31 @@ class Initiator extends \Controller_Addon {
 
 				$task_count = $project->ref('xepan\projects\Task')->addCondition('employee_id',$this->app->employee->id)->addCondition('status','Pending')->count()->getOne();
 				
-				$m->addItem([$project_name,'icon'=>' fa fa-tasks'],$this->app->url('xepan_projects_projectdetail',['project_id'=>$project_id]));
+				$m->addItem([$project_name,'icon'=>' fa fa-tasks'],$this->app->url('xepan_projects_projectdetail',['project_id'=>$project_id]),['project_id']);
 			}
 		}
+
+		$search_project = $this->add('xepan\projects\Model_Project');
+		$this->app->addHook('quick_searched',[$search_project,'quickSearch']);
 		return $this;
 
 	}
 	function setup_frontend(){
 		$this->routePages('xepan_projects');
 		$this->addLocation(array('template'=>'templates','js'=>'templates/js'))
-		->setBaseURL('./vendor/xepan/projects/');	
+		->setBaseURL('./vendor/xepan/projects/');
+
+		$this->app->addHook('cron_executor',function($app){
+			$now = \DateTime::createFromFormat('Y-m-d H:i:s', $this->app->now);
+			$job1 = new \Cron\Job\ShellJob();
+			$job1->setSchedule(new \Cron\Schedule\CrontabSchedule('*/1 * * * *'));
+			if(!$job1->getSchedule() || $job1->getSchedule()->valid($now)){
+				echo " Executing Task Reminder <br/>";
+				$this->add('xepan\projects\Model_Task')->reminder()	;
+			}
+		});
+
+
 		return $this;	
 	}
 

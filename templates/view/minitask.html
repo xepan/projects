@@ -1,0 +1,24 @@
+
+<div id="{$_name}" {$attributes} class="xepan-grid {$class}">
+  <div class="main-box-body">
+    <table style="width:100%">
+      <tbody style="font-size:9px">
+        {$header}
+        {rows}{row}
+        <tr data-id="{$id}" class="{$odd_even}">
+          <td style="width:70%"><span data-id="{$id}"></span><span data-id="{$id}" style="cursor:pointer; cursor: hand; max-width:600px; margin-left:6px; display:block; margin-bottom:4px;" class="text-center task-item instant-task-feed text-{$color}">
+               
+              {task_name}<span class="text-danger">No Active Task </span>{/}</span></td>
+          <td style="width:30%">       </td>
+        </tr>
+        <tr>
+          <td style="width:70%"><span style="margin-right:10px;margin-left:6px">{$total_duration}</span></td>
+          <td style="width:30%"><span data-action="{$possible_action}" data-id="{$id}" style="cursor:pointer; cursor: hand;" class="pull-left current_task_btn fa {$icon} {$running-task}"><span style="margin-left:3px;" class="duration">           </span></span></td>
+        </tr>{/rows}{/row}
+      </tbody>
+    </table>
+  </div>{not_found}
+  <div style="margin-left:auto;margin-right:auto" class="row">
+    <div role="alert" style="cursor:pointer; cursor: hand;" class="col-md-12 text-center alert alert-warning instant-task-feed"><span class="icon-attention fa fa-exclamation-triangle"> &nbsp;{not_found_message}{/not_found_message}</span></div>
+  </div>{/}
+</div>

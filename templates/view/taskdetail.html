@@ -2,15 +2,15 @@
 <div id="{$_name}" class="row col-lg-12">
   <div class="main-box clearfix">
     <div class="tabs-wrapper profile-tabs">
-      <ul class="nav nav-tabs">
+      <ul class="nav nav-tabs responsive-tabs">
         <li class="active"><a data-toggle="tab" href="#tab-form">Task  </a></li>
         <li><a data-toggle="tab" href="#tab-comment">Comments<span class="label label-warning label-circle comment">{$comment_count}</span></a></li>
         <li><a data-toggle="tab" href="#tab-attachment">Attachment <span class="label label-warning label-circle attachment">{$attachment_count}  </span></a></li>
       </ul>
       <div class="tab-content">
-        <div id="tab-form" class="tab-pane fade in active">{$task_form}</div>
-        <div id="tab-comment" class="tab-pane clearfix fade">{$commentgrid}</div>
-        <div id="tab-attachment" class="tab-pane clearfix fade">{$attachment}</div>
+        <div id="tab-form" class="tab-pane active">{$task_form}</div>
+        <div id="tab-comment" class="tab-pane">{commentgrid}First create a task then add comments :) {/}</div>
+        <div id="tab-attachment" class="tab-pane">{attachment}First create a task then add attachment :) {/}</div>
       </div>
     </div>
   </div>

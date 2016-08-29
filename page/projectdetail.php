@@ -9,7 +9,11 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 	function init(){
 		parent::init();
 
+		$this->js(true)->_load('timer.jquery');
+
 		$project_id = $this->app->stickyGET('project_id');
+		if(!$project_id) return;
+		
 		$task_id = $this->app->stickyGET('task_id');
 		$search = $this->app->stickyGET('search');
 
@@ -36,19 +40,16 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 	    $option_form = $this->add('Form',null,'leftview');
 	    $option_form->setLayout('view\option_form');
 	    $option_form->addField('dropdown','status','')
-	    	->setValueList(['Completed'=>'Completed','Pending'=>'Pending'])
-	    	->setEmptyText('All')
-	    	->set($status_searched);
+	    	->setValueList(['Pending'=>'Pending','Completed'=>'Completed'])
+	    	->setEmptyText('All');
 
 	    $option_form->addField('dropdown','createdby','')
-	    	->setValueList(['1'=>'Assigned To Me','2'=>'Created By Me','3'=>'Created By Or Assigned To Me'])
-	    	->setEmptyText('Select An Option')
-	    	->set($status_searched);
+	    	->setValueList(['1'=>'Created By','2'=>'Assigned To','3'=>'Created By And Assigned To','4'=>'Created By Or Assigned To'])
+	    	->setEmptyText('Select An Option');
 
 	    $option_form->addField('dropdown','priority','')
 	    	->setValueList(['25'=>'Low','50'=>'Medium','75'=>'High','90'=>'Critical'])
-	    	->setEmptyText('All')
-	    	->set($status_searched);	
+	    	->setEmptyText('All');	
 	    		
 	    $option_form->addField('Line','search_string','Search')->set($search_string);
 	    $emp_name = $option_form->addField('dropdown','employee')->setEmptyText('All');
@@ -60,11 +61,34 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 						->addCondition('project_id',$project_id);
 	    
 
-	    if($employee_id)
-	    	$task_list_m->addCondition('employee_id',$employee_id);
+	if($employee_id){
+	    if($created_by){
+	    	if($created_by == '1'){
+	    		$task_list_m->addCondition('created_by_id',$employee_id);
+	    	}else if($created_by == '2'){
+	    		$task_list_m->addCondition('employee_id',$employee_id);
+	    	}else if($created_by == '3'){
+	    		$task_list_m->addCondition(
+						$task_list_m->dsql()->andExpr()
+						->where('created_by_id',$employee_id)
+						->where('employee_id',$employee_id)
+					);
+	    	}else if($created_by == '4'){
+	    		$task_list_m->addCondition(
+						$task_list_m->dsql()->orExpr()
+						->where('created_by_id',$employee_id)
+						->where('employee_id',$employee_id)
+					);
+	    	}
+	    }
+	}
 
-	    if($status_searched)
+	    if($status_searched)	    	
 	    	$task_list_m->addCondition('status',$status_searched);
+
+	    if($priority){
+	    	$task_list_m->addCondition('priority',$priority);
+	    }
 
 		if($search_string){	
 
@@ -72,32 +96,8 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 			$task_list_m->addCondition('Relevance','>',0);
 	 		$task_list_m->setOrder('Relevance','Desc');
 		}
-	    
-	    if($created_by){
 
-	    	if($created_by == '1'){
-	    		$task_list_m->addCondition('employee_id',$this->app->employee->id);
-	    	}else if($created_by == '2'){
-	    		$task_list_m->addCondition('created_by_id',$this->app->employee->id);
-	    	}
-	    	else{
-	    		$task_list_m->addCondition(
-						$task_list_m->dsql()->orExpr()
-						->where('created_by_id',$this->app->employee->id)
-						->where('employee_id',$this->app->employee->id)
-					);
-	    	}
-	    }
-
-	    if($priority){
-	    	$task_list_m->addCondition('priority',$priority);
-	    }
-
-	    $running_task_id = $this->add('xepan\projects\Model_Employee')
-	    					->load($this->app->employee->id)
-	    					->get('running_task_id');
-
-	    $task_list_view = $this->add('xepan\projects\View_TaskList',['running_task_id'=>$running_task_id],'leftview');	    
+	    $task_list_view = $this->add('xepan\projects\View_TaskList',null,'leftview');	    
 
 	    if($option_form->isSubmitted()){	
 
@@ -110,9 +110,6 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
     		$task_list_view->js()->reload()->execute();
 	    }
 		
-		/***************************************************************************
-			Relevancy Search
-		***************************************************************************/
 		$task_list_view->setModel($task_list_m);
 		$task_list_view->add('xepan\hr\Controller_ACL',['action_btn_group'=>'xs']);
 
@@ -146,7 +143,14 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 			$task_form = $detail_view->add('Form',null,'task_form');
 			$task_form->setLayout('view\task_form');
 
-			$task_form->setModel($model_task,['employee_id','task_name','description','starting_date','deadline','priority','estimate_time']);
+			$task_form->setModel($model_task,['employee_id','task_name','description','starting_date','deadline','priority','estimate_time','set_reminder','remind_via','remind_value','remind_unit','notify_to','is_recurring','recurring_span']);
+			$task_form->getElement('remind_via')
+						->addClass('multiselect-full-width')
+						->setAttr(['multiple'=>'multiple']);
+
+			$task_form->getElement('notify_to')
+						->addClass('multiselect-full-width')
+						->setAttr(['multiple'=>'multiple']);			
 
 
 			if($task_form->isSubmitted()){
@@ -160,23 +164,29 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 				$p->js(null,$js)->execute();
 			}
 
-			$model_attachment = $this->add('xepan\projects\Model_Task_Attachment');
-			$model_attachment->addCondition('task_id',$task_id);	
-			
-			$attachment_crud = $detail_view->add('xepan\hr\CRUD',null,'attachment',['view\attachment-grid']);
-			$attachment_crud->setModel($model_attachment,['file_id'])->addCondition('task_id',$task_id);;
-			
-			$attachment_count = $model_attachment->count()->getOne();
-			$detail_view->template->trySet('attachment_count',$attachment_count);
-			
-			$model_comment = $this->add('xepan\projects\Model_Comment');
-			$model_comment->addCondition('task_id',$model_task->id);
+			if($model_task->loaded()){
+				$model_attachment = $this->add('xepan\projects\Model_Task_Attachment');
+				$model_attachment->addCondition('task_id',$task_id);	
+					
+				$attachment_crud = $detail_view->add('xepan\hr\CRUD',null,'attachment',['view\attachment-grid']);
+				$attachment_crud->setModel($model_attachment,['file_id'])->addCondition('task_id',$task_id);
 
-			$comment_grid = $detail_view->add('xepan\hr\CRUD',null,'commentgrid',['view\comment-grid']);
-			$comment_grid->setModel($model_comment,['comment','employee'])->addCondition('task_id',$task_id);
+				$attachment_count = $model_attachment->count()->getOne();
+				$detail_view->template->trySet('attachment_count',$attachment_count);
+				
+				$model_comment = $this->add('xepan\projects\Model_Comment');
+				$model_comment->addCondition('task_id',$model_task->id);
+
+				$comment_grid = $detail_view->add('xepan\hr\CRUD',null,'commentgrid',['view\comment-grid']);
+				$comment_grid->setModel($model_comment,['comment','employee'])->addCondition('task_id',$task_id);
+				
+				$comment_count = $model_comment->count()->getOne();
+				$detail_view->template->trySet('comment_count',$comment_count);
+			}
+
 			
-			$comment_count = $model_comment->count()->getOne();
-			$detail_view->template->trySet('comment_count',$comment_count);
+			
+			
 		});	
 
 		/***************************************************************************

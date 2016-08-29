@@ -3,7 +3,7 @@
 namespace xepan\projects;
 
 class page_projectlive extends \xepan\projects\page_sidemenu{
-	public $title = "Project Status";
+	public $title = "Trace Employee";
 	public $breadcrumb=['Home'=>'index','Project'=>'xepan_projects_project','Status'=>'#'];
 	function init(){
 		parent::init();
@@ -29,8 +29,13 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 		});
 		
 		$project_detail_grid=$this->add('xepan\hr\Grid',null,'grid',['view\status']);
-
+		$project_detail_grid->add('xepan\base\Controller_Avatar',['options'=>['size'=>40,'border'=>['width'=>0]],'name_field'=>'name','default_value'=>'']);
+		$project_detail_grid->addPaginator(50);
+		$project_detail_grid->addQuickSearch(['name']);
 		$project_detail_grid->setModel($model_employee,['name','running_task','project','pending_tasks_count','running_task_since']); 
+		
+		$project_detail_grid->js('click')->_selector('.do-view-project-live')->univ()->frameURL('Employee Project Status',[$this->api->url('xepan_projects_dailyanalysis'),'contact_id'=>$this->js()->_selectorThis()->closest('[data-id]')->data('id')]);
+
 	}
 
 	function defaultTemplate(){

@@ -1,20 +1,60 @@
 .row  
-  .row.xepan-push-large
+  .row.xepan-push
     .col-md-6
-      {$task_name}
+      |Task Name:
+      div
+        {$task_name}
     .col-md-3
-      {$employee_id}
+      |Employee:
+      div
+        {$employee_id}
     .col-md-3
-      {$estimate_time}
-  .row.xepan-push-large
-    .col-md-6
-      {$description}
-    .col-md-3
-      {$starting_date}
-    .col-md-3    
-      {$deadline}
-  .row.xepan-push-large
-    .col-md-3    
-      {$priority}
-
-  {$form_buttons}
+      |Estimate Time:
+      div
+        {$estimate_time}
+  .row.xepan-push
+    .col-md-12
+      |Task Description:
+      div
+        {$description}
+  .row.xepan-push
+      .col-md-4
+        |Starting Date:
+        div
+          {$starting_date}
+      .col-md-4 
+        |Deadline:
+        div 
+          {$deadline}
+      .col-md-4
+        |Task Priority:
+        div    
+          {$priority}
+  .row.xepan-push
+    .col-md-4
+      {$is_recurring}
+    .col-md-4
+      |Recurring Time Span: 
+      div 
+        {$recurring_span}    
+  .row.col-md-12.xepan-push
+    .col-md-4
+      {$set_reminder}
+    .col-md-4
+      |Remind Via:
+      div  
+        {$remind_via}
+    .col-md-4
+      |Notify To:
+      div
+        {$notify_to}    
+  .row.col-md-12.xepan-push    
+    .col-md-4
+      |Remind Before:
+      div
+        {$remind_value}
+    .col-md-4
+      |Value:
+      div  
+        {$remind_unit}
+  .row.xepan-push    

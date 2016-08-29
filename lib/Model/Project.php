@@ -13,19 +13,22 @@ class Model_Project extends \xepan\base\Model_Table
 	];
 	
 	public $actions=[
-		'Running'=>['view','edit','delete','onhold','completed'],
-		'Onhold'=>['view','edit','delete','running','completed'],
-		'Completed'=>['view','edit','delete','running']
+		'Running'=>['view','edit','delete','onhold','complete'],
+		'Onhold'=>['view','edit','delete','run','complete'],
+		'Completed'=>['view','edit','delete']
 	];
 
 	function init()
 	{
 		parent::init();
 		
-		$this->hasOne('xepan\hr\Employee','created_by_id');
-		$this->addField('name');
+		$this->hasOne('xepan\hr\Employee','created_by_id')->defaultValue($this->app->employee->id);
+		$this->addField('name')->sortable(true);
 		$this->addField('description');	
-		$this->addField('status')->defaultValue('Draft');
+		$this->addField('starting_date')->type('date');	
+		$this->addField('ending_date')->type('date');	
+		$this->addField('actual_completion_date')->type('date');	
+		$this->addField('status')->enum(['Running','Onhold','Completed'])->defaultValue('Running');
 		$this->addField('type');
 
 		$this->addCondition('type','project');
@@ -36,6 +39,32 @@ class Model_Project extends \xepan\base\Model_Table
 
 		$this->addHook('beforeDelete',[$this,'checkExistingTask']);
 		$this->addHook('beforeDelete',[$this,'checkExistingTeamProjectAssociation']);
+	}
+
+	function run(){		
+		$this['status']='Running';
+		
+		$this->app->employee
+            ->addActivity("Project Running", null/* Related Document ID*/, $this->id /*Related Contact ID*/)
+            ->notifyWhoCan('complete,onhold','Running',$this);
+		$this->save();
+	}
+
+	function onhold(){
+		$this['status']='Onhold';
+		$this->app->employee
+            ->addActivity("Project onhold", null/* Related Document ID*/, $this->id /*Related Contact ID*/)
+            ->notifyWhoCan('complete,run','Onhold',$this);
+		$this->save();
+	}
+
+	function complete(){
+		$this['status']='Completed';
+		$this['actual_completion_date'] = $this->app->today;
+		$this->app->employee
+            ->addActivity("Lead has deactivated", null/* Related Document ID*/, $this->id /*Related Contact ID*/)
+            ->notifyWhoCan('run,onhold','Completed',$this);
+		$this->save();
 	}
 
 	function getAssociatedTeam(){
@@ -74,4 +103,39 @@ class Model_Project extends \xepan\base\Model_Table
 			
 		}
 	}
+
+	function quickSearch($app,$search_string,&$result_array,$relevency_mode){		
+		$this->addExpression('Relevance')->set('MATCH(name, description, type) AGAINST ("'.$search_string.'" '.$relevency_mode.')');
+		$this->addCondition('Relevance','>',0);
+ 		$this->setOrder('Relevance','Desc');
+ 		
+ 		if($this->count()->getOne()){
+ 			foreach ($this->getRows() as $data) { 				
+ 				$result_array[] = [
+ 					'image'=>null,
+ 					'title'=>$data['name'],
+ 					'relevency'=>$data['Relevance'],
+ 					'url'=>$this->app->url('xepan_projects_projectdetail',['status'=>$data['status'],'project_id'=>$data['id']])->getURL(),
+ 					'type_status'=>$data['type'].' '.'['.$data['status'].']',
+ 				];
+ 			}
+		}
+
+		$task = $this->add('xepan\projects\Model_Task');
+		$task->addExpression('Relevance')->set('MATCH(task_name, description, status, type) AGAINST ("'.$search_string.'" '.$relevency_mode.')');
+		$task->addCondition('Relevance','>',0);
+ 		$task->setOrder('Relevance','Desc');
+ 		
+ 		if($task->count()->getOne()){
+ 			foreach ($task->getRows() as $data) { 
+ 				$result_array[] = [
+ 					'image'=>null,
+ 					'title'=>$data['task_name'],
+ 					'relevency'=>$data['Relevance'],
+ 					'url'=>$this->app->url('xepan_projects_projectdetail',['status'=>$data['status'],'project_id'=>$data['id']])->getURL(),
+ 					'type_status'=>$data['type'].' '.'['.$data['status'].']',
+ 				];
+ 			}
+		}
+	}	
 }

@@ -7,21 +7,26 @@
                 span(class="form-control pull-left")|{$quick_search}
                     i(class="fa fa-search search-icon")
     {/Pannel}
-    .main-box-body.clearfix.table
-        table.table.user-list.table-hover(style="width:100%")
+    .main-box-body.clearfix.table-responsive
+        table.table.user-list.table-hover.footable.toggle-circle-filled(style="width:100%")
             {header}
-            thead
+            thead.xepan-hover-hand
                 {cols}{col}
-                th
-                    span Team Members
-                th
-                    span Project
-                th
-                    span Current Task
-                th
-                    span Time Elapsed
-                th
-                    span Pending Tasks
+                th(id="{$name_sortid}")
+                    span Employee 
+                    span(style= "cursor:pointer; cursor: hand; max-width:600px;"){$name_sort}
+                th(id="{$project_sortid}" data-hide="phone")
+                    span Project 
+                    span(style= "cursor:pointer; cursor: hand; max-width:600px;"){$project_sort}
+                th(id="{$runnning_task_sortid}" data-hide="phone")
+                    span Current Task 
+                    span(style= "cursor:pointer; cursor: hand; max-width:600px;"){$running_task_sort}
+                th(id="{$running_task_since_sortid}" data-hide="phone")
+                    span Time Elapsed 
+                    span(style= "cursor:pointer; cursor: hand; max-width:600px;"){$running_task_since_sort}
+                th(id="{$pending_tasks_count_sortid}" data-hide="phone")
+                    span Pending Tasks 
+                    span(style= "cursor:pointer; cursor: hand; max-width:600px;"){$pending_tasks_count_sort}
                 {/}{/}
             {/}
             {$subheader}
@@ -32,7 +37,8 @@
                     {cols}
                     td
                       {$avatar}                   
-                      a.user-link(href='{url}index.php?page=xepan_projects_dailyanalysis&contact_id={$id}{/}'){$name}
+                      //- a.user-link(href='{url}index.php?page=xepan_projects_dailyanalysis&contact_id={$id}{/}')
+                      a.user-link.do-view-project-live(href='#',data-id="{$id}"){$name}
                     td
                       | {$project}
                     td
