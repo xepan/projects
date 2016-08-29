@@ -21,7 +21,7 @@ class page_projectdashboard extends \xepan\projects\page_sidemenu{
 		$this->template->trySet('completed_tasks',$tasks->count());
 
 		$model_formatted_projects = $this->add('xepan\projects\Model_Formatted_Project');
-		$model_formatted_projects->addCondition('status','Active');
+		$model_formatted_projects->addCondition('status','Running');
 
 		$project_overview = $this->add('xepan\base\Grid',null,'project_overview',['view\dashboard\projectoverview']);
 		$project_overview->setModel($model_formatted_projects);		
