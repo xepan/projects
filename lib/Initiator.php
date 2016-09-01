@@ -44,19 +44,17 @@ class Initiator extends \Controller_Addon {
 		$this->addLocation(array('template'=>'templates','js'=>'templates/js'))
 		->setBaseURL('./vendor/xepan/projects/');
 
-		try{
-			$this->app->addHook('cron_executor',function($app){
-				$now = \DateTime::createFromFormat('Y-m-d H:i:s', $this->app->now);
-				$job1 = new \Cron\Job\ShellJob();
-				$job1->setSchedule(new \Cron\Schedule\CrontabSchedule('*/1 * * * *'));
-				if(!$job1->getSchedule() || $job1->getSchedule()->valid($now)){
-					echo " Executing Task Reminder <br/>";
+		$this->app->addHook('cron_executor',function($app){
+			$now = \DateTime::createFromFormat('Y-m-d H:i:s', $this->app->now);
+			$job1 = new \Cron\Job\ShellJob();
+			$job1->setSchedule(new \Cron\Schedule\CrontabSchedule('*/1 * * * *'));
+			if(!$job1->getSchedule() || $job1->getSchedule()->valid($now)){
+				echo " Executing Task Reminder <br/>";
+				try{
 					$this->add('xepan\projects\Model_Task')->reminder()	;
-				}
-			});
-		}catch(\Exception $e){
-			
-		}
+				}catch(\Exception $e){}		
+			}
+		});
 
 
 		return $this;	
