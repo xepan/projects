@@ -153,7 +153,6 @@ class Model_Task extends \xepan\base\Model_Table
 						array_push($emails, $emp['first_email']);
 					}
 					$to_emails = implode(', ', $emails);
-					
 					$email_settings = $this->add('xepan\communication\Model_Communication_EmailSetting')->tryLoadAny();
 					$mail = $this->add('xepan\communication\Model_Communication_Email');
 
@@ -175,6 +174,7 @@ class Model_Task extends \xepan\base\Model_Table
 					foreach ($emails as  $email) {
 						$mail->addTo($email);
 					}
+					
 					$mail->setSubject($subject_v->getHtml());
 					$mail->setBody($body_v->getHtml());
 					$mail->send($email_settings);
