@@ -7,6 +7,6 @@ class page_cron extends \Page{
 
 		$this->add('xepan\projects\View_TaskReminder');
 
-		$this->add('xepan\projects\Model_Task')->reminder()	;
+		$this->add('xepan\projects\Model_Task')->recurring();
 	}
 }

@@ -200,10 +200,11 @@ class Model_Task extends \xepan\base\Model_Table
 		}
 	}
 
-	function recurring(){		
+	function recurring(){	
+				
 		$recurring_task = $this->add('xepan\projects\Model_Task');
 		$recurring_task->addCondition('is_recurring',true);
-		$recurring_task->addCondition('deadline',$this->app->today);
+		$recurring_task->addCondition('deadline','<=',$this->app->now);
 		
 		foreach ($recurring_task as $task) {
 			$model_task = $this->add('xepan\projects\Model_Task');
@@ -211,7 +212,7 @@ class Model_Task extends \xepan\base\Model_Table
 			$model_task['task_name']  = $task['task_name'];
 			$model_task['employee_id'] = $task['employee_id'];
 			$model_task['description'] = $task['description'];
-			$model_task['starting_date'] = $task['starting_date'];
+			$model_task['starting_date'] = $task['deadline'];
 			$model_task['status'] = $task['status'];
 			$model_task['created_at'] = $task['created_at'];
 			$model_task['priority'] = $task['priority'];
@@ -222,12 +223,34 @@ class Model_Task extends \xepan\base\Model_Table
 			$model_task['remind_unit'] = $task['remind_unit'];
 			$model_task['is_recurring'] = $task['is_recurring'];
 			$model_task['recurring_span'] = $task['recurring_span'];
-			$model_task->addCondition('created_by_id',$this->app->employee->id);
+			$model_task['created_by_id'] = $task['created_by_id'];
+			
+			switch ($task['recurring_span']) {
+				case 'Weekely':
+					$deadline = date("Y-m-d H:i:s", strtotime('+ 1 Weeks', strtotime($task['deadline'])));
+					break;
+				case 'Fortnight':
+					$deadline = date("Y-m-d H:i:s", strtotime('+ 2 Weeks', strtotime($task['deadline'])));
+					break;
+				case 'Monthly':
+					$deadline = date("Y-m-d H:i:s", strtotime('+ 1 months', strtotime($task['deadline'])));
+					break;
+				case 'Quarterly':
+					$deadline = date("Y-m-d H:i:s", strtotime('+ 4 months', strtotime($task['deadline'])));
+					break;
+				case 'Halferly':
+					$deadline = date("Y-m-d H:i:s", strtotime('+ 6 months', strtotime($task['deadline'])));
+					break;
+				case 'Yearly':
+					$deadline = date("Y-m-d H:i:s", strtotime('+ 12 months', strtotime($task['deadline'])));
+					break;					
+				
+				default:
+					break;
+			}
+			
+			$model_task['deadline'] = $deadline;
 			$model_task->save();
-
-			// TWO THINGS LEFT
-			// 1. CALCULATING AND SETTING DEADLINE BASED ON RECURRING_SPAN
-			// 2. CALLING THIS FUNCTION VIA CRON JOB
 		}
 	}
 }
