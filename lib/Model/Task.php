@@ -251,6 +251,17 @@ class Model_Task extends \xepan\base\Model_Table
 			
 			$model_task['deadline'] = $deadline;
 			$model_task->save();
+
+			// {need to think about it}
+			// NEW TASK NAME WILL BE SAME AS OLD ONE
+			// MAKING IT AMBIGIOUS TO HANDLE IN CASE 
+			// USER WANTING IT TO SWITCH OFF
+
+			// No FACILITY GIVEN TO USER TO ADD RECURRING DAYS
+			// IT MAKES THE SCOPE LIMITED
+
+			// RECURRING FACILITY NOT ADDED IN REMINDER VIEW 
+			
 		}
 	}
 }
