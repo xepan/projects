@@ -207,6 +207,7 @@ class Model_Task extends \xepan\base\Model_Table
 		$recurring_task->addCondition('deadline','<=',$this->app->now);
 		
 		foreach ($recurring_task as $task) {
+			
 			$model_task = $this->add('xepan\projects\Model_Task');
 			$model_task['project_id'] = $task['project_id']; 
 			$model_task['task_name']  = $task['task_name'];
@@ -249,9 +250,12 @@ class Model_Task extends \xepan\base\Model_Table
 					break;
 			}
 			
+			$task['is_recurring'] = false;
+			$task->saveAs('xepan\projects\Model_Task');
+
 			$model_task['deadline'] = $deadline;
 			$model_task->save();
-
+			
 			// {need to think about it}
 			// NEW TASK NAME WILL BE SAME AS OLD ONE
 			// MAKING IT AMBIGIOUS TO HANDLE IN CASE 
