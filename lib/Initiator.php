@@ -21,6 +21,7 @@ class Initiator extends \Controller_Addon {
 			
 			$m = $this->app->top_menu->addMenu('Projects');
 			$m->addItem(['Dashboard','icon'=>'fa fa-dashboard'],'xepan_projects_projectdashboard');
+			$m->addItem(['My Tasks','icon'=>'fa fa-tasks'],'xepan_projects_mytasks');
 			$m->addItem(['Project','icon'=>'fa fa-sitemap'],'xepan_projects_project');
 			$m->addItem(['Trace Employee','icon'=>' fa fa-paw'],'xepan_projects_projectlive');
 			$projects = $this->add('xepan\projects\Model_Project');
@@ -76,14 +77,5 @@ class Initiator extends \Controller_Addon {
         }
         
         $this->app->epan=$this->app->new_epan;
-
-        // default project for various miscellaneous tasks
-        
-        /*$default_project = $this->add('xepan\projects\Model_Project');
-        $default_project['name']="System Project";
-        $default_project['desription']="DEFAULT PROJECT WHICH IS USED FOR VARIOUS PURPOSE LIKE EMPLOYEES REMINDER TASKS, RECURRING REMINDER TASK ETC.";
-        $default_project['status']="Running";
-        $default_project['type']="Project";
-        $default_project->save();*/
 	}
 }
