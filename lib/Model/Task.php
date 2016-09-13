@@ -45,6 +45,7 @@ class Model_Task extends \xepan\base\Model_Table
 		$this->addField('is_recurring')->type('boolean');
 		$this->addField('recurring_span')->setValueList(['Weekely'=>'Weekely','Fortnight'=>'Fortnight','Monthly'=>'Monthly','Quarterly'=>'Quarterly','Halferly'=>'Halferly','Yearly'=>'Yearly']);
 		$this->addField('is_reminded')->type('boolean');
+		$this->addField('is_reminder')->type('boolean');
 		$this->addCondition('type','Task');
 
 		$this->hasMany('xepan\projects\Follower_Task_Association','task_id');
@@ -199,6 +200,10 @@ class Model_Task extends \xepan\base\Model_Table
 
 				$task['is_reminded'] = true;
 				$task->saveAs('xepan\projects\Model_Task');
+
+				if($task['is_reminder'])
+					$task->recurring();
+					$task->delete();
 			}
 		}
 	}
@@ -216,7 +221,6 @@ class Model_Task extends \xepan\base\Model_Table
 			$model_task['task_name']  = $task['task_name'];
 			$model_task['employee_id'] = $task['employee_id'];
 			$model_task['description'] = $task['description'];
-			$model_task['starting_date'] = $task['deadline'];
 			$model_task['status'] = $task['status'];
 			$model_task['created_at'] = $task['created_at'];
 			$model_task['priority'] = $task['priority'];
@@ -228,25 +232,26 @@ class Model_Task extends \xepan\base\Model_Table
 			$model_task['is_recurring'] = $task['is_recurring'];
 			$model_task['recurring_span'] = $task['recurring_span'];
 			$model_task['created_by_id'] = $task['created_by_id'];
+			$model_task['deadline'] = $task['deadline'];
 			
 			switch ($task['recurring_span']) {
 				case 'Weekely':
-					$deadline = date("Y-m-d H:i:s", strtotime('+ 1 Weeks', strtotime($task['deadline'])));
+					$starting = date("Y-m-d H:i:s", strtotime('+ 1 Weeks', strtotime($task['starting_date'])));
 					break;
 				case 'Fortnight':
-					$deadline = date("Y-m-d H:i:s", strtotime('+ 2 Weeks', strtotime($task['deadline'])));
+					$starting = date("Y-m-d H:i:s", strtotime('+ 2 Weeks', strtotime($task['starting_date'])));
 					break;
 				case 'Monthly':
-					$deadline = date("Y-m-d H:i:s", strtotime('+ 1 months', strtotime($task['deadline'])));
+					$starting = date("Y-m-d H:i:s", strtotime('+ 1 months', strtotime($task['starting_date'])));
 					break;
 				case 'Quarterly':
-					$deadline = date("Y-m-d H:i:s", strtotime('+ 4 months', strtotime($task['deadline'])));
+					$starting = date("Y-m-d H:i:s", strtotime('+ 4 months', strtotime($task['starting_date'])));
 					break;
 				case 'Halferly':
-					$deadline = date("Y-m-d H:i:s", strtotime('+ 6 months', strtotime($task['deadline'])));
+					$starting = date("Y-m-d H:i:s", strtotime('+ 6 months', strtotime($task['starting_date'])));
 					break;
 				case 'Yearly':
-					$deadline = date("Y-m-d H:i:s", strtotime('+ 12 months', strtotime($task['deadline'])));
+					$starting = date("Y-m-d H:i:s", strtotime('+ 12 months', strtotime($task['starting_date'])));
 					break;					
 				
 				default:
@@ -257,7 +262,7 @@ class Model_Task extends \xepan\base\Model_Table
 			$task['is_recurring'] = false;
 			$task->saveAs('xepan\projects\Model_Task');
 
-			$model_task['deadline'] = $deadline;
+			$model_task['starting_date'] = $starting;
 			$model_task->save();
 		}
 	}

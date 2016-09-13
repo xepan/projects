@@ -8,6 +8,7 @@ class View_TaskReminder extends \View{
 		
 		$task = $this->add('xepan\projects\Model_Task');
 		$task->addCondition('set_reminder',true);
+		$task->addCondition('is_reminder',true);
 		$task->addCondition('created_by_id',$this->app->employee->id);
 		
 		$reminder_crud = $this->add('xepan\hr\CRUD',['entity_name'=>'Reminder'],null,['view\taskreminder']);
