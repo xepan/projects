@@ -31,8 +31,8 @@ class Model_Task extends \xepan\base\Model_Table
 		$employee_model = $this->add('xepan\hr\Model_Employee')->addCondition('status','Active');		
 		$this->addField('notify_to')->display(['form'=>'xepan\base\DropDown'])->setModel($employee_model);
 		$this->addField('description')->type('text');
-		$this->addField('deadline')->display(['form'=>'DateTimePicker'])->type('datetime');
-		$this->addField('starting_date')->display(['form'=>'DateTimePicker'])->type('datetime');
+		$this->addField('deadline')->display(['form'=>'DateTimePicker'])->type('datetime')->defaultValue($this->app->now);
+		$this->addField('starting_date')->display(['form'=>'DateTimePicker'])->type('datetime')->defaultValue($this->app->now);
 		$this->addField('estimate_time')/*->display(['form'=>'TimePicker'])*/;
 		$this->addField('created_at')->type('datetime')->defaultValue($this->app->now);
 		$this->addField('status')->defaultValue('Pending');
