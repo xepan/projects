@@ -1,10 +1,13 @@
 
 <div class="row xepan-push">
-  <div class="col-md-6"><span>Task Name:</span>
+  <div class="col-md-4"><span>Task Name:</span>
     <div>{$task_name}</div>
   </div>
-  <div class="col-md-6"><span>Starting Date:</span>
+  <div class="col-md-4"><span>Starting Date:</span>
     <div>{$starting_date}</div>
+  </div>
+  <div class="col-md-4"><span>Deadline:</span>
+    <div>{$deadline}  </div>
   </div>
 </div>
 <div class="row xepan-push">
@@ -31,6 +34,28 @@
 </div>
 <div class="row xepan-push">
   <div class="col-md-12"><span class="text-muted">Hint : " Remind Value = 10, Remind Unit = Minutes " To get a reminder before 10 minutes of task starting time. </span></div>
+</div>
+<div class="row xepan-push">
+  <div class="col-md-12"><span></span>
+    <div>
+      Description  
+      {$description} 
+    </div>
+  </div>
+</div>
+<div class="row col-md-12 xepan-push"> 
+  <div class="col-md-6"><span></span>
+    <div>
+       
+      {$is_recurring} 
+    </div>
+  </div>
+  <div class="col-md-6"><span>Repeat Span:</span>
+    <div>
+       
+      {$recurring_span} 
+    </div>
+  </div>
 </div>
 <div class="row col-md-12">
    

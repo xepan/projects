@@ -166,8 +166,11 @@ class Model_Task extends \xepan\base\Model_Table
 					$subject_temp->loadTemplateFromString($email_subject);
 					$subject_v=$this->add('View',null,null,$subject_temp);
 
+					$subject_v->template->trySetHTML('task',$task['task_name']);
+
 					$body_v=$this->add('View',null,null,$temp);
 					$body_v->template->trySetHTML('task',$task['task_name']);
+					$body_v->template->trySetHTML('description',$task['description']);
 					$body_v->template->trySetHTML('name',$task['employee']);
 					
 					$mail->setfrom($email_settings['from_email'],$email_settings['from_name']);
@@ -256,17 +259,6 @@ class Model_Task extends \xepan\base\Model_Table
 
 			$model_task['deadline'] = $deadline;
 			$model_task->save();
-			
-			// {need to think about it}
-			// NEW TASK NAME WILL BE SAME AS OLD ONE
-			// MAKING IT AMBIGIOUS TO HANDLE IN CASE 
-			// USER WANTING IT TO SWITCH OFF
-
-			// No FACILITY GIVEN TO USER TO ADD RECURRING DAYS
-			// IT MAKES THE SCOPE LIMITED
-
-			// RECURRING FACILITY NOT ADDED IN REMINDER VIEW 
-			
 		}
 	}
 }

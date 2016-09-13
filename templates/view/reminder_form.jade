@@ -1,10 +1,13 @@
 .row.xepan-push
-  .col-md-6
+  .col-md-4
     span Task Name:
     div {$task_name}
-  .col-md-6
+  .col-md-4
     span Starting Date:
     div {$starting_date}
+  .col-md-4
+    span Deadline:
+    div {$deadline}  
 .row.xepan-push
   .col-md-12
     span Assign To:
@@ -27,5 +30,19 @@
 .row.xepan-push
   .col-md-12
     span.text-muted Hint : " Remind Value = 10, Remind Unit = Minutes " To get a reminder before 10 minutes of task starting time. 
+.row.xepan-push
+  .col-md-12
+    span
+    div Description  
+      {$description} 
+.row.col-md-12.xepan-push 
+  .col-md-6
+    span
+    div 
+      {$is_recurring} 
+  .col-md-6
+    span Repeat Span:
+    div  
+      {$recurring_span} 
 .row.col-md-12 
   {$FormButtons}       
