@@ -234,9 +234,14 @@ class Model_Task extends \xepan\base\Model_Table
 			$model_task['is_recurring'] = $task['is_recurring'];
 			$model_task['recurring_span'] = $task['recurring_span'];
 			$model_task['created_by_id'] = $task['created_by_id'];
-			$model_task['deadline'] = $task['deadline'];
 			$model_task['is_reminder'] = $task['is_reminder'];
+			$model_task['deadline'] = $task['deadline'];
 			
+			/* 
+			   Deadline should also be calculated like starting date. At present it is of no use,
+			   thats why left unchanged. 
+			*/
+ 
 			switch ($task['recurring_span']) {
 				case 'Weekely':
 					$starting = date("Y-m-d H:i:s", strtotime('+ 1 Weeks', strtotime($task['starting_date'])));
