@@ -45,7 +45,7 @@ class Model_Task extends \xepan\base\Model_Table
 		$this->addField('is_recurring')->type('boolean');
 		$this->addField('recurring_span')->setValueList(['Weekely'=>'Weekely','Fortnight'=>'Fortnight','Monthly'=>'Monthly','Quarterly'=>'Quarterly','Halferly'=>'Halferly','Yearly'=>'Yearly']);
 		$this->addField('is_reminded')->type('boolean');
-		$this->addField('is_reminder')->type('boolean');
+		$this->addField('is_reminder')->type('boolean')->defaultValue(false);
 		$this->addCondition('type','Task');
 
 		$this->hasMany('xepan\projects\Follower_Task_Association','task_id');
@@ -199,23 +199,24 @@ class Model_Task extends \xepan\base\Model_Table
 				}
 
 
-				if(!$task['is_reminder']){
+				if($task['is_reminder'] == false){
 					$task['is_reminded'] = true;
 					$task->saveAs('xepan\projects\Model_Task');
-				}else{
-					$task->recurring();
-					$task->delete();
+				}else{					
+					$task['is_reminded'] = true;
+					$this->recurring();
+					$task->saveAs('xepan\projects\Model_Task');
+					// $task->delete();
 				}
 			}
 		}
 	}
 
-	function recurring(){	
-				
+	function recurring(){		
 		$recurring_task = $this->add('xepan\projects\Model_Task');
 		$recurring_task->addCondition('is_recurring',true);
 		$recurring_task->addCondition('starting_date','<=',$this->app->now);
-		
+
 		foreach ($recurring_task as $task) {
 			
 			$model_task = $this->add('xepan\projects\Model_Task');
