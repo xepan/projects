@@ -198,12 +198,14 @@ class Model_Task extends \xepan\base\Model_Table
 					$activity->save();  
 				}
 
-				$task['is_reminded'] = true;
-				$task->saveAs('xepan\projects\Model_Task');
 
-				if($task['is_reminder'])
+				if(!$task['is_reminder']){
+					$task['is_reminded'] = true;
+					$task->saveAs('xepan\projects\Model_Task');
+				}else{
 					$task->recurring();
 					$task->delete();
+				}
 			}
 		}
 	}
@@ -212,7 +214,7 @@ class Model_Task extends \xepan\base\Model_Table
 				
 		$recurring_task = $this->add('xepan\projects\Model_Task');
 		$recurring_task->addCondition('is_recurring',true);
-		$recurring_task->addCondition('deadline','<=',$this->app->now);
+		$recurring_task->addCondition('starting_date','<=',$this->app->now);
 		
 		foreach ($recurring_task as $task) {
 			
@@ -233,6 +235,7 @@ class Model_Task extends \xepan\base\Model_Table
 			$model_task['recurring_span'] = $task['recurring_span'];
 			$model_task['created_by_id'] = $task['created_by_id'];
 			$model_task['deadline'] = $task['deadline'];
+			$model_task['is_reminder'] = $task['is_reminder'];
 			
 			switch ($task['recurring_span']) {
 				case 'Weekely':
