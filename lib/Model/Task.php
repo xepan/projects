@@ -268,8 +268,8 @@ class Model_Task extends \xepan\base\Model_Table
 					break;
 			}
 			
-			// $task['is_recurring'] = false;
-			// $task->saveAs('xepan\projects\Model_Task');
+			$task['is_recurring'] = false;
+			$task->saveAs('xepan\projects\Model_Task');
 
 			$model_task['starting_date'] = $starting;
 			$model_task->save();
