@@ -157,8 +157,8 @@ class Model_Task extends \xepan\base\Model_Table
 					$email_settings = $this->add('xepan\communication\Model_Communication_EmailSetting')->tryLoadAny();
 					$mail = $this->add('xepan\communication\Model_Communication_Email');
 
-					$email_subject = file_get_contents(realpath(getcwd().'/vendor/xepan/projects/templates/default/reminder_subject.html'));
-        			$email_body = file_get_contents(realpath(getcwd().'/vendor/xepan/projects/templates/default/reminder_body.html'));
+					$email_subject = $this->app->epan->config->getConfig('REMINDERSUBJECTLAYOUT');
+        			$email_body = $this->app->epan->config->getConfig('REMINDERLAYOUT');
 						
 					$temp=$this->add('GiTemplate');
 					$temp->loadTemplateFromString($email_body);
