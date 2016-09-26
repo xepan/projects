@@ -103,6 +103,7 @@ class View_TaskList extends \xepan\base\Grid{
 		return [	
 					$this->js()->_selector('.current_task_btn')->removeClass('fa-stop')->addClass('fa-play'),
 					$this->js()->_selector('.current_task_btn .duration')->timer('remove'),
+					$this->js()->_selector('.xepan-mini-task')->trigger('reload'),
 					$js->data('action','start') // next possible_action
 				];
 	}
