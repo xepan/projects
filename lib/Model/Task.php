@@ -7,14 +7,13 @@ class Model_Task extends \xepan\base\Model_Table
 	public $table = "task";
 	public $title_field ='task_name';
 
-	public $status=['Pending','Completed','Reopened'];
+	public $status=['Pending','Submitted','Completed','Reopened'];
 
 	public $actions =[
-		'Submitted'=>['view','edit','delete','mark_complete'],
-		'Assigned'=>['view','edit','delete','mark_complete'],
-		'Completed'=>['view','edit','delete','re_open'],
-		'Pending'=>['view','edit','delete','mark_complete'],
-		'On-Hold'=>['view','edit','delete','mark_complete'],
+		'Pending'=>['view','edit','delete','submit'],
+		'Submitted'=>['view','edit','delete','mark_complete','reopen'],
+		'Completed'=>['view','edit','delete'],
+		'Reopened'=>['view','edit','delete','submit'],
 	];
 	// public $acl=false;
 	
@@ -95,6 +94,14 @@ class Model_Task extends \xepan\base\Model_Table
 	}
 
 	function submit(){
+		$this['status']='Submitted';
+		$this->save();
+		
+		if($this['employee_id']){
+			$this->app->employee
+		            ->addActivity("Task '".$this['task_name']."' submitted by '".$this->app->employee['name']."'",null, $this['employee_id'] /*Related Contact ID*/,null,null,null)
+		            ->notifyTo([$this['created_by_id']],"Task Submitted : " . $this['task_name']);
+		}
 	}
 
 
@@ -109,7 +116,7 @@ class Model_Task extends \xepan\base\Model_Table
 		}
 	}
 
-	function re_open(){		
+	function reopen(){		
 		$this['status']='Pending';
 		$this->save();
 		if($this['employee_id']){

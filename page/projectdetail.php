@@ -40,7 +40,7 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 	    $option_form = $this->add('Form',null,'leftview');
 	    $option_form->setLayout('view\option_form');
 	    $option_form->addField('dropdown','status','')
-	    	->setValueList(['Pending'=>'Pending','Completed'=>'Completed'])
+	    	->setValueList(['Pending'=>'Pending','Submitted'=>'Submitted','Completed'=>'Completed'])
 	    	->setEmptyText('All');
 
 	    $option_form->addField('dropdown','createdby','')
