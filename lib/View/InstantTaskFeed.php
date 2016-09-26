@@ -6,7 +6,7 @@ class View_InstantTaskFeed extends \View{
 		parent::init();
 
 		/*****************************************************************************
-			Showing pending tasks on 'pending task' tab
+		 Showing pending tasks on 'pending task' tab
 		******************************************************************************/
 		$model_pending_task = $this->add('xepan\projects\Model_Task');
 		$model_pending_task->addCondition('employee_id',$this->app->employee->id);
@@ -16,6 +16,7 @@ class View_InstantTaskFeed extends \View{
 		$pending_task_view->setModel($model_pending_task);
 		$pending_task_view->add('xepan\hr\Controller_ACL',['action_btn_group'=>'xs']);
 		$pending_task_view->addPaginator(5);
+		$pending_task_view->addQuickSearch(['task_name']);
 
 		/***********************************************************************
 		 Form to add new task and to select project
