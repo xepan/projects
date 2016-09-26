@@ -89,7 +89,11 @@ class View_InstantTaskFeed extends \View{
 			$model_timesheet['starttime'] = $starting_time;
 			$model_timesheet->save();
 
-			return $form->js(null,$this->js()->univ()->successMessage('Task started'))->reload()->execute(); 				
+			$js = [
+				  	$this->js()->univ()->successMessage('Task started'),
+					$this->js()->_selector('.xepan-mini-task')->trigger('reload'),
+				  ];
+			return $form->js(null,$js)->reload()->execute(); 				
 		}
 	}
 
