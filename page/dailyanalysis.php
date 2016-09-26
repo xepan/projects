@@ -35,7 +35,7 @@ class page_dailyanalysis extends \xepan\projects\page_sidemenu{
 		}
 
 		if($on_date){
-			
+			$model_timesheet->addCondition('start_time','>',$on_date);
 		}
 
 		$grid = $this->add('xepan\hr\Grid',['no_records_message'=>'No task found'],'task',['view\task_timeline']);
