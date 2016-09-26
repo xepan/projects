@@ -15,6 +15,7 @@ class View_InstantTaskFeed extends \View{
 		$pending_task_view = $this->add('xepan\projects\View_TaskList',['no_records_message'=>'No pending task found'],'pending_tasks');
 		$pending_task_view->setModel($model_pending_task);
 		$pending_task_view->add('xepan\hr\Controller_ACL',['action_btn_group'=>'xs']);
+		$pending_task_view->addPaginator(5);
 
 		/***********************************************************************
 		 Form to add new task and to select project
@@ -44,7 +45,7 @@ class View_InstantTaskFeed extends \View{
 		$task_view = $this->add('xepan\projects\View_TaskList',['no_records_message'=>'No task found, try adding new task'],'task');
 		$task_view->setModel($model_task);
 		$task_view->add('xepan\hr\Controller_ACL',['action_btn_group'=>'xs']);
-		$task_view->addPaginator(50);
+		$task_view->addPaginator(5);
 
 		/************************************************************************************
 		 Handling for event and submission 
@@ -96,10 +97,3 @@ class View_InstantTaskFeed extends \View{
 		return['view/instanttaskfeed'];
 	}
 }
-
-/*
-	3 thing remaining
-*/
-// css 
-// paginator
-// close modal popup on form submission and reload mini task view
