@@ -1,35 +1,33 @@
 
-<div style="margin-top: 10px; margin-bottom:10px;" class="row col-md-4 pull-right">{$quick_search}</div>
-<div id="{$_name}" class="xepan-grid {$class}">
-  <div class="main-box-body">
-    <table style="width:100%" class="table-hover">
-      <tbody style="font-size:12px">
-        {$header}
-        {nested_template}
-        {rows}{row}
-        <tr data-id="{$id}" class="{$odd_even} {$running_class}">{cols}
-          <td><span data-id="{$id}"></span><span data-id="{$id}" style="cursor:pointer; cursor: hand; max-width:600px;" class="task-item text-{$color}">[{$task_no}] {$task_name}</span></td>
-          <td>{$created_by}</td>
-          <td style="width:7%;">
-            <div style="color: #767676;display: block;font-size: 13px;font-weight: 500;">{$total_duration}</div>
-          </td>
-          <td style="width:7%;"><span data-action="{$event_action}" data-id="{$id}" style="cursor:pointer; cursor: hand; " class="fa current_task_btn {$icon} {$running-task}"><span style="margin-left:10px;" class="duration"></span></span></td>
-          <td style="width:10%;">
-             
-            {$action}
-          </td>
-          <td style="width: 5%;"><a href="#" data-id="{$id}" class="table-link danger do-delete nested-link"><span class="fa-stack"><i class="fa fa-square fa-stack-2x"></i><i class="fa fa-trash-o fa-stack-1x fa-inverse"></i></span></a></td>
-          <td><span class="text-muted text-{$color}">{$sub_tasks}    </span></td>{/}
-        </tr>{/}{/}
-        {not_found}
-        <div class="row">
-          <div role="alert" class="col-md-12 text-center alert alert-warning"><span class="icon-attention fa fa-exclamation-triangle"> &nbsp;{$not_found_message}</span></div>
-        </div>{/}
-        {/}
-      </tbody>
-    </table>{$Paginator}
-  </div>
-</div>
+<div id="{$_name}" class="xepan-grid {$class}"><span class="pending-task-search">{$quick_search}
+    <div class="main-box-body">
+      <table style="width:100%" class="table-hover">
+        <tbody style="font-size:12px">
+          {$header}
+          {nested_template}
+          {rows}{row}
+          <tr data-id="{$id}" class="{$odd_even} {$running_class}">{cols}
+            <td><span data-id="{$id}"></span><span data-id="{$id}" style="cursor:pointer; cursor: hand; max-width:600px;" class="task-item text-{$color}">[{$task_no}] {$task_name}</span></td>
+            <td>{$created_by}</td>
+            <td style="width:7%;">
+              <div style="color: #767676;display: block;font-size: 13px;font-weight: 500;">{$total_duration}</div>
+            </td>
+            <td style="width:7%;"><span data-action="{$event_action}" data-id="{$id}" style="cursor:pointer; cursor: hand; " class="fa current_task_btn {$icon} {$running-task}"><span style="margin-left:10px;" class="duration"></span></span></td>
+            <td style="width:10%;">
+               
+              {$action}
+            </td>
+            <td style="width: 5%;"><a href="#" data-id="{$id}" class="table-link danger do-delete nested-link"><span class="fa-stack"><i class="fa fa-square fa-stack-2x"></i><i class="fa fa-trash-o fa-stack-1x fa-inverse"></i></span></a></td>
+            <td><span class="text-muted text-{$color}">{$sub_tasks}    </span></td>{/}
+          </tr>{/}{/}
+          {not_found}
+          <div class="row">
+            <div role="alert" class="col-md-12 text-center alert alert-warning"><span class="icon-attention fa fa-exclamation-triangle"> &nbsp;{$not_found_message}</span></div>
+          </div>{/}
+          {/}
+        </tbody>
+      </table>{$Paginator}
+    </div></span></div>
 <style type="text/css" media="screen">
   .dd3-handle::before {
   color: #fff;
@@ -56,5 +54,10 @@
   margin: 5px 0;
   padding: 5px 10px 5px 40px;
   text-decoration: none;
-  }                
+  }   
+  .pending-task-search input{
+    width:30%;
+    padding-top:10px;
+    padding-bottom:10px;
+  }             
 </style>
