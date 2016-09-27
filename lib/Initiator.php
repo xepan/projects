@@ -25,14 +25,14 @@ class Initiator extends \Controller_Addon {
 			$m->addItem(['Trace Employee','icon'=>' fa fa-paw'],'xepan_projects_projectlive');
 			$m->addItem(['My Tasks','icon'=>'fa fa-tasks'],'xepan_projects_mytasks');
 			$projects = $this->add('xepan\projects\Model_Project');
-			foreach ($projects as $project) {
-				$project_name = $project['name'];
-				$project_id = $project['id'];
+			// foreach ($projects as $project) {
+			// 	$project_name = $project['name'];
+			// 	$project_id = $project['id'];
 
-				$task_count = $project->ref('xepan\projects\Task')->addCondition('employee_id',$this->app->employee->id)->addCondition('status','Pending')->count()->getOne();
+			// 	$task_count = $project->ref('xepan\projects\Task')->addCondition('employee_id',$this->app->employee->id)->addCondition('status','Pending')->count()->getOne();
 				
-				$m->addItem([$project_name,'icon'=>' fa fa-tasks'],$this->app->url('xepan_projects_projectdetail',['project_id'=>$project_id]),['project_id']);
-			}
+			// 	$m->addItem([$project_name,'icon'=>' fa fa-tasks'],$this->app->url('xepan_projects_projectdetail',['project_id'=>$project_id]),['project_id']);
+			// }
 			$m->addItem(['Configuration','icon'=>' fa fa-cog'],'xepan_projects_layout');
 			$m->addItem(['Reports','icon'=>' fa fa-cog'],'xepan_projects_report');
 		}
