@@ -42,7 +42,7 @@ class Model_Task extends \xepan\base\Model_Table
 		$this->addField('remind_value')->type('number');
 		$this->addField('remind_unit')->setValueList(['Minutes'=>'Minutes','hours'=>'Hours','day'=>'Days','Weeks'=>'Weeks','months'=>'Months']);
 		$this->addField('is_recurring')->type('boolean');
-		$this->addField('recurring_span')->setValueList(['Weekely'=>'Weekely','Fortnight'=>'Fortnight','Monthly'=>'Monthly','Quarterly'=>'Quarterly','Halferly'=>'Halferly','Yearly'=>'Yearly']);
+		$this->addField('recurring_span')->setValueList(['Daily'=>'Daily','Weekely'=>'Weekely','Fortnight'=>'Fortnight','Monthly'=>'Monthly','Quarterly'=>'Quarterly','Halferly'=>'Halferly','Yearly'=>'Yearly']);
 		$this->addField('is_reminded')->type('boolean');
 		$this->addField('is_reminder')->type('boolean')->defaultValue(false);
 		$this->addCondition('type','Task');
@@ -138,6 +138,7 @@ class Model_Task extends \xepan\base\Model_Table
 	}
 
 	function reminder(){
+		
 		$reminder_task = $this->add('xepan\projects\Model_Task');
 		$reminder_task->addCondition('set_reminder',true);
 		$reminder_task->addCondition('is_reminded',null);
@@ -145,7 +146,7 @@ class Model_Task extends \xepan\base\Model_Table
 		foreach ($reminder_task as $task) {	
 							
 			$reminder_time = date("Y-m-d H:i:s", strtotime('-'.$task['remind_value'].' '.$task['remind_unit'], strtotime($task['starting_date'])));
-			
+
 			if(($reminder_time <= ($this->app->now)) AND $task['is_reminded']==false){
 				
 				$remind_via_array = [];
@@ -271,7 +272,7 @@ class Model_Task extends \xepan\base\Model_Table
 					break;					
 				
 				default:
-					// Add code for days here in case facility needs to be added.
+					$starting = date("Y-m-d H:i:s", strtotime('+ 1 day', strtotime($task['starting_date'])));
 					break;
 			}
 			
