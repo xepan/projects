@@ -1,72 +1,49 @@
 
-<div class="row"> 
-  <div class="row xepan-push">
-    <div class="col-md-6">Task Name:
-      <div>{$task_name}</div>
-    </div>
-    <div class="col-md-3">Employee:
-      <div>{$employee_id}</div>
-    </div>
-    <div class="col-md-3">Estimate Time:
-      <div>{$estimate_time}</div>
-      <div class="small text-muted">In hours  </div>
-    </div>
-  </div>
-  <div class="row xepan-push">
-    <div class="col-md-12">Task Description:
-      <div>{$description}</div>
-    </div>
-  </div>
-  <div class="row xepan-push">
-    <div class="col-md-4">Starting Date:
-      <div>{$starting_date}</div>
-    </div>
-    <div class="col-md-4">
-       
-      Deadline:
-      <div>
-         
-        {$deadline}
-      </div>
-    </div>
-    <div class="col-md-4">Task Priority:
-      <div>
-           
-        {$priority}
-      </div>
-    </div>
-  </div>
-  <div class="row xepan-push">
-    <div class="col-md-4">{$is_recurring}</div>
-    <div class="col-md-4">Recurring Time Span: 
-      <div>
-         
-        {$recurring_span}    
-      </div>
-    </div>
-  </div>
-  <div class="row col-md-12 xepan-push">
-    <div class="col-md-4">{$set_reminder}</div>
-    <div class="col-md-4">Remind Via:
-      <div>
-         
-        {$remind_via}
-      </div>
-    </div>
-    <div class="col-md-4">Notify To:
-      <div>{$notify_to}    </div>
-    </div>
-  </div>
-  <div class="row col-md-12 xepan-push">   
-    <div class="col-md-4">Remind Before:
-      <div>{$remind_value}</div>
-    </div>
-    <div class="col-md-4">Value:
-      <div>
-         
-        {$remind_unit}
-      </div>
-    </div>
-  </div>
-  <div class="row xepan-push">   </div>
+<div class="row xepan-push">
+  <div class="col-md-4"><strong>Task Name: </strong>{$task_name}</div>
+  <div class="col-md-4"><strong>Assign To: </strong>{$employee_id}</div>
+  <div class="col-md-4"><strong>Task Priority: </strong>{$priority}</div>
 </div>
+<div class="row xepan-push">
+  <div class="col-md-4"><strong>Starting Date: </strong>{$starting_date}</div>
+  <div class="col-md-4"><strong>Deadline: </strong>{$deadline}</div>
+  <div class="col-md-4"><strong>Estimate Time: </strong>{$estimate_time}<span class="small text-muted">Hint : Enter value in hours</span></div>
+</div>
+<div class="row xepan-push">
+  <div class="col-md-12"></div><strong>Description:</strong>{$description}
+</div>
+<div class="row">
+  <div class="col-md-6">
+    <div class="panel panel-primary panel-heading"><b>Make Task Periodically Recur</b>
+      <hr/>
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-md-4"><strong>Repeat Task:</strong><br/>{$is_recurring}</div>
+          <div class="col-md-8"><strong>Time Gap:    </strong>{$recurring_span}    </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6"> 
+    <div class="panel panel-primary panel-heading strong"> <b> Set Task Reminder</b>
+      <hr/>
+      <div class="panel-body">
+        <div class="row xepan-push">
+          <div class="col-md-4"><strong>Set Reminder:</strong><br/>{$set_reminder}</div>
+          <div class="col-md-8"><strong>Remind Medium:    </strong>{$remind_via}</div>
+        </div>
+        <div class="row xepan-push">
+          <div class="col-md-12"><strong>Remind To:</strong>{$notify_to}</div>
+        </div>
+        <div class="row">
+          <div class="col-md-6"><strong>Remind Value:</strong>{$remind_value}</div>
+          <div class="col-md-6"><strong>Remind Unit:</strong>{$remind_unit}</div>
+        </div><span class="small text-muted">Hint: Value = '10', Unit = 'Minutes' to get reminded 10 minutes before task starts     </span>
+      </div>
+    </div>
+  </div>
+</div>
+<style type="text/css" media="screen">
+  .panel{
+  }
+</style>

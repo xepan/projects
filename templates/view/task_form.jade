@@ -1,61 +1,69 @@
-.row  
-  .row.xepan-push
-    .col-md-6
-      |Task Name:
-      div
-        {$task_name}
-    .col-md-3
-      |Employee:
-      div
-        {$employee_id}
-    .col-md-3
-      |Estimate Time:
-      div
-        {$estimate_time}
-      div.small.text-muted In hours  
-  .row.xepan-push
-    .col-md-12
-      |Task Description:
-      div
-        {$description}
-  .row.xepan-push
-      .col-md-4
-        |Starting Date:
-        div
-          {$starting_date}
-      .col-md-4 
-        |Deadline:
-        div 
-          {$deadline}
-      .col-md-4
-        |Task Priority:
-        div    
-          {$priority}
-  .row.xepan-push
-    .col-md-4
-      {$is_recurring}
-    .col-md-4
-      |Recurring Time Span: 
-      div 
-        {$recurring_span}    
-  .row.col-md-12.xepan-push
-    .col-md-4
-      {$set_reminder}
-    .col-md-4
-      |Remind Via:
-      div  
-        {$remind_via}
-    .col-md-4
-      |Notify To:
-      div
-        {$notify_to}    
-  .row.col-md-12.xepan-push    
-    .col-md-4
-      |Remind Before:
-      div
-        {$remind_value}
-    .col-md-4
-      |Value:
-      div  
-        {$remind_unit}
-  .row.xepan-push    
+.row.xepan-push
+  .col-md-4
+    strong Task Name: 
+    {$task_name}
+  .col-md-4
+    strong Assign To: 
+    {$employee_id}
+  .col-md-4
+    strong Task Priority: 
+    {$priority}
+.row.xepan-push
+  .col-md-4
+    strong Starting Date: 
+    {$starting_date}
+  .col-md-4
+    strong Deadline: 
+    {$deadline}
+  .col-md-4
+    strong Estimate Time: 
+    {$estimate_time}
+    span.small.text-muted Hint : Enter value in hours
+.row.xepan-push
+  .col-md-12
+  strong Description:
+  {$description}
+
+.row
+  .col-md-6
+    .panel.panel-primary.panel-heading
+      b Make Task Periodically Recur
+      hr
+      .panel-body
+        .row
+          .col-md-4
+            strong Repeat Task:
+            br 
+            {$is_recurring}
+          .col-md-8
+            strong Time Gap:    
+            {$recurring_span}    
+  .col-md-6  
+    .panel.panel-primary.panel-heading.strong 
+      b  Set Task Reminder
+      hr
+      .panel-body
+        .row.xepan-push
+          .col-md-4
+            strong Set Reminder:
+            br 
+            {$set_reminder}
+          .col-md-8
+            strong Remind Medium:    
+            {$remind_via}
+        .row.xepan-push
+          .col-md-12
+            strong Remind To:
+            {$notify_to}
+        .row
+          .col-md-6
+            strong Remind Value:
+            {$remind_value}
+          .col-md-6
+            strong Remind Unit:
+            {$remind_unit}
+        span.small.text-muted Hint: Value = '10', Unit = 'Minutes' to get reminded 10 minutes before task starts     
+ 
+style(type='text/css', media='screen').
+  .panel{
+  }

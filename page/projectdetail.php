@@ -239,8 +239,6 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 			}
 
 			return $js->removeClass('fa-stop')->addClass('fa-play')->data('action','start');	
-
-
 		});
 
 	}
