@@ -6,14 +6,14 @@
 					a(data-toggle='tab', href='#tab-form') Task  
 				li
 					a(data-toggle='tab', href='#tab-comment') Comments
-						span.label.label-warning.label-circle.comment{$comment_count}
+						//- span.label.label-primary.label-circle.comment{$comment_count}
 				li
 					a(data-toggle='tab', href='#tab-attachment') Attachment 
-						span.label.label-warning.label-circle.attachment{$attachment_count}  
+						//- span.label.label-primary.label-circle.attachment{$attachment_count}  
 			.tab-content
 				#tab-form.tab-pane.active
 					{$task_form}
 				#tab-comment.tab-pane
-					{commentgrid}First create a task then add comments :) {/}
+					{commentgrid}First add a task{/}
 				#tab-attachment.tab-pane
-					{attachment}First create a task then add attachment :) {/}
+					{attachment}First add a task{/}
