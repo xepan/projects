@@ -76,6 +76,17 @@ class page_report extends \xepan\base\Page{
 		********************************************************************/
 		$project = $this->add('xepan\projects\Model_Project');
 		
+		// total hours consumed in project
+		$project->addExpression('total_hours_consumed')->set(function($m,$q){
+			return "'0'";
+		});
+
+		// total number of employees worked on project
+		$project->addExpression('total_employees_worked')->set(function($m,$q){
+			return "'0'";
+		});
+
+		// delay
 		/*******************************************************************
 		 TASK MODEL AND EXPRESSIONS	
 		********************************************************************/
@@ -103,7 +114,7 @@ class page_report extends \xepan\base\Page{
 				$grid->setModel($employee,['name','total_tasks','tasks_worked_on','total_hours_alloted','total_estimated_hours','total_hours_taken']);
 			if($report_type === 'project')	
 				$grid->setModel($project);
-			if($report_type === 'project')	
+			if($report_type === 'task')	
 				$grid->setModel($task);
 		}
 
