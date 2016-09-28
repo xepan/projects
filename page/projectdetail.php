@@ -193,19 +193,15 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 
 		$top_view->js('click',$this->js()->univ()->dialogURL("ADD NEW TASK",$this->api->url($vp->getURL())))->_selector('.add-task');
 		
-		$task_list_view->on('click','.do-delete',function($js,$data){
+		$task_list_view->js('click',$task_list_view->js()->reload(['delete_task_id'=>$this->js()->_selectorThis()->data('id')]))->_selector('.do-delete');
+
+		if($_GET['delete_task_id']){
 			$delete_task=$this->add('xepan\projects\Model_Task');
-			$delete_task->load($data['id']);
+			$delete_task->load($_GET['delete_task_id']);
 			$delete_task->delete();
-			$js_new=[
-					$js->closest('li')->hide(),
-					$this->js()->univ()->successMessage('Delete SuccessFullly')
-			];
-			return $js_new;
+			$task_list_view->js(true,$this->js()->univ()->successMessage('Task Deleted'))->_load('jquery.nestable')->nestable(['group'=>1]);
+		}
 
-		});
-
-		// $task_list_view->js(true)->_load('jquery.nestable')->nestable(['group'=>1]);
 
 	/***************************************************************************
 	  Timesheet PLAY/STOP
