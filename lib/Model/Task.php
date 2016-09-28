@@ -206,16 +206,9 @@ class Model_Task extends \xepan\base\Model_Table
 					$activity->save();  
 				}
 
-
-				if($task['is_reminder'] == false){
-					$task['is_reminded'] = true;
-					$task->saveAs('xepan\projects\Model_Task');
-				}else{					
-					$task['is_reminded'] = true;
 					$this->recurring();
+					$task['is_reminded'] = true;
 					$task->saveAs('xepan\projects\Model_Task');
-					// $task->delete();
-				}
 			}
 		}
 	}
