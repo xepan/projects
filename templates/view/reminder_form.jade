@@ -1,45 +1,56 @@
 .row.xepan-push
   .col-md-6
-    span Task Name:
-    div {$task_name}
+    strong Reminder Task Name: 
+    {$task_name}
   .col-md-6
-    span Starting Date:
-    div {$starting_date} 
-.row.xepan-push
-  .col-md-12
-    span Assign To:
-    div {$employee_id}    
-.row.xepan-push
-  .col-md-6
-    span Notify To:
-    div {$notify_to}
-  .col-md-6
-    span Remind Via:
-    div {$remind_via}    
+    strong Task Starting Time: 
+    {$starting_date}
 .row
+  .col-md-6  
+    .panel.panel-primary.panel-heading.strong 
+      b  Set Task Reminder
+      hr
+      .panel-body
+        .row.xepan-push
+          .col-md-12
+            strong Remind Medium:    
+            {$remind_via}
+        .row.xepan-push
+          .col-md-12
+            strong Remind To:
+            {$notify_to}
+        .row
+          .col-md-6
+            strong Remind Value:
+            {$remind_value}
+          .col-md-6
+            strong Remind Unit:
+            {$remind_unit}
+        span.small.text-muted Hint: Value = '10', Unit = 'Minutes' to get reminded 10 minutes before task starts     
   .col-md-6
-    span Remind Value:
-    div.xepan-push-small 
-    div {$remind_value}
-  .col-md-6
-    span Remind Unit:  
-    div {$remind_unit}
-.row.xepan-push
-  .col-md-12
-    span.text-muted Hint : " Remind Value = 10, Remind Unit = Minutes " To get a reminder before 10 minutes of task starting time. 
-.row.xepan-push
-  .col-md-12
-    span
-    div Description  
-      {$description} 
-.row.col-md-12.xepan-push 
-  .col-md-6
-    span
-    div 
-      {$is_recurring} 
-  .col-md-6
-    span Repeat Span:
-    div  
-      {$recurring_span} 
-.row.col-md-12 
-  {$FormButtons}       
+    .panel.panel-primary.panel-heading
+      b Make Task Periodically Recur
+      hr
+      .panel-body
+        .row
+          .col-md-4
+            strong Repeat Task:
+            br 
+            {$is_recurring}
+          .col-md-8
+            strong Time Gap:    
+            {$recurring_span}    
+ 
+style(type='text/css', media='screen').
+  .atk-button{
+  font-family: sans-serif;
+  font-size: 1em;
+  background-color: #03a9f4;
+  border-color: #2980b9;
+  background-clip: padding-box;
+  border-width: medium medium 2px;
+  outline: medium none;
+  padding: 6px 12px;
+  transition: border-color 0.1s ease-in-out 0s, background-color 0.1s ease-in-out 0s;
+  width:100%;  
+  }
