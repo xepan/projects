@@ -189,10 +189,7 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 		/***************************************************************************
 			Js to show task detail view etc.
 		***************************************************************************/
-		$task_list_view->on('click','.task-item',function($js,$data)use($vp){
-				return $js->univ()->dialogURL("TASK DETAIL",$this->api->url($vp->getURL(),['task_id'=>$data['id']]));
-			});
-
+		$task_list_view->js('click')->_selector('.task-item')->univ()->frameURL('TASK DETAIL',[$this->api->url($vp->getURL()),'task_id'=>$this->js()->_selectorThis()->closest('[data-id]')->data('id')]);
 
 		$top_view->js('click',$this->js()->univ()->dialogURL("ADD NEW TASK",$this->api->url($vp->getURL())))->_selector('.add-task');
 		
