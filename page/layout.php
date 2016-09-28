@@ -7,18 +7,28 @@ class page_layout extends \xepan\projects\page_configuration{
 	function init(){
 		parent::init();
 		
-		$reminder_mail_layout = $this->app->epan->config->getConfig('REMINDERLAYOUT');
-		$reminder_subject_layout = $this->app->epan->config->getConfig('REMINDERSUBJECTLAYOUT');
+		$config_m = $this->add('xepan\base\Model_ConfigJsonModel',
+		[
+			'fields'=>[
+						'reminder_subject'=>'Line',
+						'reminder_body'=>'xepan\base\RichText',
+						],
+				'config_key'=>'EMPLOYEE_REMINDER_RELATED_EMAIL',
+				'application'=>'projects'
+		]);
+		
+		$config_m->add('xepan\hr\Controller_ACL');
+		$config_m->tryLoadAny();
 
-		$reminder_form = $this->add('Form');
-		$reminder_form->addField('reminder_subject_layout')->set($reminder_subject_layout);
-		$reminder_form->addField('xepan\base\RichText','reminder_layout')->set($reminder_mail_layout);
-		$reminder_form->addSubmit('Save')->addClass('btn btn-primary');
-	
-		if($reminder_form->isSubmitted()){
-			$this->app->epan->config->setConfig('REMINDERLAYOUT',$reminder_form['reminder_layout'],'projects');
-			$this->app->epan->config->setConfig('REMINDERSUBJECTLAYOUT',$reminder_form['reminder_subject_layout'],'projects');
-			return $reminder_form->js()->univ()->successMessage('Saved')->execute();
+		$form=$this->add('Form');
+		$form->setModel($config_m,['reminder_subject','reminder_body']);
+		$form->getElement('reminder_subject')->set($config_m['reminder_subject']);
+		$form->getElement('reminder_body')->set($config_m['reminder_body']);
+		$form->addSubmit('Save')->addClass('btn btn-primary');
+		
+		if($form->isSubmitted()){
+			$form->save();
+			$form->js(null,$form->js()->reload())->univ()->successMessage('Information Updated')->execute();
 		}
 	}
 }
