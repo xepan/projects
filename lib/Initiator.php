@@ -53,14 +53,14 @@ class Initiator extends \Controller_Addon {
 			$job1->setSchedule(new \Cron\Schedule\CrontabSchedule('*/1 * * * *'));
 			if(!$job1->getSchedule() || $job1->getSchedule()->valid($now)){
 				echo " Executing Task Cron For Reminder And Recuring Tasks<br/>";
-				// try{
+				try{
 					$recurring_task = $this->add('xepan\projects\Model_Task');
 					$recurring_task->recurring();				
 					$task = $this->add('xepan\projects\Model_Task');
 					$task->reminder();
-				// }catch(\Exception $e){
-				// 	throw $e;
-				// }		
+				}catch(\Exception $e){
+					throw $e;
+				}		
 			}
 		});
 
