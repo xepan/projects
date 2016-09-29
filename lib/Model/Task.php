@@ -280,7 +280,7 @@ class Model_Task extends \xepan\base\Model_Table
 			$task->saveAs('xepan\projects\Model_Task');
 
 			$model_task['starting_date'] = $starting;
-			$model_task->save();
+			$model_task->saveAs('xepan\projects\Model_Task');
 		}
 	}
 }
