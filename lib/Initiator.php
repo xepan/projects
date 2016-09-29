@@ -59,7 +59,7 @@ class Initiator extends \Controller_Addon {
 					$task = $this->add('xepan\projects\Model_Task');
 					$task->reminder();
 				}catch(\Exception $e){
-					throw $e;
+					// throw $e;
 				}		
 			}
 		});

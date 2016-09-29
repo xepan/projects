@@ -206,8 +206,6 @@ class Model_Task extends \xepan\base\Model_Table
 					$activity->save();  
 				}
 
-					if($task['is_recurring'] == true)
-						$this->recurring();
 					$task['is_reminded'] = true;
 					$task->saveAs('xepan\projects\Model_Task');
 			}
@@ -245,6 +243,7 @@ class Model_Task extends \xepan\base\Model_Table
 			$model_task['created_by_id'] = $task['created_by_id'];
 			$model_task['is_reminder'] = $task['is_reminder'];
 			$model_task['deadline'] = $task['deadline'];
+			$model_task->save();
 			
 			/* 
 			   Deadline should also be calculated like starting date. At present it is of no use,
@@ -276,11 +275,11 @@ class Model_Task extends \xepan\base\Model_Table
 					break;
 			}
 			
+			$model_task['starting_date'] = $starting;
+			$model_task->saveAndUnload();
+
 			$task['is_recurring'] = false;
 			$task->saveAs('xepan\projects\Model_Task');
-
-			$model_task['starting_date'] = $starting;
-			$model_task->saveAs('xepan\projects\Model_Task');
 		}
 	}
 }
