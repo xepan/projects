@@ -206,7 +206,8 @@ class Model_Task extends \xepan\base\Model_Table
 					$activity->save();  
 				}
 
-					$this->recurring();
+					if($task['is_recurring'] == true)
+						$this->recurring();
 					$task['is_reminded'] = true;
 					$task->saveAs('xepan\projects\Model_Task');
 			}
@@ -217,6 +218,12 @@ class Model_Task extends \xepan\base\Model_Table
 		$recurring_task = $this->add('xepan\projects\Model_Task');
 		$recurring_task->addCondition('is_recurring',true);
 		$recurring_task->addCondition('starting_date','<=',$this->app->now);
+		$recurring_task->addCondition(
+							$recurring_task->dsql()->orExpr()
+							->where('starting_date','<=',$this->app->now)
+							->where('is_reminder',true)
+						);
+
 
 		foreach ($recurring_task as $task) {
 			
