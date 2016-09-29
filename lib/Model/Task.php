@@ -278,7 +278,7 @@ class Model_Task extends \xepan\base\Model_Table
 			$model_task->saveAndUnload();
 
 			$task['is_recurring'] = false;
-			$task->saveAndUnload();
+			$task->saveAs('xepan\projects\Model_Task');
 		}
 	}
 }
