@@ -18,7 +18,7 @@ class View_TaskReminder extends \View{
 			$reminder_crud->form->setLayout('view\reminder_form');
 		}
 		
-		$reminder_crud->setModel($task,['task_name','notify_to','starting_date','remind_via','remind_value','remind_unit','is_recurring','recurring_span'])->setOrder('created_at','desc');
+		$reminder_crud->setModel($task,['task_name','notify_to','starting_date','remind_via','remind_value','remind_unit','is_recurring','recurring_span','description'])->setOrder('created_at','desc');
 
 		if($reminder_crud->isEditing()){
 			if($reminder_crud->model->id){
