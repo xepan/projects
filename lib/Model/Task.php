@@ -241,6 +241,7 @@ class Model_Task extends \xepan\base\Model_Table
 			$model_task['estimate_time'] = $task['estimate_time'];
 			$model_task['set_reminder'] = $task['set_reminder'];
 			$model_task['remind_via'] = $task['remind_via'];
+			$model_task['notify_to'] = $task['notify_to'];
 			$model_task['remind_value'] = $task['remind_value'];
 			$model_task['remind_unit'] = $task['remind_unit'];
 			$model_task['is_recurring'] = $task['is_recurring'];
