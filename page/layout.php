@@ -23,7 +23,7 @@ class page_layout extends \xepan\projects\page_configuration{
 		$form=$this->add('Form');
 		$form->setModel($config_m,['reminder_subject','reminder_body']);
 		$form->getElement('reminder_subject')->set($config_m['reminder_subject']);
-		$form->getElement('reminder_body')->set($config_m['reminder_body']);
+		$form->getElement('reminder_body')->setFieldHint('{$name}, {$task}, {$description}')->set($config_m['reminder_body']);
 		$form->addSubmit('Save')->addClass('btn btn-primary');
 		
 		if($form->isSubmitted()){
