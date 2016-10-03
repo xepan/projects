@@ -181,7 +181,11 @@ class Model_Task extends \xepan\base\Model_Table
 						
 					$temp=$this->add('GiTemplate');
 					$temp->loadTemplateFromString($email_body);
-				
+					
+
+					$merge_model_array=[];
+					$merge_model_array = array_merge($merge_model_array,$task->get());
+
 					$subject_temp=$this->add('GiTemplate');
 					$subject_temp->loadTemplateFromString($email_subject);
 					$subject_v=$this->add('View',null,null,$subject_temp);
@@ -189,6 +193,7 @@ class Model_Task extends \xepan\base\Model_Table
 					$subject_v->template->trySetHTML('task',$task['task_name']);
 
 					$body_v=$this->add('View',null,null,$temp);
+					$body_v->template->trySet($merge_model_array);
 					$body_v->template->trySetHTML('task',$task['task_name']);
 					$body_v->template->trySetHTML('description',$task['description']);
 					$body_v->template->trySetHTML('name',$task['employee']);
