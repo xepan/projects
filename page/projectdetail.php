@@ -134,56 +134,8 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 
 			$task_id = $this->app->stickyGET('task_id')?:0;
 			$project_id = $this->app->stickyGET('project_id');
-			
-			$model_task = $this->add('xepan\projects\Model_Task')->tryLoad($task_id);
-			$model_task->addCondition('project_id',$project_id);
 
-			$detail_view = $p->add('xepan\projects\View_TaskDetail');
-
-			$task_form = $detail_view->add('Form',null,'task_form');
-			$task_form->setLayout('view\task_form');
-
-			$task_form->setModel($model_task,['employee_id','task_name','description','starting_date','deadline','priority','estimate_time','set_reminder','remind_via','remind_value','remind_unit','notify_to','is_recurring','recurring_span']);
-			$task_form->getElement('remind_via')
-						->addClass('multiselect-full-width')
-						->setAttr(['multiple'=>'multiple']);
-
-			$task_form->getElement('notify_to')
-						->addClass('multiselect-full-width')
-						->setAttr(['multiple'=>'multiple']);			
-
-
-			if($task_form->isSubmitted()){
-
-				$task_form->save();
-				$js=[
-					$task_form->js()->univ()->successMessage('saved'),
-					$task_form->js()->univ()->closeDialog(),
-					$task_list_view->js()->reload(null,null,$task_list_view_url)
-					];
-				$p->js(null,$js)->execute();
-			}
-
-			if($model_task->loaded()){								
-				$model_attachment = $this->add('xepan\projects\Model_Task_Attachment');
-				$model_attachment->addCondition('task_id',$task_id);	
-					
-				$attachment_crud = $detail_view->add('xepan\hr\CRUD',null,'attachment',['view\attachment-grid']);
-				$attachment_crud->setModel($model_attachment,['file_id','thumb_url'])->addCondition('task_id',$task_id);
-
-				// $attachment_count = $model_attachment->count()->getOne();
-				// $detail_view->template->trySet('attachment_count',$attachment_count);
-				
-				$model_comment = $this->add('xepan\projects\Model_Comment');
-				$model_comment->addCondition('task_id',$model_task->id);
-				$model_comment->addCondition('employee_id',$this->app->employee->id);
-
-				$comment_grid = $detail_view->add('xepan\hr\CRUD',null,'commentgrid',['view\comment-grid']);
-				$comment_grid->setModel($model_comment,['comment','employee']);
-				
-				// $comment_count = $model_comment->count()->getOne();
-				// $detail_view->template->trySet('comment_count',$comment_count);
-			}
+			$p->add('xepan\projects\View_Detail',['task_id'=>$task_id,'project_id'=>$project_id]);
 		});	
 
 		/***************************************************************************
@@ -191,7 +143,7 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 		***************************************************************************/
 		$task_list_view->js('click')->_selector('.task-item')->univ()->frameURL('TASK DETAIL',[$this->api->url($vp->getURL()),'task_id'=>$this->js()->_selectorThis()->closest('[data-id]')->data('id')]);
 
-		$top_view->js('click',$this->js()->univ()->dialogURL("ADD NEW TASK",$this->api->url($vp->getURL())))->_selector('.add-task');
+		$top_view->js('click',$this->js()->univ()->frameURL("ADD NEW TASK",$this->api->url($vp->getURL())))->_selector('.add-task');
 		
 		$task_list_view->js('click',$task_list_view->js()->reload(['delete_task_id'=>$this->js()->_selectorThis()->data('id')]))->_selector('.do-delete');
 

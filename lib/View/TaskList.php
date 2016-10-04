@@ -10,6 +10,8 @@ class View_TaskList extends \xepan\base\Grid{
 	function init(){
 		parent::init();
 
+		$this->js('reload')->reload();
+
 		$this->running_task_id = $this->add('xepan\projects\Model_Employee')
 	    					->load($this->app->employee->id)
 	    					->get('running_task_id');

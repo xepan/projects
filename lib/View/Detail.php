@@ -1,0 +1,61 @@
+<?php
+
+namespace xepan\projects;
+
+class View_Detail extends \View{
+	public $task_id;
+	public $project_id;
+	
+	function init(){
+		parent::init();
+
+		$p = $this;
+		$task_id = $this->task_id;
+		$project_id = $this->project_id;
+																		
+		$model_task = $p->add('xepan\projects\Model_Task')->tryLoad($task_id);
+		$model_task->addCondition('project_id',$project_id);
+
+		$detail_view = $p->add('xepan\projects\View_TaskDetail');
+
+		$task_form = $detail_view->add('Form',null,'task_form');
+		$task_form->setLayout('view\task_form');
+
+		$task_form->setModel($model_task,['employee_id','task_name','description','starting_date','deadline','priority','estimate_time','set_reminder','remind_via','remind_value','remind_unit','notify_to','is_recurring','recurring_span']);
+		$task_form->getElement('remind_via')
+					->addClass('multiselect-full-width')
+					->setAttr(['multiple'=>'multiple']);
+
+		$task_form->getElement('notify_to')
+					->addClass('multiselect-full-width')
+					->setAttr(['multiple'=>'multiple']);			
+
+		$task_form->addSubmit('Save')->addClass('btn btn-primary btn-block');
+
+		if($task_form->isSubmitted()){
+
+			$task_form->save();
+			$js=[
+				$task_form->js()->univ()->successMessage('saved'),
+				$task_form->js()->univ()->closeDialog(),
+				$this->js()->_selector('.xepan-tasklist-grid')->trigger('reload')
+				];
+			$p->js(null,$js)->execute();
+		}
+
+		if($model_task->loaded()){								
+			$model_attachment = $this->add('xepan\projects\Model_Task_Attachment');
+			$model_attachment->addCondition('task_id',$task_id);	
+				
+			$attachment_crud = $detail_view->add('xepan\hr\CRUD',null,'attachment',['view\attachment-grid']);
+			$attachment_crud->setModel($model_attachment,['file_id','thumb_url'])->addCondition('task_id',$task_id);
+			
+			$model_comment = $this->add('xepan\projects\Model_Comment');
+			$model_comment->addCondition('task_id',$model_task->id);
+			$model_comment->addCondition('employee_id',$this->app->employee->id);
+
+			$comment_grid = $detail_view->add('xepan\hr\CRUD',null,'commentgrid',['view\comment-grid']);
+			$comment_grid->setModel($model_comment,['comment','employee']);
+		}
+	}		
+}
