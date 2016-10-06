@@ -45,9 +45,9 @@ class View_TaskReminder extends \View{
 				
 				if($reminder_crud->form['make_task'])
 					$task['is_reminder_only'] = false;		
-					 					 					 					 									
-				if($task['notify_to']) $task['notify_to'] = '';
-				if($task['remind_via']) $task['remind_via'] = '';
+				$task->save();	 					 					 					 									
+				// if($task['notify_to']) $task['notify_to'] = '';
+				// if($task['remind_via']) $task['remind_via'] = '';
 			}
 		}
 
