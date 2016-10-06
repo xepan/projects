@@ -44,7 +44,7 @@ class Model_Task extends \xepan\base\Model_Table
 		$this->addField('is_recurring')->type('boolean');
 		$this->addField('recurring_span')->setValueList(['Daily'=>'Daily','Weekely'=>'Weekely','Fortnight'=>'Fortnight','Monthly'=>'Monthly','Quarterly'=>'Quarterly','Halferly'=>'Halferly','Yearly'=>'Yearly']);
 		$this->addField('is_reminded')->type('boolean');
-		$this->addField('is_reminder')->type('boolean')->defaultValue(false);
+		$this->addField('is_reminder_only')->type('boolean')->defaultValue(false);
 		$this->addCondition('type','Task');
 
 		$this->hasMany('xepan\projects\Follower_Task_Association','task_id');
@@ -249,18 +249,15 @@ class Model_Task extends \xepan\base\Model_Table
 			$model_task['created_at'] = $task['created_at'];
 			$model_task['priority'] = $task['priority'];
 			$model_task['estimate_time'] = $task['estimate_time'];
-			$model_task['set_reminder'] = $task['set_reminder'];
+			$model_task['is_reminder_only'] = $task['is_reminder_only'];
 			$model_task['remind_via'] = $task['remind_via'];
+			$model_task['set_reminder'] = $task['set_reminder'];
 			$model_task['notify_to'] = $task['notify_to'];
 			$model_task['remind_value'] = $task['remind_value'];
 			$model_task['remind_unit'] = $task['remind_unit'];
 			$model_task['is_recurring'] = $task['is_recurring'];
 			$model_task['recurring_span'] = $task['recurring_span'];
 			$model_task['created_by_id'] = $task['created_by_id'];
-			if($task['is_reminded'] == true)
-				$model_task['is_reminder'] = true;
-			else
-				$model_task['is_reminder'] = false;
 			$model_task['deadline'] = $task['deadline'];
 			
 			/* 
