@@ -41,12 +41,11 @@ class View_TaskReminder extends \View{
 							->setAttr(['multiple'=>'multiple']);
 		
 			if($reminder_crud->form->isSubmitted()){
-				if($reminder_crud->form['make_task'])
-					throw new \Exception("Error Processing Request", 1);
-					 					 					
-					// $task->addCondition('is_reminder_only',false);	
-					// $task->addCondition('is_reminder_only',true);
+				$task['is_reminder_only'] = true;		
 				
+				if($reminder_crud->form['make_task'])
+					$task['is_reminder_only'] = false;		
+					 					 					 					 									
 				if($task['notify_to']) $task['notify_to'] = '';
 				if($task['remind_via']) $task['remind_via'] = '';
 			}
