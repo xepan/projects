@@ -35,6 +35,7 @@ class Model_Task extends \xepan\base\Model_Table
 		$this->addField('estimate_time')/*->display(['form'=>'TimePicker'])*/;
 		$this->addField('created_at')->type('datetime')->defaultValue($this->app->now);
 		$this->addField('status')->defaultValue('Pending');
+		$this->addField('updated_at')->type('datetime');
 		$this->addField('type');
 		$this->addField('priority')->setValueList(['25'=>'Low','50'=>'Medium','75'=>'High','90'=>'Critical'])->EmptyText('Priority')->defaultValue(50);
 		$this->addField('set_reminder')->type('boolean');
@@ -95,6 +96,7 @@ class Model_Task extends \xepan\base\Model_Table
 
 	function submit(){
 		$this['status']='Submitted';
+		$this['updated_at']=$this->app->now;
 		$this->save();
 		
 		if($this['employee_id']){
@@ -107,6 +109,7 @@ class Model_Task extends \xepan\base\Model_Table
 
 	function mark_complete(){		
 		$this['status']='Completed';
+		$this['updated_at']=$this->app->now;
 		$this->save();
 		
 		if($this['employee_id']){
@@ -118,6 +121,7 @@ class Model_Task extends \xepan\base\Model_Table
 
 	function reopen(){		
 		$this['status']='Pending';
+		$this['updated_at']=$this->app->now;
 		$this->save();
 		if($this['employee_id']){
 			$this->app->employee
