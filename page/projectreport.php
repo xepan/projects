@@ -2,7 +2,7 @@
 
 namespace xepan\projects;
 
-class page_report extends \xepan\base\Page{
+class page_projectreport extends page_reportsidebar{
 	public $title = "Project Report";
 
 	function init(){

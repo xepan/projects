@@ -26,7 +26,7 @@ class Initiator extends \Controller_Addon {
 			$this->app->user_menu->addItem(['Tasks','icon'=>'fa fa-tasks'],'xepan_projects_mytasks');
 			$projects = $this->add('xepan\projects\Model_Project');
 			$m->addItem(['Configuration','icon'=>' fa fa-cog'],'xepan_projects_layout');
-			$m->addItem(['Reports','icon'=>' fa fa-cog'],'xepan_projects_report');
+			$m->addItem(['Reports','icon'=>' fa fa-cog'],'xepan_projects_projectreport');
 		}
 
 		$search_project = $this->add('xepan\projects\Model_Project');
