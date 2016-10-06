@@ -158,6 +158,7 @@ class Model_Task extends \xepan\base\Model_Table
 				if(in_array("Email", $remind_via_array)){
 					$emails = [];
 					foreach ($employee_array as $value){
+						if(!$value) continue; // in case user kept 'Please select' also
 						$emp = $this->add('xepan\hr\Model_Employee')->load($value);
 						array_push($emails, $emp['first_email']);
 					}
