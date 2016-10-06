@@ -38,6 +38,7 @@ class page_projectdashboard extends \xepan\projects\page_sidemenu{
 			return $task->_dsql()->del('fields')->field($q->expr('sum([0])',[$task->getElement('diff_time')]));
 		}); 
 		
+		$project->addCondition([['Estimate','>',0],['Alloted','>',0],['Consumed','>',0]]);
 		$this->add('xepan\base\View_Chart',null,null,null)
      		->setType('bar')
      		->setModel($project,'name',['Estimate','Alloted','Consumed'])
