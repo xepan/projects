@@ -206,7 +206,11 @@ class Model_Task extends \xepan\base\Model_Table
 					
 					$mail->setSubject($subject_v->getHtml());
 					$mail->setBody($body_v->getHtml());
-					$mail->send($email_settings);
+					try{
+						$mail->send($email_settings);
+					}catch(\Exception $e){
+						echo $email_settings['name'];
+					}
 				}
 
 				if(in_array("SMS", $remind_via_array)){
