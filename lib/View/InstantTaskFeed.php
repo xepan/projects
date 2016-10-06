@@ -11,7 +11,7 @@ class View_InstantTaskFeed extends \View{
 		$model_pending_task = $this->add('xepan\projects\Model_Task');
 		$model_pending_task->addCondition('employee_id',$this->app->employee->id);
 		$model_pending_task->addCondition('status','Pending');
-		$model_pending_task->addCondition('is_reminder',false);
+		$model_pending_task->addCondition('is_reminder_only',false);
 		
 		$pending_task_view = $this->add('xepan\projects\View_TaskList',['no_records_message'=>'No pending task found'],'pending_tasks');
 		$pending_task_view->setModel($model_pending_task);
@@ -39,7 +39,7 @@ class View_InstantTaskFeed extends \View{
 		$model_task = $this->add('xepan\projects\Model_Task');
 		$model_task->addCondition('starting_date','>',$this->app->today);
 		$model_task->addCondition('employee_id',$this->app->employee->id);
-		$model_task->addCondition('is_reminder',false);
+		$model_task->addCondition('is_reminder_only',false);
 
 		if($project_id = $this->app->stickyGET('project_id')){
 			$model_task->addCondition('project_id',$project_id);

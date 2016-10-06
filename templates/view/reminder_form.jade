@@ -2,9 +2,12 @@
   .col-md-6
     strong Reminder Task Name: 
     {$task_name}
-  .col-md-6
+  .col-md-4
     strong Task Starting Time: 
     {$starting_date}
+  .col-md-2
+    strong Make Task:
+    {$make_task}  
 .row.xepan-push
   .col-md-12
     strong Description:
@@ -43,7 +46,7 @@
             {$is_recurring}
           .col-md-8
             strong Time Gap:    
-            {$recurring_span}    
+            {$recurring_span}   
  
 style(type='text/css', media='screen').
   .atk-button{  
