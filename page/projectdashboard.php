@@ -9,13 +9,13 @@ class page_projectdashboard extends \xepan\projects\page_sidemenu{
 
 		$project = $this->add('xepan\projects\Model_Project');
 
-		$project->addExpression('total_estimate_hours')->set(function($m,$q){
+		$project->addExpression('Estimate')->set(function($m,$q){
 			$task = $this->add('xepan\projects\Model_Task');
 			$task->addCondition('project_id',$m->getElement('id'));
 			return $task->_dsql()->del('fields')->field($q->expr('sum([0])',[$task->getElement('estimate_time')]));
 		});
 
-		$project->addExpression('total_alloted_hours')->set(function($m,$q){
+		$project->addExpression('Alloted')->set(function($m,$q){
 			$task = $this->add('xepan\projects\Model_Task');
 			$task->addCondition('project_id',$m->getElement('id'));
 
@@ -26,7 +26,7 @@ class page_projectdashboard extends \xepan\projects\page_sidemenu{
 			return $task->_dsql()->del('fields')->field($q->expr('sum([0])',[$task->getElement('diff_time')]));
 		}); 
 
-		$project->addExpression('total_consumed_hours')->set(function($m,$q){
+		$project->addExpression('Consumed')->set(function($m,$q){
 			$task = $this->add('xepan\projects\Model_Task');
 			$task->addCondition('project_id',$m->getElement('id'));
 			$task->addCondition('status','Completed');
@@ -38,8 +38,13 @@ class page_projectdashboard extends \xepan\projects\page_sidemenu{
 			return $task->_dsql()->del('fields')->field($q->expr('sum([0])',[$task->getElement('diff_time')]));
 		}); 
 		
-
-		$this->add('Grid')->setModel($project);
+		$this->add('xepan\base\View_Chart',null,null,null)
+     		->setType('bar')
+     		->setModel($project,'name',['Estimate','Alloted','Consumed'])
+     		->setGroup(['Estimate','Alloted','Consumed'])
+     		->setTitle('Project Hour Consumption')
+     		->addClass('col-md-8')
+     		->rotateAxis();
 	}
 
 	function defaultTemplate(){
