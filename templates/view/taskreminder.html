@@ -11,7 +11,7 @@
       <thead>{cols}{col}
         <th><span>Task Name</span></th>
         <th><span>Starting On</span></th>
-        <th><span>Reminder Time    </span></th>
+        <th><span>Reminder Time </span></th>
         <th> </th>{/}{/}
       </thead>{/}
       {$subheader}
@@ -19,7 +19,10 @@
         <tr data-id="{$id}" class="{$odd_even}">{cols}
           <td>{$task_name}</td>
           <td>{$starting_date}</td>
-          <td>{$reminder_time}  </td>
+          <td>{$reminder_time} </td>
+          <td>
+            <div style="cursor:pointer; cursor: hand; max-width:600px;" class="xepan-reminder-view-task"> <span class="{$class}">&nbsp;</span><span class="text-muted small">{$is_task}   </span></div>
+          </td>
           <td style="width: 15%;">
             {$edit}
             {$delete}

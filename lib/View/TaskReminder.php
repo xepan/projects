@@ -10,7 +10,7 @@ class View_TaskReminder extends \View{
 		$task->addCondition('set_reminder',true);
 		$task->addCondition('created_by_id',$this->app->employee->id);
 		$task->addCondition('employee_id',$this->app->employee->id);
-		
+
 		$reminder_crud = $this->add('xepan\hr\CRUD',['entity_name'=>'Reminder'],null,['view\taskreminder']);
 		
 		if($reminder_crud->isEditing()){
@@ -53,6 +53,14 @@ class View_TaskReminder extends \View{
 
 		$reminder_crud->grid->addHook('formatRow',function($g){						
 			$g->current_row['reminder_time'] = date("Y-m-d H:i:s", strtotime('-'.$g->model['remind_value'].' '.$g->model['remind_unit'], strtotime($g->model['starting_date'])));		
+			
+			if($g->model['is_reminder_only'] == 0){
+				$g->current_row_html['is_task'] = 'View Task';		
+				$g->current_row_html['class'] = 'fa fa-tasks';		
+			}
 		});		
+
+		$reminder_crud->js('click')->_selector('.xepan-reminder-view-task')->univ()->frameURL('YOUR TASKS',[$this->api->url('xepan_projects_mytasks')]);
+		
 	}
 }
