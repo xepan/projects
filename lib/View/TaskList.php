@@ -3,8 +3,8 @@
 namespace xepan\projects;
 
 class View_TaskList extends \xepan\base\Grid{
-
 	// public $show_completed=true;
+	public $view_reload_url=null;
 	public $running_task_id = null;
 
 	function init(){
@@ -16,7 +16,7 @@ class View_TaskList extends \xepan\base\Grid{
 	    					->load($this->app->employee->id)
 	    					->get('running_task_id');
 
-
+		$this->view_reload_url = $this->app->url(null,['cut_object'=>$this->getView()->name]);
 	    $this->js(true)->_load('timer.jquery');
 
 	/***************************************************************************
@@ -48,7 +48,80 @@ class View_TaskList extends \xepan\base\Grid{
 			$this->createStopped();
 		}
 
-		return parent::formatRow();
+
+		$action_btn_list = [];
+			foreach ($this->model->actions[$this->model['status']] as $action => $acl) {
+				$action_btn_list[] = $acl;
+			}
+			if(!isset($this->current_row_html['action']))
+				$this->current_row_html['action']= $this->app->add('xepan\hr\View_ActionBtn',['actions'=>$action_btn_list,'id'=>$this->model->id,'status'=>$this->model['status'],'action_btn_group'=>null])->getHTML();
+			
+			return parent::formatRow();
+	}
+
+	function setModel($model,$fields=null){
+		$m= parent::setModel($model,$fields);
+		$this->on('click','.acl-action',[$this,'manageAction']);
+		
+		return $m;
+	}
+
+	function manageAction($js,$data){	
+
+		$this->app->inAction=true;
+		$this->model = $this->model->newInstance()->load($data['id']?:$this->api->stickyGET($this->name.'_id'));
+		$action=$data['action']?:$this->api->stickyGET($this->name.'_action');
+		if($this->model->hasMethod('page_'.$action)){
+			$p = $this->add('VirtualPage');
+			$p->set(function($p)use($action){
+				try{
+					$this->api->db->beginTransaction();
+						$page_action_result = $this->model->{"page_".$action}($p);						
+					if($this->app->db->intransaction()) $this->api->db->commit();
+				}catch(\Exception_StopInit $e){
+
+				}catch(\Exception $e){
+					if($this->app->db->intransaction()) $this->api->db->rollback();
+					throw $e;
+				}
+				if(isset($page_action_result) or isset($this->app->page_action_result)){
+					
+					if(isset($this->app->page_action_result)){						
+						$page_action_result = $this->app->page_action_result;
+					}
+
+					$js=[];
+					if($page_action_result instanceof \jQuery_Chain) {
+						$js[] = $page_action_result;
+					}
+					$js[]=$this->getView()->js()->univ()->closeDialog();
+					$js[]= $this->getView()->js()->reload(null,null,$this->view_reload_url);
+					
+					$this->getView()->js(null,$js)->execute();
+					// $p->js(true)->univ()->location();
+				}
+			});
+			return $js->univ()->frameURL('Action',$this->api->url($p->getURL(),[$this->name.'_id'=>$data['id'],$this->name.'_action'=>$data['action']]));
+		}elseif($this->model->hasMethod($action)){
+			try{
+					$this->api->db->beginTransaction();
+					$this->model->$action();
+					$this->api->db->commit();
+				}catch(\Exception_StopInit $e){
+
+				}catch(\Exception $e){
+					$this->api->db->rollback();
+					throw $e;
+				}
+			$this->getView()->js()->reload(null,null,$this->view_reload_url)->execute();
+			// $this->getView()->js()->univ()->location()->execute();
+		}else{
+			return $js->univ()->errorMessage('Action "'.$action.'" not defined in Model');
+		}
+	}
+
+	function getView(){
+		return $this;
 	}
 
 	function isCurrentTask(){
