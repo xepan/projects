@@ -42,7 +42,7 @@ class Model_Employee extends \xepan\hr\Model_Employee{
 			return $p->fieldQuery('name');
 		})->sortable(true);
 
-		$this->hasMany('xepan\projects\Task','employee_id');
+		$this->hasMany('xepan\projects\Task','assign_to_id');
 
 		$this->addExpression('pending_tasks_count')->set(function ($m,$q){
 			return $m->refSQL('xepan\projects\Task')

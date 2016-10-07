@@ -9,7 +9,7 @@ class View_InstantTaskFeed extends \View{
 		 Showing pending tasks on 'pending task' tab
 		******************************************************************************/
 		$model_pending_task = $this->add('xepan\projects\Model_Task');
-		$model_pending_task->addCondition('employee_id',$this->app->employee->id);
+		$model_pending_task->addCondition('assign_to_id',$this->app->employee->id);
 		$model_pending_task->addCondition('status','Pending');
 		$model_pending_task->addCondition('is_reminder_only',false);
 		
@@ -38,7 +38,7 @@ class View_InstantTaskFeed extends \View{
 		*****************************************************************/ 
 		$model_task = $this->add('xepan\projects\Model_Task');
 		$model_task->addCondition('starting_date','>',$this->app->today);
-		$model_task->addCondition('employee_id',$this->app->employee->id);
+		$model_task->addCondition('assign_to_id',$this->app->employee->id);
 		$model_task->addCondition('is_reminder_only',false);
 
 		if($project_id = $this->app->stickyGET('project_id')){
@@ -67,7 +67,7 @@ class View_InstantTaskFeed extends \View{
 
 			// ending previous running task if any
 			$model_close_timesheet = $this->add('xepan\projects\Model_Timesheet');
-			$model_close_timesheet->addCondition('employee_id',$this->app->employee->id);
+			$model_close_timesheet->addCondition('assign_to_id',$this->app->employee->id);
 			$model_close_timesheet->addCondition('endtime',null);
 			$model_close_timesheet->tryLoadAny();			
 
@@ -80,7 +80,7 @@ class View_InstantTaskFeed extends \View{
 			
 			// Adding new task
 			$model_new_task = $this->add('xepan\projects\Model_Task');
-			$model_new_task->addCondition('employee_id',$this->app->employee->id);
+			$model_new_task->addCondition('assign_to_id',$this->app->employee->id);
 			$model_new_task['task_name'] = $form['new_task'];
 			$model_new_task['project_id'] = $form['project'];
 			$model_new_task->save();

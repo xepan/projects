@@ -7,15 +7,16 @@ class Model_Task extends \xepan\base\Model_Table
 	public $table = "task";
 	public $title_field ='task_name';
 
-	public $status=['Pending','Submitted','Completed','Reopened'];
+	public $status=['Pending','Submitted','Completed','Reopened','Received','Inprogress'];
 
 	public $actions =[
-		'Pending'=>['view','edit','delete','submit'],
+		'Pending'=>['view','edit','delete','receive'],
+		'Received'=>['view','edit','delete'],
+		'Inprogress'=>['view','edit','delete','submit'],
 		'Submitted'=>['view','edit','delete','mark_complete','reopen'],
 		'Completed'=>['view','edit','delete'],
-		'Reopened'=>['view','edit','delete','submit'],
+		'Reopened'=>['view','edit','delete','submit']
 	];
-	// public $acl=false;
 	
 	function init()
 	{
@@ -23,7 +24,7 @@ class Model_Task extends \xepan\base\Model_Table
 
 		$this->hasOne('xepan\base\Epan');
 		$this->hasOne('xepan\projects\Project','project_id');
-		$this->hasOne('xepan\hr\Employee','employee_id');
+		$this->hasOne('xepan\hr\Employee','assign_to_id')->defaultValue($this->app->employee->id);
 		$this->hasOne('xepan\hr\Employee','created_by_id')->defaultValue($this->app->employee->id);
 		
 		$this->addField('task_name');
@@ -87,10 +88,10 @@ class Model_Task extends \xepan\base\Model_Table
 	}
 
 	function notifyAssignement(){
-		if($this->dirty['employee_id'] and $this['employee_id']){
+		if($this->dirty['assign_to_id'] and $this['assign_to_id']){
 			$this->app->employee
-	            ->addActivity("Task '".$this['task_name']."' assigned to '".$this['employee_id']."'",null, $this['created_by_id'] /*Related Contact ID*/,null,null,null)
-	            ->notifyTo([$this['employee_id']],"Task Assigend to you : " . $this['task_name']);
+	            ->addActivity("Task '".$this['task_name']."' assigned to '".$this['assign_to_id']."'",null, $this['created_by_id'] /*Related Contact ID*/,null,null,null)
+	            ->notifyTo([$this['assign_to_id']],"Task Assigend to you : " . $this['task_name']);
 		}
 	}
 
@@ -99,22 +100,33 @@ class Model_Task extends \xepan\base\Model_Table
 		$this['updated_at']=$this->app->now;
 		$this->save();
 		
-		if($this['employee_id']){
+		if($this['assign_to_id']){
 			$this->app->employee
-		            ->addActivity("Task '".$this['task_name']."' submitted by '".$this->app->employee['name']."'",null, $this['employee_id'] /*Related Contact ID*/,null,null,null)
+		            ->addActivity("Task '".$this['task_name']."' submitted by '".$this->app->employee['name']."'",null, $this['assign_to_id'] /*Related Contact ID*/,null,null,null)
 		            ->notifyTo([$this['created_by_id']],"Task Submitted : " . $this['task_name']);
 		}
 	}
 
+	function receive(){
+		$this['status']='Received';
+		$this['updated_at']=$this->app->now;
+		$this->save();
+		
+		if($this['assign_to_id']){
+			$this->app->employee
+		            ->addActivity("Task '".$this['task_name']."' received by '".$this->app->employee['name']."'",null, $this['assign_to_id'] /*Related Contact ID*/,null,null,null)
+		            ->notifyTo([$this['created_by_id']],"Task Received : " . $this['task_name']);
+		}	
+	}
 
 	function mark_complete(){		
 		$this['status']='Completed';
 		$this['updated_at']=$this->app->now;
 		$this->save();
 		
-		if($this['employee_id']){
+		if($this['assign_to_id']){
 			$this->app->employee
-		            ->addActivity("Task '".$this['task_name']."' completed by '".$this->app->employee['name']."'",null, $this['employee_id'] /*Related Contact ID*/,null,null,null)
+		            ->addActivity("Task '".$this['task_name']."' completed by '".$this->app->employee['name']."'",null, $this['assign_to_id'] /*Related Contact ID*/,null,null,null)
 		            ->notifyTo([$this['created_by_id']],"Task Completed : " . $this['task_name']);
 		}
 	}
@@ -123,17 +135,17 @@ class Model_Task extends \xepan\base\Model_Table
 		$this['status']='Pending';
 		$this['updated_at']=$this->app->now;
 		$this->save();
-		if($this['employee_id']){
+		if($this['assign_to_id']){
 			$this->app->employee
-		            ->addActivity("Task '".$this['task_name']."' reopen by '".$this->app->employee['name']."'",null, $this['employee_id'] /*Related Contact ID*/,null,null,null)
-		            ->notifyTo([$this['employee_id']],"Task ReOpenned : " . $this['task_name']);
+		            ->addActivity("Task '".$this['task_name']."' reopen by '".$this->app->employee['name']."'",null, $this['assign_to_id'] /*Related Contact ID*/,null,null,null)
+		            ->notifyTo([$this['assign_to_id']],"Task ReOpenned : " . $this['task_name']);
 		}
 	}
 
 
 	function getAssociatedfollowers(){
 		$associated_followers = $this->ref('xepan\projects\Follower_Task_Association')
-								->_dsql()->del('fields')->field('employee_id')->getAll();
+								->_dsql()->del('fields')->field('assign_to_id')->getAll();
 		return iterator_to_array(new \RecursiveIteratorIterator(new \RecursiveArrayIterator($associated_followers)),false);
 	}
 
@@ -247,7 +259,7 @@ class Model_Task extends \xepan\base\Model_Table
 			$model_task = $this->add('xepan\projects\Model_Task');
 			$model_task['project_id'] = $task['project_id']; 
 			$model_task['task_name']  = $task['task_name'];
-			$model_task['employee_id'] = $task['employee_id'];
+			$model_task['assign_to_id'] = $task['assign_to_id'];
 			$model_task['description'] = $task['description'];
 			$model_task['status'] = $task['status'];
 			$model_task['created_at'] = $task['created_at'];
