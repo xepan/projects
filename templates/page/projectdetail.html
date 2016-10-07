@@ -3,8 +3,15 @@
   <div class="col-md-12">{$topview}</div>
 </div>
 <div class="row main-box">
-  <div id="left_view" class="col-md-12">{$leftview}</div>
-  <div id="right_view" style="display:none" class="col-md-5">{$rightview}</div>
+  <div id="left_view" class="col-md-4"><strong>Assign To Me</strong>
+    <hr/>{$leftview}
+  </div>
+  <div id="middle_view" class="col-md-4"><strong>Assigned By Me</strong>
+    <hr/>{$middleview}
+  </div>
+  <div id="right_view" class="col-md-4">	<strong>Waiting For Approval</strong>
+    <hr/>{$rightview}
+  </div>
 </div>
 <div class="row">
   <div class="col-md-1"></div>
