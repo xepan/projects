@@ -7,11 +7,12 @@ class Model_Task extends \xepan\base\Model_Table
 	public $table = "task";
 	public $title_field ='task_name';
 
-	public $status=['Pending','Submitted','Completed','Reopened','Received','Inprogress'];
+	public $status=['Pending','Submitted','Completed','Reopened','Received','Rejected','Inprogress'];
 
 	public $actions =[
-		'Pending'=>['view','edit','delete','receive'],
+		'Pending'=>['view','edit','delete','receive','reject'],
 		'Received'=>['view','edit','delete'],
+		'Rejected'=>['view','edit','delete'],
 		'Inprogress'=>['view','edit','delete','submit'],
 		'Submitted'=>['view','edit','delete','mark_complete','reopen'],
 		'Completed'=>['view','edit','delete'],
@@ -117,6 +118,22 @@ class Model_Task extends \xepan\base\Model_Table
 		            ->addActivity("Task '".$this['task_name']."' received by '".$this->app->employee['name']."'",null, $this['assign_to_id'] /*Related Contact ID*/,null,null,null)
 		            ->notifyTo([$this['created_by_id']],"Task Received : " . $this['task_name']);
 		}	
+
+		return true;
+	}
+
+	function reject(){
+		$this['status']='Rejected';
+		$this['updated_at']=$this->app->now;
+		$this->save();
+		
+		if($this['assign_to_id']){
+			$this->app->employee
+		            ->addActivity("Task '".$this['task_name']."' rejected by '".$this->app->employee['name']."'",null, $this['assign_to_id'] /*Related Contact ID*/,null,null,null)
+		            ->notifyTo([$this['created_by_id']],"Task Rejected : " . $this['task_name']);
+		}
+
+		return true;	
 	}
 
 	function mark_complete(){		
