@@ -27,6 +27,10 @@ class page_projectandtaskreport extends page_reportsidebar{
 
 		if($project_id)
 			$task->addCondition('project_id',$project_id);
+		if($from_date)
+			$task->addCondition('created_at','>=',$from_date);
+		if($from_date)
+			$task->addCondition('created_at','<=',$to_date);
 		
 		/*******************************************************************
 	 	 FORM TO ENTER INFORMATION
