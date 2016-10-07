@@ -13,24 +13,28 @@ class page_projectandtaskreport extends page_reportsidebar{
 		$from_date = $this->app->stickyGET('from_date')?:$this->app->today;
 		$to_date = $this->app->stickyGET('to_date')?:$this->app->nextDate($this->app->today);
 		$project_id = $this->app->stickyGET('project_id');
-		$task_id = $this->app->stickyGET('task_id');
 		
 		/*******************************************************************
 		 EMPLOYEE TIMESHEET AND EXPRESSIONS
 		********************************************************************/
-		$timesheet = $this->add('xepan\projects\Model_Timesheet');
-		$timesheet->addCondition('task_id',$task_id);
+		$task = $this->add('xepan\projects\Model_Task');
+		
+		$task->addExpression('time_consumed')->set(function($m,$q){
+			$time_sheet = $this->add('xepan\projects\Model_Timesheet',['table_alias'=>'total_duration']);
+			$time_sheet->addCondition('task_id',$q->getField('id'));
+			return $time_sheet->dsql()->del('fields')->field($q->expr('sec_to_time(SUM([0]))',[$time_sheet->getElement('duration')]));
+		});
 
+		if($project_id)
+			$task->addCondition('project_id',$project_id);
+		
 		/*******************************************************************
 	 	 FORM TO ENTER INFORMATION
 		********************************************************************/	
-		$task = $this->add('xepan\projects\Model_Task');
 		$form = $this->add('Form');
 		$form->addField('DatePicker','from_date')->set($this->app->today);
 		$form->addField('DatePicker','to_date')->set($this->app->today);
-		$form->addField('Dropdown','projects')->setModel('xepan\projects\Project');
-		$task_field = $form->addField('autocomplete/Basic','task');
-		$task_field->setModel($task);
+		$form->addField('Dropdown','project')->setModel('xepan\projects\Project');
 		$form->addSubmit('Get Report')->addclass('btn btn-primary btn-sm btn-block');	
 
 		// GRID WILL BE ADDED ON THIS VIEW
@@ -40,8 +44,8 @@ class page_projectandtaskreport extends page_reportsidebar{
 		 ADDING GRID ON VIEW AND SETTING MODEL
 		********************************************************************/
 		$grid = $view->add('Grid');			
-		$grid->setModel($timesheet,['employee','starttime','endtime','duration']);
-		
+		$grid->setModel($task,['task_name','starting_date','deadline','estimate_time','time_consumed']);
+		// $grid->addFormatter('task_name','wrap');	
 		/*******************************************************************
 		 HANDLING FORM SUBMISSION
 		********************************************************************/
@@ -49,7 +53,7 @@ class page_projectandtaskreport extends page_reportsidebar{
 			$array = [
 						'from_date'=>$form['from_date'],
 						'to_date'=>$form['to_date'],
-						'task_id'=>$form['task'],
+						'project_id'=>$form['project'],
 					 ];
 			$view->js()->reload($array)->execute();
 		}
