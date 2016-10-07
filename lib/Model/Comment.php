@@ -14,6 +14,6 @@ class Model_Comment extends \xepan\base\Model_Table
 		$this->hasOne('xepan\projects\comment','task_id');
 		$this->hasOne('xepan\hr\Employee','employee_id');
 		$this->addField('comment');
-		
+		$this->addField('action')->enum(['General','Pending','Submitted','Completed','Reopened','Received','Rejected','Inprogress']);
 	}
 }

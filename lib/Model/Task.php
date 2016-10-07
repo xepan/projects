@@ -8,17 +8,23 @@ class Model_Task extends \xepan\base\Model_Table
 	public $title_field ='task_name';
 
 	public $status=['Pending','Submitted','Completed','Reopened','Received','Rejected','Inprogress'];
-
-	public $actions =[
-		'Pending'=>['view','edit','delete','receive','reject'],
-		'Received'=>['view','edit','delete'],
-		'Rejected'=>['view','edit','delete'],
-		'Inprogress'=>['view','edit','delete','submit'],
-		'Submitted'=>['view','edit','delete','mark_complete','reopen'],
-		'Completed'=>['view','edit','delete'],
-		'Reopened'=>['view','edit','delete','submit']
-	];
 	
+	public $assign_to_me_actions =[
+		'Pending'=>['receive','reject'],
+		'Received'=>[],
+		'Rejected'=>[],
+		'Inprogress'=>['submit'],
+		'Submitted'=>['mark_complete','reopen'],
+	];
+
+	public $assign_by_me_actions =[
+		'Rejected'=>['reopen'],
+		'Pending'=>[],
+		'Submitted'=>['mark_complete','reopen'],
+		'Completed'=>[],
+		'Reopened'=>['submit']
+	];
+
 	function init()
 	{
 		parent::init();
