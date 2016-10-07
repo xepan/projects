@@ -137,7 +137,7 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 										  ->addCondition('assign_to_id','<>',null)
 										  ->addCondition('status','Submitted');	
 		
-		$task_assigned_to_me->setModel($task_assigned_to_me_model->debug());
+		$task_assigned_to_me->setModel($task_assigned_to_me_model);
 		$task_assigned_by_me->setModel($task_assigned_by_me_model);
 		$task_waiting_for_approval->setModel($task_waiting_for_approval_model);
 
