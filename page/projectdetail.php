@@ -111,10 +111,17 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 	    // }
 		$status = 'Completed';
 
-	    $task_assigned_to_me_model = $this->add('xepan\projects\Model_Formatted_Task')
-										  ->addCondition('project_id',$project_id)
-										  ->addCondition('assign_to_id',$this->app->employee->id)
-										  ->addCondition('status','<>',$status);
+	    $task_assigned_to_me_model = $this->add('xepan\projects\Model_Formatted_Task');
+	    $task_assigned_to_me_model
+	    			->addCondition(
+	    				$task_assigned_to_me_model->dsql()->orExpr()
+	    					->where('assign_to_id',$this->app->employee->id)
+	    					->where(
+    								$task_assigned_to_me_model->dsql()->andExpr()
+    									->where('created_by_id',$this->app->employee->id)
+    									->where('assign_to_id',null)
+	    							)
+	    				);
 
 	    $task_assigned_by_me_model = $this->add('xepan\projects\Model_Formatted_Task')
 										  ->addCondition('project_id',$project_id)
@@ -130,7 +137,7 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 										  ->addCondition('assign_to_id','<>',null)
 										  ->addCondition('status','Submitted');	
 		
-		$task_assigned_to_me->setModel($task_assigned_to_me_model);
+		$task_assigned_to_me->setModel($task_assigned_to_me_model->debug());
 		$task_assigned_by_me->setModel($task_assigned_by_me_model);
 		$task_waiting_for_approval->setModel($task_waiting_for_approval_model);
 
