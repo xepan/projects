@@ -21,17 +21,9 @@ class View_TaskList extends \xepan\base\Grid{
 			Virtual page for TASK DETAIL
 		***************************************************************************/
 		$self = $this;
-		$self_url = $this->app->url(null,['cut_object'=>$this->name]);
+		$self_url = $this->app->url(null,['cut_object'=>$this->name]);	
 
-		$vp = $this->add('VirtualPage');
-		$vp->set(function($p){
-			$task_id = $this->app->stickyGET('task_id')?:0;
-			$project_id = $this->app->stickyGET('project_id');
-
-			$p->add('xepan\projects\View_Detail',['task_id'=>$task_id,'project_id'=>$project_id]);
-		});	
-
-	    $this->js('click')->_selector("#".$this->getJSID().' .task-item')->univ()->frameURL('TASK DETAIL',[$this->api->url($vp->getURL()),'task_id'=>$this->js()->_selectorThis()->data('id')]);
+	    $this->js('click')->_selector("#".$this->getJSID().' .task-item')->univ()->frameURL('TASK DETAIL',[$this->app->url('xepan_projects_taskdetail'),'task_id'=>$this->js()->_selectorThis()->data('id')]);
 		$this->view_reload_url = $this->app->url(null,['cut_object'=>$this->name]);
 	    $this->js(true)->_load('timer.jquery');
 
