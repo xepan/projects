@@ -4,7 +4,7 @@ namespace xepan\projects;
 
 class View_Detail extends \View{
 	public $task_id;
-	public $project_id;
+	public $project_id = null;
 	
 	function init(){
 		parent::init();
@@ -14,7 +14,9 @@ class View_Detail extends \View{
 		$project_id = $this->project_id;
 																		
 		$model_task = $p->add('xepan\projects\Model_Task')->tryLoad($task_id);
-		$model_task->addCondition('project_id',$project_id);
+
+		if($this->project_id)
+			$model_task->addCondition('project_id',$project_id);
 
 		$detail_view = $p->add('xepan\projects\View_TaskDetail');
 
