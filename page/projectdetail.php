@@ -99,6 +99,13 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 	    $task_assigned_by_me = $this->add('xepan\projects\View_TaskList',null,'middleview');	    
 	    $task_waiting_for_approval = $this->add('xepan\projects\View_TaskList',null,'rightview');	    
 
+	    $task_assigned_to_me->template->trySet('task_view_title','Assigned To Me');
+	    $task_assigned_by_me->template->trySet('task_view_title','Assigned By Me');
+		$task_waiting_for_approval->template->trySet('task_view_title','Submitted To Me');
+
+		$task_assigned_to_me->add('xepan\base\Controller_Avatar',['name_field'=>'created_by','extra_classes'=>'profile-img center-block','options'=>['size'=>50,'display'=>'block','margin'=>'auto'],'float'=>null,'model'=>$this->model]);
+		$task_assigned_by_me->add('xepan\base\Controller_Avatar',['name_field'=>'created_by','extra_classes'=>'profile-img center-block','options'=>['size'=>50,'display'=>'block','margin'=>'auto'],'float'=>null,'model'=>$this->model]);
+		$task_waiting_for_approval->add('xepan\base\Controller_Avatar',['name_field'=>'created_by','extra_classes'=>'profile-img center-block','options'=>['size'=>50,'display'=>'block','margin'=>'auto'],'float'=>null,'model'=>$this->model]);
 	    // if($option_form->isSubmitted()){	
 
 	    // 	$this->memorize('status_searched',$option_form['status']);
@@ -156,7 +163,6 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 
 		$vp = $this->add('VirtualPage');
 		$vp->set(function($p)use($self,$self_url,$task_assigned_to_me,$task_assigned_to_me_url){
-
 			$task_id = $this->app->stickyGET('task_id')?:0;
 			$project_id = $this->app->stickyGET('project_id');
 
@@ -166,6 +172,7 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 		/***************************************************************************
 			Js to show task detail view etc.
 		***************************************************************************/
+		
 		$task_assigned_to_me->js('click')->_selector('.task-item')->univ()->frameURL('TASK DETAIL',[$this->api->url($vp->getURL()),'task_id'=>$this->js()->_selectorThis()->closest('[data-id]')->data('id')]);
 
 		$top_view->js('click',$this->js()->univ()->frameURL("ADD NEW TASK",$this->api->url($vp->getURL())))->_selector('.add-task');
