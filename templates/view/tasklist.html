@@ -1,34 +1,29 @@
 
-<div id="{$_name}" class="xepan-grid main-box clearfix {$class}">{Pannel}
-  <header class="main-box-header clearfix atk-actions  {$class} ">
-    <div class="filter-block">
-      <div class="pull-right haha"> 
-        <button class="name btn btn-primary">Add Task</button>
-      </div>{$grid_buttons} 
-      <div class="form-group pull-right xepan-filter-form">
-        <div class="form-control pull-left">{$quick_search}<i class="fa fa-search search-icon"></i></div>
-      </div>
-    </div>
-  </header>{/Pannel}
-  <div data-id="{$id}" class="row main-box-body clearfix">
-    <ul class="widget-todo">
-      {header}{cols}{col}{/}{/}{/}
-      {rows}{row}
+<div id="{$_name}" class="main-box feed xepan-grid xepan-tasklist-grid {$class}"><span class="pending-task-search">{$quick_search}</span>
+  <header class="main-box-header clearfix">
+    <h2 class="pull-left">{$task_view_title}</h2>
+  </header>
+  <div class="main-box-body clearfix">
+    {$header}
+    {nested_template}
+    {rows}{row}
+    <ul>{cols}  
       <li class="clearfix">
-        <div data-id="{$id}" class="name">
-          {$avatar}
-          {$task_name}
-        </div>
-        <div class="pull-right">
+        <div class="img"><img alt="" src="img/samples/robert-300.jpg"/></div>
+        <div class="title"><a href="#">{$created_by_id} : </a> {$task_name}</div>
+        <div class="post-time"><span data-action="{$event_action}" data-id="{$id}" style="cursor:pointer; cursor: hand; " class="fa current_task_btn {$icon} {$running-task}"><span style="margin-left:10px;" class="duration"></span></span></div>
+        <div class="time-ago">
           {$action}
-          {$delete}
+          {trash}<span class="fa-stack"><i class="fa fa-square fa-stack-2x"></i><i class="fa fa-trash-o fa-stack-1x fa-inverse"></i></span>{/}
+          {/}
         </div>
-      </li>{/}{/}
-      {not_found}
-      <div class="row">
-        <div role="alert" class="col-md-12 text-center alert alert-warning"><span class="icon-attention fa fa-exclamation-triangle"> &nbsp;{$not_found_message}</span></div>
-      </div>{/}
-      {totals}{cols}{col}{$content}{/}{/}{/}
-    </ul>{$Paginator}
+      </li>
+    </ul>{/}{/}
+    {not_found}
+    <div class="row">
+      <div role="alert" class="col-md-12 text-center alert alert-warning"><span class="icon-attention fa fa-exclamation-triangle"> &nbsp;{$not_found_message}</span></div>
+    </div>{/}
+    {/}
+    {$Paginator}
   </div>
 </div>
