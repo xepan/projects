@@ -85,7 +85,7 @@ class Model_Task extends \xepan\base\Model_Table
 		if(!$this['id'] && $this['assign_to_id'] && $this['assign_to_id'] != $this['created_by_id']){
 			$this['status'] = "Assigned";
 		}
-
+		$this['updated_at'] = $this->app->now;
 	}
 
 	function canUserDelete(){
