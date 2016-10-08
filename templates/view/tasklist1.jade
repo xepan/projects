@@ -24,8 +24,9 @@
           i.fa.fa-clock-o(title="Total Duration {$total_duration}")&nbsp; {total_duration}0.00{/}
           br
           {play_pause_wrapper}  
-          span.fa.current_task_btn.btn.btn-primary.btn-block(class='{$icon} {$running-task}', data-action='{$event_action}', data-id='{$id}', style='cursor:pointer; cursor: hand; ')
-            span.duration(style="margin-left:10px;")
+          div(style ="display:{$display_play_pause};")
+            span.fa.current_task_btn.btn.btn-primary.btn-block(class='{$icon} {$running-task}', data-action='{$event_action}', data-id='{$id}', style='cursor:pointer; cursor: hand; ')
+              span.duration(style="margin-left:10px;")
           {/}
       {/}
       {/}{/}

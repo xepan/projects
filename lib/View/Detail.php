@@ -21,7 +21,7 @@ class View_Detail extends \View{
 		$detail_view = $p->add('xepan\projects\View_TaskDetail');
 
 
-		if(($model_task['created_by_id'] == $this->app->employee->id) && (($model_task['assign_to_id'] == $this->app->employee->id) || ($model_task['assign_to_id'] == null))){
+		if($model_task->ICanEdit()){
 			$task_form = $detail_view->add('Form',null,'task_form');
 			$task_form->setLayout('view\task_form');
 			$task_form->template->tryDel('assign_to');

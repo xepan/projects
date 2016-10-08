@@ -10,20 +10,28 @@ class Model_Task extends \xepan\base\Model_Table
 	public $status=['Pending','Submitted','Completed','Assigned','Inprogress'];
 	
 
-	public $self_assign_actions = [
-		'Pending'=>['mark_complete'],
-		'Inprogress'=>['mark_complete']
-	];
+	// public $self_assign_actions = [
+	// 	'Pending'=>['mark_complete'],
+	// 	'Inprogress'=>['mark_complete']
+	// ];
 
-	public $assign_to_me_actions = [
-		'Pending'=>['submit','mark_complete'],
+	// public $assign_to_me_actions = [
+	// 	'Pending'=>['submit','mark_complete'],
+	// 	'Assigned'=>['receive','reject'],
+	// 	'Inprogress'=>['submit','mark_complete'],
+	// ];
+
+	// public $assign_by_me_actions = [
+	// 		'Submitted'=>['mark_complete','reopen']
+	// 	];
+
+	public $actions=[
+		'Pending'=>['submit','mark_complete'], 
+		'Inprogress'=>['mark_complete'],
 		'Assigned'=>['receive','reject'],
-		'Inprogress'=>['submit','mark_complete'],
+		'Submitted'=>['mark_complete','reopen'],
+		'Completed'=>[]
 	];
-
-	public $assign_by_me_actions = [
-			'Submitted'=>['mark_complete','reopen']
-		];
 
 	function init()
 	{
@@ -82,6 +90,12 @@ class Model_Task extends \xepan\base\Model_Table
  	}
 	
 	function beforeSave(){
+		if($this->isDirty('assign_to_id')){
+			if(!$this->ICanAssign())
+				throw $this->exception('Cannot assign running task','ValidityCheck')
+							->setField('assign_to_id');
+		}
+
 		if(!$this['id'] && $this['assign_to_id'] && $this['assign_to_id'] != $this['created_by_id']){
 			$this['status'] = "Assigned";
 		}
@@ -352,5 +366,48 @@ class Model_Task extends \xepan\base\Model_Table
 			$task['is_recurring'] = false;
 			$task->saveAs('xepan\projects\Model_Task');
 		}
+
+	}
+
+	function myTask(){
+		return (
+			(
+				$this['created_by_id']== $this->app->employee->id 
+				&& $this['assign_to_id'] == null
+			) 
+			||
+			$this['assign_to_id'] == $this->app->employee->id);
+	}
+
+	function isMyTask(){
+		return $this->myTask();
+	}
+
+	function createdByMe(){
+		return $this['created_by_id'] == $this->app->employee->id;
+	}
+
+	function IhaveAssignedToOthers(){
+		return $this->createdByMe() && !$this->myTask();
+	}
+
+	function iCanPlay(){
+		return ($this->myTask() && $this['status'] != 'Completed');
+	}
+
+	function canStop(){
+		return $this->myTask() && $this['status'] == 'Inprogress';
+	}
+
+	function canDelete(){
+		return $this->myTask() && $this->createdByMe() && in_array($this['status'],['Completed','Submitted']);
+	}
+
+	function ICanAssign(){
+		return $this->createdByMe() && !in_array($this['status'], ['Inprogress','Completed','Submitted']);
+	}
+
+	function ICanEdit(){
+		return $this->createdByMe() && !in_array($this['status'], ['Inprogress','Completed','Submitted']);
 	}
 }
