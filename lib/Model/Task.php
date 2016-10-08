@@ -9,14 +9,21 @@ class Model_Task extends \xepan\base\Model_Table
 
 	public $status=['Pending','Submitted','Completed','Assigned','Inprogress'];
 	
+
+	public $self_assign_actions = [
+		'Pending'=>['mark_complete'],
+		'Inprogress'=>['mark_complete']
+	];
+
 	public $assign_to_me_actions = [
 		'Pending'=>['submit','mark_complete'],
 		'Assigned'=>['receive','reject'],
 		'Inprogress'=>['submit','mark_complete'],
-		'Submitted'=>['mark_complete','reopen'],
 	];
 
-	public $assign_by_me_actions = [];
+	public $assign_by_me_actions = [
+			'Submitted'=>['mark_complete','reopen']
+		];
 
 	function init()
 	{
