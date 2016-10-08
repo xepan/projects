@@ -16,7 +16,8 @@ class View_TaskList extends \xepan\base\Grid{
 	    					->load($this->app->employee->id)
 	    					->get('running_task_id');
 
-		$this->view_reload_url = $this->app->url(null,['cut_object'=>$this->getView()->name]);
+		// $this->view_reload_url = $this->app->url(null,['cut_object'=>$this->getView()->name]);
+		$this->view_reload_url = $this->app->url(null,['cut_object'=>$this->name]);
 	    $this->js(true)->_load('timer.jquery');
 
 	/***************************************************************************
@@ -53,13 +54,18 @@ class View_TaskList extends \xepan\base\Grid{
 
 
 		$action_btn_list = [];
-			if(($this->model['assign_to_id'] == $this->app->employee->id) || (($this->model['created_by_id'] == $this->app->employee->id) && $this->model['assign_to_id']==null))
-				$action_btn_list = $this->model->assign_to_me_actions[$this->model['status']];	
-			if(($this->model['created_by_id'] == $this->app->employee->id) && ($this->model['assign_to_id']!= $this->app->employee->id))
-				$action_btn_list = $this->model->assign_by_me_actions[$this->model['status']];
-			if(!isset($this->current_row_html['action'])&& count($action_btn_list)>=1)
-				$this->current_row_html['action']= $this->app->add('xepan\hr\View_ActionBtn',['actions'=>$action_btn_list,'id'=>$this->model->id,'status'=>$this->model['status'],'action_btn_group'=>null])->getHTML();
-			return parent::formatRow();
+		if(($this->model['assign_to_id'] == $this->app->employee->id) || (($this->model['created_by_id'] == $this->app->employee->id) && $this->model['assign_to_id']==null))
+			$action_btn_list = $this->model->assign_to_me_actions[$this->model['status']];	
+		if(($this->model['created_by_id'] == $this->app->employee->id) && ($this->model['assign_to_id']!= $this->app->employee->id))
+			$action_btn_list = $this->model->assign_by_me_actions[$this->model['status']];
+			
+		if(!isset($this->current_row_html['action'])){
+			$action_btn = $this->add('AbstractController')->add('xepan\hr\View_ActionBtn',['actions'=>$action_btn_list,'id'=>$this->model->id,'status'=>$this->model['status'],'action_btn_group'=>null]);
+			$this->current_row_html['action'] = $action_btn->getHTML();
+			$action_btn_list = [];
+		}
+		
+		return parent::formatRow();
 	}
 
 	function setModel($model,$fields=null){
@@ -72,6 +78,7 @@ class View_TaskList extends \xepan\base\Grid{
 	function manageAction($js,$data){	
 
 		$this->app->inAction=true;
+
 		$this->model = $this->model->newInstance()->load($data['id']?:$this->api->stickyGET($this->name.'_id'));
 		$action=$data['action']?:$this->api->stickyGET($this->name.'_action');
 		if($this->model->hasMethod('page_'.$action)){
@@ -108,11 +115,11 @@ class View_TaskList extends \xepan\base\Grid{
 		}elseif($this->model->hasMethod($action)){
 			try{
 					$this->api->db->beginTransaction();
-					$this->model->$action();
+					$this->model->$action();					
 					$this->api->db->commit();
 				}catch(\Exception_StopInit $e){
 
-				}catch(\Exception $e){
+				}catch(\Exception $e){					
 					$this->api->db->rollback();
 					throw $e;
 				}
