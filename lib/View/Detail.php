@@ -35,9 +35,10 @@ class View_Detail extends \View{
 
 			$task_form->addSubmit('Save')->addClass('btn btn-primary btn-block');
 
-			if($task_form->isSubmitted()){
-
+			if($task_form->isSubmitted()){				
 				$task_form->save();
+				$task_form->getModel()->unload();
+				
 				$js=[
 					$task_form->js()->univ()->successMessage('saved'),
 					$task_form->js()->univ()->closeDialog(),

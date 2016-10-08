@@ -6,7 +6,7 @@ class Model_Task extends \xepan\base\Model_Table
 {	
 	public $table = "task";
 	public $title_field ='task_name';
-
+	public $acl = false;
 	public $status=['Pending','Submitted','Completed','Assigned','Inprogress'];
 	
 
@@ -112,7 +112,7 @@ class Model_Task extends \xepan\base\Model_Table
 		if($this->dirty['assign_to_id'] and $this['assign_to_id']){
 			$this->app->employee
 	            ->addActivity("Task '".$this['task_name']."' assigned to '".$this['assign_to_id']."'",null, $this['created_by_id'] /*Related Contact ID*/,null,null,null)
-	            ->notifyTo([$this['assign_to_id']],"Task Assigend to you : " . $this['task_name']);
+	            ->notifyTo([$this['assign_to_id']],"Task Assigned to you : " . $this['task_name']);
 		}
 	}
 
