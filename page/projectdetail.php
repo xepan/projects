@@ -17,12 +17,6 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 		$task_id = $this->app->stickyGET('task_id');
 		$search = $this->app->stickyGET('search');
 
-		$employee_id = $this->recall('employee',$this->app->employee->id);
-		$status_searched = $this->recall('status_searched','Pending');
-		$search_string = $this->recall('search_string',false);
-		$created_by = $this->recall('createdby',false);
-		$priority = $this->recall('priority',false);
-
 		$model_project = $this->add('xepan\projects\Model_Formatted_Project')->load($project_id);
 		
 		/***************************************************************************
@@ -34,70 +28,10 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 		$task = $this->add('xepan\projects\Model_Task');
 		$task->addCondition('project_id',$project_id);
 		$employee = $this->add('xepan\hr\Model_Employee');
-		/***************************************************************************
-			FILTER FORM
-		***************************************************************************/
-	    // $option_form = $this->add('Form',null,'leftview');
-	    // $option_form->setLayout('view\option_form');
-	    // $option_form->addField('dropdown','status','')
-	    // 	->setValueList(['Pending'=>'Pending','Submitted'=>'Submitted','Completed'=>'Completed'])
-	    // 	->setEmptyText('All');
 
-	    // $option_form->addField('dropdown','createdby','')
-	    // 	->setValueList(['1'=>'Created By','2'=>'Assigned To','3'=>'Created By And Assigned To','4'=>'Created By Or Assigned To'])
-	    // 	->setEmptyText('Select An Option');
-
-	    // $option_form->addField('dropdown','priority','')
-	    // 	->setValueList(['25'=>'Low','50'=>'Medium','75'=>'High','90'=>'Critical'])
-	    // 	->setEmptyText('All');	
-	    		
-	    // $option_form->addField('Line','search_string','Search')->set($search_string);
-	    // $emp_name = $option_form->addField('dropdown','employee')->setEmptyText('All');
-	    // $emp_name->setModel($employee);
-	    // $emp_name->set($employee_id);
-	    // $option_form->addSubmit('Apply Filters')->addClass('btn btn-primary');
-
-	    
-
-	// if($employee_id){
-	//     if($created_by){
-	//     	if($created_by == '1'){
-	//     		$my_task->addCondition('created_by_id',$employee_id);
-	//     	}else if($created_by == '2'){
-	//     		$my_task->addCondition('assign_to_id',$employee_id);
-	//     	}else if($created_by == '3'){
-	//     		$my_task->addCondition(
-	// 					$my_task->dsql()->andExpr()
-	// 					->where('created_by_id',$employee_id)
-	// 					->where('assign_to_id',$employee_id)
-	// 				);
-	//     	}else if($created_by == '4'){
-	//     		$my_task->addCondition(
-	// 					$my_task->dsql()->orExpr()
-	// 					->where('created_by_id',$employee_id)
-	// 					->where('assign_to_id',$employee_id)
-	// 				);
-	//     	}
-	//     }
-	// }
-
-	    // if($status_searched)	    	
-	    // 	$my_task->addCondition('status',$status_searched);
-
-	    // if($priority){
-	    // 	$my_task->addCondition('priority',$priority);
-	    // }
-
-		// if($search_string){	
-
-		// 	$my_task->addExpression('Relevance')->set('MATCH(task_name, description) AGAINST ("'.$search_string.'" IN NATURAL LANGUAGE MODE)');
-		// 	$my_task->addCondition('Relevance','>',0);
-	 // 		$my_task->setOrder('Relevance','Desc');
-		// }
-
-	    $task_assigned_to_me = $this->add('xepan\projects\View_TaskList',null,'leftview');	    
-	    $task_assigned_by_me = $this->add('xepan\projects\View_TaskList',null,'middleview');	    
-	    $task_waiting_for_approval = $this->add('xepan\projects\View_TaskList',null,'rightview');	    
+	    $task_assigned_to_me = $this->add('xepan\hr\CRUD',['allow_add'=>null,'grid_class'=>'xepan\projects\View_TaskList'],'leftview');	    
+	    $task_assigned_by_me = $this->add('xepan\hr\CRUD',['allow_add'=>null,'grid_class'=>'xepan\projects\View_TaskList'],'middleview');	    
+	    $task_waiting_for_approval = $this->add('xepan\hr\CRUD',['allow_add'=>null,'grid_class'=>'xepan\projects\View_TaskList'],'rightview');	    
 
 	    $task_assigned_to_me->template->trySet('task_view_title','Assigned To Me');
 	    $task_assigned_by_me->template->trySet('task_view_title','Assigned By Me');
@@ -106,16 +40,7 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 		$task_assigned_to_me->add('xepan\base\Controller_Avatar',['name_field'=>'created_by','extra_classes'=>'profile-img center-block','options'=>['size'=>50,'display'=>'block','margin'=>'auto'],'float'=>null,'model'=>$this->model]);
 		$task_assigned_by_me->add('xepan\base\Controller_Avatar',['name_field'=>'created_by','extra_classes'=>'profile-img center-block','options'=>['size'=>50,'display'=>'block','margin'=>'auto'],'float'=>null,'model'=>$this->model]);
 		$task_waiting_for_approval->add('xepan\base\Controller_Avatar',['name_field'=>'created_by','extra_classes'=>'profile-img center-block','options'=>['size'=>50,'display'=>'block','margin'=>'auto'],'float'=>null,'model'=>$this->model]);
-	    // if($option_form->isSubmitted()){	
-
-	    // 	$this->memorize('status_searched',$option_form['status']);
-		   //  $this->memorize('employee',$option_form['employee']);
-		   //  $this->memorize('search_string',$option_form['search_string']);
-		   //  $this->memorize('createdby',$option_form['createdby']);
-		   //  $this->memorize('priority',$option_form['priority']);
-
-    	// 	$task_assigned_to_me->js()->reload()->execute();
-	    // }
+	    
 		$status = 'Completed';
 
 	    $task_assigned_to_me_model = $this->add('xepan\projects\Model_Formatted_Task');
@@ -154,7 +79,6 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 		}
 		$task_assigned_to_me_url = $this->api->url(null,['cut_object'=>$task_assigned_to_me->name]);
 
-		// $task_view_url = $task_assigned_to_me->getUrl();
 
 		/***************************************************************************
 			Virtual page for TASK DETAIL
@@ -178,20 +102,11 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 
 		$top_view->js('click',$this->js()->univ()->frameURL("ADD NEW TASK",$this->api->url($vp->getURL())))->_selector('.add-task');
 		
-		$task_assigned_to_me->js('click',$task_assigned_to_me->js()->reload(['delete_task_id'=>$this->js()->_selectorThis()->data('id')]))->_selector('.do-delete');
 
-		if($_GET['delete_task_id']){
-			$delete_task=$this->add('xepan\projects\Model_Task');
-			$delete_task->load($_GET['delete_task_id']);
-			$delete_task->delete();
-			$task_assigned_to_me->js(true,$this->js()->univ()->successMessage('Task Deleted'))->_load('jquery.nestable')->nestable(['group'=>1]);
-		}
-
-
-	/***************************************************************************
-	  Timesheet PLAY/STOP
-	***************************************************************************/
-	$task_assigned_to_me->on('click','.current_task_btn',function($js,$data)use($task_assigned_to_me){
+		/***************************************************************************
+		  Timesheet PLAY/STOP
+		***************************************************************************/
+		$task_assigned_to_me->on('click','.current_task_btn',function($js,$data)use($task_assigned_to_me){
 			$task_model = $this->add('xepan\projects\Model_Task');
 			$task_model->load($data['id']);
 

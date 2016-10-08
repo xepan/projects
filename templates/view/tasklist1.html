@@ -13,10 +13,10 @@
       {cols}  
       <li class="clearfix">
         <div title="{$created_by}" class="img">{$avatar}<br/><span title="task priority : {$priority}" class="label label-xs label-{$color}">{$priority} </span></div>
-        <div class="title"><a href="#">[{$task_no}]  :</a>{$task_name}</div>
+        <div data-id="{$id}" class="title task-item"><a href="#">[{$task_no}] :</a>{$task_name}</div>
         <div class="post-time">
           {$action}
-          {trash}<a href="#" data-id="{$id}" class="table-link danger do-delete nested-link"><span class="fa-stack"><i class="fa fa-square fa-stack-2x"></i><i class="fa fa-trash-o fa-stack-1x fa-inverse"></i></span></a>{/}
+          {$delete}
         </div>
         <div class="time-ago"><i title="Total Duration {$total_duration}" class="fa fa-clock-o">&nbsp; {total_duration}0.00{/}</i><br/><span data-action="{$event_action}" data-id="{$id}" style="cursor:pointer; cursor: hand; " class="fa current_task_btn btn btn-primary btn-block {$icon} {$running-task}"><span style="margin-left:10px;" class="duration"></span></span></div>
       </li>{/}

@@ -13,12 +13,8 @@ class page_mytasks extends \xepan\base\Page{
 	    $task_waiting_for_approval = $this->add('xepan\projects\View_TaskList',null,'rightview');	    
 
 		$task_assigned_to_me->addPaginator(25);
-
 		$task_assigned_by_me->addPaginator(25);
-		$task_assigned_by_me->addQuickSearch(['task_name']);
-
 		$task_waiting_for_approval->addPaginator(25);
-		$task_waiting_for_approval->addQuickSearch(['task_name']);
 
 	    $task_assigned_to_me->template->trySet('task_view_title','Assigned To Me');
 	    $task_assigned_by_me->template->trySet('task_view_title','Assigned By Me');
@@ -70,15 +66,6 @@ class page_mytasks extends \xepan\base\Page{
 		});	
 
 		// $task_view->js('click')->_selector('.task-item')->univ()->frameURL('TASK DETAIL',[$this->api->url($vp->getURL()),'task_id'=>$this->js()->_selectorThis()->closest('[data-id]')->data('id')]);
-	
-		// $task_view->js('click',$task_view->js()->reload(['delete_task_id'=>$this->js()->_selectorThis()->data('id')]))->_selector('.do-delete');
-
-		if($_GET['delete_task_id']){
-			$delete_task=$this->add('xepan\projects\Model_Task');
-			$delete_task->load($_GET['delete_task_id']);
-			$delete_task->delete();
-			$task_view->js(true,$this->js()->univ()->successMessage('Task Deleted'))->_load('jquery.nestable')->nestable(['group'=>1]);
-		}
 	}
 
 	function defaultTemplate(){
