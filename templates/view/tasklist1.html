@@ -1,5 +1,7 @@
 
-<div id="{$_name}" class="main-box feed xepan-grid xepan-tasklist-grid {$class}"><span class="pending-task-search">{$quick_search}</span>
+<div id="{$_name}" class="main-box feed xepan-grid xepan-tasklist-grid {$class}">
+  <div class="pull-right">{$grid_buttons} </div>
+  <div class="pull-left">{$quick_search}</div>
   <header class="main-box-header clearfix">
     <h2 class="pull-left">{$task_view_title}</h2>
   </header>
@@ -16,7 +18,7 @@
         </div>
       </li>{$action}
       {trash}<a href="#" data-id="{$id}" class="table-link danger do-delete nested-link"><span class="fa-stack"><i class="fa fa-square fa-stack-2x"></i><i class="fa fa-trash-o fa-stack-1x fa-inverse"></i></span></a>{/}
-      {/}
+      <g>{/}</g>
     </ul>{/}{/}
     {not_found}
     <div class="row">
