@@ -400,7 +400,7 @@ class Model_Task extends \xepan\base\Model_Table
 	}
 
 	function canDelete(){
-		return $this->myTask() && $this->createdByMe() && in_array($this['status'],['Completed','Submitted']);
+		return $this->myTask() && $this->createdByMe() /*&& in_array($this['status'],['Completed','Submitted'])*/;
 	}
 
 	function ICanAssign(){
