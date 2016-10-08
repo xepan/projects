@@ -64,6 +64,7 @@ class Model_Task extends \xepan\base\Model_Table
 		$this->addHook('beforeSave',[$this,'beforeSave']);
 		$this->addHook('beforeSave',[$this,'notifyAssignement']);
 		$this->addHook('beforeDelete',[$this,'checkExistingFollwerTaskAssociation']);
+		$this->addHook('beforeDelete',[$this,'canUserDelete']);
 		$this->addHook('beforeDelete',[$this,'checkExistingComment']);
 		$this->addHook('beforeDelete',[$this,'checkExistingTimeSheet']);
 		$this->addHook('beforeDelete',[$this,'checkExistingTaskAttachment']);
@@ -85,6 +86,11 @@ class Model_Task extends \xepan\base\Model_Table
 			$this['status'] = "Assigned";
 		}
 
+	}
+
+	function canUserDelete(){
+		if(($this['created_by_id'] == $this->app->employee->id) && ($this['assign_to_id']!= $this->app->employee->id) && $this['status'] != 'Completed')
+			throw new \Exception("You are not authorized to delete this task");		
 	}
 
 	function checkExistingFollwerTaskAssociation(){
