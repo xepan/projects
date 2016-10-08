@@ -20,14 +20,12 @@ class page_projectreport extends page_reportsidebar{
 		$project = $this->add('xepan\projects\Model_Project');
 
 		$project->addExpression('Resources')->set(function($m,$q){
-			return "'ToDo'";
+			return $q->expr("IFNULL([0],0)", [$m->refSQL('xepan\projects\Task')->_dsql()->del('fields')->field('count(distinct(created_by_id))')]);
 		});
 
-		// TOTAL ESTIMATE HOURS ALOTED IN PROJECT'S TASKS 
+		// TOTAL ESTIMATE HOURS ALOTED IN PROJECT'S TASKS
 		$project->addExpression('Estimate')->set(function($m,$q){
-			$task = $this->add('xepan\projects\Model_Task');
-			$task->addCondition('project_id',$m->getElement('id'));
-			return $task->_dsql()->del('fields')->field($q->expr('sum([0])',[$task->getElement('estimate_time')]));
+			return $q->expr('IFNULL([0],0)',[$m->refSQL('xepan\projects\Task')->sum('estimate_time')]);
 		});
 
 		// TOTAL HOURS ALLOTED 
