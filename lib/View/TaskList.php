@@ -64,8 +64,12 @@ class View_TaskList extends \xepan\base\Grid{
 		$action_btn_list = $this->model->actions[$this->model['status']];
 
 		// first Column
-		if($thisTask->isMyTask() && $this['status'] =='Pending'){
-			unset($action_btn_list[0]); // submit
+		if($thisTask->isMyTask()){
+			if($this['status'] =='Pending')
+				unset($action_btn_list[0]); // submit
+			if(!$thisTask->createdByMe() && $this['status'] =='Submitted')
+				$action_btn_list=[];
+			
 		}
 
 		// Second Column
