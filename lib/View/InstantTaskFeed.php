@@ -4,7 +4,7 @@ namespace xepan\projects;
 class View_InstantTaskFeed extends \View{
 	function init(){
 		parent::init();
-
+		
 		/*****************************************************************************
 		 Showing pending tasks on 'pending task' tab
 		******************************************************************************/

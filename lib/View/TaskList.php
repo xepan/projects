@@ -6,7 +6,8 @@ class View_TaskList extends \xepan\base\Grid{
 	// public $show_completed=true;
 	public $view_reload_url=null;
 	public $running_task_id = null;
-
+	public $play_wrapper_template=null;
+	
 	function init(){
 		parent::init();
 
@@ -20,17 +21,9 @@ class View_TaskList extends \xepan\base\Grid{
 			Virtual page for TASK DETAIL
 		***************************************************************************/
 		$self = $this;
-		$self_url = $this->app->url(null,['cut_object'=>$this->name]);
+		$self_url = $this->app->url(null,['cut_object'=>$this->name]);	
 
-		$vp = $this->add('VirtualPage');
-		$vp->set(function($p){
-			$task_id = $this->app->stickyGET('task_id')?:0;
-			$project_id = $this->app->stickyGET('project_id');
-
-			$p->add('xepan\projects\View_Detail',['task_id'=>$task_id,'project_id'=>$project_id]);
-		});	
-
-	    $this->js('click')->_selector("#".$this->getJSID().' .task-item')->univ()->frameURL('TASK DETAIL',[$this->api->url($vp->getURL()),'task_id'=>$this->js()->_selectorThis()->data('id')]);
+	    $this->js('click')->_selector("#".$this->getJSID().' .task-item')->univ()->frameURL('TASK DETAIL',[$this->app->url('xepan_projects_taskdetail'),'task_id'=>$this->js()->_selectorThis()->data('id')]);
 		$this->view_reload_url = $this->app->url(null,['cut_object'=>$this->name]);
 	    $this->js(true)->_load('timer.jquery');
 
@@ -58,6 +51,8 @@ class View_TaskList extends \xepan\base\Grid{
 	}
 	
 	function formatRow(){
+		$thisTask = $this->model;
+
 		$this->current_row['task_no']= str_pad($this->model->id, 4, '0', STR_PAD_LEFT);
 		if($this->isCurrentTask()){
 			$this->createRunning();
@@ -66,32 +61,30 @@ class View_TaskList extends \xepan\base\Grid{
 		}
 
 
-		$action_btn_list = [];
-		
-		//My Task - self assign
-		if($this->model['created_by_id'] == $this->app->employee->id && ($this->model['assign_to_id'] == null || $this->model['assign_to_id'] == $this->model['created_by_id'])){
-			$action_btn_list = $this->model->self_assign_actions[$this->model['status']]?:[];
+		$action_btn_list = $this->model->actions[$this->model['status']];
 
-		}elseif(($this->model['assign_to_id'] == $this->app->employee->id)){
-			// Assign To Me
-			$action_btn_list = $this->model->assign_to_me_actions[$this->model['status']]?:[];
-			$this->current_row_html['delete'] = ' ';
-		}elseif(($this->model['created_by_id'] == $this->app->employee->id) && ($this->model['assign_to_id']!= $this->app->employee->id)){
-			// Assign By Me
-			$action_btn_list = $this->model->assign_by_me_actions[$this->model['status']]?:[];
-			
-			$this->current_row_html['play_pause_wrapper'] = ' ';
-			
-			if($this->model['status'] != 'Completed'){
-				$this->current_row_html['delete'] = ' ';
-			}
+		// first Column
+		if($thisTask->isMyTask() && $this['status'] =='Pending'){
+			unset($action_btn_list[0]); // submit
 		}
-			
-		if(!isset($this->current_row_html['action'])){
-			$action_btn = $this->add('AbstractController')->add('xepan\hr\View_ActionBtn',['actions'=>$action_btn_list,'id'=>$this->model->id,'status'=>$this->model['status'],'action_btn_group'=>'xs']);
-			$this->current_row_html['action'] = $action_btn->getHTML();
+
+		// Second Column
+		if($thisTask->IhaveAssignedToOthers()) 
 			$action_btn_list = [];
+		
+		if(!$thisTask->canDelete()){
+			$this->current_row_html['delete'] = ' ';
 		}
+
+		if(!$thisTask->iCanPlay()){
+			$this->current_row['display_play_pause'] = 'none';
+		}
+		else{
+			$this->current_row['display_play_pause'] = 'block';
+		}
+
+		$action_btn = $this->add('AbstractController')->add('xepan\hr\View_ActionBtn',['actions'=>$action_btn_list,'id'=>$this->model->id,'status'=>$this->model['status'],'action_btn_group'=>'xs']);
+		$this->current_row_html['action'] = $action_btn->getHTML();
 		
 		return parent::formatRow();
 	}
