@@ -120,6 +120,7 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 
 	    $task_assigned_to_me_model = $this->add('xepan\projects\Model_Formatted_Task');
 	    $task_assigned_to_me_model
+	    			->addCondition('project_id',$project_id)
 	    			->addCondition(
 	    				$task_assigned_to_me_model->dsql()->orExpr()
 	    					->where('assign_to_id',$this->app->employee->id)
