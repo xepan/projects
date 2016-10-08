@@ -11,17 +11,17 @@ class Model_Task extends \xepan\base\Model_Table
 	
 	public $assign_to_me_actions =[
 		'Pending'=>['receive','reject'],
-		'Received'=>[],
-		'Rejected'=>[],
+		'Received'=>['view'],
+		'Rejected'=>['view'],
 		'Inprogress'=>['submit'],
 		'Submitted'=>['mark_complete','reopen'],
 	];
 
 	public $assign_by_me_actions =[
 		'Rejected'=>['reopen'],
-		'Pending'=>[],
+		'Pending'=>['view'],
 		'Submitted'=>['mark_complete','reopen'],
-		'Completed'=>[],
+		'Completed'=>['view'],
 		'Reopened'=>['submit']
 	];
 
@@ -115,6 +115,8 @@ class Model_Task extends \xepan\base\Model_Table
 	}
 
 	function receive(){
+		// throw new \Exception($this->id." = ".$this['status']);
+		
 		$this['status']='Received';
 		$this['updated_at']=$this->app->now;
 		$this->save();
