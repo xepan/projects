@@ -55,9 +55,9 @@ class View_TaskList extends \xepan\base\Grid{
 
 		$action_btn_list = [];
 		if(($this->model['assign_to_id'] == $this->app->employee->id) || (($this->model['created_by_id'] == $this->app->employee->id) && $this->model['assign_to_id']==null))
-			$action_btn_list = $this->model->assign_to_me_actions[$this->model['status']];	
+			$action_btn_list = $this->model->assign_to_me_actions[$this->model['status']]?:[];	
 		if(($this->model['created_by_id'] == $this->app->employee->id) && ($this->model['assign_to_id']!= $this->app->employee->id))
-			$action_btn_list = $this->model->assign_by_me_actions[$this->model['status']];
+			$action_btn_list = $this->model->assign_by_me_actions[$this->model['status']]?:[];
 			
 		if(!isset($this->current_row_html['action'])){
 			$action_btn = $this->add('AbstractController')->add('xepan\hr\View_ActionBtn',['actions'=>$action_btn_list,'id'=>$this->model->id,'status'=>$this->model['status'],'action_btn_group'=>null]);

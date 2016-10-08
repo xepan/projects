@@ -7,23 +7,16 @@ class Model_Task extends \xepan\base\Model_Table
 	public $table = "task";
 	public $title_field ='task_name';
 
-	public $status=['Pending','Submitted','Completed','Reopened','Received','Rejected','Inprogress'];
+	public $status=['Pending','Submitted','Completed','Assigned','Inprogress'];
 	
-	public $assign_to_me_actions =[
-		'Pending'=>['receive','reject'],
-		'Received'=>['view'],
-		'Rejected'=>['view'],
-		'Inprogress'=>['submit'],
+	public $assign_to_me_actions = [
+		'Pending'=>['submit','mark_complete'],
+		'Assigned'=>['receive','reject'],
+		'Inprogress'=>['submit','mark_complete'],
 		'Submitted'=>['mark_complete','reopen'],
 	];
 
-	public $assign_by_me_actions =[
-		'Rejected'=>['reopen'],
-		'Pending'=>['view'],
-		'Submitted'=>['mark_complete','reopen'],
-		'Completed'=>['view'],
-		'Reopened'=>['submit']
-	];
+	public $assign_by_me_actions = [];
 
 	function init()
 	{
@@ -61,6 +54,7 @@ class Model_Task extends \xepan\base\Model_Table
 		$this->hasMany('xepan\projects\Timesheet','task_id');	
 		$this->hasMany('xepan\projects\Task_Attachment','task_id');	
 
+		$this->addHook('beforeSave',[$this,'beforeSave']);
 		$this->addHook('beforeSave',[$this,'notifyAssignement']);
 		$this->addHook('beforeDelete',[$this,'checkExistingFollwerTaskAssociation']);
 		$this->addHook('beforeDelete',[$this,'checkExistingComment']);
@@ -79,6 +73,13 @@ class Model_Task extends \xepan\base\Model_Table
 
  	}
 	
+	function beforeSave(){
+		if($this['assign_to_id'] && $this['assign_to_id'] != $this['created_by_id']){
+			$this['status'] = "Assigned";
+		}
+
+	}
+
 	function checkExistingFollwerTaskAssociation(){
 		$this->ref('xepan\projects\Follower_Task_Association')->each(function($m){$m->delete();});
 	}
