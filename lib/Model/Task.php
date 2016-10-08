@@ -125,7 +125,7 @@ class Model_Task extends \xepan\base\Model_Table
 	function receive(){
 		// throw new \Exception($this->id." = ".$this['status']);
 		
-		$this['status']='Received';
+		$this['status']='Pending';
 		$this['updated_at']=$this->app->now;
 		$this->save();
 		
@@ -139,8 +139,9 @@ class Model_Task extends \xepan\base\Model_Table
 	}
 
 	function reject(){
-		$this['status']='Rejected';
+		$this['status']='Pending';
 		$this['updated_at']=$this->app->now;
+		$this['assign_to_id']=$this['created_by_id'];
 		$this->save();
 		
 		if($this['assign_to_id']){
