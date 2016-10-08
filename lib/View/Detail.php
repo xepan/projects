@@ -55,7 +55,7 @@ class View_Detail extends \View{
 			$model_comment->addCondition('employee_id',$this->app->employee->id);
 
 			$comment_grid = $detail_view->add('xepan\hr\CRUD',null,'commentgrid',['view\comment-grid']);
-			$comment_grid->setModel($model_comment,['comment','employee']);
+			$comment_grid->setModel($model_comment,['comment','employee','on_action']);
 		}
 	}		
 }

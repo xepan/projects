@@ -40,6 +40,9 @@ class View_TaskList extends \xepan\base\Grid{
 	}
 	
 	function formatRow(){
+		if($this->model['created_by_id'] != $this->app->employee->id){
+			$this->current_row_html['trash'] = '';
+		}
 
 		$this->current_row['task_no']= str_pad($this->model->id, 4, '0', STR_PAD_LEFT);
 		if($this->isCurrentTask()){
@@ -50,12 +53,12 @@ class View_TaskList extends \xepan\base\Grid{
 
 
 		$action_btn_list = [];
-			foreach ($this->model->actions[$this->model['status']] as $action => $acl) {
-				$action_btn_list[] = $acl;
-			}
-			if(!isset($this->current_row_html['action']))
+			if(($this->model['assign_to_id'] == $this->app->employee->id) || (($this->model['created_by_id'] == $this->app->employee->id) && $this->model['assign_to_id']==null))
+				$action_btn_list = $this->model->assign_to_me_actions[$this->model['status']];	
+			if(($this->model['created_by_id'] == $this->app->employee->id) && ($this->model['assign_to_id']!= $this->app->employee->id))
+				$action_btn_list = $this->model->assign_by_me_actions[$this->model['status']];
+			if(!isset($this->current_row_html['action'])&& count($action_btn_list)>=1)
 				$this->current_row_html['action']= $this->app->add('xepan\hr\View_ActionBtn',['actions'=>$action_btn_list,'id'=>$this->model->id,'status'=>$this->model['status'],'action_btn_group'=>null])->getHTML();
-			
 			return parent::formatRow();
 	}
 

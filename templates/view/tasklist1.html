@@ -17,7 +17,7 @@
                
               {$action}
             </td>
-            <td style="width: 5%;"><a href="#" data-id="{$id}" class="table-link danger do-delete nested-link"><span class="fa-stack"><i class="fa fa-square fa-stack-2x"></i><i class="fa fa-trash-o fa-stack-1x fa-inverse"></i></span></a></td>
+            <td style="width: 5%;"><a href="#" data-id="{$id}" class="table-link danger do-delete nested-link">{trash}<span class="fa-stack"><i class="fa fa-square fa-stack-2x"></i><i class="fa fa-trash-o fa-stack-1x fa-inverse"></i></span>{/}</a></td>
             <td><span class="text-muted text-{$color}">{$sub_tasks}    </span></td>{/}
           </tr>{/}{/}
           {not_found}
