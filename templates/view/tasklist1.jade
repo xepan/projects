@@ -6,28 +6,30 @@
   .main-box-body.clearfix
     {$header}
     {nested_template}
-    {rows}{row}
     ul
+      {rows}{row}
       {cols}  
       li.clearfix
         .img
           {$avatar}
         .title
-          a(href='#') {$created_by_id} : 
+          a(href='#') {$created_by_id} :
           |  [{$task_no}] {$task_name}
         .post-time
-            span.fa.current_task_btn(class='{$icon} {$running-task}', data-action='{$event_action}', data-id='{$id}', style='cursor:pointer; cursor: hand; ')
-            .time-ago
-                span.duration(style="margin-left:10px;")
-      {$action}
-      {trash}
-      a.table-link.danger.do-delete.nested-link(href='#', data-id='{$id}')
-          span.fa-stack
-            i.fa.fa-square.fa-stack-2x
-            i.fa.fa-trash-o.fa-stack-1x.fa-inverse
+          {$action}
+          {trash}
+          a.table-link.danger.do-delete.nested-link(href='#', data-id='{$id}')
+              span.fa-stack
+                i.fa.fa-square.fa-stack-2x
+                i.fa.fa-trash-o.fa-stack-1x.fa-inverse
+          {/}
+        .time-ago
+          i.fa.fa-clock-o(title="Total Duration {$total_duration}")&nbsp; {total_duration}0.00{/}
+          br
+          span.fa.current_task_btn(class='{$icon} {$running-task}', data-action='{$event_action}', data-id='{$id}', style='cursor:pointer; cursor: hand; ')
+            span.duration(style="margin-left:10px;")
       {/}
-      g{/}
-    {/}{/}
+      {/}{/}
     {not_found}
     div.row
         .col-md-12.text-center.alert.alert-warning(role="alert")
@@ -35,3 +37,7 @@
     {/}
     {/}
     {$Paginator}
+    style.
+      .xepan-tasklist-grid .post-time li{
+        padding:1px;
+      }

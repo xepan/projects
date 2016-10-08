@@ -81,7 +81,7 @@ class Model_Task extends \xepan\base\Model_Table
  	}
 	
 	function beforeSave(){
-		if($this['assign_to_id'] && $this['assign_to_id'] != $this['created_by_id']){
+		if(!$this['id'] && $this['assign_to_id'] && $this['assign_to_id'] != $this['created_by_id']){
 			$this['status'] = "Assigned";
 		}
 

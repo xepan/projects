@@ -69,7 +69,7 @@ class View_TaskList extends \xepan\base\Grid{
 		}
 			
 		if(!isset($this->current_row_html['action'])){
-			$action_btn = $this->add('AbstractController')->add('xepan\hr\View_ActionBtn',['actions'=>$action_btn_list,'id'=>$this->model->id,'status'=>$this->model['status'],'action_btn_group'=>null]);
+			$action_btn = $this->add('AbstractController')->add('xepan\hr\View_ActionBtn',['actions'=>$action_btn_list,'id'=>$this->model->id,'status'=>$this->model['status'],'action_btn_group'=>'xs']);
 			$this->current_row_html['action'] = $action_btn->getHTML();
 			$action_btn_list = [];
 		}
