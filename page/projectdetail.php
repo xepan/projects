@@ -184,7 +184,9 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 	  Timesheet PLAY/STOP
 	***************************************************************************/
 	$task_assigned_to_me->on('click','.current_task_btn',function($js,$data)use($task_assigned_to_me){
-			
+			$task_model = $this->add('xepan\projects\Model_Task');
+			$task_model->load($data['id']);
+
 			$model_close_timesheet = $this->add('xepan\projects\Model_Timesheet');
 
 			$model_close_timesheet->addCondition('employee_id',$this->app->employee->id);
@@ -199,7 +201,8 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 			}
 
 			if($data['action']=='start'){
-
+				$task_model['status'] ='Inprogress';
+				$task_model->save();
 				$model_timesheet = $this->add('xepan\projects\Model_Timesheet');
 					
 				$model_timesheet['task_id'] = $data['id'];
@@ -213,9 +216,12 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 						$js->removeClass('fa-play')->addClass('fa-stop')->data('action','stop'),
 						$this->js()->_selector('.dd3-content[data-id='.$data['id'].']')->addClass('alert alert-info'),
 					];
+			}else{
+				$task_model['status'] = 'Pending';
+				$task_model->save();
+				return $js->removeClass('fa-stop')->addClass('fa-play')->data('action','start');	
 			}
 
-			return $js->removeClass('fa-stop')->addClass('fa-play')->data('action','start');	
 		});
 
 	}

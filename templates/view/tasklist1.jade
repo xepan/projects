@@ -22,9 +22,11 @@
                         {$action}
                     td(style="width: 5%;")
                       a.table-link.danger.do-delete.nested-link(href='#', data-id='{$id}')
+                        {trash}
                         span.fa-stack
                           i.fa.fa-square.fa-stack-2x
                           i.fa.fa-trash-o.fa-stack-1x.fa-inverse
+                        {/}
                     td
                         span.text-muted(class='text-{$color}') {$sub_tasks}    
                     {/}

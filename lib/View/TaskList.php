@@ -40,6 +40,9 @@ class View_TaskList extends \xepan\base\Grid{
 	}
 	
 	function formatRow(){
+		if($this->model['created_by_id'] != $this->app->employee->id){
+			$this->current_row_html['trash'] = '';
+		}
 
 		$this->current_row['task_no']= str_pad($this->model->id, 4, '0', STR_PAD_LEFT);
 		if($this->isCurrentTask()){
