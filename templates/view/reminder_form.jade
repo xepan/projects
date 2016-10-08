@@ -50,7 +50,9 @@
             {$is_recurring}
           .col-md-8.atk-form-field.atk-form-row
             strong Time Gap:    
-            {$recurring_span}   
+            {$recurring_span}
+.row(style = "display:none;")
+  {$is_reminder_only}   
  
 style(type='text/css', media='screen').
   .atk-button{  

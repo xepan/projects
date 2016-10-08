@@ -17,7 +17,7 @@ class View_TaskReminder extends \View{
 			$reminder_crud->form->addField('checkbox','make_task','');
 		}
 		
-		$reminder_crud->setModel($task,['assign_to_id','task_name','notify_to','starting_date','remind_via','remind_value','remind_unit','is_recurring','recurring_span','description'])->setOrder('created_at','desc');
+		$reminder_crud->setModel($task,['is_reminder_only','assign_to_id','task_name','notify_to','starting_date','remind_via','remind_value','remind_unit','is_recurring','recurring_span','description'])->setOrder('created_at','desc');
 
 		if($reminder_crud->isEditing()){
 			if($reminder_crud->model->id){
@@ -53,9 +53,12 @@ class View_TaskReminder extends \View{
 		$reminder_crud->grid->addHook('formatRow',function($g){						
 			$g->current_row['reminder_time'] = date("Y-m-d H:i:s", strtotime('-'.$g->model['remind_value'].' '.$g->model['remind_unit'], strtotime($g->model['starting_date'])));		
 			
-			if($g->model['is_reminder_only'] == 0){
+			if($g->model['is_reminder_only']){
+				$g->current_row_html['is_task'] = ' ';		
+				$g->current_row_html['class'] = ' ';		
+			}else{
 				$g->current_row_html['is_task'] = 'View Task';		
-				$g->current_row_html['class'] = 'fa fa-tasks';		
+				$g->current_row_html['class'] = 'fa fa-tasks';
 			}
 		});		
 
