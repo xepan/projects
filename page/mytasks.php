@@ -12,12 +12,12 @@ class page_mytasks extends \xepan\base\Page{
 	    $task_assigned_by_me = $this->add('xepan\projects\View_TaskList',null,'middleview');	    
 	    $task_waiting_for_approval = $this->add('xepan\projects\View_TaskList',null,'rightview');	    
 
-		$task_assigned_to_me->addPaginator(20);
+		$task_assigned_to_me->addPaginator(25);
 
-		$task_assigned_by_me->addPaginator(20);
+		$task_assigned_by_me->addPaginator(25);
 		$task_assigned_by_me->addQuickSearch(['task_name']);
 
-		$task_waiting_for_approval->addPaginator(20);
+		$task_waiting_for_approval->addPaginator(25);
 		$task_waiting_for_approval->addQuickSearch(['task_name']);
 
 	    $task_assigned_to_me->template->trySet('task_view_title','Assigned To Me');

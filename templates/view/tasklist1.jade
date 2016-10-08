@@ -10,11 +10,13 @@
       {rows}{row}
       {cols}  
       li.clearfix
-        .img
+        .img(title= "{$created_by}")
           {$avatar}
+          br
+          span(class="label label-xs label-{$color}" title="task priority : {$priority}") {$priority} 
         .title
-          a(href='#') {$created_by_id} :
-          |  [{$task_no}] {$task_name}
+          a(href='#') [{$task_no}]  :
+          |{$task_name}
         .post-time
           {$action}
           {trash}

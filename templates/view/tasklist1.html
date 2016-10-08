@@ -12,8 +12,8 @@
       {rows}{row}
       {cols}  
       <li class="clearfix">
-        <div class="img">{$avatar}</div>
-        <div class="title"><a href="#">{$created_by_id} :</a> [{$task_no}] {$task_name}</div>
+        <div title="{$created_by}" class="img">{$avatar}<br/><span title="task priority : {$priority}" class="label label-xs label-{$color}">{$priority} </span></div>
+        <div class="title"><a href="#">[{$task_no}]  :</a>{$task_name}</div>
         <div class="post-time">
           {$action}
           {trash}<a href="#" data-id="{$id}" class="table-link danger do-delete nested-link"><span class="fa-stack"><i class="fa fa-square fa-stack-2x"></i><i class="fa fa-trash-o fa-stack-1x fa-inverse"></i></span></a>{/}
