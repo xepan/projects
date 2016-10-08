@@ -246,6 +246,10 @@ class View_TaskList extends \xepan\base\Grid{
 
 	}
 
+	function render(){
+		$this->js(true)->_selector('#'.$this->getJSID().' [title]')->tooltip();
+		parent::render();
+	}
 
 	function defaultTemplate(){
 		return['view/tasklist1'];
