@@ -37,6 +37,7 @@ class View_TaskList extends \xepan\base\Grid{
 	/***************************************************************************
 	  Timesheet PLAY/STOP
 	***************************************************************************/
+	$grid_id = $this->getJSID();
 	$this->on('click','.current_task_btn',function($js,$data){
 			
 			$this->endAnyTaskIfRunning();	
@@ -45,8 +46,10 @@ class View_TaskList extends \xepan\base\Grid{
 			$run_current_js = [];
 			if($data['action']=='start'){ // needs to start now
 				$run_current_js =  $this->runTask($data,$js);
+			
 			}
 
+			$run_current_js[] = $this->js()->closest('.xepan-tasklist-grid')->trigger('reload');
 			return array_merge($stop_js, $run_current_js);
 			
 		});
@@ -55,10 +58,6 @@ class View_TaskList extends \xepan\base\Grid{
 	}
 	
 	function formatRow(){
-		if($this->model['created_by_id'] != $this->app->employee->id){
-			$this->current_row_html['trash'] = '';
-		}
-
 		$this->current_row['task_no']= str_pad($this->model->id, 4, '0', STR_PAD_LEFT);
 		if($this->isCurrentTask()){
 			$this->createRunning();
@@ -76,10 +75,16 @@ class View_TaskList extends \xepan\base\Grid{
 		}elseif(($this->model['assign_to_id'] == $this->app->employee->id)){
 			// Assign To Me
 			$action_btn_list = $this->model->assign_to_me_actions[$this->model['status']]?:[];
-
+			$this->current_row_html['delete'] = ' ';
 		}elseif(($this->model['created_by_id'] == $this->app->employee->id) && ($this->model['assign_to_id']!= $this->app->employee->id)){
 			// Assign By Me
 			$action_btn_list = $this->model->assign_by_me_actions[$this->model['status']]?:[];
+			
+			$this->current_row_html['play_pause_wrapper'] = ' ';
+			
+			if($this->model['status'] != 'Completed'){
+				$this->current_row_html['delete'] = ' ';
+			}
 		}
 			
 		if(!isset($this->current_row_html['action'])){
@@ -197,6 +202,10 @@ class View_TaskList extends \xepan\base\Grid{
 		$model_timesheet['starttime'] = $this->app->now;
 		$model_timesheet->save();
 
+		$task = $this->add('xepan\projects\Model_Task')->load($data['id']);
+		$task['status'] = 'Inprogress';
+		$task->save();
+
 		return [
 				$this->js()->_selector('.current_task_btn[data-id='.$data['id'].']')->removeClass('fa-play')->addClass('fa-stop'),
 				$this->js()->_selector('.current_task_btn[data-id='.$data['id'].'] .duration')->timer(['seconds'=>$model_timesheet['duration']]),
@@ -224,11 +233,17 @@ class View_TaskList extends \xepan\base\Grid{
 		$model_close_timesheet->tryLoadAny();
 
 		if($model_close_timesheet->loaded()){
+			$task = $this->add('xepan\projects\Model_Task')->load($model_close_timesheet['task_id']);
+			$task['status'] = 'Pending';
+			$task->save();
+
 			if(!$model_close_timesheet['endtime']){
 				$model_close_timesheet['endtime'] = $this->app->now;
 				$model_close_timesheet->saveAndUnload();
 			}
+
 		}
+
 	}
 
 

@@ -18,7 +18,7 @@
           {$action}
           {$delete}
         </div>
-        <div class="time-ago"><i title="Total Duration {$total_duration}" class="fa fa-clock-o">&nbsp; {total_duration}0.00{/}</i><br/><span data-action="{$event_action}" data-id="{$id}" style="cursor:pointer; cursor: hand; " class="fa current_task_btn btn btn-primary btn-block {$icon} {$running-task}"><span style="margin-left:10px;" class="duration"></span></span></div>
+        <div class="time-ago"><i title="Total Duration {$total_duration}" class="fa fa-clock-o">&nbsp; {total_duration}0.00{/}</i><br/>{play_pause_wrapper}  <span data-action="{$event_action}" data-id="{$id}" style="cursor:pointer; cursor: hand; " class="fa current_task_btn btn btn-primary btn-block {$icon} {$running-task}"><span style="margin-left:10px;" class="duration"></span></span>{/}</div>
       </li>{/}
       {/}{/}
     </ul>{not_found}
