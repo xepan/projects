@@ -87,7 +87,7 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 		$self_url = $this->app->url(null,['cut_object'=>$this->name]);
 
 		$vp = $this->add('VirtualPage');
-		$vp->set(function($p)use($self,$self_url,$task_assigned_to_me,$task_assigned_to_me_url){
+		$vp->set(function($p){
 			$task_id = $this->app->stickyGET('task_id')?:0;
 			$project_id = $this->app->stickyGET('project_id');
 
@@ -98,8 +98,6 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 			Js to show task detail view etc.
 		***************************************************************************/
 		
-		$task_assigned_to_me->js('click')->_selector('.task-item')->univ()->frameURL('TASK DETAIL',[$this->api->url($vp->getURL()),'task_id'=>$this->js()->_selectorThis()->closest('[data-id]')->data('id')]);
-
 		$top_view->js('click',$this->js()->univ()->frameURL("ADD NEW TASK",$this->api->url($vp->getURL())))->_selector('.add-task');
 		
 

@@ -18,29 +18,39 @@ class View_Detail extends \View{
 
 		$detail_view = $p->add('xepan\projects\View_TaskDetail');
 
-		$task_form = $detail_view->add('Form',null,'task_form');
-		$task_form->setLayout('view\task_form');
 
-		$task_form->setModel($model_task,['employee_id','task_name','description','starting_date','deadline','priority','estimate_time','set_reminder','remind_via','remind_value','remind_unit','notify_to','is_recurring','recurring_span']);
-		$task_form->getElement('remind_via')
-					->addClass('multiselect-full-width')
-					->setAttr(['multiple'=>'multiple']);
+		if(($model_task['created_by_id'] == $this->app->employee->id) && (($model_task['assign_to_id'] == $this->app->employee->id) || ($model_task['assign_to_id'] == null))){
+			$task_form = $detail_view->add('Form',null,'task_form');
+			$task_form->setLayout('view\task_form');
+			$task_form->template->tryDel('assign_to');
 
-		$task_form->getElement('notify_to')
-					->addClass('multiselect-full-width')
-					->setAttr(['multiple'=>'multiple']);			
+			$task_form->setModel($model_task,['assign_to_id','task_name','description','starting_date','deadline','priority','estimate_time','set_reminder','remind_via','remind_value','remind_unit','notify_to','is_recurring','recurring_span']);
+			$task_form->getElement('remind_via')
+						->addClass('multiselect-full-width')
+						->setAttr(['multiple'=>'multiple']);
 
-		$task_form->addSubmit('Save')->addClass('btn btn-primary btn-block');
+			$task_form->getElement('notify_to')
+						->addClass('multiselect-full-width')
+						->setAttr(['multiple'=>'multiple']);			
 
-		if($task_form->isSubmitted()){
+			$task_form->addSubmit('Save')->addClass('btn btn-primary btn-block');
 
-			$task_form->save();
-			$js=[
-				$task_form->js()->univ()->successMessage('saved'),
-				$task_form->js()->univ()->closeDialog(),
-				$this->js()->_selector('.xepan-tasklist-grid')->trigger('reload')
-				];
-			$p->js(null,$js)->execute();
+			if($task_form->isSubmitted()){
+
+				$task_form->save();
+				$js=[
+					$task_form->js()->univ()->successMessage('saved'),
+					$task_form->js()->univ()->closeDialog(),
+					$this->js()->_selector('.xepan-tasklist-grid')->trigger('reload')
+					];
+				$p->js(null,$js)->execute();
+			}
+		}
+		
+
+		else{
+			$model_task['assign_to_id'] = ' ';			
+			$detail_view->add('View',null,'task_form',['view\task_form'])->setModel($model_task);
 		}
 
 		if($model_task->loaded()){								
