@@ -28,30 +28,52 @@ class page_mytasks extends \xepan\base\Page{
 		$frm1 = $task_assigned_by_me->grid->addQuickSearch(['task_name']);
 		$frm2 = $task_waiting_for_approval->grid->addQuickSearch(['task_name']);
 
-		$status = $frm->addField('Dropdown','task_status')->setEmptyText('Status');
+		$frm = $task_assigned_to_me->grid->addQuickSearch(['task_name']);
+		$frm1 = $task_assigned_by_me->grid->addQuickSearch(['task_name']);
+		$frm2 = $task_waiting_for_approval->grid->addQuickSearch(['task_name']);
+
+		$status = $frm->addField('Dropdown','task_status');
 		$status->setvalueList(['Pending'=>'Pending','Inprogress'=>'Inprogress','Assigned'=>'Assigned','Submitted'=>'Submitted','Completed'=>'Completed'])->setEmptyText('Select a status');
+		$project_field = $frm->addField('Dropdown','project')->setEmptyText('Project');
+		$project_field->setModel('xepan\projects\Project');
 		
-		$status1 = $frm1->addField('Dropdown','task_status')->setEmptyText('Status');
+		$status1 = $frm1->addField('Dropdown','task_status');
 		$status1->setvalueList(['Pending'=>'Pending','Inprogress'=>'Inprogress','Assigned'=>'Assigned','Submitted'=>'Submitted','Completed'=>'Completed'])->setEmptyText('Select a status');
-		
-		$status2 = $frm2->addField('Dropdown','task_status')->setEmptyText('Status');
+		$project_field1 = $frm1->addField('Dropdown','project')->setEmptyText('Project');
+		$project_field1->setModel('xepan\projects\Project');
+
+		$status2 = $frm2->addField('Dropdown','task_status');
 		$status2->setvalueList(['Pending'=>'Pending','Inprogress'=>'Inprogress','Assigned'=>'Assigned','Submitted'=>'Submitted','Completed'=>'Completed'])->setEmptyText('Select a status');		
-		
+		$project_field2 = $frm2->addField('Dropdown','project')->setEmptyText('Project');
+		$project_field2->setModel('xepan\projects\Project');
+
 		$frm->addHook('applyFilter',function($f,$m){
-			if($f['task_status']){
+			if($f['task_status'] AND $m instanceOf \xepan\projects\Model_Task){
 				$m->addCondition('status',$f['task_status']);
+			}
+
+			if($f['project'] AND $m instanceOf \xepan\projects\Model_Project){
+				$m->addCondition('project_id',$f['project']);
 			}
 		});
 
 		$frm1->addHook('applyFilter',function($f,$m){
-			if($f['task_status']){
+			if($f['task_status'] AND $m instanceOf \xepan\projects\Model_Task){
 				$m->addCondition('status',$f['task_status']);
+			}
+
+			if($f['project'] AND $m instanceOf \xepan\projects\Model_Project){
+				$m->addCondition('project_id',$f['project']);
 			}
 		});
 
 		$frm2->addHook('applyFilter',function($f,$m){
-			if($f['task_status']){
+			if($f['task_status'] AND $m instanceOf \xepan\projects\Model_Task){
 				$m->addCondition('status',$f['task_status']);
+			}
+
+			if($f['project'] AND $m instanceOf \xepan\projects\Model_Project){
+				$m->addCondition('project_id',$f['project']);
 			}
 		});
 		
@@ -59,7 +81,9 @@ class page_mytasks extends \xepan\base\Page{
 		$status1->js('change',$frm1->js()->submit());
 		$status2->js('change',$frm2->js()->submit());
 
-
+		$project_field->js('change',$frm->js()->submit());
+		$project_field1->js('change',$frm1->js()->submit());
+		$project_field2->js('change',$frm2->js()->submit());
 
 	    $task_assigned_to_me->template->trySet('task_view_title','Assigned To Me');
 	    $task_assigned_by_me->template->trySet('task_view_title','Assigned By Me');

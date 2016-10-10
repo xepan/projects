@@ -41,29 +41,29 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 		$frm1 = $task_assigned_by_me->grid->addQuickSearch(['task_name']);
 		$frm2 = $task_waiting_for_approval->grid->addQuickSearch(['task_name']);
 
-		$status = $frm->addField('Dropdown','task_status')->setEmptyText('Status');
+		$status = $frm->addField('Dropdown','task_status');
 		$status->setvalueList(['Pending'=>'Pending','Inprogress'=>'Inprogress','Assigned'=>'Assigned','Submitted'=>'Submitted','Completed'=>'Completed'])->setEmptyText('Select a status');
 		
-		$status1 = $frm1->addField('Dropdown','task_status')->setEmptyText('Status');
+		$status1 = $frm1->addField('Dropdown','task_status');
 		$status1->setvalueList(['Pending'=>'Pending','Inprogress'=>'Inprogress','Assigned'=>'Assigned','Submitted'=>'Submitted','Completed'=>'Completed'])->setEmptyText('Select a status');
 		
-		$status2 = $frm2->addField('Dropdown','task_status')->setEmptyText('Status');
+		$status2 = $frm2->addField('Dropdown','task_status');
 		$status2->setvalueList(['Pending'=>'Pending','Inprogress'=>'Inprogress','Assigned'=>'Assigned','Submitted'=>'Submitted','Completed'=>'Completed'])->setEmptyText('Select a status');		
 		
 		$frm->addHook('applyFilter',function($f,$m){
-			if($f['task_status']){
+			if($f['task_status'] AND $m instanceOf \xepan\projects\Model_Task){
 				$m->addCondition('status',$f['task_status']);
 			}
 		});
 
 		$frm1->addHook('applyFilter',function($f,$m){
-			if($f['task_status']){
+			if($f['task_status'] AND $m instanceOf \xepan\projects\Model_Task){
 				$m->addCondition('status',$f['task_status']);
 			}
 		});
 
 		$frm2->addHook('applyFilter',function($f,$m){
-			if($f['task_status']){
+			if($f['task_status'] AND $m instanceOf \xepan\projects\Model_Task){
 				$m->addCondition('status',$f['task_status']);
 			}
 		});
