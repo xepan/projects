@@ -24,6 +24,43 @@ class page_mytasks extends \xepan\base\Page{
 	    if(!$task_waiting_for_approval->isEditing())
 			$task_waiting_for_approval->grid->addPaginator(25);
 
+	    $frm = $task_assigned_to_me->grid->addQuickSearch(['task_name']);
+		$frm1 = $task_assigned_by_me->grid->addQuickSearch(['task_name']);
+		$frm2 = $task_waiting_for_approval->grid->addQuickSearch(['task_name']);
+
+		$status = $frm->addField('Dropdown','task_status')->setEmptyText('Status');
+		$status->setvalueList(['Pending'=>'Pending','Inprogress'=>'Inprogress','Assigned'=>'Assigned','Submitted'=>'Submitted','Completed'=>'Completed'])->setEmptyText('Select a status');
+		
+		$status1 = $frm1->addField('Dropdown','task_status')->setEmptyText('Status');
+		$status1->setvalueList(['Pending'=>'Pending','Inprogress'=>'Inprogress','Assigned'=>'Assigned','Submitted'=>'Submitted','Completed'=>'Completed'])->setEmptyText('Select a status');
+		
+		$status2 = $frm2->addField('Dropdown','task_status')->setEmptyText('Status');
+		$status2->setvalueList(['Pending'=>'Pending','Inprogress'=>'Inprogress','Assigned'=>'Assigned','Submitted'=>'Submitted','Completed'=>'Completed'])->setEmptyText('Select a status');		
+		
+		$frm->addHook('applyFilter',function($f,$m){
+			if($f['task_status']){
+				$m->addCondition('status',$f['task_status']);
+			}
+		});
+
+		$frm1->addHook('applyFilter',function($f,$m){
+			if($f['task_status']){
+				$m->addCondition('status',$f['task_status']);
+			}
+		});
+
+		$frm2->addHook('applyFilter',function($f,$m){
+			if($f['task_status']){
+				$m->addCondition('status',$f['task_status']);
+			}
+		});
+		
+		$status->js('change',$frm->js()->submit());
+		$status1->js('change',$frm1->js()->submit());
+		$status2->js('change',$frm2->js()->submit());
+
+
+
 	    $task_assigned_to_me->template->trySet('task_view_title','Assigned To Me');
 	    $task_assigned_by_me->template->trySet('task_view_title','Assigned By Me');
 		$task_waiting_for_approval->template->trySet('task_view_title','Submitted To Me');
