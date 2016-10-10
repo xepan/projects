@@ -11,7 +11,7 @@ class page_mytasks extends \xepan\base\Page{
 		$top_view = $this->add('xepan\projects\View_TopView',null,'topview');
 		$top_view->setModel($model_project);
 
-		$top_view->template->tryDel('progress');
+		$top_view->template->tryDel('progress_bar_wrapper');
 
 		$task_assigned_to_me = $this->add('xepan\hr\CRUD',['allow_add'=>null,'grid_class'=>'xepan\projects\View_TaskList'],'leftview');	    
 	    $task_assigned_by_me = $this->add('xepan\hr\CRUD',['allow_add'=>null,'grid_class'=>'xepan\projects\View_TaskList'],'middleview');	    
