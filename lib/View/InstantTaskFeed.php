@@ -18,7 +18,7 @@ class View_InstantTaskFeed extends \View{
 		$pending_task_view->add('xepan\hr\Controller_ACL',['action_btn_group'=>'xs']);
 		$pending_task_view->addPaginator(5);
 		$pending_task_view->addQuickSearch(['task_name']);
-
+		$pending_task_view->add('xepan\base\Controller_Avatar',['name_field'=>'created_by','extra_classes'=>'profile-img center-block','options'=>['size'=>50,'display'=>'block','margin'=>'auto'],'float'=>null,'model'=>$this->model]);
 		/***********************************************************************
 		 Form to add new task and to select project
 		************************************************************************/
@@ -49,6 +49,7 @@ class View_InstantTaskFeed extends \View{
 		$task_view->setModel($model_task);
 		$task_view->add('xepan\hr\Controller_ACL',['action_btn_group'=>'xs']);
 		$task_view->addPaginator(5);
+		$task_view->add('xepan\base\Controller_Avatar',['name_field'=>'created_by','extra_classes'=>'profile-img center-block','options'=>['size'=>50,'display'=>'block','margin'=>'auto'],'float'=>null,'model'=>$this->model]);
 
 		/************************************************************************************
 		 Handling for event and submission 
