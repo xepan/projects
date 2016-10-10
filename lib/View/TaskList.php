@@ -27,33 +27,34 @@ class View_TaskList extends \xepan\base\Grid{
 		$this->view_reload_url = $this->app->url(null,['cut_object'=>$this->name]);
 	    $this->js(true)->_load('timer.jquery');
 
-	/***************************************************************************
-	  Timesheet PLAY/STOP
-	***************************************************************************/
-	$grid_id = $this->getJSID();
-	$this->on('click','.current_task_btn',function($js,$data){
-			
-			$this->endAnyTaskIfRunning();	
+		/***************************************************************************
+		  Timesheet PLAY/STOP
+		***************************************************************************/
+		$grid_id = $this->getJSID();
+		$this->on('click','.current_task_btn',function($js,$data){
+				
+				$this->endAnyTaskIfRunning();	
 
-			$stop_js =  $this->stopAll($js);
-			$run_current_js = [];
-			if($data['action']=='start'){ // needs to start now
-				$run_current_js =  $this->runTask($data,$js);
-			
-			}
+				$stop_js =  $this->stopAll($js);
+				$run_current_js = [];
+				if($data['action']=='start'){ // needs to start now
+					$run_current_js =  $this->runTask($data,$js);
+				
+				}
 
-			$run_current_js[] = $this->js()->closest('.xepan-tasklist-grid')->trigger('reload');
-			return array_merge($stop_js, $run_current_js);
-			
-		});
+				$run_current_js[] = $this->js()->closest('.xepan-tasklist-grid')->trigger('reload');
+				return array_merge($stop_js, $run_current_js);
+				
+			});
 
 
-	}
+		}
 	
 	function formatRow(){
 		$thisTask = $this->model;
 
 		$this->current_row['task_no']= str_pad($this->model->id, 4, '0', STR_PAD_LEFT);
+		
 		if($this->isCurrentTask()){
 			$this->createRunning();
 		}else{
@@ -247,9 +248,7 @@ class View_TaskList extends \xepan\base\Grid{
 				$model_close_timesheet['endtime'] = $this->app->now;
 				$model_close_timesheet->saveAndUnload();
 			}
-
 		}
-
 	}
 
 	function render(){
