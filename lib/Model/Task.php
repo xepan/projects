@@ -14,7 +14,7 @@ class Model_Task extends \xepan\base\Model_Table
 		'Inprogress'=>['mark_complete'],
 		'Assigned'=>['receive','reject'],
 		'Submitted'=>['mark_complete','reopen'],
-		'Completed'=>[]
+		'Completed'=>['submit']
 	];
 
 	function init()
@@ -388,7 +388,7 @@ class Model_Task extends \xepan\base\Model_Table
 	}
 
 	function iCanPlay(){
-		return ($this->myTask() && $this['status'] != 'Completed');
+		return ($this->myTask() && !in_array($this['status'],['Completed','Submitted']));
 	}
 
 	function canStop(){
@@ -396,7 +396,7 @@ class Model_Task extends \xepan\base\Model_Table
 	}
 
 	function canDelete(){
-		return $this->myTask() && $this->createdByMe() && in_array($this['status'],['Completed','Submitted']);
+		return $this->myTask() && $this->createdByMe() /*&& in_array($this['status'],['Completed','Submitted'])*/;
 	}
 
 	function ICanAssign(){

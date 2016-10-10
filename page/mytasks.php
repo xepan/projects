@@ -17,9 +17,12 @@ class page_mytasks extends \xepan\base\Page{
 	    $task_assigned_by_me = $this->add('xepan\hr\CRUD',['allow_add'=>null,'grid_class'=>'xepan\projects\View_TaskList'],'middleview');	    
 	    $task_waiting_for_approval = $this->add('xepan\hr\CRUD',['allow_add'=>null,'grid_class'=>'xepan\projects\View_TaskList'],'rightview');	    
 
-		$task_assigned_to_me->grid->addPaginator(25);
-		$task_assigned_by_me->grid->addPaginator(25);
-		$task_waiting_for_approval->grid->addPaginator(25);
+	    if(!$task_assigned_to_me->isEditing())
+			$task_assigned_to_me->grid->addPaginator(25);
+	    if(!$task_assigned_by_me->isEditing())
+			$task_assigned_by_me->grid->addPaginator(25);
+	    if(!$task_waiting_for_approval->isEditing())
+			$task_waiting_for_approval->grid->addPaginator(25);
 
 	    $task_assigned_to_me->template->trySet('task_view_title','Assigned To Me');
 	    $task_assigned_by_me->template->trySet('task_view_title','Assigned By Me');
@@ -55,11 +58,10 @@ class page_mytasks extends \xepan\base\Page{
 										  ->addCondition('assign_to_id','<>',null)
 										  ->addCondition('status','Submitted');	
 		
-		$task_assigned_to_me->setModel($task_assigned_to_me_model);
-		$task_assigned_by_me->setModel($task_assigned_by_me_model);
-		$task_waiting_for_approval->setModel($task_waiting_for_approval_model);	
-	
-		/***************************************************************************
+		$task_assigned_to_me->setModel($task_assigned_to_me_model)->setOrder('updated_at','desc');
+		$task_assigned_by_me->setModel($task_assigned_by_me_model)->setOrder('updated_at','desc');
+		$task_waiting_for_approval->setModel($task_waiting_for_approval_model)->setOrder('updated_at','desc');	
+				/***************************************************************************
 			Virtual page for TASK DETAIL
 		***************************************************************************/
 		$self = $this;
