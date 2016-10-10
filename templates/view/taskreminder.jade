@@ -17,7 +17,8 @@
                 th
                     span Starting On
                 th
-                    span Reminder Time    
+                    span Reminder Time 
+
                 th 
                 {/}{/}
             {/}
@@ -32,7 +33,11 @@
                     td
                       | {$starting_date}
                     td
-                      | {$reminder_time}  
+                      | {$reminder_time} 
+                    td
+                      div.xepan-reminder-view-task(style= "cursor:pointer; cursor: hand; max-width:600px;")  
+                          span(class ="{$class}") &nbsp;
+                          span.text-muted.small {$is_task}   
                     td(style="width: 15%;")
                         {$edit}
                         {$delete}

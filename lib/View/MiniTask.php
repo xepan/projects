@@ -25,9 +25,7 @@ class View_MiniTask extends \View{
 		$model_timesheet->tryLoadAny();
 
 		$model_task = $this->add('xepan\projects\Model_Formatted_Task');
-		$model_task->addCondition('id',$model_timesheet->fieldQuery('task_id'));				
-		$model_task->tryLoadAny();
-		
+		$model_task->addCondition('id',$model_timesheet->fieldQuery('task_id'));		
 
 		$task_list->setModel($model_task);
 	}

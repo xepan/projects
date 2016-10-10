@@ -1,45 +1,59 @@
 .row.xepan-push
-  .col-md-6
-    span Task Name:
-    div {$task_name}
-  .col-md-6
-    span Starting Date:
-    div {$starting_date} 
+  .col-md-6.atk-form-field.atk-form-row
+    strong Reminder Task Name: 
+    {$task_name}
+  .col-md-4.atk-form-field.atk-form-row
+    strong Task Starting Time: 
+    {$starting_date}
+  .col-md-2.atk-form-field.atk-form-row
+    strong Make Task:
+    {$make_task}
 .row.xepan-push
-  .col-md-12
-    span Assign To:
-    div {$employee_id}    
+  .col-md-12.atk-form-field.atk-form-row
+    strong Assign To :
+    {$assign_to_id}       
 .row.xepan-push
-  .col-md-6
-    span Notify To:
-    div {$notify_to}
-  .col-md-6
-    span Remind Via:
-    div {$remind_via}    
+  .col-md-12.atk-form-field.atk-form-row
+    strong Description:
+    {$description}    
 .row
-  .col-md-6
-    span Remind Value:
-    div.xepan-push-small 
-    div {$remind_value}
-  .col-md-6
-    span Remind Unit:  
-    div {$remind_unit}
-.row.xepan-push
-  .col-md-12
-    span.text-muted Hint : " Remind Value = 10, Remind Unit = Minutes " To get a reminder before 10 minutes of task starting time. 
-.row.xepan-push
-  .col-md-12
-    span
-    div Description  
-      {$description} 
-.row.col-md-12.xepan-push 
-  .col-md-6
-    span
-    div 
-      {$is_recurring} 
-  .col-md-6
-    span Repeat Span:
-    div  
-      {$recurring_span} 
-.row.col-md-12 
-  {$FormButtons}       
+  .col-md-6.atk-form-field.atk-form-row  
+    .panel.panel-primary.panel-heading.strong 
+      b  Set Task Reminder
+      hr
+      .panel-body
+        .row.xepan-push
+          .col-md-12.atk-form-field.atk-form-row
+            strong Remind Medium:    
+            {$remind_via}
+        .row.xepan-push
+          .col-md-12.atk-form-field.atk-form-row
+            strong Remind To:
+            {$notify_to}
+        .row
+          .col-md-6.atk-form-field.atk-form-row
+            strong Remind Value:
+            {$remind_value}
+          .col-md-6.atk-form-field.atk-form-row
+            strong Remind Unit:
+            {$remind_unit}
+        span.small.text-muted Hint: Value = '10', Unit = 'Minutes' to get reminded 10 minutes before task starts     
+  .col-md-6.atk-form-field.atk-form-row
+    .panel.panel-primary.panel-heading
+      b Make Task Periodically Recur
+      hr
+      .panel-body
+        .row
+          .col-md-4.atk-form-field.atk-form-row
+            strong Repeat Task:
+            br 
+            {$is_recurring}
+          .col-md-8.atk-form-field.atk-form-row
+            strong Time Gap:    
+            {$recurring_span}
+.row(style = "display:none;")
+  {$is_reminder_only}   
+ 
+style(type='text/css', media='screen').
+  .atk-button{  
+  }

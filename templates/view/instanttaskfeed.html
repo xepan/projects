@@ -1,6 +1,27 @@
 
-<div class="main-box">
-  <header class="main-box-header clearfix">
-    <div class="main-box-body clearfix">{$form}</div>
-  </header>
+<div class="col-md-12 col-lg-12 col-sm-12">
+  <div class="main-box clearfix">
+    <div class="tabs-wrapper profile-tabs">
+      <ul class="nav nav-tabs responsive-tabs"> 
+        <li class="active"><a data-toggle="tab" href="#tab-tasks">Today's Task</a></li>
+        <li><a data-toggle="tab" href="#tab-pending">Pending Tasks</a></li>
+      </ul>
+      <div class="tab-content">
+        <div id="tab-tasks" class="tab-pane active">
+          <div class="row xepan-push">
+            <div class="col-md-12">{$project_form}</div>
+          </div>
+          <div class="row">
+            <div class="col-md-12"><strong class="small">Today's assigned tasks : 		</strong>{$task}</div>
+          </div>
+        </div>
+        <div id="tab-pending" class="tab-pane"><strong class="small">All pending tasks :</strong>{$pending_tasks}</div>
+      </div>
+    </div>
+  </div>
 </div>
+<style type="text/css" media="screen">
+  .modal-body{
+  padding:0px !important;
+  }
+</style>

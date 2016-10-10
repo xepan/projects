@@ -1,59 +1,38 @@
 
-<div id="{$_name}" class="xepan-grid {$class}">
-  <div class="main-box-body">
-    <table style="width:100%" class="table-hover">
-      <tbody style="font-size:12px">
-        {$header}
-        {nested_template}
-        {rows}{row}
-        <tr data-id="{$id}" class="{$odd_even} {$running_class}">{cols}
-          <td><span data-id="{$id}"></span><span data-id="{$id}" style="cursor:pointer; cursor: hand; max-width:600px;" class="task-item text-{$color}">[{$task_no}] {$task_name}</span></td>
-          <td>{$created_by}</td>
-          <td style="width:7%;">
-            <div style="color: #767676;display: block;font-size: 13px;font-weight: 500;">{$total_duration}</div>
-          </td>
-          <td style="width:7%;"><span data-action="{$event_action}" data-id="{$id}" style="cursor:pointer; cursor: hand; " class="fa current_task_btn {$icon} {$running-task}"><span style="margin-left:10px;" class="duration"></span></span></td>
-          <td style="width:10%;">
-             
-            {$action}
-          </td>
-          <td style="width: 5%;"><a href="#" data-id="{$id}" class="table-link danger do-delete nested-link"><span class="fa-stack"><i class="fa fa-square fa-stack-2x"></i><i class="fa fa-trash-o fa-stack-1x fa-inverse"></i></span></a></td>
-          <td><span class="text-muted text-{$color}">{$sub_tasks}    </span></td>{/}
-        </tr>{/}{/}
-        {not_found}
-        <div class="row">
-          <div role="alert" class="col-md-12 text-center alert alert-warning"><span class="icon-attention fa fa-exclamation-triangle"> &nbsp;{$not_found_message}</span></div>
-        </div>{/}
-        {/}
-      </tbody>
-    </table>
+<div id="{$_name}" class="main-box feed xepan-grid xepan-tasklist-grid {$class}">
+  <div class="pull-right">{$grid_buttons} </div>
+  <div class="pull-left">{$quick_search}</div>
+  <header class="main-box-header clearfix">
+    <h2 class="pull-left">{$task_view_title}</h2>
+  </header>
+  <div class="main-box-body clearfix">
+    {$header}
+    {nested_template}
+    <ul>
+      {rows}{row}
+      {cols}  
+      <li class="clearfix">
+        <div class="img">{$avatar}<br/><span title="task priority : {$priority}" class="label label-xs label-{$color}">{$priority} </span></div>
+        <div data-id="{$id}" class="title task-item"><a href="#">[{$task_no}] :</a>{$task_name}</div>
+        <div class="post-time">
+          {$action}
+          {$delete}
+        </div>
+        <div class="time-ago"><i title="Total Duration {$total_duration}" class="fa fa-clock-o">&nbsp; {total_duration}0.00{/}</i><br/>{play_pause_wrapper}  
+          <div style="display:{$display_play_pause};"><span data-action="{$event_action}" data-id="{$id}" style="cursor:pointer; cursor: hand; " class="fa current_task_btn btn btn-primary btn-block {$icon} {$running-task}"><span style="margin-left:10px;" class="duration"></span></span></div>{/}
+        </div>
+      </li>{/}
+      {/}{/}
+    </ul>{not_found}
+    <div class="row">
+      <div role="alert" class="col-md-12 text-center alert alert-warning"><span class="icon-attention fa fa-exclamation-triangle"> &nbsp;{$not_found_message}</span></div>
+    </div>{/}
+    {/}
+    {$Paginator}
+    <style>
+      .xepan-tasklist-grid .post-time li{
+        padding:1px;
+      }
+    </style>
   </div>
 </div>
-<style type="text/css" media="screen">
-  .dd3-handle::before {
-  color: #fff;
-  left: 0;
-  text-align: center;
-  text-indent: 0;
-  width: 100%;
-  }
-  .dd3-handle {
-  cursor: pointer;
-  left: 0;
-  margin: 0;
-  top: 0;
-  float: left;
-  height: 0px!important;
-  }
-  .dd3-content {
-  border: 1px solid #eee;
-  border-radius: 3px;
-  box-sizing: border-box;
-  color: #333;
-  display: block;
-  height: 30px;
-  margin: 5px 0;
-  padding: 5px 10px 5px 40px;
-  text-decoration: none;
-  }                
-</style>

@@ -10,20 +10,17 @@
             span(data-id="{$id}")
               a.btn.btn-primary.pull-right(href="#" style="margin-top:10px;")
                 i.fa.fa-plus-circle.fa-lg.add-task &nbsp; Add New Task
+      {progress_bar_wrapper}
       .row
         .col-md-3
           {$selfprogress}
         .col-md-6
           .text-center 
-            //- a.do-view-project-details(href!='#' data-id="{$id}") 
             a(href!='?page=xepan_projects_projectdetail&project_id={$id}') 
-             |Tasks
-            //- a(href!="{url}index.php?page=xepan_projects_projectlive&project_id={$id}{/}") 
+             span(style="font-size:25px;") Tasks
+            &nbsp;&nbsp;  
             a.do-view-project-lives-details(href!='#' data-id="{$id}") 
-             |Status
-            //- a(href!="?page=xepan_projects_calendar&project_id={$id}") 
-            a.do-view-project-calendar(href!='#' data-id="{$id}") 
-             |Calendar
-            //- a(href!="?page=xepan_projects_progress&project_id={$id}") 
+             span(style="font-size:25px;") Status
         .col-md-3
           {$totalprogress}
+      {/}

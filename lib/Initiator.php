@@ -21,19 +21,12 @@ class Initiator extends \Controller_Addon {
 			
 			$m = $this->app->top_menu->addMenu('Projects');
 			$m->addItem(['Dashboard','icon'=>'fa fa-dashboard'],'xepan_projects_projectdashboard');
-			$m->addItem(['My Tasks','icon'=>'fa fa-tasks'],'xepan_projects_mytasks');
 			$m->addItem(['Project','icon'=>'fa fa-sitemap'],'xepan_projects_project');
 			$m->addItem(['Trace Employee','icon'=>' fa fa-paw'],'xepan_projects_projectlive');
+			$this->app->user_menu->addItem(['Tasks','icon'=>'fa fa-tasks'],'xepan_projects_mytasks');
 			$projects = $this->add('xepan\projects\Model_Project');
-			foreach ($projects as $project) {
-				$project_name = $project['name'];
-				$project_id = $project['id'];
-
-				$task_count = $project->ref('xepan\projects\Task')->addCondition('employee_id',$this->app->employee->id)->addCondition('status','Pending')->count()->getOne();
-				
-				$m->addItem([$project_name,'icon'=>' fa fa-tasks'],$this->app->url('xepan_projects_projectdetail',['project_id'=>$project_id]),['project_id']);
-			}
 			$m->addItem(['Configuration','icon'=>' fa fa-cog'],'xepan_projects_layout');
+			$m->addItem(['Reports','icon'=>' fa fa-cog'],'xepan_projects_projectreport');
 		}
 
 		$search_project = $this->add('xepan\projects\Model_Project');
@@ -52,12 +45,14 @@ class Initiator extends \Controller_Addon {
 			$job1->setSchedule(new \Cron\Schedule\CrontabSchedule('*/1 * * * *'));
 			if(!$job1->getSchedule() || $job1->getSchedule()->valid($now)){
 				echo " Executing Task Cron For Reminder And Recuring Tasks<br/>";
-				// try{
-					$recurring_task = $this->add('xepan\projects\Model_Task');
-					$recurring_task->recurring();				
+				try{
 					$task = $this->add('xepan\projects\Model_Task');
 					$task->reminder();
-				// }catch(\Exception $e){}		
+					$recurring_task = $this->add('xepan\projects\Model_Task');
+					$recurring_task->recurring();				
+				}catch(\Exception $e){
+					throw $e;
+				}		
 			}
 		});
 
@@ -67,18 +62,18 @@ class Initiator extends \Controller_Addon {
 
 	function resetDB(){
 		// Clear DB
-		if(!isset($this->app->old_epan)) $this->app->old_epan = $this->app->epan;
-        if(!isset($this->app->new_epan)) $this->app->new_epan = $this->app->epan;
+		// if(!isset($this->app->old_epan)) $this->app->old_epan = $this->app->epan;
+  //       if(!isset($this->app->new_epan)) $this->app->new_epan = $this->app->epan;
         
-        $this->app->epan=$this->app->old_epan;
-        $truncate_models = ['Follower_Task_Association','Comment','Timesheet','Task_Attachment','Task','Project'];
-        foreach ($truncate_models as $t) {
-            $m=$this->add('xepan\projects\Model_'.$t);
-            foreach ($m as $mt) {
-                $mt->delete();
-            }
-        }
+  //       $this->app->epan=$this->app->old_epan;
+  //       $truncate_models = ['Follower_Task_Association','Comment','Timesheet','Task_Attachment','Task','Project'];
+  //       foreach ($truncate_models as $t) {
+  //           $m=$this->add('xepan\projects\Model_'.$t);
+  //           foreach ($m as $mt) {
+  //               $mt->delete();
+  //           }
+  //       }
         
-        $this->app->epan=$this->app->new_epan;
+  //       $this->app->epan=$this->app->new_epan;
 	}
 }

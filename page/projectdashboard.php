@@ -7,24 +7,45 @@ class page_projectdashboard extends \xepan\projects\page_sidemenu{
 	function init(){
 		parent::init();
 
-		$project = $this->add('xepan\projects\Model_project');
-		$tasks = $this->add('xepan\projects\Model_task');
+		$project = $this->add('xepan\projects\Model_Project');
+
+		$project->addExpression('Estimate')->set(function($m,$q){
+			$task = $this->add('xepan\projects\Model_Task');
+			$task->addCondition('project_id',$m->getElement('id'));
+			return $task->_dsql()->del('fields')->field($q->expr('sum([0])',[$task->getElement('estimate_time')]));
+		});
+
+		$project->addExpression('Alloted')->set(function($m,$q){
+			$task = $this->add('xepan\projects\Model_Task');
+			$task->addCondition('project_id',$m->getElement('id'));
+
+			$task->addExpression('diff_time')->set(function($m,$q){
+				return $q->expr('TIMESTAMPDIFF([0],[1],[2])',
+					['HOUR',$q->getField('starting_date'),$q->getField('deadline')]);
+			});
+			return $task->_dsql()->del('fields')->field($q->expr('sum([0])',[$task->getElement('diff_time')]));
+		}); 
+
+		$project->addExpression('Consumed')->set(function($m,$q){
+			$task = $this->add('xepan\projects\Model_Task');
+			$task->addCondition('project_id',$m->getElement('id'));
+			$task->addCondition('status','Completed');
+
+			$task->addExpression('diff_time')->set(function($m,$q){
+				return $q->expr('TIMESTAMPDIFF([0],[1],[2])',
+					['HOUR',$q->getField('starting_date'),$q->getField('updated_at')]);
+			});
+			return $task->_dsql()->del('fields')->field($q->expr('sum([0])',[$task->getElement('diff_time')]));
+		}); 
 		
-		$this->template->trySet('projects',$project->count());
-		$this->template->trySet('tasks',$tasks->count());
-		
-		$tasks->addCondition('status','Pending');
-		$this->template->trySet('pending_tasks',$tasks->count());
-
-		$completed_tasks = $this->add('xepan\projects\Model_task');
-		$completed_tasks->addCondition('status','Completed');
-		$this->template->trySet('completed_tasks',$tasks->count());
-
-		$model_formatted_projects = $this->add('xepan\projects\Model_Formatted_Project');
-		$model_formatted_projects->addCondition('status','Running');
-
-		$project_overview = $this->add('xepan\base\Grid',null,'project_overview',['view\dashboard\projectoverview']);
-		$project_overview->setModel($model_formatted_projects);		
+		$project->addCondition([['Estimate','>',0],['Alloted','>',0],['Consumed','>',0]]);
+		$this->add('xepan\base\View_Chart',null,null,null)
+     		->setType('bar')
+     		->setModel($project,'name',['Estimate','Alloted','Consumed'])
+     		->setGroup(['Estimate','Alloted','Consumed'])
+     		->setTitle('Project Hour Consumption')
+     		->addClass('col-md-8')
+     		->rotateAxis();
 	}
 
 	function defaultTemplate(){
