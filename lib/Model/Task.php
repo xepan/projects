@@ -119,11 +119,23 @@ class Model_Task extends \xepan\base\Model_Table
 		$this['updated_at']=$this->app->now;
 		$this->save();
 		
+		$model_close_timesheet = $this->add('xepan\projects\Model_Timesheet');
+		$model_close_timesheet->addCondition('employee_id',$this->app->employee->id);
+		$model_close_timesheet->addCondition('endtime',null);
+		$model_close_timesheet->tryLoadAny();
+
+		if($model_close_timesheet->loaded()){
+				$model_close_timesheet['endtime'] = $this->app->now;
+				$model_close_timesheet->saveAndUnload();
+		}
+		
 		if($this['assign_to_id']){
 			$this->app->employee
 		            ->addActivity("Task '".$this['task_name']."' submitted by '".$this->app->employee['name']."'",null, $this['assign_to_id'] /*Related Contact ID*/,null,null,null)
 		            ->notifyTo([$this['created_by_id']],"Task Submitted : " . $this['task_name']);
 		}
+		
+	 	$this->app->page_action_result = $this->app->js()->_selector('.xepan-mini-task')->trigger('reload');
 	}
 
 	function receive(){
