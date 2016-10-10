@@ -129,6 +129,7 @@ class View_TaskList extends \xepan\base\Grid{
 					if($this->app->db->intransaction()) $this->api->db->rollback();
 					throw $e;
 				}
+				
 				if(isset($page_action_result) or isset($this->app->page_action_result)){
 					
 					if(isset($this->app->page_action_result)){						
@@ -150,7 +151,7 @@ class View_TaskList extends \xepan\base\Grid{
 		}elseif($this->model->hasMethod($action)){
 			try{
 					$this->api->db->beginTransaction();
-					$this->model->$action();					
+					$page_action_result = $this->model->$action();
 					$this->api->db->commit();
 				}catch(\Exception_StopInit $e){
 
@@ -158,7 +159,20 @@ class View_TaskList extends \xepan\base\Grid{
 					$this->api->db->rollback();
 					throw $e;
 				}
-			$this->getView()->js()->reload(null,null,$this->view_reload_url)->execute();
+
+				$js=[];
+				if(isset($page_action_result) or isset($this->app->page_action_result)){
+					
+					if(isset($this->app->page_action_result)){						
+						$page_action_result = $this->app->page_action_result;
+					}
+
+					if($page_action_result instanceof \jQuery_Chain) {
+						$js[] = $page_action_result;
+					}
+					$this->getView()->js(null,$js)->reload(null,null,$this->view_reload_url)->execute();
+				}
+				$this->getView()->js()->reload(null,null,$this->view_reload_url)->execute();
 			// $this->getView()->js()->univ()->location()->execute();
 		}else{
 			return $js->univ()->errorMessage('Action "'.$action.'" not defined in Model');

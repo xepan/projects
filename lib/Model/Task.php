@@ -179,7 +179,7 @@ class Model_Task extends \xepan\base\Model_Table
 		            ->notifyTo([$this['created_by_id']],"Task Completed : " . $this['task_name']);
 		}
 
-		return $this->app->js()->_selector('.xepan-mini-task')->trigger('reload');
+	 	$this->app->page_action_result = $this->app->js()->_selector('.xepan-mini-task')->trigger('reload');
 	}
 
 	function reopen(){		
