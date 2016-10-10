@@ -10,6 +10,7 @@
             span(data-id="{$id}")
               a.btn.btn-primary.pull-right(href="#" style="margin-top:10px;")
                 i.fa.fa-plus-circle.fa-lg.add-task &nbsp; Add New Task
+      {progress}
       .row
         .col-md-3
           {$selfprogress}
@@ -22,3 +23,4 @@
              span(style="font-size:25px;") Status
         .col-md-3
           {$totalprogress}
+      {/}

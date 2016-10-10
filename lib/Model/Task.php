@@ -9,22 +9,6 @@ class Model_Task extends \xepan\base\Model_Table
 	public $acl = false;
 	public $status=['Pending','Submitted','Completed','Assigned','Inprogress'];
 	
-
-	// public $self_assign_actions = [
-	// 	'Pending'=>['mark_complete'],
-	// 	'Inprogress'=>['mark_complete']
-	// ];
-
-	// public $assign_to_me_actions = [
-	// 	'Pending'=>['submit','mark_complete'],
-	// 	'Assigned'=>['receive','reject'],
-	// 	'Inprogress'=>['submit','mark_complete'],
-	// ];
-
-	// public $assign_by_me_actions = [
-	// 		'Submitted'=>['mark_complete','reopen']
-	// 	];
-
 	public $actions=[
 		'Pending'=>['submit','mark_complete'], 
 		'Inprogress'=>['mark_complete'],
@@ -178,11 +162,23 @@ class Model_Task extends \xepan\base\Model_Table
 		$this['updated_at']=$this->app->now;
 		$this->save();
 		
+		$model_close_timesheet = $this->add('xepan\projects\Model_Timesheet');
+		$model_close_timesheet->addCondition('employee_id',$this->app->employee->id);
+		$model_close_timesheet->addCondition('endtime',null);
+		$model_close_timesheet->tryLoadAny();
+
+		if($model_close_timesheet->loaded()){
+				$model_close_timesheet['endtime'] = $this->app->now;
+				$model_close_timesheet->saveAndUnload();
+		}
+		
 		if($this['assign_to_id']){
 			$this->app->employee
 		            ->addActivity("Task '".$this['task_name']."' completed by '".$this->app->employee['name']."'",null, $this['assign_to_id'] /*Related Contact ID*/,null,null,null)
 		            ->notifyTo([$this['created_by_id']],"Task Completed : " . $this['task_name']);
 		}
+
+		return $this->app->js()->_selector('.xepan-mini-task')->trigger('reload');
 	}
 
 	function reopen(){		

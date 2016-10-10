@@ -7,6 +7,12 @@ class page_mytasks extends \xepan\base\Page{
 	function init(){
 		parent::init();
 
+		$model_project = $this->add('xepan\projects\Model_Formatted_Project');
+		$top_view = $this->add('xepan\projects\View_TopView',null,'topview');
+		$top_view->setModel($model_project);
+
+		$top_view->template->tryDel('progress');
+
 		$task_assigned_to_me = $this->add('xepan\hr\CRUD',['allow_add'=>null,'grid_class'=>'xepan\projects\View_TaskList'],'leftview');	    
 	    $task_assigned_by_me = $this->add('xepan\hr\CRUD',['allow_add'=>null,'grid_class'=>'xepan\projects\View_TaskList'],'middleview');	    
 	    $task_waiting_for_approval = $this->add('xepan\hr\CRUD',['allow_add'=>null,'grid_class'=>'xepan\projects\View_TaskList'],'rightview');	    
@@ -52,6 +58,26 @@ class page_mytasks extends \xepan\base\Page{
 		$task_assigned_to_me->setModel($task_assigned_to_me_model);
 		$task_assigned_by_me->setModel($task_assigned_by_me_model);
 		$task_waiting_for_approval->setModel($task_waiting_for_approval_model);	
+	
+		/***************************************************************************
+			Virtual page for TASK DETAIL
+		***************************************************************************/
+		$self = $this;
+		$self_url = $this->app->url(null,['cut_object'=>$this->name]);
+
+		$vp = $this->add('VirtualPage');
+		$vp->set(function($p){
+			$task_id = $this->app->stickyGET('task_id')?:0;
+			$project_id = $this->app->stickyGET('project_id');
+
+			$p->add('xepan\projects\View_Detail',['task_id'=>$task_id,'project_id'=>$project_id]);
+		});	
+
+		/***************************************************************************
+			Js to show task detail view etc.
+		***************************************************************************/
+		
+		$top_view->js('click',$this->js()->univ()->frameURL("ADD NEW TASK",$this->api->url($vp->getURL())))->_selector('.add-task');
 	}
 
 	function defaultTemplate(){
