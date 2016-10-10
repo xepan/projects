@@ -34,17 +34,15 @@ class page_mytasks extends \xepan\base\Page{
 
 		$status = $frm->addField('Dropdown','task_status');
 		$status->setvalueList(['Pending'=>'Pending','Inprogress'=>'Inprogress','Assigned'=>'Assigned','Submitted'=>'Submitted','Completed'=>'Completed'])->setEmptyText('Select a status');
-		$project_field = $frm->addField('Dropdown','project')->setEmptyText('Project');
+		$project_field = $frm->addField('Dropdown','project')->setEmptyText('Select a Project');
 		$project_field->setModel('xepan\projects\Project');
 		
 		$status1 = $frm1->addField('Dropdown','task_status');
 		$status1->setvalueList(['Pending'=>'Pending','Inprogress'=>'Inprogress','Assigned'=>'Assigned','Submitted'=>'Submitted','Completed'=>'Completed'])->setEmptyText('Select a status');
-		$project_field1 = $frm1->addField('Dropdown','project')->setEmptyText('Project');
+		$project_field1 = $frm1->addField('Dropdown','project')->setEmptyText('Select a Project');
 		$project_field1->setModel('xepan\projects\Project');
 
-		$status2 = $frm2->addField('Dropdown','task_status');
-		$status2->setvalueList(['Pending'=>'Pending','Inprogress'=>'Inprogress','Assigned'=>'Assigned','Submitted'=>'Submitted','Completed'=>'Completed'])->setEmptyText('Select a status');		
-		$project_field2 = $frm2->addField('Dropdown','project')->setEmptyText('Project');
+		$project_field2 = $frm2->addField('Dropdown','project')->setEmptyText('Select a Project');
 		$project_field2->setModel('xepan\projects\Project');
 
 		$frm->addHook('applyFilter',function($f,$m){
@@ -68,10 +66,6 @@ class page_mytasks extends \xepan\base\Page{
 		});
 
 		$frm2->addHook('applyFilter',function($f,$m){
-			if($f['task_status'] AND $m instanceOf \xepan\projects\Model_Task){
-				$m->addCondition('status',$f['task_status']);
-			}
-
 			if($f['project'] AND $m instanceOf \xepan\projects\Model_Project){
 				$m->addCondition('project_id',$f['project']);
 			}
@@ -79,7 +73,6 @@ class page_mytasks extends \xepan\base\Page{
 		
 		$status->js('change',$frm->js()->submit());
 		$status1->js('change',$frm1->js()->submit());
-		$status2->js('change',$frm2->js()->submit());
 
 		$project_field->js('change',$frm->js()->submit());
 		$project_field1->js('change',$frm1->js()->submit());

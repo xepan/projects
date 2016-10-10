@@ -46,10 +46,7 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 		
 		$status1 = $frm1->addField('Dropdown','task_status');
 		$status1->setvalueList(['Pending'=>'Pending','Inprogress'=>'Inprogress','Assigned'=>'Assigned','Submitted'=>'Submitted','Completed'=>'Completed'])->setEmptyText('Select a status');
-		
-		$status2 = $frm2->addField('Dropdown','task_status');
-		$status2->setvalueList(['Pending'=>'Pending','Inprogress'=>'Inprogress','Assigned'=>'Assigned','Submitted'=>'Submitted','Completed'=>'Completed'])->setEmptyText('Select a status');		
-		
+				
 		$frm->addHook('applyFilter',function($f,$m){
 			if($f['task_status'] AND $m instanceOf \xepan\projects\Model_Task){
 				$m->addCondition('status',$f['task_status']);
@@ -61,17 +58,9 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 				$m->addCondition('status',$f['task_status']);
 			}
 		});
-
-		$frm2->addHook('applyFilter',function($f,$m){
-			if($f['task_status'] AND $m instanceOf \xepan\projects\Model_Task){
-				$m->addCondition('status',$f['task_status']);
-			}
-		});
 		
 		$status->js('change',$frm->js()->submit());
 		$status1->js('change',$frm1->js()->submit());
-		$status2->js('change',$frm2->js()->submit());
-
 
 	    $task_assigned_to_me->template->trySet('task_view_title','Assigned To Me');
 	    $task_assigned_by_me->template->trySet('task_view_title','Assigned By Me');
