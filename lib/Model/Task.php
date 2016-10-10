@@ -10,11 +10,11 @@ class Model_Task extends \xepan\base\Model_Table
 	public $status=['Pending','Submitted','Completed','Assigned','Inprogress'];
 	
 	public $actions=[
-		'Pending'=>['submit','mark_complete'], 
-		'Inprogress'=>['mark_complete'],
+		'Pending'=>['submit','mark_complete'],
+		'Inprogress'=>['submit','mark_complete'],
 		'Assigned'=>['receive','reject'],
 		'Submitted'=>['mark_complete','reopen'],
-		'Completed'=>['submit']
+		'Completed'=>[]
 	];
 
 	function init()
@@ -73,9 +73,9 @@ class Model_Task extends \xepan\base\Model_Table
 
  	}
 	
-	function beforeSave(){
+	function beforeSave(){		
 		if($this->isDirty('assign_to_id')){
-			if(!$this->ICanAssign())
+			if(!$this->ICanAssign() and !$this->ICanReject())
 				throw $this->exception('Cannot assign running task','ValidityCheck')
 							->setField('assign_to_id');
 		}
@@ -143,6 +143,7 @@ class Model_Task extends \xepan\base\Model_Table
 	}
 
 	function reject(){
+
 		$this['status']='Pending';
 		$this['updated_at']=$this->app->now;
 		$this['assign_to_id']=$this['created_by_id'];
@@ -366,13 +367,15 @@ class Model_Task extends \xepan\base\Model_Table
 	}
 
 	function myTask(){
+		$task_model = $this->add('xepan\projects\Model_Task')->load($this->id);
+
 		return (
 			(
-				$this['created_by_id']== $this->app->employee->id 
-				&& $this['assign_to_id'] == null
+				$task_model['created_by_id']== $this->app->employee->id 
+				&& $task_model['assign_to_id'] == null
 			) 
 			||
-			$this['assign_to_id'] == $this->app->employee->id);
+			$task_model['assign_to_id'] == $this->app->employee->id);
 	}
 
 	function isMyTask(){
@@ -401,6 +404,11 @@ class Model_Task extends \xepan\base\Model_Table
 
 	function ICanAssign(){
 		return $this->createdByMe() && !in_array($this['status'], ['Inprogress','Completed','Submitted']);
+	}
+
+	function ICanReject(){
+		$task_model = $this->add('xepan\projects\Model_Task')->load($this->id);
+		return $this->myTask() && $task_model['status'] == "Assigned";
 	}
 
 	function ICanEdit(){
