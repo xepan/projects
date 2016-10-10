@@ -65,17 +65,26 @@ class View_TaskList extends \xepan\base\Grid{
 
 		// first Column
 		if($thisTask->isMyTask()){
-			if($this['status'] =='Pending')
+			if($this['status'] =='Pending' && !$thisTask->createdByMe())
+				unset($action_btn_list[1]); // submit
+			if($this['status'] =='Pending' && $thisTask->createdByMe())
 				unset($action_btn_list[0]); // submit
+
 			if(!$thisTask->createdByMe() && $this['status'] =='Submitted')
 				$action_btn_list=[];
-			
+
+			if($this['status'] =='Inprogress' && !$thisTask->createdByMe())
+				unset($action_btn_list[1]); // mark_submit
+
+			if($this['status'] =='Inprogress' && $thisTask->createdByMe())
+				unset($action_btn_list[0]); // mark_submit
 		}
 
 		// Second Column
-		if($thisTask->IhaveAssignedToOthers()) 
+		if($thisTask->IhaveAssignedToOthers() && $this['status'] != "Submitted") 
 			$action_btn_list = [];
 		
+
 		if(!$thisTask->canDelete()){
 			$this->current_row_html['delete'] = ' ';
 		}
@@ -87,7 +96,7 @@ class View_TaskList extends \xepan\base\Grid{
 			$this->current_row['display_play_pause'] = 'block';
 		}
 
-		$action_btn = $this->add('AbstractController')->add('xepan\hr\View_ActionBtn',['actions'=>$action_btn_list,'id'=>$this->model->id,'status'=>$this->model['status'],'action_btn_group'=>'xs']);
+		$action_btn = $this->add('AbstractController')->add('xepan\hr\View_ActionBtn',['actions'=>$action_btn_list?:[],'id'=>$this->model->id,'status'=>$this->model['status'],'action_btn_group'=>'xs']);
 		$this->current_row_html['action'] = $action_btn->getHTML();
 		
 		return parent::formatRow();
