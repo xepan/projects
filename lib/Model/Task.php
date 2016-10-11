@@ -242,7 +242,10 @@ class Model_Task extends \xepan\base\Model_Table
 						array_push($emails, $emp['first_email']);
 					}
 					$to_emails = implode(', ', $emails);
-					$email_settings = $this->add('xepan\communication\Model_Communication_EmailSetting')->tryLoadAny();
+					$email_settings = $this->add('xepan\communication\Model_Communication_EmailSetting');
+					$email_settings->addCondition('is_active',true);
+					$wmail_settings->tryLoadAny();	
+					
 					$mail = $this->add('xepan\communication\Model_Communication_Email');
 
 					$config_m = $this->add('xepan\base\Model_ConfigJsonModel',
