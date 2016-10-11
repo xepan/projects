@@ -33,6 +33,10 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 	    $task_assigned_by_me = $this->add('xepan\hr\CRUD',['allow_add'=>null,'grid_class'=>'xepan\projects\View_TaskList'],'middleview');	    
 	    $task_waiting_for_approval = $this->add('xepan\hr\CRUD',['allow_add'=>null,'grid_class'=>'xepan\projects\View_TaskList'],'rightview');	    
 	    
+	    $task_assigned_to_me->grid->template->trySet('task_view_title','Assigned To Me');
+	    $task_assigned_by_me->grid->template->trySet('task_view_title','Assigned By Me');
+	    $task_waiting_for_approval->grid->template->trySet('task_view_title','Waiting For Approval');
+
 		$task_assigned_to_me->grid->addPaginator(25);
 		$task_assigned_by_me->grid->addPaginator(25);
 		$task_waiting_for_approval->grid->addPaginator(25);
