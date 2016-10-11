@@ -244,7 +244,7 @@ class Model_Task extends \xepan\base\Model_Table
 					$to_emails = implode(', ', $emails);
 					$email_settings = $this->add('xepan\communication\Model_Communication_EmailSetting');
 					$email_settings->addCondition('is_active',true);
-					$mail_settings->tryLoadAny();	
+					$email_settings->tryLoadAny();	
 					
 					$mail = $this->add('xepan\communication\Model_Communication_Email');
 
