@@ -52,7 +52,7 @@ class View_InstantTaskFeed extends \View{
 		$task_view->add('xepan\base\Controller_Avatar',['name_field'=>'created_by','extra_classes'=>'profile-img center-block','options'=>['size'=>50,'display'=>'block','margin'=>'auto'],'float'=>null,'model'=>$this->model]);
 
 		/************************************************************************************
-		 Handling for event and submission 
+		 Handling form event and submission 
 		*************************************************************************************/
 		$project_field->js('change',$task_view->js()->reload(null,null,[$this->app->url(null,['cut_object'=>$task_view->name]),'project_id'=>$project_field->js()->val()]));
 		
