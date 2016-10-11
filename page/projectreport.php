@@ -69,7 +69,7 @@ class page_projectreport extends page_reportsidebar{
 		********************************************************************/
 		$grid = $view->add('Grid');			
 		$grid->setModel($project,['name','Resources','Estimate','Alloted','Consumed']);
-
+		$grid->addQuickSearch(['name']);
 		/*******************************************************************
 		 HANDLING FORM SUBMISSION
 		********************************************************************/
