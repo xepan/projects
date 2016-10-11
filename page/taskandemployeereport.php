@@ -20,7 +20,7 @@ class page_taskandemployeereport extends page_reportsidebar{
 		********************************************************************/
 		$task = $this->add('xepan\projects\Model_Task');
 		if($employee_id)								
-			$task->addCondition('employee_id',$employee_id);
+			$task->addCondition('assign_to_id',$employee_id);
 		if($status)
 			$task->addCondition('status',$status);
 		if($from_date)
