@@ -84,6 +84,10 @@ class Model_Task extends \xepan\base\Model_Table
 			$this['status'] = "Assigned";
 		}
 		$this['updated_at'] = $this->app->now;
+
+		if($this['deadline'] < $this['starting_date']){
+			throw new \Exception("Deadline can not be smaller then starting date");
+		}
 	}
 
 	function canUserDelete(){
@@ -340,12 +344,6 @@ class Model_Task extends \xepan\base\Model_Table
 			$model_task['is_recurring'] = $task['is_recurring'];
 			$model_task['recurring_span'] = $task['recurring_span'];
 			$model_task['created_by_id'] = $task['created_by_id'];
-			$model_task['deadline'] = $task['deadline'];
-			
-			/* 
-			   Deadline should also be calculated like starting date. At present it is of no use,
-			   thats why left unchanged. 
-			*/
  
 			switch ($task['recurring_span']) {
 				case 'Weekely':
@@ -372,6 +370,8 @@ class Model_Task extends \xepan\base\Model_Table
 					break;
 			}
 			
+			$new_deadline = date("Y-m-d H:i:s", strtotime('+ 1 day', strtotime($starting)));
+			$model_task['deadline'] = $new_deadline;
 			$model_task['starting_date'] = $starting;
 			$model_task->saveAndUnload();
 
