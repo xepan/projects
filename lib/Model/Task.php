@@ -74,7 +74,7 @@ class Model_Task extends \xepan\base\Model_Table
  	}
 	
 	function beforeSave(){		
-		if($this->isDirty('assign_to_id')){
+		if($this['is_reminder_only'] == false && $this->isDirty('assign_to_id')){
 			if(!$this->ICanAssign() and !$this->ICanReject())
 				throw $this->exception('Cannot assign running task','ValidityCheck')
 							->setField('assign_to_id');
