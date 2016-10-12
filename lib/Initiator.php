@@ -16,8 +16,13 @@ class Initiator extends \Controller_Addon {
 			$reminder = $this->app->layout->add('View',null,'page_top_right',['view\reminder']);
 			$reminder->js('click')->univ()->frameURL("REMINDERS",$this->api->url('xepan_projects_reminder'));
 
+			$this->app->addHook('post-init',function($app){
+					try{
+						$app->layout->add('xepan\projects\View_MiniTask',null,'task_status');
+					}catch(\Exception_StopInit $e){
 
-			$this->app->layout->add('xepan\projects\View_MiniTask',null,'task_status');
+					}
+			});
 			
 			$m = $this->app->top_menu->addMenu('Projects');
 			$m->addItem(['Dashboard','icon'=>'fa fa-dashboard'],'xepan_projects_projectdashboard');
