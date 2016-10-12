@@ -86,7 +86,7 @@ class Model_Task extends \xepan\base\Model_Table
 		$this['updated_at'] = $this->app->now;
 
 		if($this['deadline'] < $this['starting_date']){
-			throw new \Exception("Deadline can not be smaller then starting date");
+			throw $this->exception('Deadline can not be smaller then starting date','ValidityCheck')->setField('deadline');
 		}
 	}
 
