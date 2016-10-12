@@ -2,44 +2,35 @@
 
 namespace xepan\projects;
 
-class page_projectdetail extends \xepan\projects\page_sidemenu{
-	public $title = "Project Detail";
-	public $breadcrumb=['Home'=>'index','Project'=>'xepan_projects_project','Detail'=>'#'];
-
+class page_mytasks extends \xepan\base\Page{
+	public $title = "My Tasks";
 	function init(){
 		parent::init();
 
-		$this->js(true)->_load('timer.jquery');
-
-		$project_id = $this->app->stickyGET('project_id');
-		if(!$project_id) return;
-		
-		$task_id = $this->app->stickyGET('task_id');
-		$search = $this->app->stickyGET('search');
-
-		$model_project = $this->add('xepan\projects\Model_Formatted_Project')->load($project_id);
-		
-		/***************************************************************************
-			Adding views
-		***************************************************************************/
+		$model_project = $this->add('xepan\projects\Model_Formatted_Project');
 		$top_view = $this->add('xepan\projects\View_TopView',null,'topview');
 		$top_view->setModel($model_project);
 
-		$task = $this->add('xepan\projects\Model_Task');
-		$task->addCondition('project_id',$project_id);
-		$employee = $this->add('xepan\hr\Model_Employee');
+		$top_view->template->tryDel('progress_bar_wrapper');
 
-	    $task_assigned_to_me = $this->add('xepan\hr\CRUD',['allow_add'=>null,'grid_class'=>'xepan\projects\View_TaskList'],'leftview');	    
+		$task_assigned_to_me = $this->add('xepan\hr\CRUD',['allow_add'=>null,'grid_class'=>'xepan\projects\View_TaskList'],'leftview');	    
 	    $task_assigned_by_me = $this->add('xepan\hr\CRUD',['allow_add'=>null,'grid_class'=>'xepan\projects\View_TaskList'],'middleview');	    
 	    $task_waiting_for_approval = $this->add('xepan\hr\CRUD',['allow_add'=>null,'grid_class'=>'xepan\projects\View_TaskList'],'rightview');	    
-	    
+
 	    $task_assigned_to_me->grid->template->trySet('task_view_title','Assigned To Me');
 	    $task_assigned_by_me->grid->template->trySet('task_view_title','Assigned By Me');
 	    $task_waiting_for_approval->grid->template->trySet('task_view_title','Waiting For Approval');
 
-		$task_assigned_to_me->grid->addPaginator(25);
-		$task_assigned_by_me->grid->addPaginator(25);
-		$task_waiting_for_approval->grid->addPaginator(25);
+	    if(!$task_assigned_to_me->isEditing())
+			$task_assigned_to_me->grid->addPaginator(25);
+	    if(!$task_assigned_by_me->isEditing())
+			$task_assigned_by_me->grid->addPaginator(25);
+	    if(!$task_waiting_for_approval->isEditing())
+			$task_waiting_for_approval->grid->addPaginator(25);
+
+	    $frm = $task_assigned_to_me->grid->addQuickSearch(['task_name']);
+		$frm1 = $task_assigned_by_me->grid->addQuickSearch(['task_name']);
+		$frm2 = $task_waiting_for_approval->grid->addQuickSearch(['task_name']);
 
 		$frm = $task_assigned_to_me->grid->addQuickSearch(['task_name']);
 		$frm1 = $task_assigned_by_me->grid->addQuickSearch(['task_name']);
@@ -47,13 +38,24 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 
 		$status = $frm->addField('Dropdown','task_status');
 		$status->setvalueList(['Pending'=>'Pending','Inprogress'=>'Inprogress','Assigned'=>'Assigned','Submitted'=>'Submitted','Completed'=>'Completed'])->setEmptyText('Select a status');
+		$project_field = $frm->addField('Dropdown','project')->setEmptyText('Select a Project');
+		$project_field->setModel('xepan\projects\Project');
 		
 		$status1 = $frm1->addField('Dropdown','task_status');
 		$status1->setvalueList(['Pending'=>'Pending','Inprogress'=>'Inprogress','Assigned'=>'Assigned','Submitted'=>'Submitted','Completed'=>'Completed'])->setEmptyText('Select a status');
-				
+		$project_field1 = $frm1->addField('Dropdown','project')->setEmptyText('Select a Project');
+		$project_field1->setModel('xepan\projects\Project');
+
+		$project_field2 = $frm2->addField('Dropdown','project')->setEmptyText('Select a Project');
+		$project_field2->setModel('xepan\projects\Project');
+
 		$frm->addHook('applyFilter',function($f,$m){
 			if($f['task_status'] AND $m instanceOf \xepan\projects\Model_Task){
 				$m->addCondition('status',$f['task_status']);
+			}
+
+			if($f['project'] AND $m instanceOf \xepan\projects\Model_Project){
+				$m->addCondition('project_id',$f['project']);
 			}
 		});
 
@@ -61,10 +63,24 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 			if($f['task_status'] AND $m instanceOf \xepan\projects\Model_Task){
 				$m->addCondition('status',$f['task_status']);
 			}
+
+			if($f['project'] AND $m instanceOf \xepan\projects\Model_Project){
+				$m->addCondition('project_id',$f['project']);
+			}
+		});
+
+		$frm2->addHook('applyFilter',function($f,$m){
+			if($f['project'] AND $m instanceOf \xepan\projects\Model_Project){
+				$m->addCondition('project_id',$f['project']);
+			}
 		});
 		
 		$status->js('change',$frm->js()->submit());
 		$status1->js('change',$frm1->js()->submit());
+
+		$project_field->js('change',$frm->js()->submit());
+		$project_field1->js('change',$frm1->js()->submit());
+		$project_field2->js('change',$frm2->js()->submit());
 
 	    $task_assigned_to_me->template->trySet('task_view_title','Assigned To Me');
 	    $task_assigned_by_me->template->trySet('task_view_title','Assigned By Me');
@@ -73,12 +89,11 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 		$task_assigned_to_me->add('xepan\base\Controller_Avatar',['name_field'=>'created_by','extra_classes'=>'profile-img center-block','options'=>['size'=>50,'display'=>'block','margin'=>'auto'],'float'=>null,'model'=>$this->model]);
 		$task_assigned_by_me->add('xepan\base\Controller_Avatar',['name_field'=>'assign_to','extra_classes'=>'profile-img center-block','options'=>['size'=>50,'display'=>'block','margin'=>'auto'],'float'=>null,'model'=>$this->model]);
 		$task_waiting_for_approval->add('xepan\base\Controller_Avatar',['name_field'=>'assign_to','extra_classes'=>'profile-img center-block','options'=>['size'=>50,'display'=>'block','margin'=>'auto'],'float'=>null,'model'=>$this->model]);
-	    
+
 		$status = 'Completed';
 
 	    $task_assigned_to_me_model = $this->add('xepan\projects\Model_Formatted_Task');
 	    $task_assigned_to_me_model
-	    			->addCondition('project_id',$project_id)
 	    			->addCondition(
 	    				$task_assigned_to_me_model->dsql()->orExpr()
 	    					->where('assign_to_id',$this->app->employee->id)
@@ -90,30 +105,21 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 	    				);
 
 	    $task_assigned_by_me_model = $this->add('xepan\projects\Model_Formatted_Task')
-										  ->addCondition('project_id',$project_id)
 										  ->addCondition('created_by_id',$this->app->employee->id)
 										  ->addCondition('assign_to_id','<>',$this->app->employee->id)
 										  ->addCondition('assign_to_id','<>',null)
 										  ->addCondition('status','<>','Submitted');
 
 	    $task_waiting_for_approval_model = $this->add('xepan\projects\Model_Formatted_Task')
-										  ->addCondition('project_id',$project_id)
 										  ->addCondition('created_by_id',$this->app->employee->id)
 										  ->addCondition('assign_to_id','<>',$this->app->employee->id)
 										  ->addCondition('assign_to_id','<>',null)
 										  ->addCondition('status','Submitted');	
 		
-		$task_assigned_to_me->setModel($task_assigned_to_me_model);
-		$task_assigned_by_me->setModel($task_assigned_by_me_model);
-		$task_waiting_for_approval->setModel($task_waiting_for_approval_model);
-
-		if($task_id){
-			$task->load($task_id);			
-		}
-		$task_assigned_to_me_url = $this->api->url(null,['cut_object'=>$task_assigned_to_me->name]);
-
-
-		/***************************************************************************
+		$task_assigned_to_me->setModel($task_assigned_to_me_model)->setOrder('updated_at','desc');
+		$task_assigned_by_me->setModel($task_assigned_by_me_model)->setOrder('updated_at','desc');
+		$task_waiting_for_approval->setModel($task_waiting_for_approval_model)->setOrder('updated_at','desc');	
+				/***************************************************************************
 			Virtual page for TASK DETAIL
 		***************************************************************************/
 		$self = $this;
@@ -135,6 +141,6 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 	}
 
 	function defaultTemplate(){
-		return['page\projectdetail'];
+		return ['page\mytask'];
 	}
 }

@@ -5,7 +5,6 @@
             .pull-right {$grid_buttons} 
             .form-group.pull-right.xepan-filter-form
                 span(class="form-control pull-left")|{$quick_search}
-                    i(class="fa fa-search search-icon")
     {/Pannel}
     .main-box-body.clearfix.table
         table.table.user-list.table-hover(style="width:100%")
@@ -17,7 +16,8 @@
                 th
                     span Starting On
                 th
-                    span Reminder Time    
+                    span Reminder Time 
+
                 th 
                 {/}{/}
             {/}
@@ -32,7 +32,11 @@
                     td
                       | {$starting_date}
                     td
-                      | {$reminder_time}  
+                      | {$reminder_time} 
+                    td
+                      div.xepan-reminder-view-task(style= "cursor:pointer; cursor: hand; max-width:600px;")  
+                          span(class ="{$class}") &nbsp;
+                          span.text-muted.small {$is_task}   
                     td(style="width: 15%;")
                         {$edit}
                         {$delete}
