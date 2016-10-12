@@ -30,6 +30,6 @@ class View_MiniTask extends \View{
 		$task_list->setModel($model_task);
 
 		// $task_list->js('click')->_selector('.xepan-mini-task')->univ()->frameURL('INSTANT TASK FEED',[$this->api->url($vp->getURL())]);
-		$task_list->js('click')->_selector('.xepan-mini-task')->univ()->frameURL('TASK DETAIL',[$this->app->url('xepan_projects_instanttaskfeed')]);
+		$task_list->js('click')->_selector('.xepan-mini-task')->univ()->dialogURL('TASK DETAIL',[$this->app->url('xepan_projects_instanttaskfeed')]);
 	}
 }
