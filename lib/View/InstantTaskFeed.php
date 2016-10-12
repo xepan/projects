@@ -95,6 +95,7 @@ class View_InstantTaskFeed extends \View{
 
 			$js = [
 				  	$this->js()->univ()->successMessage('Task started'),
+					$task_view->js()->reload(),
 					$this->js()->_selector('.xepan-mini-task')->trigger('reload'),
 				  ];
 			return $form->js(null,$js)->reload()->execute(); 				
