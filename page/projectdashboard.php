@@ -48,7 +48,7 @@ class page_projectdashboard extends \xepan\projects\page_sidemenu{
      		->rotateAxis();
 	}
 
-	function defaultTemplate(){
-		return ['page\dashboard'];
-	}
+	// function defaultTemplate(){
+	// 	return ['page\dashboard'];
+	// }
 }
