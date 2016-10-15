@@ -42,6 +42,13 @@ class Model_Formatted_Task extends \xepan\projects\Model_Task{
 			return $time_sheet->dsql()->del('fields')->field($q->expr('sec_to_time(SUM([0]))',[$time_sheet->getElement('duration')]));
 		});
 
+		$this->addExpression('comment_count')->set(function($m,$q){
+			return $m->refSQL('xepan\projects\Comment')->count();
+		});
 
+
+		$this->addExpression('attachment_count')->set(function($m,$q){
+			return $m->refSQL('xepan\projects\Task_Attachment')->count();
+		});
 	}
 }
