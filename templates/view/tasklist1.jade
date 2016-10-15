@@ -19,7 +19,13 @@
           {$task_name}
         .post-time
           {$action}
-          {$delete}
+          {$delete} 
+          &nbsp;&nbsp;&nbsp;
+          i.fa.fa-comment
+          |  {$comment_count}
+          &nbsp;&nbsp;&nbsp;
+          i.fa.fa-paperclip(style="color:green")
+          |  {$attachment_count}
         .time-ago
           i.fa.fa-clock-o(title="Total Duration {$total_duration}")&nbsp; {total_duration}0.00{/}
           br
