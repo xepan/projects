@@ -133,10 +133,11 @@ class page_mytasks extends \xepan\base\Page{
 			$p->add('xepan\projects\View_Detail',['task_id'=>$task_id,'project_id'=>$project_id]);
 		});	
 
+
 		/***************************************************************************
 			Js to show task detail view etc.
 		***************************************************************************/
-		
+		$top_view->js('click')->_selector('.manage-daily-timesheet')->univ()->frameURL('Manage Timesheet',[$this->api->url('xepan_projects_editabletimesheet')]);
 		$top_view->js('click',$this->js()->univ()->frameURL("ADD NEW TASK",$this->api->url($vp->getURL())))->_selector('.add-task');
 	}
 

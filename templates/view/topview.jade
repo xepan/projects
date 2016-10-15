@@ -2,14 +2,18 @@
   .main-box
     header.main-box-header.clearfix
       .row
-        .col-md-3
-        .col-md-6.text-center
+        .col-md-4
+        .col-md-4.text-center
           h1 {$name}
-        .col-md-3  
+        .col-md-4  
           .pull-right.top-page-ui
             span(data-id="{$id}")
-              a.btn.btn-primary.pull-right(href="#" style="margin-top:10px;")
+              a.btn.btn-primary.btn-sm.pull-right(href="#" style="margin-top:10px;")
                 i.fa.fa-plus-circle.fa-lg.add-task &nbsp; Add New Task
+            {my-timesheet-button-wrapper}
+            a.btn.btn-primary.btn-sm(href="#" style="margin-top:10px;")
+                i.fa.fa-clock-o.fa-lg.manage-daily-timesheet &nbsp; My Timesheet
+            {/}
       {progress_bar_wrapper}
       .row
         .col-md-3
