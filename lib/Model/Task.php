@@ -85,7 +85,7 @@ class Model_Task extends \xepan\base\Model_Table
 		}
 		$this['updated_at'] = $this->app->now;
 
-		if($this['deadline'] < $this['starting_date']){
+		if((!$this['set_reminder']) && ($this['deadline'] < $this['starting_date'])){
 			throw $this->exception('Deadline can not be smaller then starting date','ValidityCheck')->setField('deadline');
 		}
 	}
