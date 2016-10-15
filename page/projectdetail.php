@@ -23,6 +23,7 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 			Adding views
 		***************************************************************************/
 		$top_view = $this->add('xepan\projects\View_TopView',null,'topview');
+		$top_view->template->tryDel('my-timesheet-button-wrapper');
 		$top_view->setModel($model_project);
 
 		$task = $this->add('xepan\projects\Model_Task');
