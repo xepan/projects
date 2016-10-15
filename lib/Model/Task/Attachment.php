@@ -11,10 +11,22 @@ class Model_Task_Attachment extends \xepan\base\Model_Table{
 		parent::init();
 		
 		$this->hasOne('xepan\projects\Task','task_id');
-		$this->add('filestore\Field_File','file_id');
+		$this->add('xepan\filestore\Field_File','file_id');
 
 		$this->addExpression('thumb_url')->set(function($m,$q){
 			return $q->expr('[0]',[$m->getElement('file')]);
+		});
+
+		$this->addHook('beforeDelete',$this);
+	}
+
+	function beforeDelete(){
+		
+		$file = $this->add('xepan\filestore\Model_File');
+		$file->addCondition('id',$this['file_id']);
+
+		$file->each(function($m){
+			$m->delete();
 		});
 	}
 }

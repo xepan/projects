@@ -40,13 +40,11 @@ class View_TaskReminder extends \View{
 							->setAttr(['multiple'=>'multiple']);
 		
 			if($reminder_crud->form->isSubmitted()){
-				$task['is_reminder_only'] = true;		
-				
+				$m = $reminder_crud->model;
+				$m['is_reminder_only'] = true;		
 				if($reminder_crud->form['make_task'])
-					$task['is_reminder_only'] = false;		
-				$task->save();	 					 					 					 									
-				// if($task['notify_to']) $task['notify_to'] = '';
-				// if($task['remind_via']) $task['remind_via'] = '';
+					$m['is_reminder_only'] = false;		
+				$m->save();	 					 					 					 									
 			}
 		}
 
