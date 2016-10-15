@@ -40,11 +40,11 @@ class View_TaskReminder extends \View{
 							->setAttr(['multiple'=>'multiple']);
 		
 			if($reminder_crud->form->isSubmitted()){
-				$task['is_reminder_only'] = true;		
-				$task['deadline'] = $task['starting_date'];
+				$m = $reminder_crud->model;
+				$m['is_reminder_only'] = true;		
 				if($reminder_crud->form['make_task'])
-					$task['is_reminder_only'] = false;		
-				$task->save();	 					 					 					 									
+					$m['is_reminder_only'] = false;		
+				$m->save();	 					 					 					 									
 			}
 		}
 
