@@ -59,6 +59,7 @@ class View_Detail extends \View{
 		if($model_task->loaded()){																								
 			$model_attachment = $this->add('xepan\projects\Model_Task_Attachment');
 			$model_attachment->addCondition('task_id',$task_id);	
+			$model_attachment->acl = 'xepan\projects\Model_Task';
 				
 			$attachment_crud = $detail_view->add('xepan\hr\CRUD',null,'attachment',['view\attachment-grid']);
 			$attachment_crud->setModel($model_attachment,['file_id','thumb_url'])->addCondition('task_id',$task_id);
@@ -66,11 +67,12 @@ class View_Detail extends \View{
 			
 
 			$model_comment = $this->add('xepan\projects\Model_Comment');
+			$model_comment->acl = 'xepan\projects\Model_Task';
 			$model_comment->addCondition('task_id',$model_task->id);
 			$model_comment->addCondition('employee_id',$this->app->employee->id);
 
 			$comment_grid = $detail_view->add('xepan\hr\CRUD',null,'commentgrid',['view\comment-grid']);
-			$comment_grid->setModel($model_comment,['comment','employee','on_action']);
+			$comment_grid->setModel($model_comment,['comment'],['comment','on_action','employee']);
 			$detail_view->template->trySet('comment_count',$model_task['comment_count']);
 		}
 	}		

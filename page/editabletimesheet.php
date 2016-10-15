@@ -37,8 +37,11 @@ class page_editabletimesheet extends \xepan\base\Page{
 		$timesheet_m = $this->add('xepan\projects\Model_Timesheet');
 		$timesheet_m->addCondition('employee_id',$this->app->employee->id);
 		$timesheet_m->addCondition('starttime','>=',$this->app->today);
-		$grid = $this->add('xepan\hr\Grid');
+		$timesheet_m->acl = 'xepan\projects\Model_Task';
+		$grid = $this->add('xepan\hr\CRUD');
 		$grid->setModel($timesheet_m,['task','starttime','endtime','duration']);
+		$grid->grid->removeColumn('action');
+		$grid->grid->removeColumn('attachment_icon');
 
 		if($form->isSubmitted()){
 			$timestamp = $this->app->today;
