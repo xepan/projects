@@ -15,9 +15,25 @@ class Model_Comment extends \xepan\base\Model_Table
 		$this->hasOne('xepan\hr\Employee','employee_id');
 		$this->addField('comment');
 		$this->addField('on_action');
+		$this->addField('is_seen_by_creator')->type('boolean');
+		$this->addField('is_seen_by_assignee')->type('boolean');
 
 		$this->addHook('beforeSave',[$this,'notifyComment']);
 		$this->addHook('beforeSave',[$this,'onAction']);
+		$this->addHook('beforeSave',[$this,'isSeenTrue']);
+	}
+
+	function iSSeenTrue(){
+		$task = $this->add('xepan\projects\Model_Task');
+		$task->tryLoad($this['task_id']);
+
+		if($task->loaded()){
+			if($task['created_by_id'] == $this['employee_id'])
+				$this['is_seen_by_creator'] = true;
+				
+			if($task['assign_to_id'] == $this['employee_id'])
+				$this['is_seen_by_assignee'] = true;
+		}
 	}
 
 	function notifyComment(){

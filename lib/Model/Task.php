@@ -72,6 +72,60 @@ class Model_Task extends \xepan\base\Model_Table
 
 		$this->setOrder('priority');
 
+		$this->addExpression('created_by_me')->set(function($m,$q){
+			return $q->expr("IF([0]=[1],1,0)",[
+						$m->getElement('created_by_id'),
+						$this->app->employee->id
+					]
+				);
+		});
+
+		$this->addExpression('comment_seen_by_creator')->set(function($m,$q){
+			return "'0'";
+		});
+
+		$this->addExpression('assigned_to_me')->set(function($m,$q){
+			return $q->expr("IF([0]=[1],1,0)",[
+						$m->getElement('assign_to_id'),
+						$this->app->employee->id
+					]
+				);
+		});	
+
+		$this->addExpression('comment_seen_by_assignee')->set(function($m,$q){
+			return "'0'";
+		});
+
+		$this->addExpression('created_by_me_and_seen')->set(function($m,$q){
+			return "'0'";
+			return $q->expr("IF([0] AND [1],1,0)",[
+						$m->getElement('created_by_me'),
+						$m->getElement('comment_seen_by_creator'),
+					]
+				);
+		});
+
+		$this->addExpression('assigned_to_me_and_seen')->set(function($m,$q){
+			return "'0'";
+			return $q->expr("IF([0] AND [1],1,0)",[
+						$m->getElement('assigned_to_me'),
+						$m->getElement('comment_seen_by_assignee'),
+					]
+				);
+		});
+
+		$this->addExpression('comment-color')->set(function(){
+			return "'green'";
+			return $q->expr(
+							"IF([0],'green',
+							 if([1],'green','gray'
+							 ))",
+					[
+						$m->getElement('created_by_me_and_seen'),
+						$m->getElement('assigned_to_me_and_seen'),
+					]
+				);
+		});
  	}
 	
  	function checkEmployeeHasEmail(){

@@ -75,5 +75,26 @@ class View_Detail extends \View{
 			$comment_grid->setModel($model_comment,['comment'],['comment','on_action','employee']);
 			$detail_view->template->trySet('comment_count',$model_task['comment_count']);
 		}
+		
+		$this->on('shown.bs.tab','a[href=#tab-comment]',function($js,$data)use($model_task){							
+			$task_m = $this->add('xepan\projects\Model_Task')->load($model_task->id);
+			$comment_m = $this->add('xepan\projects\Model_Comment');
+			$comment_m->addCondition('task_id',$task_m->id);
+					
+			if($task_m['created_by_id'] == $this->app->employee->id){
+				foreach ($comment_m as $c) {
+					$c['is_seen_by_creator'] = true;
+					$c->save();
+				}
+			}
+
+			if($task_m['assign_to_id'] == $this->app->employee->id){				
+				foreach ($comment_m as $c) {
+					$c['is_seen_by_assignee'] = true;
+					$c->save();
+				}
+			}
+
+		});
 	}		
 }
