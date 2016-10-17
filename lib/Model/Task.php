@@ -86,7 +86,7 @@ class Model_Task extends \xepan\base\Model_Table
 						if(!$value) continue; // in case user kept 'Please select' also
 						$emp = $this->add('xepan\hr\Model_Employee')->load($value);
 						if(!$emp['first_email'])
-							throw new \Exception($emp['name'].' does not have any email-id associated');
+							throw $this->exception($emp['name'].' has no email defined','ValidityCheck')->setField('notify_to');
 					}
  				}
  		}
