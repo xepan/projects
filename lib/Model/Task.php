@@ -21,7 +21,7 @@ class Model_Task extends \xepan\base\Model_Table
 	{
 		parent::init();
 
-		$this->hasOne('xepan\base\Epan');
+		// $this->hasOne('xepan\base\Epan');
 		$this->hasOne('xepan\projects\Project','project_id');
 		$this->hasOne('xepan\hr\Employee','assign_to_id')->defaultValue($this->app->employee->id);
 		$this->hasOne('xepan\hr\Employee','created_by_id')->defaultValue($this->app->employee->id);
@@ -74,6 +74,10 @@ class Model_Task extends \xepan\base\Model_Table
  	}
 	
 	function beforeSave(){		
+		if($this->isDirty('assign_to_id') && $this['assign_to_id'] != $this->app->employee->id){
+			$this['status'] = 'Assigned';
+		}
+
 		if($this['is_reminder_only'] == false && $this->isDirty('assign_to_id')){
 			if(!$this->ICanAssign() and !$this->ICanReject())
 				throw $this->exception('Cannot assign running task','ValidityCheck')
@@ -86,7 +90,7 @@ class Model_Task extends \xepan\base\Model_Table
 		$this['updated_at'] = $this->app->now;
 		if(!$this['deadline']) $this['deadline'] = $this['starting_date'];
 		
-		if($this['deadline'] < $this['starting_date']){
+		if($this['deadline'] < $this['starting_date']){			
 			throw $this->exception('Deadline can not be smaller then starting date','ValidityCheck')->setField('deadline');
 		}
 	}
