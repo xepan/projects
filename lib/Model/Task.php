@@ -55,6 +55,7 @@ class Model_Task extends \xepan\base\Model_Table
 
 		$this->addHook('beforeSave',[$this,'beforeSave']);
 		$this->addHook('beforeSave',[$this,'notifyAssignement']);
+		$this->addHook('beforeSave',[$this,'checkEmployeeHasEmail']);
 		$this->addHook('beforeDelete',[$this,'checkExistingFollwerTaskAssociation']);
 		$this->addHook('beforeDelete',[$this,'canUserDelete']);
 		$this->addHook('beforeDelete',[$this,'checkExistingComment']);
@@ -73,6 +74,24 @@ class Model_Task extends \xepan\base\Model_Table
 
  	}
 	
+ 	function checkEmployeeHasEmail(){
+ 		if($this['set_reminder']){
+ 			$remind_via_array = [];
+			$remind_via_array = explode(',', $this['remind_via']);
+
+ 			$employee_array = [];
+			$employee_array = explode(',', $this['notify_to']);
+				if(in_array("Email", $remind_via_array)){
+					foreach ($employee_array as $value){
+						if(!$value) continue; // in case user kept 'Please select' also
+						$emp = $this->add('xepan\hr\Model_Employee')->load($value);
+						if(!$emp['first_email'])
+							throw new \Exception($emp['name'].' does not have any email-id associated');
+					}
+ 				}
+ 		}
+ 	}
+
 	function beforeSave(){		
 		if($this->isDirty('assign_to_id') && $this['assign_to_id'] != $this->app->employee->id){
 			$this['status'] = 'Assigned';
