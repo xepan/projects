@@ -15,12 +15,17 @@ class Model_Comment extends \xepan\base\Model_Table
 		$this->hasOne('xepan\hr\Employee','employee_id');
 		$this->addField('comment');
 		$this->addField('on_action');
-		$this->addField('is_seen_by_creator')->type('boolean');
-		$this->addField('is_seen_by_assignee')->type('boolean');
+		$this->addField('is_seen_by_creator')->type('boolean')->defaultValue(false);
+		$this->addField('is_seen_by_assignee')->type('boolean')->defaultValue(false);
 
+		$this->addHook('beforeSave',[$this,'beforeSave']);
 		$this->addHook('beforeSave',[$this,'notifyComment']);
 		$this->addHook('beforeSave',[$this,'onAction']);
 		$this->addHook('beforeSave',[$this,'isSeenTrue']);
+	}
+
+	function beforeSave(){
+		$this['employee_id'] = $this->app->employee->id;
 	}
 
 	function iSSeenTrue(){

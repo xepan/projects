@@ -80,52 +80,36 @@ class Model_Task extends \xepan\base\Model_Table
 				);
 		});
 
-		$this->addExpression('comment_seen_by_creator')->set(function($m,$q){
-			return "'0'";
+		$this->addExpression('total_comment')->set($this->refSql('xepan\projects\Comment')->count());
+
+		$this->addExpression('total_comment_seen_by_creator')->set($this->refSql('xepan\projects\Comment')->addCondition('is_seen_by_creator',1)->count());
+		$this->addExpression('total_comment_seen_by_assignee')->set($this->refSql('xepan\projects\Comment')->addCondition('is_seen_by_assignee',1)->count());
+
+		$this->addExpression('creator_unseen_comment')->set(function($m,$q){
+			return $q->expr("[0]-[1]",[$m->getElement('total_comment'),$m->getElement('total_comment_seen_by_creator')]);
 		});
 
-		$this->addExpression('assigned_to_me')->set(function($m,$q){
-			return $q->expr("IF([0]=[1],1,0)",[
-						$m->getElement('assign_to_id'),
-						$this->app->employee->id
-					]
-				);
-		});	
-
-		$this->addExpression('comment_seen_by_assignee')->set(function($m,$q){
-			return "'0'";
+		$this->addExpression('assignee_unseen_comment')->set(function($m,$q){
+			return $q->expr("[0]-[1]",[$m->getElement('total_comment'),$m->getElement('total_comment_seen_by_assignee')]);
 		});
 
-		$this->addExpression('created_by_me_and_seen')->set(function($m,$q){
-			return "'0'";
-			return $q->expr("IF([0] AND [1],1,0)",[
-						$m->getElement('created_by_me'),
-						$m->getElement('comment_seen_by_creator'),
-					]
-				);
+		$this->addExpression('created_comment_color')->set(function($m,$q){
+			return $q->expr("IF([0] > 0,'RED','GRAY')",[$m->getElement('creator_unseen_comment')]);
 		});
 
-		$this->addExpression('assigned_to_me_and_seen')->set(function($m,$q){
-			return "'0'";
-			return $q->expr("IF([0] AND [1],1,0)",[
-						$m->getElement('assigned_to_me'),
-						$m->getElement('comment_seen_by_assignee'),
-					]
-				);
+		$this->addExpression('assignee_comment_color')->set(function($m,$q){
+			return $q->expr("IF([0] > 0,'RED','GRAY')",[$m->getElement('assignee_unseen_comment')]);
 		});
 
-		$this->addExpression('comment-color')->set(function(){
-			return "'green'";
-			return $q->expr(
-							"IF([0],'green',
-							 if([1],'green','gray'
-							 ))",
-					[
-						$m->getElement('created_by_me_and_seen'),
-						$m->getElement('assigned_to_me_and_seen'),
-					]
-				);
+		$this->addExpression('comment_color')->set(function($m,$q){
+			return $q->expr('IF([0],[1],[2])',
+											[
+												$m->getElement('created_by_me'),
+												$m->getElement('created_comment_color'),
+												$m->getElement('assignee_comment_color')
+											]);
 		});
+
  	}
 	
  	function checkEmployeeHasEmail(){
