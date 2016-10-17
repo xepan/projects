@@ -26,6 +26,7 @@ class View_InstantTaskFeed extends \View{
 		$form = $this->add('Form',null,'project_form');
 		$project_field = $form->addField('DropDown','project');
 		$project_field->setModel($model_project);
+		$project_field->setEmptyText('Select a project or leave unchanged to create generic task');
 		$new_task_field = $form->addField('new_task');
 		$time_field = $form->addField('TimePicker','time','Working on it since');
 			$time_field
