@@ -78,13 +78,31 @@ class View_Detail extends \View{
 				$comment_acl_add = false;
 
 			$comment_grid = $detail_view->add('xepan\hr\CRUD',['allow_add'=>$comment_acl_add],'commentgrid',['view\comment-grid']);
-			$comment_grid->setModel($model_comment,['comment'],['comment','on_action','employee']);
+			$comment_grid->setModel($model_comment,['comment'],['is_seen_by_creator','is_seen_by_assignee','comment','on_action','employee']);
 
 			$detail_view->template->trySet('comment_count',$model_task['comment_count']);
 			
-			$comment_grid->grid->addHook('formatRow',function($g)use($model_task){
+			$comment_grid->grid->addHook('formatRow',function($g)use($model_task){				
 				if($model_task['status']=='Completed'){
 					$g->current_row_html['edit'] = ' ';
+				    $g->current_row_html['delete'] = ' ';
+				}
+
+				if(($model_task['created_by_id'] == $this->app->employee->id) && $g->model['is_seen_by_assignee'] == true){
+					$g->current_row_html['edit'] = ' ';
+				    $g->current_row_html['delete'] = ' ';
+				}
+
+				if(($model_task['assign_to_id'] == $this->app->employee->id) && $g->model['is_seen_by_creator'] == true){
+					$g->current_row_html['edit'] = ' ';
+				    $g->current_row_html['delete'] = ' ';
+				}
+			});
+
+			$attachment_crud->grid->addHook('formatRow',function($g)use($model_task){				
+				$g->current_row_html['edit'] = ' ';
+				
+				if($model_task['status']=='Completed'){
 				    $g->current_row_html['delete'] = ' ';
 				}
 			});
