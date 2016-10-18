@@ -1,8 +1,5 @@
 <?php
 
-		  // acl [completed task => no adding , no editing, no deleting
-	   //    can delete => own comments , unseen other
-	   //    can edit => own comments, unseen by other 	
 namespace xepan\projects;
 
 class View_Detail extends \View{

@@ -56,10 +56,11 @@ class Model_Task extends \xepan\base\Model_Table
 		$this->addHook('beforeSave',[$this,'beforeSave']);
 		$this->addHook('beforeSave',[$this,'notifyAssignement']);
 		$this->addHook('beforeSave',[$this,'checkEmployeeHasEmail']);
+		$this->addHook('beforeDelete',[$this,'closeTimesheet']);
+		$this->addHook('beforeDelete',[$this,'checkExistingTimeSheet']);
 		$this->addHook('beforeDelete',[$this,'checkExistingFollwerTaskAssociation']);
 		$this->addHook('beforeDelete',[$this,'canUserDelete']);
 		$this->addHook('beforeDelete',[$this,'checkExistingComment']);
-		$this->addHook('beforeDelete',[$this,'checkExistingTimeSheet']);
 		$this->addHook('beforeDelete',[$this,'checkExistingTaskAttachment']);
 
 		$this->is([
@@ -72,44 +73,45 @@ class Model_Task extends \xepan\base\Model_Table
 
 		$this->setOrder('priority');
 
-		$this->addExpression('created_by_me')->set(function($m,$q){
-			return $q->expr("IF([0]=[1],1,0)",[
-						$m->getElement('created_by_id'),
-						$this->app->employee->id
-					]
-				);
-		});
+		if($this->app->employee->id){
+			$this->addExpression('created_by_me')->set(function($m,$q){
+				return $q->expr("IF([0]=[1],1,0)",[
+							$m->getElement('created_by_id'),
+							$this->app->employee->id
+						]
+					);
+			});
 
-		$this->addExpression('total_comment')->set($this->refSql('xepan\projects\Comment')->count());
+			$this->addExpression('total_comment')->set($this->refSql('xepan\projects\Comment')->count());
 
-		$this->addExpression('total_comment_seen_by_creator')->set($this->refSql('xepan\projects\Comment')->addCondition('is_seen_by_creator',1)->count());
-		$this->addExpression('total_comment_seen_by_assignee')->set($this->refSql('xepan\projects\Comment')->addCondition('is_seen_by_assignee',1)->count());
+			$this->addExpression('total_comment_seen_by_creator')->set($this->refSql('xepan\projects\Comment')->addCondition('is_seen_by_creator',1)->count());
+			$this->addExpression('total_comment_seen_by_assignee')->set($this->refSql('xepan\projects\Comment')->addCondition('is_seen_by_assignee',1)->count());
 
-		$this->addExpression('creator_unseen_comment')->set(function($m,$q){
-			return $q->expr("[0]-[1]",[$m->getElement('total_comment'),$m->getElement('total_comment_seen_by_creator')]);
-		});
+			$this->addExpression('creator_unseen_comment')->set(function($m,$q){
+				return $q->expr("[0]-[1]",[$m->getElement('total_comment'),$m->getElement('total_comment_seen_by_creator')]);
+			});
 
-		$this->addExpression('assignee_unseen_comment')->set(function($m,$q){
-			return $q->expr("[0]-[1]",[$m->getElement('total_comment'),$m->getElement('total_comment_seen_by_assignee')]);
-		});
+			$this->addExpression('assignee_unseen_comment')->set(function($m,$q){
+				return $q->expr("[0]-[1]",[$m->getElement('total_comment'),$m->getElement('total_comment_seen_by_assignee')]);
+			});
 
-		$this->addExpression('created_comment_color')->set(function($m,$q){
-			return $q->expr("IF([0] > 0,'RED','GRAY')",[$m->getElement('creator_unseen_comment')]);
-		});
+			$this->addExpression('created_comment_color')->set(function($m,$q){
+				return $q->expr("IF([0] > 0,'RED','GRAY')",[$m->getElement('creator_unseen_comment')]);
+			});
 
-		$this->addExpression('assignee_comment_color')->set(function($m,$q){
-			return $q->expr("IF([0] > 0,'RED','GRAY')",[$m->getElement('assignee_unseen_comment')]);
-		});
+			$this->addExpression('assignee_comment_color')->set(function($m,$q){
+				return $q->expr("IF([0] > 0,'RED','GRAY')",[$m->getElement('assignee_unseen_comment')]);
+			});
 
-		$this->addExpression('comment_color')->set(function($m,$q){
-			return $q->expr('IF([0],[1],[2])',
-											[
-												$m->getElement('created_by_me'),
-												$m->getElement('created_comment_color'),
-												$m->getElement('assignee_comment_color')
-											]);
-		});
-
+			$this->addExpression('comment_color')->set(function($m,$q){
+				return $q->expr('IF([0],[1],[2])',
+												[
+													$m->getElement('created_by_me'),
+													$m->getElement('created_comment_color'),
+													$m->getElement('assignee_comment_color')
+												]);
+			});
+		}
  	}
 	
  	function checkEmployeeHasEmail(){
@@ -165,8 +167,12 @@ class Model_Task extends \xepan\base\Model_Table
 		$this->ref('xepan\projects\Comment')->each(function($m){$m->delete();});
 	}
 	
-	function checkExistingTimeSheet(){
-		// $this->add('xepan\base\Model_Timesheet')->_dsql()->->where('task_id',$this->id)->execute();
+	function closeTimesheet(){
+		$this->add('xepan\projects\Model_Timesheet')->dsql()->set('endtime',$this->app->now)->where('endtime',null)->update();
+	}
+
+	function checkExistingTimeSheet(){		
+		$this->add('xepan\projects\Model_Timesheet')->dsql()->set('task_id',null)->where('task_id',$this->id)->update();
 	}
 
 	function checkExistingTaskAttachment(){
