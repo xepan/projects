@@ -1,11 +1,14 @@
 <?php
 
+		  // acl [completed task => no adding , no editing, no deleting
+	   //    can delete => own comments , unseen other
+	   //    can edit => own comments, unseen by other 	
 namespace xepan\projects;
 
 class View_Detail extends \View{
 	public $task_id;
 	public $project_id = null;
-	
+
 	function init(){
 		parent::init();
 
@@ -60,20 +63,34 @@ class View_Detail extends \View{
 			$model_attachment = $this->add('xepan\projects\Model_Task_Attachment');
 			$model_attachment->addCondition('task_id',$task_id);	
 			$model_attachment->acl = 'xepan\projects\Model_Task';
-				
-			$attachment_crud = $detail_view->add('xepan\hr\CRUD',null,'attachment',['view\attachment-grid']);
+			
+			$attachment_acl_add = true;
+			if($model_task['status'] == 'Completed')
+				$attachment_acl_add = false;
+
+			$attachment_crud = $detail_view->add('xepan\hr\CRUD',['allow_add'=>$attachment_acl_add],'attachment',['view\attachment-grid']);
 			$attachment_crud->setModel($model_attachment,['file_id','thumb_url'])->addCondition('task_id',$task_id);
 			$detail_view->template->trySet('attachment_count',$model_task['attachment_count']);
-			
 
 			$model_comment = $this->add('xepan\projects\Model_Comment');
 			$model_comment->acl = 'xepan\projects\Model_Task';
 			$model_comment->addCondition('task_id',$model_task->id);
-			// $model_comment->addCondition('employee_id',$this->app->employee->id);
 
-			$comment_grid = $detail_view->add('xepan\hr\CRUD',null,'commentgrid',['view\comment-grid']);
+			$comment_acl_add = true;
+			if($model_task['status'] == 'Completed')
+				$comment_acl_add = false;
+
+			$comment_grid = $detail_view->add('xepan\hr\CRUD',['allow_add'=>$comment_acl_add],'commentgrid',['view\comment-grid']);
 			$comment_grid->setModel($model_comment,['comment'],['comment','on_action','employee']);
+
 			$detail_view->template->trySet('comment_count',$model_task['comment_count']);
+			
+			$comment_grid->grid->addHook('formatRow',function($g)use($model_task){
+				if($model_task['status']=='Completed'){
+					$g->current_row_html['edit'] = ' ';
+				    $g->current_row_html['delete'] = ' ';
+				}
+			});
 		}
 		
 		$this->on('shown.bs.tab','a[href=#tab-comment]',function($js,$data)use($model_task){							

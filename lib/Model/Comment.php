@@ -42,6 +42,7 @@ class Model_Comment extends \xepan\base\Model_Table
 	}
 
 	function notifyComment(){
+		return;
 		$task = $this->add('xepan\projects\Model_Task');
 		$task->addCondition('id',$this['task_id']);
 		$task->tryLoadAny();

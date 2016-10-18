@@ -30,7 +30,7 @@ class Model_Task extends \xepan\base\Model_Table
 		$employee_model = $this->add('xepan\hr\Model_Employee')->addCondition('status','Active');		
 		$this->addField('notify_to')->display(['form'=>'xepan\base\DropDown'])->setModel($employee_model);
 		$this->addField('description')->type('text');
-		$this->addField('deadline')->display(['form'=>'DateTimePicker'])->type('datetime');
+		$this->addField('deadline')->display(['form'=>'DateTimePicker'])->type('datetime')->defaultValue(' ');
 		$this->addField('starting_date')->display(['form'=>'DateTimePicker'])->type('datetime')->defaultValue($this->app->now);
 		$this->addField('estimate_time')/*->display(['form'=>'TimePicker'])*/;
 		$this->addField('created_at')->type('datetime')->defaultValue($this->app->now);
@@ -166,8 +166,9 @@ class Model_Task extends \xepan\base\Model_Table
 	}
 	
 	function checkExistingTimeSheet(){
-		$this->ref('xepan\projects\Timesheet')->each(function($m){$m->delete();});
+		// $this->add('xepan\base\Model_Timesheet')->_dsql()->->where('task_id',$this->id)->execute();
 	}
+
 	function checkExistingTaskAttachment(){
 		$this->ref('xepan\projects\Task_Attachment')->each(function($m){$m->delete();});
 	}
@@ -260,15 +261,32 @@ class Model_Task extends \xepan\base\Model_Table
 	 	$this->app->page_action_result = $this->app->js()->_selector('.xepan-mini-task')->trigger('reload');
 	}
 
-	function reopen(){		
-		$this['status']='Pending';
+	function page_reopen($p){
+		$form = $p->add('Form');
+		$form->addField('text','comment');
+		$form->addSubmit('Save');
+		
+		if($form->isSubmitted()){
+			$this->reopen($form['comment']);
+			if($this['assign_to_id']){
+				$this->app->employee
+			            ->addActivity("Task '".$this['task_name']."' reopen by '".$this->app->employee['name']."'",null, $this['assign_to_id'] /*Related Contact ID*/,null,null,null)
+			            ->notifyTo([$this['assign_to_id']],"Task ReOpenned : " . $this['task_name']);
+			}
+			return $p->js()->univ()->closeDialog();
+		}
+	}
+
+	function reopen($comment_text){		
+		$comment = $this->add('xepan\projects\Model_Comment');
+		$comment['task_id'] = $this->id;
+		$comment['employee_id'] = $this->app->employee->id;
+		$comment['comment'] = $comment_text;
+		$comment->save();
+
+		$this['status'] = 'Pending';
 		$this['updated_at']=$this->app->now;
 		$this->save();
-		if($this['assign_to_id']){
-			$this->app->employee
-		            ->addActivity("Task '".$this['task_name']."' reopen by '".$this->app->employee['name']."'",null, $this['assign_to_id'] /*Related Contact ID*/,null,null,null)
-		            ->notifyTo([$this['assign_to_id']],"Task ReOpenned : " . $this['task_name']);
-		}
 	}
 
 
