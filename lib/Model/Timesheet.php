@@ -9,8 +9,8 @@ class Model_Timesheet extends \xepan\base\Model_Table{
 
 		$this->hasOne('xepan\projects\Task', 'task_id');
 		$this->hasOne('xepan\hr\Employee', 'employee_id');
-		$this->addField('starttime')->type('datetime');
-		$this->addField('endtime')->type('datetime');
+		$this->addField('starttime')->type('datetime')->display(['form'=>'DateTimePicker']);
+		$this->addField('endtime')->type('datetime')->display(['form'=>'DateTimePicker']);
 		$this->addField('remark');
 
 		$this->addExpression('duration')->set(function($m,$q){

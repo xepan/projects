@@ -43,24 +43,38 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 		$task_waiting_for_approval->grid->addPaginator(25);
 
 		$frm = $task_assigned_to_me->grid->addQuickSearch(['task_name']);
-		$frm1 = $task_assigned_by_me->grid->addQuickSearch(['task_name']);
-		$frm2 = $task_waiting_for_approval->grid->addQuickSearch(['task_name']);
-
+		if(!$frm->recall('task_status',false)) $frm->memorize('task_status',['Pending','Inprogress','Assigned']);
 		$status = $frm->addField('Dropdown','task_status');
 		$status->setvalueList(['Pending'=>'Pending','Inprogress'=>'Inprogress','Assigned'=>'Assigned','Submitted'=>'Submitted','Completed'=>'Completed'])->setEmptyText('Select a status');
-		
+		$status->setAttr(['multiple'=>'multiple']);
+
+		$frm1 = $task_assigned_by_me->grid->addQuickSearch(['task_name']);
+		if(!$frm1->recall('task_status',false)) $frm1->memorize('task_status',['Pending','Inprogress','Assigned']);
 		$status1 = $frm1->addField('Dropdown','task_status');
 		$status1->setvalueList(['Pending'=>'Pending','Inprogress'=>'Inprogress','Assigned'=>'Assigned','Submitted'=>'Submitted','Completed'=>'Completed'])->setEmptyText('Select a status');
+		$status1->setAttr(['multiple'=>'multiple']);
+		
+		$frm2 = $task_waiting_for_approval->grid->addQuickSearch(['task_name']);
+
+		
 				
 		$frm->addHook('applyFilter',function($f,$m){
+			if(!is_array($f['task_status'])) $f['task_status'] = explode(',',$f['task_status']);
 			if($f['task_status'] AND $m instanceOf \xepan\projects\Model_Task){
 				$m->addCondition('status',$f['task_status']);
+				$f->memorize('task_status',$f['task_status']);
+			}else{
+				$f->forget('task_status');
 			}
 		});
 
 		$frm1->addHook('applyFilter',function($f,$m){
+			if(!is_array($f['task_status'])) $f['task_status'] = explode(',',$f['task_status']);
 			if($f['task_status'] AND $m instanceOf \xepan\projects\Model_Task){
 				$m->addCondition('status',$f['task_status']);
+				$f->memorize('task_status',$f['task_status']);
+			}else{
+				$f->forget('task_status');
 			}
 		});
 		

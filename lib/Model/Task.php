@@ -55,10 +55,12 @@ class Model_Task extends \xepan\base\Model_Table
 
 		$this->addHook('beforeSave',[$this,'beforeSave']);
 		$this->addHook('beforeSave',[$this,'notifyAssignement']);
+		$this->addHook('beforeSave',[$this,'checkEmployeeHasEmail']);
+		$this->addHook('beforeDelete',[$this,'closeTimesheet']);
+		$this->addHook('beforeDelete',[$this,'checkExistingTimeSheet']);
 		$this->addHook('beforeDelete',[$this,'checkExistingFollwerTaskAssociation']);
 		$this->addHook('beforeDelete',[$this,'canUserDelete']);
 		$this->addHook('beforeDelete',[$this,'checkExistingComment']);
-		$this->addHook('beforeDelete',[$this,'checkExistingTimeSheet']);
 		$this->addHook('beforeDelete',[$this,'checkExistingTaskAttachment']);
 
 		$this->is([
@@ -71,11 +73,72 @@ class Model_Task extends \xepan\base\Model_Table
 
 		$this->setOrder('priority');
 
+		if($this->app->employee->id){
+			$this->addExpression('created_by_me')->set(function($m,$q){
+				return $q->expr("IF([0]=[1],1,0)",[
+							$m->getElement('created_by_id'),
+							$this->app->employee->id
+						]
+					);
+			});
+
+			$this->addExpression('total_comment')->set($this->refSql('xepan\projects\Comment')->count());
+
+			$this->addExpression('total_comment_seen_by_creator')->set($this->refSql('xepan\projects\Comment')->addCondition('is_seen_by_creator',1)->count());
+			$this->addExpression('total_comment_seen_by_assignee')->set($this->refSql('xepan\projects\Comment')->addCondition('is_seen_by_assignee',1)->count());
+
+			$this->addExpression('creator_unseen_comment')->set(function($m,$q){
+				return $q->expr("[0]-[1]",[$m->getElement('total_comment'),$m->getElement('total_comment_seen_by_creator')]);
+			});
+
+			$this->addExpression('assignee_unseen_comment')->set(function($m,$q){
+				return $q->expr("[0]-[1]",[$m->getElement('total_comment'),$m->getElement('total_comment_seen_by_assignee')]);
+			});
+
+			$this->addExpression('created_comment_color')->set(function($m,$q){
+				return $q->expr("IF([0] > 0,'RED','GRAY')",[$m->getElement('creator_unseen_comment')]);
+			});
+
+			$this->addExpression('assignee_comment_color')->set(function($m,$q){
+				return $q->expr("IF([0] > 0,'RED','GRAY')",[$m->getElement('assignee_unseen_comment')]);
+			});
+
+			$this->addExpression('comment_color')->set(function($m,$q){
+				return $q->expr('IF([0],[1],[2])',
+												[
+													$m->getElement('created_by_me'),
+													$m->getElement('created_comment_color'),
+													$m->getElement('assignee_comment_color')
+												]);
+			});
+		}
  	}
 	
+ 	function checkEmployeeHasEmail(){
+ 		if($this['set_reminder']){
+ 			$remind_via_array = [];
+			$remind_via_array = explode(',', $this['remind_via']);
+
+ 			$employee_array = [];
+			$employee_array = explode(',', $this['notify_to']);
+				if(in_array("Email", $remind_via_array)){
+					foreach ($employee_array as $value){
+						if(!$value) continue; // in case user kept 'Please select' also
+						$emp = $this->add('xepan\hr\Model_Employee')->load($value);
+						if(!$emp['first_email'])
+							throw $this->exception($emp['name'].' has no email defined','ValidityCheck')->setField('notify_to');
+					}
+ 				}
+ 		}
+ 	}
+
 	function beforeSave(){		
+		if($this->isDirty('assign_to_id') && $this['assign_to_id'] != $this->app->employee->id){
+			$this['status'] = 'Assigned';
+		}
+
 		if($this['is_reminder_only'] == false && $this->isDirty('assign_to_id')){
-			if(!$this->ICanAssign() and !$this->ICanReject())
+			if($this->loaded() && !$this->ICanAssign() and !$this->ICanReject())
 				throw $this->exception('Cannot assign running task','ValidityCheck')
 							->setField('assign_to_id');
 		}
@@ -86,7 +149,7 @@ class Model_Task extends \xepan\base\Model_Table
 		$this['updated_at'] = $this->app->now;
 		if(!$this['deadline']) $this['deadline'] = $this['starting_date'];
 		
-		if($this['deadline'] < $this['starting_date']){
+		if(strtotime($this['deadline']) < strtotime($this['starting_date'])){			
 			throw $this->exception('Deadline can not be smaller then starting date','ValidityCheck')->setField('deadline');
 		}
 	}
@@ -104,9 +167,14 @@ class Model_Task extends \xepan\base\Model_Table
 		$this->ref('xepan\projects\Comment')->each(function($m){$m->delete();});
 	}
 	
-	function checkExistingTimeSheet(){
-		$this->ref('xepan\projects\Timesheet')->each(function($m){$m->delete();});
+	function closeTimesheet(){
+		$this->add('xepan\projects\Model_Timesheet')->dsql()->set('endtime',$this->app->now)->where('endtime',null)->update();
 	}
+
+	function checkExistingTimeSheet(){		
+		$this->add('xepan\projects\Model_Timesheet')->dsql()->set('task_id',null)->where('task_id',$this->id)->update();
+	}
+
 	function checkExistingTaskAttachment(){
 		$this->ref('xepan\projects\Task_Attachment')->each(function($m){$m->delete();});
 	}
@@ -199,15 +267,32 @@ class Model_Task extends \xepan\base\Model_Table
 	 	$this->app->page_action_result = $this->app->js()->_selector('.xepan-mini-task')->trigger('reload');
 	}
 
-	function reopen(){		
-		$this['status']='Pending';
+	function page_reopen($p){
+		$form = $p->add('Form');
+		$form->addField('text','comment');
+		$form->addSubmit('Save');
+		
+		if($form->isSubmitted()){
+			$this->reopen($form['comment']);
+			if($this['assign_to_id']){
+				$this->app->employee
+			            ->addActivity("Task '".$this['task_name']."' reopen by '".$this->app->employee['name']."'",null, $this['assign_to_id'] /*Related Contact ID*/,null,null,null)
+			            ->notifyTo([$this['assign_to_id']],"Task ReOpenned : " . $this['task_name']);
+			}
+			return $p->js()->univ()->closeDialog();
+		}
+	}
+
+	function reopen($comment_text){		
+		$comment = $this->add('xepan\projects\Model_Comment');
+		$comment['task_id'] = $this->id;
+		$comment['employee_id'] = $this->app->employee->id;
+		$comment['comment'] = $comment_text;
+		$comment->save();
+
+		$this['status'] = 'Pending';
 		$this['updated_at']=$this->app->now;
 		$this->save();
-		if($this['assign_to_id']){
-			$this->app->employee
-		            ->addActivity("Task '".$this['task_name']."' reopen by '".$this->app->employee['name']."'",null, $this['assign_to_id'] /*Related Contact ID*/,null,null,null)
-		            ->notifyTo([$this['assign_to_id']],"Task ReOpenned : " . $this['task_name']);
-		}
 	}
 
 

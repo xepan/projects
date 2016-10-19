@@ -3,6 +3,8 @@
 namespace xepan\projects;
 
 class page_editabletimesheet extends \xepan\base\Page{
+	public $title = "My Timesheet";
+
 	function init(){
 		parent::init();
 

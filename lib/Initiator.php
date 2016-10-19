@@ -37,6 +37,7 @@ class Initiator extends \Controller_Addon {
 		$search_project = $this->add('xepan\projects\Model_Project');
 		$this->app->addHook('quick_searched',[$search_project,'quickSearch']);
 		$this->app->addHook('epan_dashboard_page',[$this,'epanDashboard']);
+		$this->app->user_menu->addItem(['My Timesheet','icon'=>'fa fa-clock-o'],'xepan_projects_editabletimesheet');
 		return $this;
 
 	}

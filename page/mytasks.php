@@ -28,21 +28,37 @@ class page_mytasks extends \xepan\base\Page{
 	    if(!$task_waiting_for_approval->isEditing())
 			$task_waiting_for_approval->grid->addPaginator(25);
 
-	    $frm = $task_assigned_to_me->grid->addQuickSearch(['task_name']);
-		$frm1 = $task_assigned_by_me->grid->addQuickSearch(['task_name']);
-		$frm2 = $task_waiting_for_approval->grid->addQuickSearch(['task_name']);
+		$status_array = [];	
+		$status_array = [	'Pending'=>'Pending',
+							'Inprogress'=>'Inprogress',
+							'Assigned'=>'Assigned',
+							'Submitted'=>'Submitted',
+							'Completed'=>'Completed'
+						];	
 
 		$frm = $task_assigned_to_me->grid->addQuickSearch(['task_name']);
-		$frm1 = $task_assigned_by_me->grid->addQuickSearch(['task_name']);
-		$frm2 = $task_waiting_for_approval->grid->addQuickSearch(['task_name']);
-
+		if(!$frm->recall('task_status',false)) $frm->memorize('task_status',['Pending','Inprogress','Assigned']);
 		$status = $frm->addField('Dropdown','task_status');
 		$status->setvalueList(['Pending'=>'Pending','Inprogress'=>'Inprogress','Assigned'=>'Assigned','Submitted'=>'Submitted','Completed'=>'Completed'])->setEmptyText('Select a status');
+		$status->setAttr(['multiple'=>'multiple']);
+		$status->setValueList($status_array);
+
 		$project_field = $frm->addField('Dropdown','project')->setEmptyText('Select a Project');
 		$project_field->setModel('xepan\projects\Project');
-		
+	
+		$frm1 = $task_assigned_by_me->grid->addQuickSearch(['task_name']);
+		if(!$frm1->recall('task_status',false)) $frm1->memorize('task_status',['Pending','Inprogress','Assigned']);
+		$frm2 = $task_waiting_for_approval->grid->addQuickSearch(['task_name']);
 		$status1 = $frm1->addField('Dropdown','task_status');
-		$status1->setvalueList(['Pending'=>'Pending','Inprogress'=>'Inprogress','Assigned'=>'Assigned','Submitted'=>'Submitted','Completed'=>'Completed'])->setEmptyText('Select a status');
+		$status1->setAttr(['multiple'=>'multiple']);
+		$status1->setValueList($status_array);
+
+		
+
+		
+
+		// $status1->js(true)->trigger('change');
+
 		$project_field1 = $frm1->addField('Dropdown','project')->setEmptyText('Select a Project');
 		$project_field1->setModel('xepan\projects\Project');
 
@@ -50,8 +66,13 @@ class page_mytasks extends \xepan\base\Page{
 		$project_field2->setModel('xepan\projects\Project');
 
 		$frm->addHook('applyFilter',function($f,$m){
+			if(!is_array($f['task_status'])) $f['task_status'] = explode(',',$f['task_status']);
+			
 			if($f['task_status'] AND $m instanceOf \xepan\projects\Model_Task){
 				$m->addCondition('status',$f['task_status']);
+				$f->memorize('task_status',$f['task_status']);
+			}else{
+				$f->forget('task_status');
 			}
 
 			if($f['project'] AND $m instanceOf \xepan\projects\Model_Project){
@@ -60,8 +81,11 @@ class page_mytasks extends \xepan\base\Page{
 		});
 
 		$frm1->addHook('applyFilter',function($f,$m){
-			if($f['task_status'] AND $m instanceOf \xepan\projects\Model_Task){
+			if(!is_array($f['task_status'])) $f['task_status'] = explode(',',$f['task_status']);
+
+			if($f['task_status'] AND $m instanceOf \xepan\projects\Model_Task){				
 				$m->addCondition('status',$f['task_status']);
+				$f->memorize('task_status',$f['task_status']);
 			}
 
 			if($f['project'] AND $m instanceOf \xepan\projects\Model_Project){
@@ -137,7 +161,6 @@ class page_mytasks extends \xepan\base\Page{
 		/***************************************************************************
 			Js to show task detail view etc.
 		***************************************************************************/
-		$top_view->js('click')->_selector('.manage-daily-timesheet')->univ()->frameURL('Manage Timesheet',[$this->api->url('xepan_projects_editabletimesheet')]);
 		$top_view->js('click',$this->js()->univ()->frameURL("ADD NEW TASK",$this->api->url($vp->getURL())))->_selector('.add-task');
 	}
 
