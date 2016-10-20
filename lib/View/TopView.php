@@ -28,6 +28,7 @@ class View_TopView extends \View{
 
 		// $this->js('click')->_selector('.do-view-project-details')->univ()->frameURL('Project Details',[$this->api->url('xepan_projects_projectdetail'),'project_id'=>$this->js()->_selectorThis()->closest('[data-id]')->data('id')]);
 		$this->js('click')->_selector('.do-view-project-lives-details')->univ()->frameURL('Project Live Details',[$this->api->url('xepan_projects_projectlive'),'project_id'=>$this->js()->_selectorThis()->closest('[data-id]')->data('id')]);
+		$this->js('click')->_selector('.do-view-project-all-task-lists')->univ()->frameURL('Project Task List',[$this->api->url('xepan_projects_projecttasklist'),'project_id'=>$this->js()->_selectorThis()->closest('[data-id]')->data('id')]);
 		$this->js('click')->_selector('.do-view-project-calendar')->univ()->frameURL('Project Calendar',[$this->api->url('xepan_projects_calendar'),'project_id'=>$this->js()->_selectorThis()->closest('[data-id]')->data('id')]);
 		$this->js('click')->_selector('.do-view-project-progress')->univ()->frameURL('Project Conversation',[$this->api->url('xepan_projects_progress'),'project_id'=>$this->js()->_selectorThis()->closest('[data-id]')->data('id')]);
 		$this->js('click')->_selector('.do-view-project-conversion')->univ()->frameURL('Project Files',[$this->api->url('xepan_projects_conversation'),'project_id'=>$this->js()->_selectorThis()->closest('[data-id]')->data('id')]);
