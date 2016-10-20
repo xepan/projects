@@ -18,8 +18,8 @@ class Model_Comment extends \xepan\base\Model_Table
 		$this->addField('is_seen_by_creator')->type('boolean')->defaultValue(false);
 		$this->addField('is_seen_by_assignee')->type('boolean')->defaultValue(false);
 
+		$this->addHook('afterInsert',$this);
 		$this->addHook('beforeSave',[$this,'beforeSave']);
-		$this->addHook('beforeSave',[$this,'notifyComment']);
 		$this->addHook('beforeSave',[$this,'onAction']);
 		$this->addHook('beforeSave',[$this,'isSeenTrue']);
 	}
@@ -41,8 +41,7 @@ class Model_Comment extends \xepan\base\Model_Table
 		}
 	}
 
-	function notifyComment(){
-		return;
+	function afterInsert(){
 		$task = $this->add('xepan\projects\Model_Task');
 		$task->addCondition('id',$this['task_id']);
 		$task->tryLoadAny();
