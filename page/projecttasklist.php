@@ -38,9 +38,9 @@ class page_projecttasklist extends \xepan\projects\page_configuration{
 
 	    $frm = $this->add('Form',null,'form');
 	    $frm->setLayout('view/form/project-task-list-form');
-		$created_by_field = $frm->addField('Dropdown','created_by');
+		$created_by_field = $frm->addField('Dropdown','created_by')->setEmptyText('Select a employee');
 		$created_by_field->setModel($created_by_employee_m);
-		$assigned_to_field = $frm->addField('Dropdown','assigned_to');
+		$assigned_to_field = $frm->addField('Dropdown','assigned_to')->setEmptyText('Select a employee');
 		$assigned_to_field->setModel($assigned_by_employee_m);
 		$status = $frm->addField('Dropdown','taskstatus');
 		$status->setvalueList(['Pending'=>'Pending','Inprogress'=>'Inprogress','Assigned'=>'Assigned','Submitted'=>'Submitted','Completed'=>'Completed'])->setEmptyText('Select a status');
