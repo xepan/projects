@@ -10,6 +10,7 @@ class page_projecttasklist extends \xepan\projects\page_configuration{
 		$project_id = $this->app->stickyGET('project_id');
 		$created_by_id = $this->app->stickyGET('created_by');
 		$assigned_to_id = $this->app->stickyGET('assigned_to');
+		$task_status = $this->app->stickyGET('task_status');
 		$model_task = $this->add('xepan\projects\Model_Task');
 		
 		$created_by_array = [];	
@@ -25,22 +26,25 @@ class page_projecttasklist extends \xepan\projects\page_configuration{
 		}
 
 		$complete_task_list_view = $this->add('xepan\hr\Grid',null,'task_list_view');
-	    $complete_task_list_view->setModel($model_task,['task_name']);
+	    $complete_task_list_view->setModel($model_task,['task_name','created_by','assign_to','status']);
 
 	    $complete_task_list_view->addQuickSearch(['task_name']);
 
-	    $created_by_employee_m = $this->add('xepan\hr\MOdel_Employee');
+	    $created_by_employee_m = $this->add('xepan\hr\Model_Employee');
 	    $created_by_employee_m->addCondition('id',array_unique($created_by_array));
 
-	    $assigned_by_employee_m = $this->add('xepan\hr\MOdel_Employee');
+	    $assigned_by_employee_m = $this->add('xepan\hr\Model_Employee');
 	    $assigned_by_employee_m->addCondition('id',array_unique($assigned_to_array));
 
 	    $frm = $this->add('Form',null,'form');
-		$created_by_field = $frm->addField('Dropdown','created_by');
+	    $frm->setLayout('view/form/project-task-list-form');
+		$created_by_field = $frm->addField('Dropdown','created_by')->setEmptyText('Select a employee');
 		$created_by_field->setModel($created_by_employee_m);
-		$assigned_to_field = $frm->addField('Dropdown','assigned_to');
+		$assigned_to_field = $frm->addField('Dropdown','assigned_to')->setEmptyText('Select a employee');
 		$assigned_to_field->setModel($assigned_by_employee_m);
-		$frm->addSubmit('Filter')->addClass('btn btn-primary');
+		$status = $frm->addField('Dropdown','taskstatus');
+		$status->setvalueList(['Pending'=>'Pending','Inprogress'=>'Inprogress','Assigned'=>'Assigned','Submitted'=>'Submitted','Completed'=>'Completed'])->setEmptyText('Select a status');
+		$frm->addSubmit('Filter')->addClass('btn btn-primary btn-block');
 
 		if($created_by_id)
 				$model_task->addCondition('created_by_id',$_GET['created_by']);
@@ -48,11 +52,15 @@ class page_projecttasklist extends \xepan\projects\page_configuration{
 		if($assigned_to_id)
 				$model_task->addCondition('assign_to_id',$_GET['assigned_to']);
 
+		if($task_status)
+				$model_task->addCondition('status',$_GET['task_status']);
+
 		if($frm->isSubmitted()){
 			$complete_task_list_view->js()->reload(
 					[
 						'created_by'=>$frm['created_by'],
-						'assigned_to'=>$frm['assigned_to']
+						'assigned_to'=>$frm['assigned_to'],
+						'task_status'=>$frm['taskstatus']
 						]
 					)->execute();
 		}

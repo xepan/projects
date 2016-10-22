@@ -2,6 +2,7 @@
   h2.text-center {$task_view_title}
   .pull-right {$grid_buttons} 
   .pull-left {$quick_search}
+  {$filterform}
   header.main-box-header.clearfix
   .main-box-body.clearfix
     {$header}
@@ -26,6 +27,9 @@
           &nbsp;&nbsp;&nbsp;
           i.fa.fa-paperclip(style="color:green")
           |  {$attachment_count}
+        i.fa.fa-calendar
+          span.text-muted.text-small
+            | &nbsp;&nbsp;{$created_at}
         .time-ago
           i.fa.fa-clock-o(title="Total Duration {$total_duration}")&nbsp; {total_duration}0.00{/}
           br
