@@ -51,10 +51,11 @@ class Model_Comment extends \xepan\base\Model_Table
 
 		if($task->loaded())
 			$task_name = $task['task_name'];
+			$task_created_by = $task['created_by_id'];
 
 		$this->app->employee->
 		addActivity("Comment On Task: '".$task_name."' Comment By'".$this->app->employee['name']."'",null, $this['employee_id'] /*Related Contact ID*/,null,null,null)->
-		notifyTo([$this['employee_id']],"Comment on Task : " . $task_name);
+		notifyTo([$this['employee_id'],$task_created_by]," Comment : '".$this['comment']."' :: Commented by '".$this->app->employee['name']."' :: On Task '".$task_name."' ");
 	}
 
 	function onAction(){
