@@ -2,7 +2,7 @@
 <div id="{$_name}" class="main-box feed xepan-grid xepan-tasklist-grid {$class}">
   <h2 class="text-center">{$task_view_title}</h2>
   <div class="pull-right">{$grid_buttons} </div>
-  <div class="pull-left">{$quick_search}</div>
+  <div class="pull-left">{$quick_search}</div>{$filterform}
   <header class="main-box-header clearfix"></header>
   <div class="main-box-body clearfix">
     {$header}
@@ -16,9 +16,9 @@
         <div class="post-time">
           {$action}
           {$delete} 
-          &nbsp;&nbsp;&nbsp;<i style="color:{$comment_color}" class="fa fa-comment"></i> {$comment_count}
+          &nbsp;&nbsp;&nbsp;<i style="color:{$comment-color}" class="fa fa-comment"></i> {$comment_count}
           &nbsp;&nbsp;&nbsp;<i style="color:green" class="fa fa-paperclip"></i> {$attachment_count}
-        </div>
+        </div><i class="fa fa-calendar"><span class="text-muted text-small">&nbsp;&nbsp;{$created_at}</span></i>
         <div class="time-ago"><i title="Total Duration {$total_duration}" class="fa fa-clock-o">&nbsp; {total_duration}0.00{/}</i><br/>{play_pause_wrapper}  
           <div style="display:{$display_play_pause};"><span data-action="{$event_action}" data-id="{$id}" style="cursor:pointer; cursor: hand; " class="fa current_task_btn btn btn-primary btn-block {$icon} {$running-task}"><span style="margin-left:10px;" class="duration"></span></span></div>{/}
         </div>
