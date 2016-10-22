@@ -54,7 +54,11 @@ class View_Detail extends \View{
 
 		else{
 			$model_task['assign_to_id'] = ' ';			
-			$detail_view->add('View',null,'task_form',['view\task_form'])->setModel($model_task);
+			$desc = $model_task['description'];
+			$model_task['description'] = "";
+			$detail_view_form = $detail_view->add('View',null,'task_form',['view\task_form']);
+			$detail_view_form->setModel($model_task);
+			$detail_view_form->template->setHtml('description1',$desc);
 		}
 
 		if($model_task->loaded()){																								
