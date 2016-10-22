@@ -64,11 +64,18 @@ class Initiator extends \Controller_Addon {
   //       ;
 
 		$f = $page->add('Form');
-		$fld = $f->addField('DateRangePicker','DateRangePicker')->set($_GET['range']?:'01-01-2016 - 31-12-2016');
+		$fld = $f->addField('DateRangePicker','DateRangePicker')
+				->setStartDate('2016-04-07')
+				->setEndDate('2016-04-30')
+				->showTimer(15)
+				->getBackDatesSet()
+				->getFutureDatesSet()
+				;
+
 		$f->addSubmit('Submit');
 
 		if($f->isSubmitted()){
-			throw new \Exception($fld->getStartDate(), 1);
+			throw new \Exception($fld->getEndDate(), 1);
 			
 			$f->js()->reload(['range'=>$f['DateRangePicker']])->execute();
 		}
