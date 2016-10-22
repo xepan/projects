@@ -18,7 +18,9 @@ class Initiator extends \Controller_Addon {
 
 			$this->app->addHook('post-init',function($app){
 					try{
+						$this->app->profiler->mark('Adding_mini_task');
 						$app->layout->add('xepan\projects\View_MiniTask',null,'task_status');
+						$this->app->profiler->mark('Mini_task_added');
 					}catch(\Exception_StopInit $e){
 
 					}
