@@ -3,7 +3,7 @@
 namespace xepan\projects;
 
 class page_mytasks extends \xepan\base\Page{
-	public $title = "My Tasks";
+	public $title = "My Tasks/Requests";
 	function init(){
 		parent::init();
 
@@ -52,12 +52,6 @@ class page_mytasks extends \xepan\base\Page{
 		$status1 = $frm1->addField('Dropdown','task_status');
 		$status1->setAttr(['multiple'=>'multiple']);
 		$status1->setValueList($status_array);
-
-		
-
-		
-
-		// $status1->js(true)->trigger('change');
 
 		$project_field1 = $frm1->addField('Dropdown','project')->setEmptyText('Select a Project');
 		$project_field1->setModel('xepan\projects\Project');
@@ -144,7 +138,8 @@ class page_mytasks extends \xepan\base\Page{
 		$task_assigned_to_me->setModel($task_assigned_to_me_model)->setOrder('updated_at','desc');
 		$task_assigned_by_me->setModel($task_assigned_by_me_model)->setOrder('updated_at','desc');
 		$task_waiting_for_approval->setModel($task_waiting_for_approval_model)->setOrder('updated_at','desc');	
-				/***************************************************************************
+		
+		/***************************************************************************
 			Virtual page for TASK DETAIL
 		***************************************************************************/
 		$self = $this;
@@ -158,11 +153,23 @@ class page_mytasks extends \xepan\base\Page{
 			$p->add('xepan\projects\View_Detail',['task_id'=>$task_id,'project_id'=>$project_id]);
 		});	
 
+		$vp1 = $this->add('VirtualPage');
+		$vp1->set(function($p){
+			$task = $this->add('xepan\projects\Model_Task');
+			$task->addCondition('is_recurring',true);
+			$task->addCondition('assign_to_id',$this->app->employee->id);
+
+			$view = $p->add('xepan\projects\View_TaskList');
+			$view->setModel($task);
+			
+			$view->add('xepan\base\Controller_Avatar',['name_field'=>'created_by','extra_classes'=>'profile-img center-block','options'=>['size'=>50,'display'=>'block','margin'=>'auto'],'float'=>null,'model'=>$this->model]);
+		});	
 
 		/***************************************************************************
 			Js to show task detail view etc.
 		***************************************************************************/
-		$top_view->js('click',$this->js()->univ()->frameURL("ADD NEW TASK",$this->api->url($vp->getURL())))->_selector('.add-task');
+		$top_view->js('click',$this->js()->univ()->frameURL("ADD NEW TASK/REQUEST",$this->api->url($vp->getURL())))->_selector('.add-task');
+		$top_view->js('click',$this->js()->univ()->frameURL("RECURRING TASKS/REQUESTS",$this->api->url($vp1->getURL())))->_selector('.show-recurring-task');
 	}
 
 	function defaultTemplate(){

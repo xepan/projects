@@ -259,11 +259,30 @@ class Model_Task extends \xepan\base\Model_Table
 		return true;	
 	}
 
-	function mark_complete(){		
-		$this['status']='Completed';
-		$this['updated_at']=$this->app->now;
-		$this->save();
-		
+	function page_mark_Complete($p){
+		$form = $p->add('Form');
+		$form->addField('text','comment');
+		$form->addSubmit('Save');
+			
+		if($form->isSubmitted()){
+			$this->mark_complete($form['comment']);
+			if($this['assign_to_id']){
+				$this->app->employee
+			            ->addActivity("Task '".$this['task_name']."' mark completed by '".$this->app->employee['name']."'",null, $this['assign_to_id'] /*Related Contact ID*/,null,null,null)
+			            ->notifyTo([$this['created_by_id']],"Task Completed : " . $this['task_name']);
+			}
+
+			return $this->app->page_action_result = $this->app->js(true,$p->js()->univ()->closeDialog())->_selector('.xepan-mini-task')->trigger('reload');
+		}
+	}
+
+	function mark_complete($comment_text){		
+		$comment = $this->add('xepan\projects\Model_Comment');
+		$comment['task_id'] = $this->id;
+		$comment['employee_id'] = $this->app->employee->id;
+		$comment['comment'] = $comment_text;
+		$comment->save();
+
 		$model_close_timesheet = $this->add('xepan\projects\Model_Timesheet');
 		$model_close_timesheet->addCondition('employee_id',$this->app->employee->id);
 		$model_close_timesheet->addCondition('endtime',null);
@@ -272,7 +291,11 @@ class Model_Task extends \xepan\base\Model_Table
 		if($model_close_timesheet->loaded()){
 				$model_close_timesheet['endtime'] = $this->app->now;
 				$model_close_timesheet->saveAndUnload();
-		}
+		} 
+
+		$this['status']='Completed';
+		$this['updated_at']=$this->app->now;
+		$this->save();
 		
 		if($this['assign_to_id'] == $this['created_by_id']){
 			$this->app->employee

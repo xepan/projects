@@ -3,7 +3,7 @@
 namespace xepan\projects;
 
 class page_projecttasklist extends \xepan\projects\page_configuration{
-	public $title ="Complete Task";
+	public $title ="Tasks/Requests";
 	function init(){
 		parent::init();
 		
