@@ -191,9 +191,25 @@ class Model_Task extends \xepan\base\Model_Table
 
 	function notifyAssignement(){
 		if($this->dirty['assign_to_id'] and $this['assign_to_id']){
+			
+			$model_emp = $this->add('xepan\hr\Model_Employee');
+			$model_emp->loadBy('id',$this['assign_to_id']);
+			if($model_emp->loaded())
+				$emp_name = $model_emp['name'];
+
+			$model_emp->loadBy('id',$this['created_by_id']);
+			if($model_emp->loaded())
+				$created_by = $model_emp['name'];
+			
+			if($this['assign_to_id'] == $this['created_by_id']){
+				$assigntask_notify_msg = "Just you have assign a task '" . $this['task_name'] ."' to yourself";
+			}else{
+				$assigntask_notify_msg = " Task Assigned to you : '" . $this['task_name'] ."' by '". $created_by ."' ";
+			}
+			
 			$this->app->employee
-	            ->addActivity("Task '".$this['task_name']."' assigned to '".$this['assign_to_id']."'",null, $this['created_by_id'] /*Related Contact ID*/,null,null,null)
-	            ->notifyTo([$this['assign_to_id']],"Task Assigned to you : " . $this['task_name']);
+	            ->addActivity("Task '".$this['task_name']."' assigned to '". $emp_name ."'",null, $this['created_by_id'] /*Related Contact ID*/,null,null,null)
+	            ->notifyTo([$this['assign_to_id']],$assigntask_notify_msg); 
 		}
 	}
 
@@ -214,8 +230,8 @@ class Model_Task extends \xepan\base\Model_Table
 		
 		if($this['assign_to_id']){
 			$this->app->employee
-		            ->addActivity("Task '".$this['task_name']."' submitted by '".$this->app->employee['name']."'",null, $this['assign_to_id'] /*Related Contact ID*/,null,null,null)
-		            ->notifyTo([$this['created_by_id']],"Task Submitted : " . $this['task_name']);
+		              ->addActivity("Task '".$this['task_name']."' submitted by '".$this->app->employee['name']."'",null, $this['assign_to_id'] /*Related Contact ID*/,null,null,null)
+		              ->notifyTo([$this['created_by_id']],"Task : '" . $this['task_name'] ."' Submitted by '".$this->app->employee['name']."'");
 		}
 		
 	 	$this->app->page_action_result = $this->app->js()->_selector('.xepan-mini-task')->trigger('reload');
@@ -231,7 +247,7 @@ class Model_Task extends \xepan\base\Model_Table
 		if($this['assign_to_id']){
 			$this->app->employee
 		            ->addActivity("Task '".$this['task_name']."' received by '".$this->app->employee['name']."'",null, $this['assign_to_id'] /*Related Contact ID*/,null,null,null)
-		            ->notifyTo([$this['created_by_id']],"Task Received : " . $this['task_name']);
+		            ->notifyTo([$this['created_by_id']],"Task : '".$this['task_name']."' Received by '".$this->app->employee['name']."'");
 		}	
 
 		return true;
@@ -247,7 +263,7 @@ class Model_Task extends \xepan\base\Model_Table
 		if($this['assign_to_id']){
 			$this->app->employee
 		            ->addActivity("Task '".$this['task_name']."' rejected by '".$this->app->employee['name']."'",null, $this['assign_to_id'] /*Related Contact ID*/,null,null,null)
-		            ->notifyTo([$this['created_by_id']],"Task Rejected : " . $this['task_name']);
+		            ->notifyTo([$this['created_by_id']],"Task :'".$this['task_name']."' Rejected by '".$this->app->employee['name']."'");
 		}
 
 		return true;	
@@ -291,6 +307,16 @@ class Model_Task extends \xepan\base\Model_Table
 		$this['updated_at']=$this->app->now;
 		$this->save();
 		
+		if($this['assign_to_id'] == $this['created_by_id']){
+			$this->app->employee
+		            ->addActivity("Task '".$this['task_name']."' completed by '".$this->app->employee['name']."'",null, $this['assign_to_id'] /*Related Contact ID*/,null,null,null);
+		}else{
+			$this->app->employee
+		            ->addActivity("Task '".$this['task_name']."' completed by '".$this->app->employee['name']."'",null, $this['assign_to_id'] /*Related Contact ID*/,null,null,null)
+		            ->notifyTo([$this['created_by_id'],$this['assign_to_id']],"Task : ".$this['task_name']."' marked Complete by '".$this->app->employee['name']."'");
+		}
+
+	 	$this->app->page_action_result = $this->app->js()->_selector('.xepan-mini-task')->trigger('reload');
 	}
 
 	function page_reopen($p){
@@ -303,7 +329,7 @@ class Model_Task extends \xepan\base\Model_Table
 			if($this['assign_to_id']){
 				$this->app->employee
 			            ->addActivity("Task '".$this['task_name']."' reopen by '".$this->app->employee['name']."'",null, $this['assign_to_id'] /*Related Contact ID*/,null,null,null)
-			            ->notifyTo([$this['assign_to_id']],"Task ReOpenned : " . $this['task_name']);
+			            ->notifyTo([$this['assign_to_id']],"Task : '".$this['task_name']."' ReOpenned by '".$this->app->employee['name']."' Due To Reason : '".$form['comment']."'");
 			}
 			return $p->js()->univ()->closeDialog();
 		}
