@@ -29,7 +29,7 @@ class Model_Task extends \xepan\base\Model_Table
 		$this->addField('task_name');
 		$employee_model = $this->add('xepan\hr\Model_Employee')->addCondition('status','Active');		
 		$this->addField('notify_to')->display(['form'=>'xepan\base\DropDown'])->setModel($employee_model);
-		$this->addField('description')->type('text');
+		$this->addField('description')->type('text')->display(['form'=>'xepan\base\RichText']);
 		$this->addField('deadline')->display(['form'=>'DateTimePicker'])->type('datetime');
 		$this->addField('starting_date')->display(['form'=>'DateTimePicker'])->type('datetime')->defaultValue($this->app->now);
 		$this->addField('estimate_time')/*->display(['form'=>'TimePicker'])*/;
@@ -99,6 +99,7 @@ class Model_Task extends \xepan\base\Model_Table
 				return $q->expr("IF([0] > 0,'RED','GRAY')",[$m->getElement('creator_unseen_comment')]);
 			});
 
+
 			$this->addExpression('assignee_comment_color')->set(function($m,$q){
 				return $q->expr("IF([0] > 0,'RED','GRAY')",[$m->getElement('assignee_unseen_comment')]);
 			});
@@ -110,6 +111,15 @@ class Model_Task extends \xepan\base\Model_Table
 													$m->getElement('created_comment_color'),
 													$m->getElement('assignee_comment_color')
 												]);
+			});
+
+			$this->addExpression('created_by_image')->set(function($m,$q){
+				return $q->expr('[0]',[$m->refSQL('created_by_id')->fieldQuery('image')]);
+			});
+
+
+			$this->addExpression('assigned_to_image')->set(function($m,$q){
+				return $q->expr('[0]',[$m->refSQL('assign_to_id')->fieldQuery('image')]);
 			});
 		}
  	}
