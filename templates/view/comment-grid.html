@@ -11,6 +11,7 @@
       <thead>{cols}{col}
         <th>Comments</th>
         <th>By</th>
+        <th>Created On</th>
         <th>Action    </th>
         <th> </th>{/}{/}
       </thead>{/}
@@ -19,6 +20,10 @@
         <tr data-id="{$id}" class="{$odd_even}">{cols}
           <td>{$comment}</td>
           <td>{$employee}</td>
+          <td>
+             
+            {$created_at}  
+          </td>
           <td>{$on_action} </td>
           <td style="width: 15%;">
             {$edit}
