@@ -43,17 +43,16 @@ class Model_Project extends \xepan\base\Model_Table
 
 	function run(){		
 		$this['status']='Running';
-		
 		$this->app->employee
-            ->addActivity("Project Running", null/* Related Document ID*/, $this->id /*Related Contact ID*/)
-            ->notifyWhoCan('complete,onhold','Running',$this);
+            ->addActivity("Project '".$this['name']."' in progress and its status being 'Running' ", null/* Related Document ID*/, $this->id /*Related Contact ID*/,null,null,"xepan_projects_projectdetail&project_id=".$this->id."")
+            ->notifyWhoCan('onhold,complete','Running',$this);
 		$this->save();
 	}
 
 	function onhold(){
 		$this['status']='Onhold';
 		$this->app->employee
-            ->addActivity("Project onhold", null/* Related Document ID*/, $this->id /*Related Contact ID*/)
+            ->addActivity("Project '".$this['name']."' kept on hold ", null/* Related Document ID*/, $this->id /*Related Contact ID*/,null,null,"xepan_projects_projectdetail&project_id=".$this->id."")
             ->notifyWhoCan('complete,run','Onhold',$this);
 		$this->save();
 	}
@@ -62,8 +61,8 @@ class Model_Project extends \xepan\base\Model_Table
 		$this['status']='Completed';
 		$this['actual_completion_date'] = $this->app->today;
 		$this->app->employee
-            ->addActivity("Lead has deactivated", null/* Related Document ID*/, $this->id /*Related Contact ID*/)
-            ->notifyWhoCan('run,onhold','Completed',$this);
+            ->addActivity("Project '".$this['name']."' has been completed on date of '".$this['actual_completion_date']."' ", null/* Related Document ID*/, $this->id /*Related Contact ID*/,null,null,"xepan_projects_projectdetail&project_id=".$this->id."")
+            ->notifyWhoCan(' ','Completed',$this);
 		$this->save();
 	}
 
