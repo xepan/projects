@@ -46,18 +46,26 @@ class page_projectdashboard extends \xepan\projects\page_sidemenu{
 			return $this->add('xepan\projects\Model_Task')
 						->addCondition('assign_to_id','<>',$q->getField('id'))
 						->addCondition('created_by_id',$q->getField('id'))
-						->addCondition('status',['Pending','Assigned','Submitted'])
+						->addCondition('status',['Pending','Assigned'])
+						->count();
+		});
+
+		$model->addExpression('check_submitted')->set(function($m,$q){
+			return $this->add('xepan\projects\Model_Task')
+						->addCondition('assign_to_id','<>',$q->getField('id'))
+						->addCondition('created_by_id',$q->getField('id'))
+						->addCondition('status','Submitted')
 						->count();
 		});
 
      	$this->add('xepan\base\View_Chart',null,'Charts')
      		->setType('bar')
-     		->setModel($model,'name',['pending_works','please_receive','received_so_far','total_tasks_assigned','take_report_on_pending'])
+     		->setModel($model,'name',['pending_works','please_receive','received_so_far','total_tasks_assigned','take_report_on_pending','check_submitted'])
      		->setGroup([['received_so_far','total_tasks_assigned'],['pending_works','take_report_on_pending']])
      		// ->setGroup(['self_pending','given_tasks_pending'])
      		->setTitle('Staff Accountable System Use')
      		->addClass('col-md-12')
-     		->rotateAxis()
+     		// ->rotateAxis()
      		;
 
 
