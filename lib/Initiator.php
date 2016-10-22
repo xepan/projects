@@ -57,6 +57,29 @@ class Initiator extends \Controller_Addon {
 
 	function epanDashboard($layout,$page){
 		
+		// $page->js(true)
+  //       ->_load('moment.min')
+  //       ->_load('daterangepicker1')
+  //       ->_css('daterangepicker')
+  //       ;
+
+		$f = $page->add('Form');
+		$fld = $f->addField('DateRangePicker','DateRangePicker')
+				->setStartDate('2016-04-07')
+				->setEndDate('2016-04-30')
+				->showTimer(15)
+				->getBackDatesSet()
+				->getFutureDatesSet()
+				;
+
+		$f->addSubmit('Submit');
+
+		if($f->isSubmitted()){
+			throw new \Exception($fld->getEndDate(), 1);
+			
+			$f->js()->reload(['range'=>$f['DateRangePicker']])->execute();
+		}
+
 		$task_assigned_to_me = $page->add('xepan\hr\CRUD',['allow_add'=>null,'grid_class'=>'xepan\projects\View_TaskList']);		
 		$task_assigned_to_me->add('xepan\base\Controller_Avatar',['name_field'=>'created_by','extra_classes'=>'profile-img center-block','options'=>['size'=>50,'display'=>'block','margin'=>'auto'],'float'=>null,'model'=>$this->model]);
 		$task_assigned_to_me->grid->template->trySet('task_view_title','My Pending Task');

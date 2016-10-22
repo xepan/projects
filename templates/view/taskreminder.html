@@ -17,7 +17,9 @@
       {$subheader}
       <tbody>{rows}{row}
         <tr data-id="{$id}" class="{$odd_even}">{cols}
-          <td>{$task_name}</td>
+          <td><span>{$task_name}</span>
+            <div class="small text-muted"><span class="user-subhead">{$recurring_task_info}</span></div>
+          </td>
           <td>{$starting_date}</td>
           <td>{$reminder_time} </td>
           <td>
