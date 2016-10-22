@@ -23,7 +23,7 @@ class View_TaskList extends \xepan\base\Grid{
 		$self = $this;
 		$self_url = $this->app->url(null,['cut_object'=>$this->name]);	
 
-	    $this->js('click')->_selector("#".$this->getJSID().' .task-item')->univ()->frameURL('TASK DETAIL',[$this->app->url('xepan_projects_taskdetail'),'task_id'=>$this->js()->_selectorThis()->data('id')]);
+	    $this->js('click')->_selector("#".$this->getJSID().' .task-item')->univ()->frameURL('TASK/REQUEST DETAIL',[$this->app->url('xepan_projects_taskdetail'),'task_id'=>$this->js()->_selectorThis()->data('id')]);
 		$this->view_reload_url = $this->app->url(null,['cut_object'=>$this->name]);
 	    $this->js(true)->_load('timer.jquery');
 

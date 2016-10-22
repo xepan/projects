@@ -3,7 +3,7 @@
 namespace xepan\projects;
 
 class page_mytasks extends \xepan\base\Page{
-	public $title = "My Tasks";
+	public $title = "My Tasks/Requests";
 	function init(){
 		parent::init();
 
@@ -168,8 +168,8 @@ class page_mytasks extends \xepan\base\Page{
 		/***************************************************************************
 			Js to show task detail view etc.
 		***************************************************************************/
-		$top_view->js('click',$this->js()->univ()->frameURL("ADD NEW TASK",$this->api->url($vp->getURL())))->_selector('.add-task');
-		$top_view->js('click',$this->js()->univ()->frameURL("RECURRING TASKS",$this->api->url($vp1->getURL())))->_selector('.show-recurring-task');
+		$top_view->js('click',$this->js()->univ()->frameURL("ADD NEW TASK/REQUEST",$this->api->url($vp->getURL())))->_selector('.add-task');
+		$top_view->js('click',$this->js()->univ()->frameURL("RECURRING TASKS/REQUESTS",$this->api->url($vp1->getURL())))->_selector('.show-recurring-task');
 	}
 
 	function defaultTemplate(){

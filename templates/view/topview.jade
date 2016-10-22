@@ -9,25 +9,22 @@
           .pull-right.top-page-ui
             span(data-id="{$id}")
               a.btn.btn-primary.btn-sm.pull-right(href="#" style="margin-top:10px;")
-                i.fa.fa-plus-circle.fa-lg.add-task &nbsp; Add New Task
+                i.fa.fa-plus-circle.fa-lg.add-task &nbsp; New Task/Requests
             {my-timesheet-button-wrapper}
             a.btn.btn-primary.btn-sm.pull-right(href="#" style="margin-top:10px;")
-                i.fa.fa-repeat.fa-lg.show-recurring-task &nbsp; Recurring Tasks  
+                i.fa.fa-repeat.fa-lg.show-recurring-task &nbsp; Recurring  
             {/}
       {progress_bar_wrapper}
       .row
         .col-md-3
           {$selfprogress}
-        .col-md-1
-        .col-md-2
+        .col-md-6
           .text-center 
             a.do-view-project-lives-details(href!='#' data-id="{$id}") 
-             span(style="font-size:20px;") Employee  Status
-        .col-md-2
+             span(style="font-size:17px;") Status
           .text-center 
             a.do-view-project-all-task-lists(href!='#' data-id="{$id}") 
-               span(style="font-size:20px;") View All Task
-        .col-md-1
+               span(style="font-size:17px;") View All Tasks/Requests
         .col-md-3
           {$totalprogress}
       {/}
