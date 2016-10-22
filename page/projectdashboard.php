@@ -12,7 +12,7 @@ class page_projectdashboard extends \xepan\projects\page_sidemenu{
 		// Communications by staff 
      	$model = $this->add('xepan\hr\Model_Employee');
 		
-		$model->addExpression('pending_tasks')->set(function($m,$q){
+		$model->addExpression('pending_works')->set(function($m,$q){
 			return $this->add('xepan\projects\Model_Task')
 						->addCondition('assign_to_id',$q->getField('id'))
 						->addCondition('created_by_id','<>',$q->getField('id'))
@@ -20,7 +20,7 @@ class page_projectdashboard extends \xepan\projects\page_sidemenu{
 						->count();
 		});
 
-		$model->addExpression('assigned_tasks')->set(function($m,$q){
+		$model->addExpression('please_receive')->set(function($m,$q){
 			return $this->add('xepan\projects\Model_Task')
 						->addCondition('assign_to_id',$q->getField('id'))
 						->addCondition('created_by_id','<>',$q->getField('id'))
@@ -28,26 +28,35 @@ class page_projectdashboard extends \xepan\projects\page_sidemenu{
 						->count();
 		});
 
-		$model->addExpression('received_tasks')->set(function($m,$q){
+		$model->addExpression('received_so_far')->set(function($m,$q){
 			return $this->add('xepan\projects\Model_Task')
 						->addCondition('assign_to_id',$q->getField('id'))
 						->addCondition('created_by_id','<>',$q->getField('id'))
 						->count();
 		});
 
-		$model->addExpression('given_tasks')->set(function($m,$q){
+		$model->addExpression('total_tasks_assigned')->set(function($m,$q){
 			return $this->add('xepan\projects\Model_Task')
 						->addCondition('assign_to_id','<>',$q->getField('id'))
 						->addCondition('created_by_id',$q->getField('id'))
 						->count();
 		});
 
+		$model->addExpression('take_report_on_pending')->set(function($m,$q){
+			return $this->add('xepan\projects\Model_Task')
+						->addCondition('assign_to_id','<>',$q->getField('id'))
+						->addCondition('created_by_id',$q->getField('id'))
+						->addCondition('status',['Pending','Assigned','Submitted'])
+						->count();
+		});
+
      	$this->add('xepan\base\View_Chart',null,'Charts')
      		->setType('bar')
-     		->setModel($model,'name',['received_tasks','given_tasks','assigned_tasks','pending_tasks'])
-     		->setGroup(['received_tasks','given_tasks'])
+     		->setModel($model,'name',['pending_works','please_receive','received_so_far','total_tasks_assigned','take_report_on_pending'])
+     		->setGroup([['received_so_far','total_tasks_assigned'],['pending_works','take_report_on_pending']])
+     		// ->setGroup(['self_pending','given_tasks_pending'])
      		->setTitle('Staff Accountable System Use')
-     		->addClass('col-md-8')
+     		->addClass('col-md-12')
      		->rotateAxis()
      		;
 
