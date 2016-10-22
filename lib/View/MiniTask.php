@@ -21,7 +21,7 @@ class View_MiniTask extends \View{
 		
 		$model_timesheet = $this->add('xepan\projects\Model_Timesheet');
 		$model_timesheet->addCondition('employee_id',$this->app->employee->id);
-		$model_timesheet->addCondition('endtime',null);
+		$model_timesheet->addCondition('endtime',null)->setLimit(1);
 		$model_timesheet->tryLoadAny();
 
 		$model_task = $this->add('xepan\projects\Model_Formatted_Task');
