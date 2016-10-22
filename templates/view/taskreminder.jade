@@ -28,7 +28,9 @@
                 tr(class="{$odd_even}" data-id="{$id}")
                     {cols}
                     td
-                      | {$task_name}
+                      span {$task_name}
+                      div.small.text-muted
+                        span.user-subhead {$recurring_task_info}
                     td
                       | {$starting_date}
                     td

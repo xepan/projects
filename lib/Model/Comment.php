@@ -14,9 +14,12 @@ class Model_Comment extends \xepan\base\Model_Table
 		$this->hasOne('xepan\projects\task','task_id');
 		$this->hasOne('xepan\hr\Employee','employee_id');
 		$this->addField('comment');
+		$this->addField('created_at')->type('datetime')->defaultValue($this->app->now);
 		$this->addField('on_action');
 		$this->addField('is_seen_by_creator')->type('boolean')->defaultValue(false);
 		$this->addField('is_seen_by_assignee')->type('boolean')->defaultValue(false);
+
+		$this->setOrder('created_at','desc');
 
 		$this->addHook('afterInsert',$this);
 		$this->addHook('beforeSave',[$this,'beforeSave']);

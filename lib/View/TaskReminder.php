@@ -51,6 +51,12 @@ class View_TaskReminder extends \View{
 		$reminder_crud->grid->addHook('formatRow',function($g){						
 			$g->current_row['reminder_time'] = date("Y-m-d H:i:s", strtotime('-'.$g->model['remind_value'].' '.$g->model['remind_unit'], strtotime($g->model['starting_date'])));		
 			
+			if($g->model['is_recurring']){
+				$g->current_row_html['recurring_task_info'] = 'Recurring';		
+			}else{
+				$g->current_row_html['recurring_task_info'] = ' ';
+			}
+
 			if($g->model['is_reminder_only']){
 				$g->current_row_html['is_task'] = ' ';		
 				$g->current_row_html['class'] = ' ';		
