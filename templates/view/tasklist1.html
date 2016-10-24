@@ -11,14 +11,11 @@
       {rows}{row}
       {cols}  
       <li class="clearfix">
-        <div class="img">{$avatar}<br/><span title="task priority : {$priority}" class="label label-xs label-{$color}">{$priority_name} </span></div>
+        <div class="img">{$avatar}</div>
         <div data-id="{$id}" class="title task-item"><a href="#">[{$task_no}] :</a>{$task_name}</div>
-        <div class="post-time">
-          {$action}
-          {$delete} 
-          &nbsp;&nbsp;&nbsp;<i style="color:{$comment_color}" class="fa fa-comment"></i> {$comment_count}
-          &nbsp;&nbsp;&nbsp;<i style="color:green" class="fa fa-paperclip"></i> {$attachment_count}
-        </div><i class="fa fa-calendar"><span class="text-muted text-small">&nbsp;&nbsp;{$created_at}</span></i>
+        <div class="post-time"><i class="fa fa-calendar"><span class="text-muted text-small">&nbsp;{$created_at}</span></i><br/><i style="font-size:16px;color:{$comment_color};" title="total comment {$comment_count}" class="fa fa-comment">&nbsp;{$comment_count}&nbsp;</i><i style="font-size:16px;color:green;" title="total attachment {$attachment_count}" class="fa fa-paperclip">&nbsp;{$attachment_count}</i><br/>{$action}
+          {$delete} <span title="task priority : {$priority}" class="label label-xs label-{$color}">{$priority_name} </span>
+        </div>
         <div class="time-ago"><i title="Total Duration {$total_duration}" class="fa fa-clock-o">&nbsp; {total_duration}0.00{/}</i><br/>{play_pause_wrapper}  
           <div style="display:{$display_play_pause};"><span data-action="{$event_action}" data-id="{$id}" style="cursor:pointer; cursor: hand; " class="fa current_task_btn btn btn-primary btn-block {$icon} {$running-task}"><span style="margin-left:10px;" class="duration"></span></span></div>{/}
         </div>
