@@ -7,6 +7,10 @@ class page_mytasks extends \xepan\base\Page{
 	function init(){
 		parent::init();
 
+		$from_date = $this->app->stickyGET('from_date');			   
+        $to_date = $this->app->stickyGET('to_date');			   
+        $task_priority = $this->app->stickyGET('priority');			 
+
 		$model_project = $this->add('xepan\projects\Model_Formatted_Project');
 		$top_view = $this->add('xepan\projects\View_TopView',null,'topview');
 		$top_view->setModel($model_project);
@@ -27,6 +31,13 @@ class page_mytasks extends \xepan\base\Page{
 			$task_assigned_by_me->grid->addPaginator(25);
 	    if(!$task_waiting_for_approval->isEditing())
 			$task_waiting_for_approval->grid->addPaginator(25);
+
+		$filter_form = $this->add('Form',null,'filter_form');
+	    $filter_form->setLayout('view\form\task-list-filter-form');
+		$filter_form->addField('DatePicker','from_date')->set($this->app->now);
+		$filter_form->addField('DatePicker','to_date')->set($this->app->now);		
+		$filter_form->addField('Dropdown','priority')->setvalueList(['25'=>'Low','50'=>'Medium','75'=>'High','90'=>'Critical']);
+	    $filter_form->addSubmit('ApplyFilter')->addClass('btn btn-primary btn-block');
 
 		$status_array = [];	
 		$status_array = [	'Pending'=>'Pending',
@@ -135,10 +146,33 @@ class page_mytasks extends \xepan\base\Page{
 										  ->addCondition('assign_to_id','<>',null)
 										  ->addCondition('status','Submitted');	
 		
+		if($from_date){			
+			$task_assigned_to_me_model->addCondition('starting_date','>=',$from_date);
+			$task_assigned_by_me_model->addCondition('starting_date','>=',$from_date);
+		}
+
+		if($to_date){			
+			$task_assigned_by_me_model->addCondition('deadline','<=',$this->app->nextDate($to_date));
+			$task_assigned_to_me_model->addCondition('deadline','<=',$this->app->nextDate($to_date));
+		}
+
+		if($task_priority){			
+			$task_assigned_by_me_model->addCondition('priority',$task_priority);		
+			$task_assigned_to_me_model->addCondition('priority',$task_priority);		
+		}
+
 		$task_assigned_to_me->setModel($task_assigned_to_me_model)->setOrder('updated_at','desc');
 		$task_assigned_by_me->setModel($task_assigned_by_me_model)->setOrder('updated_at','desc');
 		$task_waiting_for_approval->setModel($task_waiting_for_approval_model)->setOrder('updated_at','desc');	
 		
+		if($filter_form->isSubmitted()){
+        	$js = [ $task_assigned_by_me->js()->reload(['from_date'=>$filter_form['from_date'],'to_date'=>$filter_form['to_date'],'priority'=>$filter_form['priority']]),
+        			$task_assigned_to_me->js()->reload(['from_date'=>$filter_form['from_date'],'to_date'=>$filter_form['to_date'],'priority'=>$filter_form['priority']])
+        		  ];
+
+			$filter_form->js(null,$js)->execute();	
+		}
+			
 		/***************************************************************************
 			Virtual page for TASK DETAIL
 		***************************************************************************/

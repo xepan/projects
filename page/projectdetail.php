@@ -9,10 +9,7 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 	function init(){
 		parent::init();
 
-		$this->js(true)->_load('timer.jquery')
-				       ->_load('moment.min')
-        			   ->_load('daterangepicker1')
-        			   ->_css('daterangepicker');
+		$this->js(true)->_load('timer.jquery');
 
         $from_date = $this->app->stickyGET('from_date');			   
         $to_date = $this->app->stickyGET('to_date');			   
