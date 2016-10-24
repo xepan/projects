@@ -26,7 +26,7 @@ class View_Detail extends \View{
 			$task_form->setLayout('view\task_form');
 			$task_form->template->tryDel('assign_to');
 
-			$task_form->setModel($model_task,['assign_to_id','task_name','description','starting_date','deadline','priority','estimate_time','set_reminder','remind_via','remind_value','remind_unit','notify_to','is_recurring','recurring_span']);
+			$task_form->setModel($model_task,['assign_to_id','task_name','description','starting_date','deadline','priority','estimate_time','set_reminder','remind_via','remind_value','remind_unit','notify_to','is_recurring','recurring_span','reminder_time_compare_with']);
 			$task_form->getElement('deadline')->js(true)->val('');
 			$task_form->getElement('remind_via')
 						->addClass('multiselect-full-width')
