@@ -9,18 +9,20 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 	function init(){
 		parent::init();
 
-		$this->js(true)->_load('timer.jquery');
+		$this->js(true)->_load('timer.jquery')
+				       ->_load('moment.min')
+        			   ->_load('daterangepicker1')
+        			   ->_css('daterangepicker');
 
-		$project_id = $this->app->stickyGET('project_id');
-		if(!$project_id) return;
-		
+        $from_date = $this->app->stickyGET('from_date');			   
+        $to_date = $this->app->stickyGET('to_date');			   
+        $task_priority = $this->app->stickyGET('priority');			   
 		$task_id = $this->app->stickyGET('task_id');
 		$search = $this->app->stickyGET('search');
-		$assign_to_me_from_date = $this->app->stickyGET('assign_to_me_from_date');
-		$assign_to_me_to_date = $this->app->stickyGET('assign_to_me_to_date');
-		$assign_by_me_from_date = $this->app->stickyGET('assign_by_me_from_date');
-		$assign_by_me_to_date = $this->app->stickyGET('assign_by_me_to_date');
-
+		$project_id = $this->app->stickyGET('project_id');
+		
+		if(!$project_id) return;
+		
 		$model_project = $this->add('xepan\projects\Model_Formatted_Project')->load($project_id);
 		
 		/***************************************************************************
@@ -46,17 +48,13 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 		$task_assigned_by_me->grid->addPaginator(25);
 		$task_waiting_for_approval->grid->addPaginator(25);
 
-		$filter_form = $this->add('Form',null,'filterform');
-	    $filter_form->setLayout('view\form\task-list-filter-form');
-	    $filter_form->addField('DatePicker','from_date');
-	    $filter_form->addField('DatePicker','to_date');
-	    $filter_form->addSubmit('ApplyFilter')->addClass('btn btn-primary btn-block');
 
-	    $filter_form_2 = $this->add('Form',null,'filterform2');
-	    $filter_form_2->setLayout('view\form\task-list-filter-form');
-	    $filter_form_2->addField('DatePicker','from_date');
-	    $filter_form_2->addField('DatePicker','to_date');
-	    $filter_form_2->addSubmit('ApplyFilter')->addClass('btn btn-primary btn-block');
+		$filter_form = $this->add('Form',null,'filter_form');
+	    $filter_form->setLayout('view\form\task-list-filter-form');
+		$filter_form->addField('DatePicker','from_date')->set($this->app->now);
+		$filter_form->addField('DatePicker','to_date')->set($this->app->now);		
+		$filter_form->addField('Dropdown','priority')->setvalueList(['25'=>'Low','50'=>'Medium','75'=>'High','90'=>'Critical']);
+	    $filter_form->addSubmit('ApplyFilter')->addClass('btn btn-primary btn-block');
 
 		$frm = $task_assigned_to_me->grid->addQuickSearch(['task_name']);
 		if(!$frm->recall('task_status',false)) $frm->memorize('task_status',['Pending','Inprogress','Assigned']);
@@ -136,47 +134,37 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 										  ->addCondition('assign_to_id','<>',null)
 										  ->addCondition('status','Submitted');	
 		
-		if($assign_to_me_from_date)
-			$task_assigned_to_me_model->addCondition('created_at','>=',$assign_to_me_from_date);
-		
-		if($assign_to_me_to_date)
-			$task_assigned_to_me_model->addCondition('created_at','<',$this->app->nextDate($assign_to_me_to_date));
+		if($from_date){			
+			$task_assigned_to_me_model->addCondition('starting_date','>=',$from_date);
+			$task_assigned_by_me_model->addCondition('starting_date','>=',$from_date);
+		}
 
-		$task_assigned_to_me->setModel($task_assigned_to_me_model);
+		if($to_date){			
+			$task_assigned_by_me_model->addCondition('deadline','<=',$this->app->nextDate($to_date));
+			$task_assigned_to_me_model->addCondition('deadline','<=',$this->app->nextDate($to_date));
+		}
 
-		if($assign_by_me_from_date)
-			$task_assigned_by_me_model->addCondition('created_at','>=',$assign_by_me_from_date);
-		
-		if($assign_by_me_to_date)
-			$task_assigned_by_me_model->addCondition('created_at','<',$this->app->nextDate($assign_by_me_to_date));
-		
+		if($task_priority){			
+			$task_assigned_by_me_model->addCondition('priority',$task_priority);		
+			$task_assigned_to_me_model->addCondition('priority',$task_priority);		
+		}
+
+		$task_assigned_to_me->setModel($task_assigned_to_me_model);		
 		$task_assigned_by_me->setModel($task_assigned_by_me_model);
-		
 		$task_waiting_for_approval->setModel($task_waiting_for_approval_model);
 
 		if($filter_form->isSubmitted()){
-			$task_assigned_to_me->js()->reload(
-					[
-						'assign_to_me_from_date'=>$filter_form['from_date'],
-						'assign_to_me_to_date'=>($filter_form['to_date'])?:$this->app->today
-						]
-					)->execute();
-		}
+        	$js = [ $task_assigned_by_me->js()->reload(['from_date'=>$filter_form['from_date'],'to_date'=>$filter_form['to_date'],'priority'=>$filter_form['priority']]),
+        			$task_assigned_to_me->js()->reload(['from_date'=>$filter_form['from_date'],'to_date'=>$filter_form['to_date'],'priority'=>$filter_form['priority']])
+        		  ];
 
-		if($filter_form_2->isSubmitted()){
-			$task_assigned_by_me->js()->reload(
-					[
-						'assign_by_me_from_date'=>$filter_form_2['from_date'],
-						'assign_by_me_to_date'=>($filter_form_2['to_date'])?:$this->app->today
-						]
-					)->execute();
+			$filter_form->js(null,$js)->execute();	
 		}
 
 		if($task_id){
 			$task->load($task_id);			
 		}
 		$task_assigned_to_me_url = $this->api->url(null,['cut_object'=>$task_assigned_to_me->name]);
-
 
 		/***************************************************************************
 			Virtual page for TASK DETAIL
@@ -197,6 +185,7 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 		***************************************************************************/
 		
 		$top_view->js('click',$this->js()->univ()->frameURL("ADD NEW TASK/Request",$this->api->url($vp->getURL())))->_selector('.add-task');
+		
 	}
 
 	function defaultTemplate(){

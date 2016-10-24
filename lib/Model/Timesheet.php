@@ -13,6 +13,8 @@ class Model_Timesheet extends \xepan\base\Model_Table{
 		$this->addField('endtime')->type('datetime')->display(['form'=>'DateTimePicker']);
 		$this->addField('remark');
 
+		$this->setOrder('starttime','desc');
+
 		$this->addExpression('duration')->set(function($m,$q){
 			return $q->expr("(TIMESTAMPDIFF(SECOND,[0], IFNULL([1],'[2]')))",[$m->getElement('starttime'),$m->getElement('endtime'),$this->app->now]);
 		});
