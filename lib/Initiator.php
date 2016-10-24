@@ -40,7 +40,7 @@ class Initiator extends \Controller_Addon {
 		$this->app->addHook('quick_searched',[$search_project,'quickSearch']);
 		$this->app->addHook('epan_dashboard_page',[$this,'epanDashboard']);
 		$this->app->addHook('logout_page',[$this,'logoutPageManage']);
-		$this->app->user_menu->addItem(['My Timesheet','icon'=>'fa fa-clock-o'],'xepan_projects_editabletimesheet');
+		$this->app->user_menu->addItem(['My Timesheet','icon'=>'fa fa-clock-o'],'xepan_projects_todaytimesheet');
 		return $this;
 
 	}
@@ -52,7 +52,7 @@ class Initiator extends \Controller_Addon {
 		$timesheet->tryLoadAny();
 		
 		if($timesheet->loaded())
-			$logout_page->add('View')->setHtml('<b>A task is running. You can stop it or leave it running if your ouing is official</b>');
+			$logout_page->add('View')->setHtml('<b>A task is running. You can stop it or leave it running if your outing is official</b>')->addClass('label label-danger');
 	}
 
 	function epanDashboard($layout,$page){
