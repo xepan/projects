@@ -302,12 +302,15 @@ class Model_Task extends \xepan\base\Model_Table
 		}
 	}
 
-	function mark_complete($comment_text){		
-		$comment = $this->add('xepan\projects\Model_Comment');
-		$comment['task_id'] = $this->id;
-		$comment['employee_id'] = $this->app->employee->id;
-		$comment['comment'] = $comment_text;
-		$comment->save();
+	function mark_complete($comment_text){
+
+		if($comment_text){
+			$comment = $this->add('xepan\projects\Model_Comment');
+			$comment['task_id'] = $this->id;
+			$comment['employee_id'] = $this->app->employee->id;
+			$comment['comment'] = $comment_text;
+			$comment->save();
+		}
 
 		$model_close_timesheet = $this->add('xepan\projects\Model_Timesheet');
 		$model_close_timesheet->addCondition('employee_id',$this->app->employee->id);
@@ -352,11 +355,13 @@ class Model_Task extends \xepan\base\Model_Table
 	}
 
 	function reopen($comment_text){		
-		$comment = $this->add('xepan\projects\Model_Comment');
-		$comment['task_id'] = $this->id;
-		$comment['employee_id'] = $this->app->employee->id;
-		$comment['comment'] = $comment_text;
-		$comment->save();
+		if($comment_text){
+			$comment = $this->add('xepan\projects\Model_Comment');
+			$comment['task_id'] = $this->id;
+			$comment['employee_id'] = $this->app->employee->id;
+			$comment['comment'] = $comment_text;
+			$comment->save();
+		}
 
 		$this['status'] = 'Pending';
 		$this['updated_at']=$this->app->now;

@@ -27,6 +27,7 @@ class page_projecttasklist extends \xepan\projects\page_configuration{
 
 		$complete_task_list_view = $this->add('xepan\hr\Grid',null,'task_list_view');
 	    $complete_task_list_view->setModel($model_task,['task_name','created_by','assign_to','status']);
+	    $complete_task_list_view->addPaginator($ipp=25);
 
 	    $complete_task_list_view->addQuickSearch(['task_name']);
 
