@@ -21,7 +21,7 @@ class View_Detail extends \View{
 		$detail_view = $p->add('xepan\projects\View_TaskDetail');
 
 
-		if($model_task->ICanEdit()){
+		if($model_task->ICanEdit()){			
 			$task_form = $detail_view->add('Form',null,'task_form');
 			$task_form->setLayout('view\task_form');
 			$task_form->template->tryDel('assign_to');
@@ -39,6 +39,17 @@ class View_Detail extends \View{
 			$task_form->addSubmit('Save')->addClass('btn btn-primary btn-block');
 
 			if($task_form->isSubmitted()){				
+				if($task_form['set_reminder'] && $task_form['remind_value'] == null){
+					$task_form->displayError('remind_value','This field is required');
+				}
+				if($task_form['set_reminder'] && $task_form['remind_unit'] == null){
+					$task_form->displayError('remind_unit','This field is required');
+				}
+				
+				if($task_form['is_recurring'] && $task_form['recurring_span'] == null){
+					$task_form->displayError('recurring_span','This field is required');
+				}
+
 				$task_form->save();
 				$task_form->getModel()->unload();
 				
