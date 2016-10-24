@@ -115,14 +115,6 @@ class Model_Task extends \xepan\base\Model_Table
 			$this->addExpression('created_by_image')->set(function($m,$q){
 				return $q->expr('[0]',[$m->refSQL('created_by_id')->fieldQuery('image')]);
 			});
-
-			$this->addExpression('last_comment_time')->set(function($m,$q){
-				return $this->add('xepan\projects\Model_Comment')
-							->addCondition('task_id',$m->getElement('id'))
-							->setOrder('created_at','desc')
-							->setLimit(1)
-							->fieldQuery('created_at');
-			});
 		}
 		
 		$this->addExpression('assigned_to_image')->set(function($m,$q){
@@ -143,6 +135,14 @@ class Model_Task extends \xepan\base\Model_Table
 
 					);
 		});
+
+		$this->addExpression('last_comment_time')->set(function($m,$q){
+				return $this->add('xepan\projects\Model_Comment')
+							->addCondition('task_id',$m->getElement('id'))
+							->setOrder('created_at','desc')
+							->setLimit(1)
+							->fieldQuery('created_at');
+			});
  	}
 	
  	function checkEmployeeHasEmail(){
