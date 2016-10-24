@@ -116,14 +116,16 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
     									->where('assign_to_id',null)
 	    							)
 	    				);
-
+	    $task_assigned_to_me_model->setOrder(['updated_at','last_comment_time','priority']);			
+	    			
 	    $task_assigned_by_me_model = $this->add('xepan\projects\Model_Formatted_Task')
 										  ->addCondition('project_id',$project_id)
 										  ->addCondition('created_by_id',$this->app->employee->id)
 										  ->addCondition('assign_to_id','<>',$this->app->employee->id)
 										  ->addCondition('assign_to_id','<>',null)
 										  ->addCondition('status','<>','Submitted');
-
+	    $task_assigned_by_me_model->setOrder(['updated_at','last_comment_time']);
+	    
 	    $task_waiting_for_approval_model = $this->add('xepan\projects\Model_Formatted_Task')
 										  ->addCondition('status','Submitted')
 										  ->addCondition('assign_to_id','<>',null)
@@ -131,6 +133,8 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 										  	$this->app->db->dsql()->orExpr()
 												->where('created_by_id',$this->app->employee->id)
 			  									->where('assign_to_id',$this->app->employee->id));	
+		
+		$task_waiting_for_approval_model->setOrder(['updated_at','last_comment_time']);
 		
 		if($from_date){			
 			$task_assigned_to_me_model->addCondition('starting_date','>=',$from_date);
