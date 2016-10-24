@@ -118,10 +118,11 @@ class Model_Task extends \xepan\base\Model_Table
 			});
 
 
-			$this->addExpression('assigned_to_image')->set(function($m,$q){
-				return $q->expr('[0]',[$m->refSQL('assign_to_id')->fieldQuery('image')]);
-			});
 		}
+		
+		$this->addExpression('assigned_to_image')->set(function($m,$q){
+			return $q->expr('[0]',[$m->refSQL('assign_to_id')->fieldQuery('image')]);
+		});
  	}
 	
  	function checkEmployeeHasEmail(){
