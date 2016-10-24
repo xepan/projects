@@ -226,11 +226,11 @@ class Model_Task extends \xepan\base\Model_Table
 			if($model_emp->loaded())
 				$created_by = $model_emp['name'];
 			
-			if($this['assign_to_id'] == $this['created_by_id']){
-				$assigntask_notify_msg = "Just you have assign a task '" . $this['task_name'] ."' to yourself";
-			}else{
+			// if($this['assign_to_id'] == $this['created_by_id']){
+			// 	$assigntask_notify_msg = "Just you have assign a task '" . $this['task_name'] ."' to yourself";
+			// }else{
 				$assigntask_notify_msg = " Task Assigned to you : '" . $this['task_name'] ."' by '". $created_by ."' ";
-			}
+			// }
 			
 			$this->app->employee
 	            ->addActivity("Task '".$this['task_name']."' assigned to '". $emp_name ."'",null, $this['created_by_id'] /*Related Contact ID*/,null,null,null)
@@ -305,10 +305,18 @@ class Model_Task extends \xepan\base\Model_Table
 			
 		if($form->isSubmitted()){
 			$this->mark_complete($form['comment']);
-			if($this['assign_to_id']){
+			// if($this['assign_to_id']){
+			// 	$this->app->employee
+			//             ->addActivity("Task '".$this['task_name']."' mark completed by '".$this->app->employee['name']."'",null, $this['assign_to_id'] /*Related Contact ID*/,null,null,null)
+			//             ->notifyTo([$this['created_by_id']],"Task Completed : " . $this['task_name']);
+			// }
+			if($this['assign_to_id'] == $this['created_by_id']){
+			$this->app->employee
+		            ->addActivity("Task '".$this['task_name']."' completed by '".$this->app->employee['name']."'",null, $this['assign_to_id'] /*Related Contact ID*/,null,null,null);
+			}else{
 				$this->app->employee
-			            ->addActivity("Task '".$this['task_name']."' mark completed by '".$this->app->employee['name']."'",null, $this['assign_to_id'] /*Related Contact ID*/,null,null,null)
-			            ->notifyTo([$this['created_by_id']],"Task Completed : " . $this['task_name']);
+			            ->addActivity("Task '".$this['task_name']."' completed by '".$this->app->employee['name']."'",null, $this['assign_to_id'] /*Related Contact ID*/,null,null,null)
+			            ->notifyTo([$this['created_by_id'],$this['assign_to_id']],"Task : ".$this['task_name']."' marked Complete by '".$this->app->employee['name']."'");
 			}
 
 			return $this->app->page_action_result = $this->app->js(true,$p->js()->univ()->closeDialog())->_selector('.xepan-mini-task')->trigger('reload');
