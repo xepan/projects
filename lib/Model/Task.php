@@ -255,7 +255,11 @@ class Model_Task extends \xepan\base\Model_Table
 		              ->notifyTo([$this['created_by_id']],"Task : '" . $this['task_name'] ."' Submitted by '".$this->app->employee['name']."'");
 		}
 		
-	 	$this->app->page_action_result = $this->app->js()->_selector('.xepan-mini-task')->trigger('reload');
+		$js_array = [
+						$this->app->js()->_selector('.xepan-mini-task')->trigger('reload'),
+						$this->app->js()->_selector('.task-waiting-for-approval')->addClass('btn btn-default')->trigger('reload')
+					];	
+	 	$this->app->page_action_result = $js_array;
 	}
 
 	function receive(){
