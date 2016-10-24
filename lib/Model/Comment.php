@@ -12,7 +12,7 @@ class Model_Comment extends \xepan\base\Model_Table
 		parent::init();
 		
 		$this->hasOne('xepan\projects\task','task_id');
-		$this->hasOne('xepan\hr\Employee','employee_id');
+		$this->hasOne('xepan\hr\Employee','employee_id')->defaultValue($this->app->employee->id);
 		$this->addField('comment');
 		$this->addField('created_at')->type('datetime')->defaultValue($this->app->now);
 		$this->addField('on_action');
@@ -28,10 +28,11 @@ class Model_Comment extends \xepan\base\Model_Table
 	}
 
 	function beforeSave(){
-		$this['employee_id'] = $this->app->employee->id;
+		// if(!$this['employee_id'])
+			// $this['employee_id'] = $this->app->employee->id;
 	}
 
-	function iSSeenTrue(){
+	function isSeenTrue(){
 		$task = $this->add('xepan\projects\Model_Task');
 		$task->tryLoad($this['task_id']);
 
