@@ -10,11 +10,11 @@ class Model_Task extends \xepan\base\Model_Table
 	public $status=['Pending','Submitted','Completed','Assigned','Inprogress'];
 	
 	public $actions=[
-		'Pending'=>['submit','mark_complete'],
-		'Inprogress'=>['submit','mark_complete'],
-		'Assigned'=>['receive','reject'],
-		'Submitted'=>['mark_complete','reopen'],
-		'Completed'=>[]
+		'Pending'=>['submit','mark_complete','stop_recurrence'],
+		'Inprogress'=>['submit','mark_complete','stop_recurrence'],
+		'Assigned'=>['receive','reject','stop_recurrence'],
+		'Submitted'=>['mark_complete','reopen','stop_recurrence'],
+		'Completed'=>['stop_recurrence']
 	];
 
 	function init()
@@ -372,6 +372,14 @@ class Model_Task extends \xepan\base\Model_Table
 		$this->save();
 	}
 
+	function stop_recurrence(){
+		if($this['is_recurring']){
+			$this['is_recurring'] = false;
+			$this->save();
+		}
+		else
+			$this->app->js()->univ()->alert('This task is not recurring')->execute();
+	}
 
 	function getAssociatedfollowers(){
 		$associated_followers = $this->ref('xepan\projects\Follower_Task_Association')
@@ -543,6 +551,7 @@ class Model_Task extends \xepan\base\Model_Table
 		}
 
 	}
+
 
 	function myTask(){
 		$task_model = $this->add('xepan\projects\Model_Task')->load($this->id);

@@ -9,10 +9,7 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 	function init(){
 		parent::init();
 
-		$this->js(true)->_load('timer.jquery')
-				       ->_load('moment.min')
-        			   ->_load('daterangepicker1')
-        			   ->_css('daterangepicker');
+		$this->js(true)->_load('timer.jquery');
 
         $from_date = $this->app->stickyGET('from_date');			   
         $to_date = $this->app->stickyGET('to_date');			   
@@ -128,11 +125,12 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 										  ->addCondition('status','<>','Submitted');
 
 	    $task_waiting_for_approval_model = $this->add('xepan\projects\Model_Formatted_Task')
-										  ->addCondition('project_id',$project_id)
-										  ->addCondition('created_by_id',$this->app->employee->id)
-										  ->addCondition('assign_to_id','<>',$this->app->employee->id)
+										  ->addCondition('status','Submitted')
 										  ->addCondition('assign_to_id','<>',null)
-										  ->addCondition('status','Submitted');	
+										  ->addCondition( 
+										  	$this->app->db->dsql()->orExpr()
+												->where('created_by_id',$this->app->employee->id)
+			  									->where('assign_to_id',$this->app->employee->id));	
 		
 		if($from_date){			
 			$task_assigned_to_me_model->addCondition('starting_date','>=',$from_date);
