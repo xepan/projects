@@ -374,12 +374,12 @@ class Model_Task extends \xepan\base\Model_Table
 	}
 
 	function stop_recurrence(){
-		if($this['is_recurring']){
+		if($this['is_recurring'] && $this['created_by_id'] == $this->app->employee->id){
 			$this['is_recurring'] = false;
 			$this->save();
 		}
 		else
-			$this->app->js()->univ()->alert('This task is not recurring')->execute();
+			$this->app->js()->univ()->alert('Cant perform this action')->execute();
 	}
 
 	function getAssociatedfollowers(){
