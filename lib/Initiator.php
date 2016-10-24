@@ -63,22 +63,22 @@ class Initiator extends \Controller_Addon {
   //       ->_css('daterangepicker')
   //       ;
 
-		$f = $page->add('Form');
-		$fld = $f->addField('DateRangePicker','DateRangePicker')
-				->setStartDate('2016-04-07')
-				->setEndDate('2016-04-30')
-				->showTimer(15)
-				->getBackDatesSet()
-				->getFutureDatesSet()
-				;
+		// $f = $page->add('Form');
+		// $fld = $f->addField('DateRangePicker','DateRangePicker')
+		// 		->setStartDate('2016-04-07')
+		// 		->setEndDate('2016-04-30')
+		// 		->showTimer(15)
+		// 		->getBackDatesSet()
+		// 		->getFutureDatesSet()
+		// 		;
 
-		$f->addSubmit('Submit');
+		// $f->addSubmit('Submit');
 
-		if($f->isSubmitted()){
-			throw new \Exception($fld->getEndDate(), 1);
+		// if($f->isSubmitted()){
+		// 	throw new \Exception($fld->getEndDate(), 1);
 			
-			$f->js()->reload(['range'=>$f['DateRangePicker']])->execute();
-		}
+		// 	$f->js()->reload(['range'=>$f['DateRangePicker']])->execute();
+		// }
 
 		$task_assigned_to_me = $page->add('xepan\hr\CRUD',['allow_add'=>null,'grid_class'=>'xepan\projects\View_TaskList']);		
 		$task_assigned_to_me->add('xepan\base\Controller_Avatar',['name_field'=>'created_by','image_field'=>'created_by_image','extra_classes'=>'profile-img center-block','options'=>['size'=>50,'display'=>'block','margin'=>'auto'],'float'=>null,'model'=>$this->model]);
