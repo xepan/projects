@@ -12,7 +12,7 @@
       {cols}  
       <li class="clearfix">
         <div class="img">{$avatar}</div>
-        <div data-id="{$id}" class="title task-item"><a href="#">[{$task_no}] :</a>{$task_name}</div>
+        <div data-id="{$id}" title="{$description}" class="title task-item"><a href="#">[{$task_no}] :</a>{$task_name}</div>
         <div class="post-time"><i class="fa fa-calendar"><span class="text-muted text-small">&nbsp;{$created_at}</span></i><br/><i style="font-size:16px;color:{$comment_color};" title="total comment {$comment_count}" class="fa fa-comment">&nbsp;{$comment_count}&nbsp;</i><i style="font-size:16px;color:green;" title="total attachment {$attachment_count}" class="fa fa-paperclip">&nbsp;{$attachment_count}</i><br/>{$action}
           {$delete} <span title="task priority : {$priority}" class="label label-xs label-{$color}">{$priority_name} </span>
         </div>
