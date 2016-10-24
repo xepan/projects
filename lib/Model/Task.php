@@ -194,7 +194,11 @@ class Model_Task extends \xepan\base\Model_Table
 	}
 	
 	function closeTimesheet(){
-		$this->add('xepan\projects\Model_Timesheet')->dsql()->set('endtime',$this->app->now)->where('endtime',null)->update();
+		$this->add('xepan\projects\Model_Timesheet')
+			 ->dsql()->set('endtime',$this->app->now)
+			 ->where('endtime',null)
+			 ->where('task_id',$this->id)
+			 ->update();
 	}
 
 	function checkExistingTimeSheet(){		
