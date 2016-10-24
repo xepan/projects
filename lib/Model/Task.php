@@ -123,6 +123,21 @@ class Model_Task extends \xepan\base\Model_Table
 		$this->addExpression('assigned_to_image')->set(function($m,$q){
 			return $q->expr('[0]',[$m->refSQL('assign_to_id')->fieldQuery('image')]);
 		});
+
+		$this->addExpression('priority_name')->set(function($m){
+			return $m->dsql()->expr(
+					"IF([0]=90,'Critical',
+						if([0]=75,'High',
+						if([0]=50,'Medium',
+						if([0]=25,'Low','Low'	
+						))))",
+
+					  [
+						$m->getElement('priority')
+					  ]
+
+					);
+		});
  	}
 	
  	function checkEmployeeHasEmail(){
