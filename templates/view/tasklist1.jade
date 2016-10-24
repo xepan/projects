@@ -13,23 +13,19 @@
       li.clearfix
         .img
           {$avatar}
-          br
-          span(class="label label-xs label-{$color}" title="task priority : {$priority}") {$priority_name} 
-        .title(class="task-item" data-id= "{$id}")
+        .title(class="task-item" data-id= "{$id}" title="{$description}")
           a(href='#') [{$task_no}] :
           {$task_name}
         .post-time
+          i.fa.fa-calendar
+            span.text-muted.text-small &nbsp;{$created_at}
+          br
+          i.fa.fa-comment(style="font-size:16px;color:{$comment_color};" title="total comment {$comment_count}") &nbsp;{$comment_count}&nbsp;
+          i.fa.fa-paperclip(style="font-size:16px;color:green;" title="total attachment {$attachment_count}") &nbsp;{$attachment_count}
+          br
           {$action}
           {$delete} 
-          &nbsp;&nbsp;&nbsp;
-          i.fa.fa-comment(style="color:{$comment_color}")
-          |  {$comment_count}
-          &nbsp;&nbsp;&nbsp;
-          i.fa.fa-paperclip(style="color:green")
-          |  {$attachment_count}
-        i.fa.fa-calendar
-          span.text-muted.text-small
-            | &nbsp;&nbsp;{$created_at}
+          span(class="label label-xs label-{$color}" title="task priority : {$priority}") {$priority_name} 
         .time-ago
           i.fa.fa-clock-o(title="Total Duration {$total_duration}")&nbsp; {total_duration}0.00{/}
           br
