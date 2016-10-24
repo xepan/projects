@@ -46,6 +46,7 @@ class Model_Task extends \xepan\base\Model_Table
 		$this->addField('recurring_span')->setValueList(['Daily'=>'Daily','Weekely'=>'Weekely','Fortnight'=>'Fortnight','Monthly'=>'Monthly','Quarterly'=>'Quarterly','Halferly'=>'Halferly','Yearly'=>'Yearly']);
 		$this->addField('is_reminded')->type('boolean');
 		$this->addField('is_reminder_only')->type('boolean')->defaultValue(false);
+		$this->addField('reminder_time_compare_with')->setValueList(['starting_date'=>'starting_date','deadline'=>'deadline'])->defaultValue('starting_date');
 		$this->addCondition('type','Task');
 
 		$this->hasMany('xepan\projects\Follower_Task_Association','task_id');
@@ -398,8 +399,12 @@ class Model_Task extends \xepan\base\Model_Table
 		$reminder_task->addCondition('is_reminded',null);
 
 		foreach ($reminder_task as $task) {	
-							
-			$reminder_time = date("Y-m-d H:i:s", strtotime('-'.$task['remind_value'].' '.$task['remind_unit'], strtotime($task['starting_date'])));
+			
+			if($task['time_compare_with'] == 'starting_date'){
+				$reminder_time = date("Y-m-d H:i:s", strtotime('-'.$task['remind_value'].' '.$task['remind_unit'], strtotime($task['starting_date'])));
+			}else{
+				$reminder_time = date("Y-m-d H:i:s", strtotime('-'.$task['remind_value'].' '.$task['remind_unit'], strtotime($task['deadline'])));
+			}							
 
 			if(($reminder_time <= ($this->app->now)) AND $task['is_reminded']==false){
 				
