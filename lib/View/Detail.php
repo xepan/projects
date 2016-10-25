@@ -21,7 +21,10 @@ class View_Detail extends \View{
 		$detail_view = $p->add('xepan\projects\View_TaskDetail');
 
 
-		if($model_task->ICanEdit()){			
+		if($model_task->ICanEdit()){
+			if($model_task['status'] == 'Pending' && $model_task['assign_to_id'] != $this->app->employee->id)			
+				goto elsepart;
+
 			$task_form = $detail_view->add('Form',null,'task_form');
 			$task_form->setLayout('view\task_form');
 			$task_form->template->tryDel('assign_to');
@@ -64,6 +67,7 @@ class View_Detail extends \View{
 		
 
 		else{
+			elsepart:
 			$model_task['assign_to_id'] = ' ';			
 			$desc = $model_task['description'];
 			$model_task['description'] = "";
