@@ -125,7 +125,13 @@ class View_Detail extends \View{
 		}
 		
 		$this->on('shown.bs.tab','a[href=#tab-comment]',function($js,$data)use($model_task){							
-			$task_m = $this->add('xepan\projects\Model_Task')->load($model_task->id);
+			$task_m = $this->add('xepan\projects\Model_Task');
+			$task_m->addCondition('id',$model_task->id);
+			$task_m->tryLoadAny();
+			
+			if(!$task_m->loaded())
+				return;
+
 			$comment_m = $this->add('xepan\projects\Model_Comment');
 			$comment_m->addCondition('task_id',$task_m->id);
 					
