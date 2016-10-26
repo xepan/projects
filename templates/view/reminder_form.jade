@@ -17,6 +17,19 @@
     strong Description:
     {$description}    
 .row
+  .col-md-6.atk-form-field.atk-form-row
+    .panel.panel-primary.panel-heading
+      b Make Task Periodically Recur
+      hr
+      .panel-body
+        .row
+          .col-md-4.atk-form-field.atk-form-row
+            strong Repeat Task:
+            br 
+            {$is_recurring}
+          .col-md-8.atk-form-field.atk-form-row
+            strong Time Gap:    
+            {$recurring_span}
   .col-md-6.atk-form-field.atk-form-row  
     .panel.panel-primary.panel-heading.strong 
       b  Set Task Reminder
@@ -38,19 +51,6 @@
             strong Remind Unit:
             {$remind_unit}
         span.small.text-muted Hint: Value = '10', Unit = 'Minutes' to get reminded 10 minutes before task starts     
-  .col-md-6.atk-form-field.atk-form-row
-    .panel.panel-primary.panel-heading
-      b Make Task Periodically Recur
-      hr
-      .panel-body
-        .row
-          .col-md-4.atk-form-field.atk-form-row
-            strong Repeat Task:
-            br 
-            {$is_recurring}
-          .col-md-8.atk-form-field.atk-form-row
-            strong Time Gap:    
-            {$recurring_span}
 .row(style = "display:none;")
   {$is_reminder_only}   
  

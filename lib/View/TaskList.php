@@ -232,7 +232,7 @@ class View_TaskList extends \xepan\base\Grid{
 				$this->js()->_selector('.current_task_btn[data-id='.$data['id'].']')->removeClass('fa-play')->addClass('fa-stop'),
 				$this->js()->_selector('.current_task_btn[data-id='.$data['id'].'] .duration')->timer(['seconds'=>$model_timesheet['duration']]),
 				$this->js()->_selector('.xepan-mini-task')->trigger('reload'),
-				$js->data('action','stop'), // next possible_action
+				$js->data('action','stop') // next possible_action
 
 			];
 	}
@@ -243,6 +243,7 @@ class View_TaskList extends \xepan\base\Grid{
 					$this->js()->_selector('.current_task_btn')->removeClass('fa-stop')->addClass('fa-play'),
 					$this->js()->_selector('.current_task_btn .duration')->timer('remove'),
 					$this->js()->_selector('.xepan-mini-task')->trigger('reload'),
+					$this->js()->_selector('.task-assigned-to-me')->trigger('reload'),
 					$js->data('action','start') // next possible_action
 				];
 	}

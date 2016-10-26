@@ -46,6 +46,7 @@ class Model_Task extends \xepan\base\Model_Table
 		$this->addField('recurring_span')->setValueList(['Daily'=>'Daily','Weekely'=>'Weekely','Fortnight'=>'Fortnight','Monthly'=>'Monthly','Quarterly'=>'Quarterly','Halferly'=>'Halferly','Yearly'=>'Yearly']);
 		$this->addField('is_reminded')->type('boolean');
 		$this->addField('is_reminder_only')->type('boolean')->defaultValue(false);
+		$this->addField('reminder_time_compare_with')->setValueList(['starting_date'=>'starting_date','deadline'=>'deadline'])->defaultValue('starting_date');
 		$this->addCondition('type','Task');
 
 		$this->hasMany('xepan\projects\Follower_Task_Association','task_id');
@@ -70,8 +71,6 @@ class Model_Task extends \xepan\base\Model_Table
 		$this->addExpression('follower_count')->set(function($m){
 			return $m->refSQL('xepan\projects\Follower_Task_Association')->count();
 		});
-
-		$this->setOrder('priority');
 
 		if($this->app->employee->id){
 			$this->addExpression('created_by_me')->set(function($m,$q){
@@ -116,8 +115,6 @@ class Model_Task extends \xepan\base\Model_Table
 			$this->addExpression('created_by_image')->set(function($m,$q){
 				return $q->expr('[0]',[$m->refSQL('created_by_id')->fieldQuery('image')]);
 			});
-
-
 		}
 		
 		$this->addExpression('assigned_to_image')->set(function($m,$q){
@@ -138,6 +135,14 @@ class Model_Task extends \xepan\base\Model_Table
 
 					);
 		});
+
+		$this->addExpression('last_comment_time')->set(function($m,$q){
+				return $this->add('xepan\projects\Model_Comment')
+							->addCondition('task_id',$m->getElement('id'))
+							->setOrder('created_at','desc')
+							->setLimit(1)
+							->fieldQuery('created_at');
+			});
  	}
 	
  	function checkEmployeeHasEmail(){
@@ -221,11 +226,11 @@ class Model_Task extends \xepan\base\Model_Table
 			if($model_emp->loaded())
 				$created_by = $model_emp['name'];
 			
-			if($this['assign_to_id'] == $this['created_by_id']){
-				$assigntask_notify_msg = "Just you have assign a task '" . $this['task_name'] ."' to yourself";
-			}else{
+			// if($this['assign_to_id'] == $this['created_by_id']){
+			// 	$assigntask_notify_msg = "Just you have assign a task '" . $this['task_name'] ."' to yourself";
+			// }else{
 				$assigntask_notify_msg = " Task Assigned to you : '" . $this['task_name'] ."' by '". $created_by ."' ";
-			}
+			// }
 			
 			$this->app->employee
 	            ->addActivity("Task '".$this['task_name']."' assigned to '". $emp_name ."'",null, $this['created_by_id'] /*Related Contact ID*/,null,null,null)
@@ -239,6 +244,7 @@ class Model_Task extends \xepan\base\Model_Table
 		$this->save();
 		
 		$model_close_timesheet = $this->add('xepan\projects\Model_Timesheet');
+		$model_close_timesheet->addCondition('task_id',$this->id);
 		$model_close_timesheet->addCondition('employee_id',$this->app->employee->id);
 		$model_close_timesheet->addCondition('endtime',null);
 		$model_close_timesheet->tryLoadAny();
@@ -253,8 +259,8 @@ class Model_Task extends \xepan\base\Model_Table
 		              ->addActivity("Task '".$this['task_name']."' submitted by '".$this->app->employee['name']."'",null, $this['assign_to_id'] /*Related Contact ID*/,null,null,null)
 		              ->notifyTo([$this['created_by_id']],"Task : '" . $this['task_name'] ."' Submitted by '".$this->app->employee['name']."'");
 		}
-		
-	 	$this->app->page_action_result = $this->app->js()->_selector('.xepan-mini-task')->trigger('reload');
+			
+	 	$this->app->page_action_result = $this->app->js(true,$this->app->js()->_selector('.xepan-mini-task')->trigger('reload'))->_selector('.task-waiting-for-approval')->trigger('reload');
 	}
 
 	function receive(){
@@ -296,10 +302,18 @@ class Model_Task extends \xepan\base\Model_Table
 			
 		if($form->isSubmitted()){
 			$this->mark_complete($form['comment']);
-			if($this['assign_to_id']){
+			// if($this['assign_to_id']){
+			// 	$this->app->employee
+			//             ->addActivity("Task '".$this['task_name']."' mark completed by '".$this->app->employee['name']."'",null, $this['assign_to_id'] /*Related Contact ID*/,null,null,null)
+			//             ->notifyTo([$this['created_by_id']],"Task Completed : " . $this['task_name']);
+			// }
+			if($this['assign_to_id'] == $this['created_by_id']){
+			$this->app->employee
+		            ->addActivity("Task '".$this['task_name']."' completed by '".$this->app->employee['name']."'",null, $this['assign_to_id'] /*Related Contact ID*/,null,null,null);
+			}else{
 				$this->app->employee
-			            ->addActivity("Task '".$this['task_name']."' mark completed by '".$this->app->employee['name']."'",null, $this['assign_to_id'] /*Related Contact ID*/,null,null,null)
-			            ->notifyTo([$this['created_by_id']],"Task Completed : " . $this['task_name']);
+			            ->addActivity("Task '".$this['task_name']."' completed by '".$this->app->employee['name']."'",null, $this['assign_to_id'] /*Related Contact ID*/,null,null,null)
+			            ->notifyTo([$this['created_by_id'],$this['assign_to_id']],"Task : ".$this['task_name']."' marked Complete by '".$this->app->employee['name']."'");
 			}
 
 			return $this->app->page_action_result = $this->app->js(true,$p->js()->univ()->closeDialog())->_selector('.xepan-mini-task')->trigger('reload');
@@ -317,6 +331,7 @@ class Model_Task extends \xepan\base\Model_Table
 		}
 
 		$model_close_timesheet = $this->add('xepan\projects\Model_Timesheet');
+		$model_close_timesheet->addCondition('task_id',$this->id);
 		$model_close_timesheet->addCondition('employee_id',$this->app->employee->id);
 		$model_close_timesheet->addCondition('endtime',null);
 		$model_close_timesheet->tryLoadAny();
@@ -373,12 +388,12 @@ class Model_Task extends \xepan\base\Model_Table
 	}
 
 	function stop_recurrence(){
-		if($this['is_recurring']){
+		if($this['is_recurring'] && $this['created_by_id'] == $this->app->employee->id){
 			$this['is_recurring'] = false;
 			$this->save();
 		}
 		else
-			$this->app->js()->univ()->alert('This task is not recurring')->execute();
+			$this->app->js()->univ()->alert('Cant perform this action')->execute();
 	}
 
 	function getAssociatedfollowers(){
@@ -398,8 +413,12 @@ class Model_Task extends \xepan\base\Model_Table
 		$reminder_task->addCondition('is_reminded',null);
 
 		foreach ($reminder_task as $task) {	
-							
-			$reminder_time = date("Y-m-d H:i:s", strtotime('-'.$task['remind_value'].' '.$task['remind_unit'], strtotime($task['starting_date'])));
+			
+			if($task['time_compare_with'] == 'starting_date'){
+				$reminder_time = date("Y-m-d H:i:s", strtotime('-'.$task['remind_value'].' '.$task['remind_unit'], strtotime($task['starting_date'])));
+			}else{
+				$reminder_time = date("Y-m-d H:i:s", strtotime('-'.$task['remind_value'].' '.$task['remind_unit'], strtotime($task['deadline'])));
+			}							
 
 			if(($reminder_time <= ($this->app->now)) AND $task['is_reminded']==false){
 				

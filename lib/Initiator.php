@@ -80,9 +80,9 @@ class Initiator extends \Controller_Addon {
 		// 	$f->js()->reload(['range'=>$f['DateRangePicker']])->execute();
 		// }
 
-		$task_assigned_to_me = $page->add('xepan\hr\CRUD',['allow_add'=>null,'grid_class'=>'xepan\projects\View_TaskList']);		
-		$task_assigned_to_me->add('xepan\base\Controller_Avatar',['name_field'=>'created_by','image_field'=>'created_by_image','extra_classes'=>'profile-img center-block','options'=>['size'=>50,'display'=>'block','margin'=>'auto'],'float'=>null,'model'=>$this->model]);
-		$task_assigned_to_me->grid->template->trySet('task_view_title','My Pending Task/Requests');
+		$task_assigned_to_me = $page->add('xepan\hr\CRUD',['allow_add'=>null,'grid_class'=>'xepan\projects\View_TaskList']);	    
+	    $task_assigned_to_me->grid->addClass('task-assigned-to-me');
+	    $task_assigned_to_me->js('reload')->reload();
 
 		if(!$task_assigned_to_me->isEditing())
 			$task_assigned_to_me->grid->addPaginator(25);

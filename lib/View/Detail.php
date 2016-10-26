@@ -21,12 +21,15 @@ class View_Detail extends \View{
 		$detail_view = $p->add('xepan\projects\View_TaskDetail');
 
 
-		if($model_task->ICanEdit()){			
+		if($model_task->ICanEdit()){
+			if($model_task['status'] == 'Pending' && $model_task['assign_to_id'] != $this->app->employee->id)			
+				goto elsepart;
+
 			$task_form = $detail_view->add('Form',null,'task_form');
 			$task_form->setLayout('view\task_form');
 			$task_form->template->tryDel('assign_to');
 
-			$task_form->setModel($model_task,['assign_to_id','task_name','description','starting_date','deadline','priority','estimate_time','set_reminder','remind_via','remind_value','remind_unit','notify_to','is_recurring','recurring_span']);
+			$task_form->setModel($model_task,['assign_to_id','task_name','description','starting_date','deadline','priority','estimate_time','set_reminder','remind_via','remind_value','remind_unit','notify_to','is_recurring','recurring_span','reminder_time_compare_with']);
 			$task_form->getElement('deadline')->js(true)->val('');
 			$task_form->getElement('remind_via')
 						->addClass('multiselect-full-width')
@@ -64,6 +67,7 @@ class View_Detail extends \View{
 		
 
 		else{
+			elsepart:
 			$model_task['assign_to_id'] = ' ';			
 			$desc = $model_task['description'];
 			$model_task['description'] = "";
@@ -125,7 +129,13 @@ class View_Detail extends \View{
 		}
 		
 		$this->on('shown.bs.tab','a[href=#tab-comment]',function($js,$data)use($model_task){							
-			$task_m = $this->add('xepan\projects\Model_Task')->load($model_task->id);
+			$task_m = $this->add('xepan\projects\Model_Task');
+			$task_m->addCondition('id',$model_task->id);
+			$task_m->tryLoadAny();
+			
+			if(!$task_m->loaded())
+				return;
+
 			$comment_m = $this->add('xepan\projects\Model_Comment');
 			$comment_m->addCondition('task_id',$task_m->id);
 					

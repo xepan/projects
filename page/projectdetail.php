@@ -34,9 +34,17 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 		$employee = $this->add('xepan\hr\Model_Employee');
 
 	    $task_assigned_to_me = $this->add('xepan\hr\CRUD',['allow_add'=>null,'grid_class'=>'xepan\projects\View_TaskList'],'leftview');	    
-	    $task_assigned_by_me = $this->add('xepan\hr\CRUD',['allow_add'=>null,'grid_class'=>'xepan\projects\View_TaskList'],'middleview');	    
-	    $task_waiting_for_approval = $this->add('xepan\hr\CRUD',['allow_add'=>null,'grid_class'=>'xepan\projects\View_TaskList'],'rightview');	    
+	    $task_assigned_to_me->grid->addClass('task-assigned-to-me');
+	    $task_assigned_to_me->js('reload')->reload();
 	    
+	    $task_assigned_by_me = $this->add('xepan\hr\CRUD',['allow_add'=>null,'grid_class'=>'xepan\projects\View_TaskList'],'middleview');	    
+	    $task_assigned_by_me->addClass('task-assigned-by-me');
+	    $task_assigned_by_me->js('reload')->reload();
+	    
+	    $task_waiting_for_approval = $this->add('xepan\hr\CRUD',['allow_add'=>null,'grid_class'=>'xepan\projects\View_TaskList'],'rightview');	    
+	    $task_waiting_for_approval->grid->addClass('task-waiting-for-approval');
+	    $task_waiting_for_approval->js('reload')->reload();
+	    	    
 	    $task_assigned_to_me->grid->template->trySet('task_view_title','Assigned To Me');
 	    $task_assigned_by_me->grid->template->trySet('task_view_title','Assigned By Me');
 	    $task_waiting_for_approval->grid->template->trySet('task_view_title','Waiting For Approval');
@@ -116,14 +124,16 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
     									->where('assign_to_id',null)
 	    							)
 	    				);
-
+	    $task_assigned_to_me_model->setOrder(['updated_at','last_comment_time','priority']);			
+	    			
 	    $task_assigned_by_me_model = $this->add('xepan\projects\Model_Formatted_Task')
 										  ->addCondition('project_id',$project_id)
 										  ->addCondition('created_by_id',$this->app->employee->id)
 										  ->addCondition('assign_to_id','<>',$this->app->employee->id)
 										  ->addCondition('assign_to_id','<>',null)
 										  ->addCondition('status','<>','Submitted');
-
+	    $task_assigned_by_me_model->setOrder(['updated_at','last_comment_time']);
+	    
 	    $task_waiting_for_approval_model = $this->add('xepan\projects\Model_Formatted_Task')
 										  ->addCondition('status','Submitted')
 										  ->addCondition('assign_to_id','<>',null)
@@ -131,6 +141,8 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 										  	$this->app->db->dsql()->orExpr()
 												->where('created_by_id',$this->app->employee->id)
 			  									->where('assign_to_id',$this->app->employee->id));	
+		
+		$task_waiting_for_approval_model->setOrder(['updated_at','last_comment_time']);
 		
 		if($from_date){			
 			$task_assigned_to_me_model->addCondition('starting_date','>=',$from_date);

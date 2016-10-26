@@ -16,6 +16,7 @@
         .title(class="task-item" data-id= "{$id}" title="{$description}")
           a(href='#') [{$task_no}] :
           {$task_name}
+          {$last_comment_time}
         .post-time
           i.fa.fa-calendar
             span.text-muted.text-small &nbsp;{$created_at}
