@@ -244,6 +244,7 @@ class Model_Task extends \xepan\base\Model_Table
 		$this->save();
 		
 		$model_close_timesheet = $this->add('xepan\projects\Model_Timesheet');
+		$model_close_timesheet->addCondition('task_id',$this->id);
 		$model_close_timesheet->addCondition('employee_id',$this->app->employee->id);
 		$model_close_timesheet->addCondition('endtime',null);
 		$model_close_timesheet->tryLoadAny();
@@ -334,6 +335,7 @@ class Model_Task extends \xepan\base\Model_Table
 		}
 
 		$model_close_timesheet = $this->add('xepan\projects\Model_Timesheet');
+		$model_close_timesheet->addCondition('task_id',$this->id);
 		$model_close_timesheet->addCondition('employee_id',$this->app->employee->id);
 		$model_close_timesheet->addCondition('endtime',null);
 		$model_close_timesheet->tryLoadAny();
