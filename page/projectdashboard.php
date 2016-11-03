@@ -11,6 +11,7 @@ class page_projectdashboard extends \xepan\projects\page_sidemenu{
 
 		// Communications by staff 
      	$model = $this->add('xepan\hr\Model_Employee');
+     	$model->addCondition('status','Active');
 		
 		$model->addExpression('pending_works')->set(function($m,$q){
 			return $this->add('xepan\projects\Model_Task')
