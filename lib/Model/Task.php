@@ -24,6 +24,7 @@ class Model_Task extends \xepan\base\Model_Table
 		$this->hasOne('xepan\projects\Project','project_id');
 		$this->hasOne('xepan\hr\Employee','assign_to_id')->defaultValue($this->app->employee->id);
 		$this->hasOne('xepan\hr\Employee','created_by_id')->defaultValue($this->app->employee->id);
+		$this->hasOne('xepan\base\Contact','related_id');
 		
 		$this->addField('task_name');
 		$employee_model = $this->add('xepan\hr\Model_Employee')->addCondition('status','Active');		
