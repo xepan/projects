@@ -203,14 +203,23 @@ class page_mytasks extends \xepan\base\Page{
 
 		$vp1 = $this->add('VirtualPage');
 		$vp1->set(function($p){
-			$task = $this->add('xepan\projects\Model_Task');
+			$tabs = $p->add('Tabs');
+
+			$tab1 = $tabs->addTab('Assigned To Me');
+			$task = $p->add('xepan\projects\Model_Task');
 			$task->addCondition('is_recurring',true);
 			$task->addCondition('assign_to_id',$this->app->employee->id);
-
-			$view = $p->add('xepan\projects\View_TaskList');
+			$view = $tab1->add('xepan\projects\View_TaskList');
 			$view->setModel($task);
-			
 			$view->add('xepan\base\Controller_Avatar',['name_field'=>'created_by','extra_classes'=>'profile-img center-block','options'=>['size'=>50,'display'=>'block','margin'=>'auto'],'float'=>null,'model'=>$this->model]);
+			
+			$tab2 = $tabs->addTab('Assigned By Me');
+			$task1 = $p->add('xepan\projects\Model_Task');
+			$task1->addCondition('is_recurring',true);
+			$task1->addCondition('created_by_id',$this->app->employee->id);
+			$view1 = $tab2->add('xepan\projects\View_TaskList');
+			$view1->setModel($task1);
+			$view1->add('xepan\base\Controller_Avatar',['name_field'=>'assign_to','extra_classes'=>'profile-img center-block','options'=>['size'=>50,'display'=>'block','margin'=>'auto'],'float'=>null,'model'=>$this->model]);
 		});	
 
 		/***************************************************************************
