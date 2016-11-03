@@ -98,7 +98,8 @@ class Initiator extends \Controller_Addon {
     									->where('created_by_id',$this->app->employee->id)
     									->where('assign_to_id',null)
 	    							)
-	    				);
+	    				)
+	    			->addCondition('type','Task');
 
 	    $task_assigned_to_me->setModel($task_assigned_to_me_model)->setOrder('updated_at','desc');			
 	}

@@ -114,7 +114,6 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 	    $task_assigned_to_me_model = $this->add('xepan\projects\Model_Formatted_Task');
 	    $task_assigned_to_me_model
 	    			->addCondition('project_id',$project_id)
-	    			->addCondition('is_reminder_only',false)
 	    			->addCondition(
 	    				$task_assigned_to_me_model->dsql()->orExpr()
 	    					->where('assign_to_id',$this->app->employee->id)
@@ -123,7 +122,9 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
     									->where('created_by_id',$this->app->employee->id)
     									->where('assign_to_id',null)
 	    							)
-	    				);
+	    				)
+	    			->addCondition('type','Task');
+
 	    $task_assigned_to_me_model->setOrder(['updated_at','last_comment_time','priority']);			
 	    			
 	    $task_assigned_by_me_model = $this->add('xepan\projects\Model_Formatted_Task')
@@ -131,7 +132,9 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 										  ->addCondition('created_by_id',$this->app->employee->id)
 										  ->addCondition('assign_to_id','<>',$this->app->employee->id)
 										  ->addCondition('assign_to_id','<>',null)
-										  ->addCondition('status','<>','Submitted');
+										  ->addCondition('status','<>','Submitted')
+	    								  ->addCondition('type','Task');	
+
 	    $task_assigned_by_me_model->setOrder(['updated_at','last_comment_time']);
 	    
 	    $task_waiting_for_approval_model = $this->add('xepan\projects\Model_Formatted_Task')
@@ -140,8 +143,8 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 										  ->addCondition( 
 										  	$this->app->db->dsql()->orExpr()
 												->where('created_by_id',$this->app->employee->id)
-			  									->where('assign_to_id',$this->app->employee->id));	
-		
+			  									->where('assign_to_id',$this->app->employee->id))	
+										  ->addCondition('type','Task');			
 		$task_waiting_for_approval_model->setOrder(['updated_at','last_comment_time']);
 		
 		if($from_date){			

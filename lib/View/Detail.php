@@ -64,6 +64,10 @@ class View_Detail extends \View{
 				}
 
 				$task_form->save();
+				$m = $task_form->getModel();
+				$m['type'] = 'Task';
+				$m->save();
+
 				$task_form->getModel()->unload();
 				
 				$js=[

@@ -42,8 +42,11 @@ class View_TaskReminder extends \View{
 			if($reminder_crud->form->isSubmitted()){
 				$m = $reminder_crud->model;
 				$m['is_reminder_only'] = true;		
-				if($reminder_crud->form['make_task'])
+				$m['type'] = 'Reminder';		
+				if($reminder_crud->form['make_task']){
 					$m['is_reminder_only'] = false;		
+					$m['type'] = 'Task';		
+				}
 				$m->save();	 					 					 					 									
 			}
 		}

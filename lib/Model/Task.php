@@ -21,7 +21,6 @@ class Model_Task extends \xepan\base\Model_Table
 	{
 		parent::init();
 
-		// $this->hasOne('xepan\base\Epan');
 		$this->hasOne('xepan\projects\Project','project_id');
 		$this->hasOne('xepan\hr\Employee','assign_to_id')->defaultValue($this->app->employee->id);
 		$this->hasOne('xepan\hr\Employee','created_by_id')->defaultValue($this->app->employee->id);
@@ -36,7 +35,7 @@ class Model_Task extends \xepan\base\Model_Table
 		$this->addField('created_at')->type('datetime')->defaultValue($this->app->now);
 		$this->addField('status')->defaultValue('Pending');
 		$this->addField('updated_at')->type('datetime');
-		$this->addField('type');
+		$this->addField('type')->enum(['Task','Followup','Reminder']);
 		$this->addField('priority')->setValueList(['25'=>'Low','50'=>'Medium','75'=>'High','90'=>'Critical'])->EmptyText('Priority')->defaultValue(50);
 		$this->addField('set_reminder')->type('boolean');
 		$this->addField('remind_via')->display(['form'=>'xepan\base\DropDown'])->setValueList(['Email'=>'Email','SMS'=>'SMS','Notification'=>'Notification']);
@@ -47,7 +46,6 @@ class Model_Task extends \xepan\base\Model_Table
 		$this->addField('is_reminded')->type('boolean');
 		$this->addField('is_reminder_only')->type('boolean')->defaultValue(false);
 		$this->addField('reminder_time_compare_with')->setValueList(['starting_date'=>'starting_date','deadline'=>'deadline'])->defaultValue('starting_date');
-		$this->addCondition('type','Task');
 
 		$this->hasMany('xepan\projects\Follower_Task_Association','task_id');
 		$this->hasMany('xepan\projects\Comment','task_id');	
@@ -168,7 +166,7 @@ class Model_Task extends \xepan\base\Model_Table
 			$this['status'] = 'Assigned';
 		}
 
-		if($this['is_reminder_only'] == false && $this->isDirty('assign_to_id')){
+		if($this['type'] != 'Reminder' && $this->isDirty('assign_to_id')){
 			if($this->loaded() && !$this->ICanAssign() and !$this->ICanReject())
 				throw $this->exception('Cannot assign running task','ValidityCheck')
 							->setField('assign_to_id');
@@ -186,7 +184,7 @@ class Model_Task extends \xepan\base\Model_Table
 	}
 
 	function canUserDelete(){
-		if(($this['is_reminder_only'] == false) && ($this['created_by_id'] == $this->app->employee->id) && ($this['assign_to_id']!= $this->app->employee->id) && $this['status'] != 'Completed')
+		if(($this['type'] != 'Reminder') && ($this['created_by_id'] == $this->app->employee->id) && ($this['assign_to_id']!= $this->app->employee->id) && $this['status'] != 'Completed')
 			throw new \Exception("You are not authorized to delete this task");		
 	}
 
@@ -525,7 +523,8 @@ class Model_Task extends \xepan\base\Model_Table
 			$model_task['created_at'] = $task['created_at'];
 			$model_task['priority'] = $task['priority'];
 			$model_task['estimate_time'] = $task['estimate_time'];
-			$model_task['is_reminder_only'] = $task['is_reminder_only'];
+			$model_task['type'] = $task['type'];
+			// $model_task['is_reminder_only'] = $task['is_reminder_only'];
 			$model_task['remind_via'] = $task['remind_via'];
 			$model_task['set_reminder'] = $task['set_reminder'];
 			$model_task['notify_to'] = $task['notify_to'];
