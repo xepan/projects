@@ -31,6 +31,7 @@ class Initiator extends \Controller_Addon {
 			$m->addItem(['Project','icon'=>'fa fa-sitemap'],'xepan_projects_project');
 			$m->addItem(['Trace Employee','icon'=>' fa fa-paw'],'xepan_projects_projectlive');
 			$this->app->user_menu->addItem(['Tasks','icon'=>'fa fa-tasks'],'xepan_projects_mytasks');
+			$this->app->user_menu->addItem(['My Followups','icon'=>'fa fa-stack-exchange'],'xepan_projects_myfollowups');
 			$projects = $this->add('xepan\projects\Model_Project');
 			$m->addItem(['Configuration','icon'=>' fa fa-cog'],'xepan_projects_layout');
 			$m->addItem(['Reports','icon'=>' fa fa-cog'],'xepan_projects_projectreport');
