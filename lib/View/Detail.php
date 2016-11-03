@@ -25,11 +25,21 @@ class View_Detail extends \View{
 			if($model_task['status'] == 'Pending' && $model_task['assign_to_id'] != $this->app->employee->id)			
 				goto elsepart;
 
+			$temp = [];
+			$temp = explode(',', $model_task['notify_to']);
+
+			$temp1 = [];
+			$temp1 = explode(',', $model_task['remind_via']);
+
+
 			$task_form = $detail_view->add('Form',null,'task_form');
 			$task_form->setLayout('view\task_form');
 			$task_form->template->tryDel('assign_to');
 
 			$task_form->setModel($model_task,['assign_to_id','task_name','description','starting_date','deadline','priority','estimate_time','set_reminder','remind_via','remind_value','remind_unit','notify_to','is_recurring','recurring_span','reminder_time_compare_with']);
+			
+			$task_form->getElement('notify_to')->set($temp)->js(true)->trigger('changed');
+			$task_form->getElement('remind_via')->set($temp1)->js(true)->trigger('changed');
 			$task_form->getElement('deadline')->js(true)->val('');
 			$task_form->getElement('remind_via')
 						->addClass('multiselect-full-width')
