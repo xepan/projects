@@ -439,7 +439,7 @@ class Model_Task extends \xepan\base\Model_Table
 					$email_settings->addCondition('is_active',true);
 					$email_settings->tryLoadAny();	
 					
-					$mail = $this->add('xepan\communication\Model_Communication_Email');
+					$mail = $this->add('xepan\projects\Model_ReminderMail');
 
 					$config_m = $this->add('xepan\base\Model_ConfigJsonModel',
 					[
