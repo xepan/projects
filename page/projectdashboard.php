@@ -34,7 +34,7 @@ class page_projectdashboard extends \xepan\projects\page_sidemenu{
 				 ->addCondition('status','Pending')
 				 ->addCondition($task->dsql()->andExpr()
 				 ->where('created_at','>=',$this->start_date)
-				 ->where('created_at','<=',$this->app->nextDate($this->end_date)));
+				 ->where('created_at','<=',$this->end_date));
 			return $task->count();
 		});
 
@@ -45,7 +45,7 @@ class page_projectdashboard extends \xepan\projects\page_sidemenu{
 				 ->addCondition('status','Assigned')
 				 ->addCondition($task->dsql()->andExpr()
 				 ->where('created_at','>=',$this->start_date)
-				 ->where('created_at','<=',$this->app->nextDate($this->end_date)));
+				 ->where('created_at','<=',$this->end_date));
             return $task->count();
 		});
 
@@ -55,7 +55,7 @@ class page_projectdashboard extends \xepan\projects\page_sidemenu{
 				 ->addCondition('created_by_id','<>',$q->getField('id'))
 				 ->addCondition($task->dsql()->andExpr()
 				 ->where('created_at','>=',$this->start_date)
-				 ->where('created_at','<=',$this->app->nextDate($this->end_date)));	 
+				 ->where('created_at','<=',$this->end_date));	 
 			return $task->count();
 		});
 
@@ -65,7 +65,7 @@ class page_projectdashboard extends \xepan\projects\page_sidemenu{
                  ->addCondition('created_by_id',$q->getField('id'))
                  ->addCondition($task->dsql()->andExpr()
 				 ->where('created_at','>=',$this->start_date)
-				 ->where('created_at','<=',$this->app->nextDate($this->end_date)));
+				 ->where('created_at','<=',$this->end_date));
 			return $task->count();
 		});
 
@@ -76,7 +76,7 @@ class page_projectdashboard extends \xepan\projects\page_sidemenu{
 				 ->addCondition('status',['Pending','Assigned'])
 				 ->addCondition($task->dsql()->andExpr()
 				 ->where('created_at','>=',$this->start_date)
-				 ->where('created_at','<=',$this->app->nextDate($this->end_date)));
+				 ->where('created_at','<=',$this->end_date));
 			return $task->count();
 		});
 
@@ -87,7 +87,7 @@ class page_projectdashboard extends \xepan\projects\page_sidemenu{
 				 ->addCondition('status','Submitted')
 				 ->addCondition($task->dsql()->andExpr()
 				 ->where('created_at','>=',$this->start_date)
-				 ->where('created_at','<=',$this->app->nextDate($this->end_date)));
+				 ->where('created_at','<=',$this->end_date));
 			return $task->count();
 		});
 
@@ -110,7 +110,7 @@ class page_projectdashboard extends \xepan\projects\page_sidemenu{
 			$task->addCondition('project_id',$m->getElement('id'))
 				 ->addCondition($task->dsql()->andExpr()
 				 ->where('created_at','>=',$this->start_date)
-				 ->where('created_at','<=',$this->app->nextDate($this->end_date)));	
+				 ->where('created_at','<=',$this->end_date));	
 			return $task->_dsql()->del('fields')->field($q->expr('sum([0])',[$task->getElement('estimate_time')]));
 		});
 
@@ -119,7 +119,7 @@ class page_projectdashboard extends \xepan\projects\page_sidemenu{
 			$task->addCondition('project_id',$m->getElement('id'))
 				 ->addCondition($task->dsql()->andExpr()
 				 ->where('created_at','>=',$this->start_date)
-				 ->where('created_at','<=',$this->app->nextDate($this->end_date)));	
+				 ->where('created_at','<=',$this->end_date));	
 
 			$task->addExpression('diff_time')->set(function($m,$q){
 				return $q->expr('TIMESTAMPDIFF([0],[1],[2])',
@@ -134,7 +134,7 @@ class page_projectdashboard extends \xepan\projects\page_sidemenu{
 			$task->addCondition('status','Completed')
 				 ->addCondition($task->dsql()->andExpr()
 				 ->where('created_at','>=',$this->start_date)
-				 ->where('created_at','<=',$this->app->nextDate($this->end_date)));	
+				 ->where('created_at','<=',$this->end_date));	
 
 			$task->addExpression('diff_time')->set(function($m,$q){
 				return $q->expr('TIMESTAMPDIFF([0],[1],[2])',
