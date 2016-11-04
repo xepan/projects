@@ -116,6 +116,7 @@ class View_Detail extends \View{
 				$comment_acl_add = false;
 
 			$comment_grid = $detail_view->add('xepan\hr\CRUD',['allow_add'=>$comment_acl_add],'commentgrid',['view\comment-grid']);
+			$model_comment->addHook('beforeSave',[$this,'onAction']);
 			$comment_grid->setModel($model_comment,['comment'],['is_seen_by_creator','is_seen_by_assignee','comment','on_action','employee','created_at']);
 
 			$detail_view->template->trySet('comment_count',$model_task['comment_count']);
@@ -172,5 +173,11 @@ class View_Detail extends \View{
 			}
 
 		});
-	}		
+	}	
+
+	function onAction($m){		
+		$task = $this->add('xepan\projects\Model_Task');
+		$task->tryLoadBy('id',$m['task_id']);
+		$m['action'] = $task['status'];
+	}	
 }
