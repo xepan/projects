@@ -29,16 +29,11 @@ class page_myfollowups extends \xepan\base\Page{
 			$my_followups->grid->addPaginator(25);	
 		
 		$my_followups_model = $this->add('xepan\projects\Model_Task');
-	    $my_followups_model->addCondition(
-	    				$my_followups_model->dsql()->orExpr()
-	    					->where('assign_to_id',$this->app->employee->id)
-	    					->where('created_by_id',$this->app->employee->id)
-	    				);
-		$my_followups_model->addCondition(
-	    				$my_followups_model->dsql()->andExpr()
-		 					->where('created_at','>=',$this->start_date)
-				 			->where('created_at','<=',$this->app->nextDate($this->end_date))
-			 			);
+	    $my_followups_model->addCondition([['assign_to_id',$this->app->employee->id],['created_by_id',$this->app->employee->id]]);
+		
+		$my_followups_model->addCondition('starting_date','>',$this->start_date);
+		$my_followups_model->addCondition('starting_date','<=',$this->app->nextDate($this->end_date));
+
 		$my_followups_model->addCondition('type','Followup')
 	    				   ->addCondition('status','<>','Completed');
 
