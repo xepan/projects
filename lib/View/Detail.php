@@ -64,9 +64,13 @@ class View_Detail extends \View{
 				}
 
 				$task_form->save();
-				$m = $task_form->getModel();
-				$m['type'] = 'Task';
-				$m->save();
+				
+				// ONLY IN CASE OF 'ADDING NEW TASK' FROM DETAIL VIEW
+				$m = $task_form->getModel();	
+				if($m->loaded() AND $m['type'] == ''){
+					$m['type'] = 'Task';
+					$m->save();
+				}
 
 				$task_form->getModel()->unload();
 				
