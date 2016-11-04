@@ -7,7 +7,7 @@ class page_myfollowups extends \xepan\base\Page{
 	function init(){
 		parent::init();
 
-		$this->start_date = $start_date = $_GET['start_date']?:date("Y-m-d", strtotime('-29 days', strtotime($this->app->today))); 		
+		$this->start_date = $start_date = $_GET['start_date']?:$this->app->today; 		
 		$this->end_date = $end_date = $_GET['end_date']?:$this->app->today;  
         $this->status = $this->app->stickyGET('status');			 
 
