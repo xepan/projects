@@ -11,8 +11,8 @@ class page_taskandemployeereport extends page_reportsidebar{
 		/*******************************************************************
 		 GETTING VALUES FROM URL	
 		********************************************************************/
-		$from_date = $this->app->stickyGET('from_date')?:$this->app->today;
-		$to_date = $this->app->stickyGET('to_date')?:$this->app->nextDate($this->app->today);
+		$from_date = $_GET['start_date']?:date("Y-m-d", strtotime('-29 days', strtotime($this->app->today))); 		
+		$to_date = $_GET['end_date']?:$this->app->today;
 		$employee_id = $this->app->stickyGET('employee_id'); 
 		$status = $this->app->stickyGET('status'); 
 		/*******************************************************************
@@ -21,12 +21,12 @@ class page_taskandemployeereport extends page_reportsidebar{
 		$task = $this->add('xepan\projects\Model_Task');
 		if($employee_id)								
 			$task->addCondition('assign_to_id',$employee_id);
-		if($status)
+		if($status AND $status != 'All')			
 			$task->addCondition('status',$status);
 		if($from_date)
 			$task->addCondition('created_at','>=',$from_date);
 		if($from_date)
-			$task->addCondition('created_at','<=',$to_date);
+			$task->addCondition('created_at','<=',$this->app->nextDate($to_date));
 
 		$task->addExpression('time_consumed')->set(function($m,$q){
 			$time_sheet = $this->add('xepan\projects\Model_Timesheet',['table_alias'=>'total_duration']);
@@ -99,9 +99,10 @@ class page_taskandemployeereport extends page_reportsidebar{
 	 	 FORM TO ENTER INFORMATION
 		********************************************************************/
 		$form = $this->add('Form');
-		$form->addField('DatePicker','from_date')->set($this->app->today);
-		$form->addField('DatePicker','to_date')->set($this->app->today);
-		$emp_field = $form->addField('Dropdown','status')->setValueList(['Pending'=>'Pending','Completed'=>'Completed','Submitted'=>'Submitted']);
+		$fld = $form->addField('DateRangePicker','period')
+                	->setStartDate($from_date)
+                	->setEndDate($to_date);
+		$emp_field = $form->addField('Dropdown','status')->setValueList(['All'=>'All','Pending'=>'Pending','Completed'=>'Completed','Submitted'=>'Submitted']);
 		$emp_field = $form->addField('Dropdown','employee');
 		$emp_field->setEmptyText('Please select a employee');
 		$emp_field->setModel('xepan\hr\Model_Employee');
@@ -115,15 +116,15 @@ class page_taskandemployeereport extends page_reportsidebar{
 		********************************************************************/
 		if($employee_id){		
 			$grid = $view->add('Grid');			
-			$grid->setModel($task,['task_name','starting_date','deadline','estimate_time','time_consumed']);
+			$grid->setModel($task,['task_name','created_by','starting_date','deadline','estimate_time','time_consumed']);
 		}
 		/*******************************************************************
 		 HANDLING FORM SUBMISSION
 		********************************************************************/
 		if($form->isSubmitted()){
 			$array = [
-						'from_date'=>$form['from_date'],
-						'to_date'=>$form['to_date'],
+						'from_date'=>$fld->getStartDate()?:0,
+						'to_date'=>$fld->getEndDate()?:0,
 						'employee_id'=>$form['employee'],
 						'status'=>$form['status']
 					 ];
