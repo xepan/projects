@@ -81,7 +81,7 @@ class Initiator extends \Controller_Addon {
 		// 	$f->js()->reload(['range'=>$f['DateRangePicker']])->execute();
 		// }
 
-		$task_assigned_to_me = $page->add('xepan\hr\CRUD',['allow_add'=>null,'grid_class'=>'xepan\projects\View_TaskList']);	    
+		$task_assigned_to_me = $page->add('xepan\hr\CRUD',['allow_add'=>null,'grid_class'=>'xepan\projects\View_TaskList'],'pending_task_view');	    
 	    $task_assigned_to_me->grid->addClass('task-assigned-to-me');
 	    $task_assigned_to_me->js('reload')->reload();
 
