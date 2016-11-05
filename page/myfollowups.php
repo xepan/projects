@@ -36,7 +36,20 @@ class page_myfollowups extends \xepan\base\Page{
 						];	
 		
 		$frm = $my_followups->grid->addQuickSearch(['task_name']);
-		if(!$frm->recall('task_status',false)) $frm->memorize('task_status',['Pending','Inprogress','Assigned']);
+
+		$temp_status = ['Pending','Inprogress','Assigned'];
+
+		$count = 0;
+		if(is_array($frm->recall('task_status',false))){
+			foreach ($frm->recall('task_status',false) as $value) {
+				foreach ($temp_status as $v) {
+					if($v == $value)
+						$count++;
+				}
+			}
+		}
+								
+		if((!$frm->recall('task_status',false)) || ($show_overdue AND $count==3)) $frm->memorize('task_status',['Pending','Inprogress','Assigned']);
 		$status = $frm->addField('Dropdown','task_status');
 		$status->setvalueList(['Pending'=>'Pending','Inprogress'=>'Inprogress','Assigned'=>'Assigned','Submitted'=>'Submitted','Completed'=>'Completed'])->setEmptyText('Select a status');
 		$status->setAttr(['multiple'=>'multiple']);
@@ -63,6 +76,7 @@ class page_myfollowups extends \xepan\base\Page{
 		
 		if($show_overdue){
 			$my_followups_model->addCondition('starting_date','<=',$this->app->nextDate($this->end_date));
+			// status
 		}else{
 			$my_followups_model->addCondition('starting_date','>',$this->start_date);
 			$my_followups_model->addCondition('starting_date','<=',$this->app->nextDate($this->end_date));
