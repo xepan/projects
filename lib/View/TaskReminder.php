@@ -6,11 +6,26 @@ class View_TaskReminder extends \View{
 	function init(){
 		parent::init();
 		
+		$tabs = $this->add('Tabs');
+        $to_be_reminded = $tabs->addTab('Reminders');
+        $reminded = $tabs->addTab('Reminded');
+        
 		$task = $this->add('xepan\projects\Model_Task');
 		$task->addCondition('set_reminder',true);
 		$task->addCondition('created_by_id',$this->app->employee->id);
+		$task->addCondition('is_reminded',false);
+		$task->setOrder('created_at','desc');
 
-		$reminder_crud = $this->add('xepan\hr\CRUD',['entity_name'=>'Reminder'],null,['view\taskreminder']);
+		$reminded_task = $this->add('xepan\projects\Model_Task');
+		$reminded_task->addCondition('set_reminder',true);
+		$reminded_task->addCondition('created_by_id',$this->app->employee->id);
+		$reminded_task->addCondition('is_reminded',true);
+		$reminded_task->setOrder('created_at','desc');
+
+		$reminded_crud = $reminded->add('xepan\hr\CRUD',['allow_add'=>false],null,['view\taskreminder']);
+		$reminded_crud->setModel($reminded_task);
+
+		$reminder_crud = $to_be_reminded->add('xepan\hr\CRUD',['entity_name'=>'Reminder'],null,['view\taskreminder']);
 		
 		if($reminder_crud->isEditing()){
 			$reminder_crud->form->setLayout('view\reminder_form');
