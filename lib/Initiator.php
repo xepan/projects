@@ -58,35 +58,15 @@ class Initiator extends \Controller_Addon {
 
 	function epanDashboard($layout,$page){
 		
-		// $page->js(true)
-  //       ->_load('moment.min')
-  //       ->_load('daterangepicker1')
-  //       ->_css('daterangepicker')
-  //       ;
-
-		// $f = $page->add('Form');
-		// $fld = $f->addField('DateRangePicker','DateRangePicker')
-		// 		->setStartDate('2016-04-07')
-		// 		->setEndDate('2016-04-30')
-		// 		->showTimer(15)
-		// 		->getBackDatesSet()
-		// 		->getFutureDatesSet()
-		// 		;
-
-		// $f->addSubmit('Submit');
-
-		// if($f->isSubmitted()){
-		// 	throw new \Exception($fld->getEndDate(), 1);
-			
-		// 	$f->js()->reload(['range'=>$f['DateRangePicker']])->execute();
-		// }
-
-		$task_assigned_to_me = $page->add('xepan\hr\CRUD',['allow_add'=>null,'grid_class'=>'xepan\projects\View_TaskList'],'pending_task_view');	    
+		$v = $page->add('View');
+		$v->addClass('col-md-4');
+		$task_assigned_to_me = $v->add('xepan\hr\CRUD',['allow_add'=>null,'grid_class'=>'xepan\projects\View_TaskList']);	    
 	    $task_assigned_to_me->grid->addClass('task-assigned-to-me');
+	    $task_assigned_to_me->grid->template->trySet('task_view_title','My Tasks');
 	    $task_assigned_to_me->js('reload')->reload();
 
 		if(!$task_assigned_to_me->isEditing())
-			$task_assigned_to_me->grid->addPaginator(25);
+			$task_assigned_to_me->grid->addPaginator(10);
 
 		$task_assigned_to_me_model = $page->add('xepan\projects\Model_Formatted_Task');
 	    $task_assigned_to_me_model
@@ -103,6 +83,9 @@ class Initiator extends \Controller_Addon {
 	    			->addCondition('type','Task');
 
 	    $task_assigned_to_me->setModel($task_assigned_to_me_model)->setOrder('updated_at','desc');			
+	
+	    $followups_view = $page->add('xepan\projects\View_MyFollowups');
+	    $followups_view->addClass('col-md-4');
 	}
 
 	function setup_frontend(){
