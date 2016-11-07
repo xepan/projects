@@ -22,10 +22,13 @@ class Model_Comment extends \xepan\base\Model_Table
 		$this->setOrder('created_at','desc');
 		
 		$this->addExpression('on_action')->set(function($m,$q){
-			$comment = $this->add('xepan\projects\Model_Comment');
-			$comment->addCondition('id',$m->getElement('id'));
-			$comment->setLimit(1);
-			return $comment->fieldQuery('action');
+			return $q->expr('[0]',[$m->getElement('action')]);
+
+			// why using this code
+			// $comment = $this->add('xepan\projects\Model_Comment');
+			// $comment->addCondition('id',$m->getElement('id'));
+			// $comment->setLimit(1);
+			// return $comment->fieldQuery('action');
 		});
 
 		$this->addHook('afterInsert',$this);
@@ -57,7 +60,7 @@ class Model_Comment extends \xepan\base\Model_Table
 			$task->save();
 			$this->app->employee->
 			addActivity("Comment On Task: '".$task_name."' Comment By'".$this->app->employee['name']."'",null, $this['employee_id'] /*Related Contact ID*/,null,null,null)->
-			notifyTo([$task['assign_to_id'],$task_created_by]," Comment : '".$this['comment']."' :: Commented by '".$this->app->employee['name']."' :: On Task '".$task_name."' ");		
+			notifyTo([$task['assign_to_id'],$task_created_by]," Comment : '".$this['comment']."' :: Commented by '".$this->app->employee['name']."' :: On Task '".$task_name."' ");
 		}
 
 	}
