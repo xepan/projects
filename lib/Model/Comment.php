@@ -22,10 +22,13 @@ class Model_Comment extends \xepan\base\Model_Table
 		$this->setOrder('created_at','desc');
 		
 		$this->addExpression('on_action')->set(function($m,$q){
-			$comment = $this->add('xepan\projects\Model_Comment');
-			$comment->addCondition('id',$m->getElement('id'));
-			$comment->setLimit(1);
-			return $comment->fieldQuery('action');
+			return "'".$m['action']."'";
+
+			// why using this code
+			// $comment = $this->add('xepan\projects\Model_Comment');
+			// $comment->addCondition('id',$m->getElement('id'));
+			// $comment->setLimit(1);
+			// return $comment->fieldQuery('action');
 		});
 
 		$this->addHook('afterInsert',$this);
