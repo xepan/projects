@@ -9,6 +9,7 @@ class View_MyFollowups extends \View{
 		$my_followups_model = $this->add('xepan\projects\Model_Task');
 	    $my_followups_model->addCondition([['assign_to_id',$this->app->employee->id],['created_by_id',$this->app->employee->id]]);
 	    $my_followups_model->addCondition('starting_date','>=',$this->app->today);
+	    $my_followups_model->addCondition('type','Followup');
 
 		$my_followups_crud = $this->add('xepan\hr\CRUD',['allow_add'=>null,'grid_class'=>'xepan\projects\View_TaskList']);
 		$my_followups_crud->setModel($my_followups_model);
