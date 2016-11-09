@@ -117,6 +117,100 @@ Project Application
 /**
 HR Application
 */
+
+	// Model_Leave
+	function submit(){
+		$this['status']='Submitted';
+		$this->app->employee
+            ->addActivity("Employee '".$this->app->employee['name']."' Submitted Leave", null/* Related Document ID*/, $this['employee_id'] /*Related Contact ID*/,null,null,"xepan_hr_employee_hr&contact_id=".$this['employee_id']."")
+            ->notifyWhoCan('approve','reject','Submitted',$this);
+		$this->save();
+	}
+	function approve(){
+		$this['status']='Approved';
+		$this->app->employee
+            ->addActivity("Employee '".$this->app->employee['name']."' Approved Leave", null/* Related Document ID*/, $this['employee_id'] /*Related Contact ID*/,null,null,"xepan_hr_employee_hr&contact_id=".$this['employee_id']."")
+            ->notifyWhoCan(' ','Approved',$this);
+		$this->save();
+	}
+	function reject(){
+		$this['status']='Rejected';
+		$this->app->employee
+            ->addActivity("Employee '".$this->app->employee['name']."' Rejected Leave", null/* Related Document ID*/, $this['employee_id'] /*Related Contact ID*/,null,null,"xepan_hr_employee_hr&contact_id=".$this['employee_id']."")
+            ->notifyWhoCan(' ','Rejected',$this);
+		$this->save();
+	}
+
+	// Model_Affiliate
+	function activate(){
+		$this['status']='Active';
+		$this->app->employee
+            ->addActivity("Affiliate : '".$this['name']."' is now active", null/* Related Document ID*/, $this->id /*Related Contact ID*/,null,null,"xepan_hr_affiliatedetails&contact_id=".$this->id."")
+            ->notifyWhoCan('deactivate','Active',$this);
+		$this->save();
+	}
+
+
+	function deactivate(){
+		$this['status']='InActive';
+		$this->app->employee
+            ->addActivity("Affiliate : '".$this['name']."' has been deactivated", null/* Related Document ID*/, $this->id /*Related Contact ID*/,null,null,"xepan_hr_affiliatedetails&contact_id=".$this->id."")
+            ->notifyWhoCan('activate','InActive',$this);
+		$this->save();
+	}
+
+	//Model_Department
+	function activate(){
+		$this['status']='Active';
+		$this->app->employee
+            ->addActivity("Department : '".$this['name']."' Acivated", null/* Related Document ID*/, $this->id /*Related Contact ID*/,null,null,null)
+            ->notifyWhoCan('deactivate','Active',$this);
+		$this->saveAndUnload();
+	}
+
+	function deactivate(){
+		$this['status']='InActive';
+		$this->app->employee
+            ->addActivity("Department : '".$this['name']."'  has been deactivated", null/* Related Document ID*/, $this->id /*Related Contact ID*/,null,null,null)
+            ->notifyWhoCan('activate','InActive',$this);
+		$this->saveAndUnload();
+	}
+
+	// Model_Employee
+	function deactivate(){
+		$this['status']='InActive';
+		$this->app->employee
+            ->addActivity("Employee : '".$this['name']."' has been deactivated", null/* Related Document ID*/, $this->id /*Related Contact ID*/,null,null,"xepan_hr_employeedetail&contact_id=".$this->id."")
+            ->notifyWhoCan('activate','InActive',$this);
+		$this->save();
+		if(($user = $this->ref('user_id')) && $user->loaded()) $user->deactivate();
+	}
+
+	function activate(){
+		$this['status']='Active';
+		$this->app->employee
+            ->addActivity("Employee : '".$this['name']."' is now active", null/* Related Document ID*/, $this->id /*Related Contact ID*/,null,null,"xepan_hr_employeedetail&contact_id=".$this->id."")
+            ->notifyWhoCan('deactivate','Active',$this);
+		$this->save();
+		if(($user = $this->ref('user_id')) && $user->loaded()) $user->activate();
+	}
+
+	// Model_Post
+	function activate(){
+		$this['status']='Active';
+		$this->app->employee
+            ->addActivity("Post : '".$this['name']."'  now active, related to Department : '".$this['department']."' ", null/* Related Document ID*/, $this->id /*Related Contact ID*/,null,null,null)
+            ->notifyWhoCan('deactivate','Active',$this);
+		$this->saveAndUnload();
+	}
+
+	function deactivate(){
+		$this['status']='InActive';
+		$this->app->employee
+            ->addActivity(" Post : '".$this['name']."' has been deactivated, related to Department : '".$this['department']."' ", null/* Related Document ID*/, $this->id /*Related Contact ID*/,null,null,null)
+            ->notifyWhoCan('activate','InActive',$this);
+		$this->saveAndUnLoad();
+	}
 /**
 Commerce Application
 */
@@ -477,6 +571,82 @@ Production Application
 /**
 CRM Application
 */
+
+	//mOdel_SupportTicket
+	function submit(){
+		$this['status'] = "Pending";
+		$this->app->employee
+			->addActivity(" Supportticket '".$this->id."'  has Submitted to ".$this['to_id']."", $this->id, $this['to_id'],null,null,"xepan_crm_ticketdetails&ticket_id=".$this->id."")
+			->notifyWhoCan('reject','assign','closed','comment','Pending');
+		$this->save();
+	}
+	function reject(){
+		$this['status']='Rejected';
+		$this->app->employee
+			->addActivity(" Support Ticket No : '[#".$this->id."]' rejected", $this->id, $this['from_id'],null,null,"xepan_crm_ticketdetails&ticket_id=".$this->id."")
+			->notifyWhoCan(' ','Rejected');
+		$this->saveAndUnload();
+	}
+
+	function open(){
+		$this['status']='Pending';
+		$this->app->employee
+			->addActivity(" Support Ticket No : '[#".$this->id."]' reopened", $this->id, $this['from_id'],null,null,"xepan_crm_ticketdetails&ticket_id=".$this->id."")
+			->notifyWhoCan('reject','assign','closed','comment','Pending');
+		$this->save();
+	}
+/**
+Communication Application
+*/
+
+	//For update admin email content
+	// For Reset Password
+	$config_m->app->employee
+			    ->addActivity("'Reset Password Email' Content's Layout Updated For ERP Users", null/* Related Document ID*/, null /*Related Contact ID*/,null,null,"xepan_commerce_layouts")
+				->notifyWhoCan(' ',' ',$config_m);
+
+	// For Update Password
+	$config_m->app->employee
+			    ->addActivity("'Update Password Email' Content's Layout Updated For ERP Users", null/* Related Document ID*/, null /*Related Contact ID*/,null,null,"xepan_commerce_layouts")
+				->notifyWhoCan(' ',' ',$config_m);
+
+	// For Frontend
+
+	//For Config
+	$frontend_config_m->app->employee
+			    ->addActivity("'In Frontend User Configuration' User Registration Type Updated as '".$type."' For Website Users", null/* Related Document ID*/, null /*Related Contact ID*/,null,null,"xepan_communication_general_emailcontent_usertool")
+				->notifyWhoCan(' ',' ',$frontend_config_m);
+	//For Reset
+	$frontend_config_m->app->employee
+			    ->addActivity("'Reset Password Email' Content's Layout Updated For Website Users", null/* Related Document ID*/, null /*Related Contact ID*/,null,null,"xepan_communication_general_emailcontent_usertool")
+				->notifyWhoCan(' ',' ',$frontend_config_m);
+	//For Registration
+	$frontend_config_m->app->employee
+			    ->addActivity("'New Registration Email' Content's Layout Updated For Website Users", null/* Related Document ID*/, null /*Related Contact ID*/,null,null,"xepan_communication_general_emailcontent_usertool")
+				->notifyWhoCan(' ',' ',$frontend_config_m);
+	//For Verification
+	$frontend_config_m->app->employee
+			    ->addActivity("'Verification Email' Content's Layout Updated For Website Users", null/* Related Document ID*/, null /*Related Contact ID*/,null,null,"xepan_communication_general_emailcontent_usertool")
+				->notifyWhoCan(' ',' ',$frontend_config_m);
+	//For Update
+	$frontend_config_m->app->employee
+			    ->addActivity("'Update Password Email' Content's Layout Updated For Website Users", null/* Related Document ID*/, null /*Related Contact ID*/,null,null,"xepan_communication_general_emailcontent_usertool")
+				->notifyWhoCan(' ',' ',$frontend_config_m);
+
+	//For Subscription
+	$frontend_config_m->app->employee
+			    ->addActivity("'Subscription Email' Content's Layout Updated For Website Users", null/* Related Document ID*/, null /*Related Contact ID*/,null,null,"xepan_communication_general_emailcontent_usertool")
+				->notifyWhoCan(' ',' ',$frontend_config_m);
+
+	// Time Zone
+	$misc_m->app->employee
+			    ->addActivity("'Time Zone' Updated as '".$form['time_zone']."'", null/* Related Document ID*/, null /*Related Contact ID*/,null,null,"xepan_communication_general_emailcontent_usertool")
+				->notifyWhoCan(' ',' ',$misc_m);
+	// Company Information
+	$company_m->app->employee
+			    ->addActivity("Company Information Updated", null/* Related Document ID*/, null /*Related Contact ID*/,null,null,"xepan_communication_general_emailcontent_usertool")
+				->notifyWhoCan(' ',' ',$company_m);
+
 /**
 CMS Application
 */
