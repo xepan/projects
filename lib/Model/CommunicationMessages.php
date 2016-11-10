@@ -211,6 +211,134 @@ HR Application
             ->notifyWhoCan('activate','InActive',$this);
 		$this->saveAndUnLoad();
 	}
+
+	//Model Reimbursement
+	function submit(){
+		$this['status'] = 'Submitted';
+		$this->app->employee
+		->addActivity(
+					"New Reimbursement : '".$this['name']."' Submitted, Related To : ".$this['employee']."",
+					$this->id/* Related Document ID*/,
+					$this['employee_id'] /*Related Contact ID*/,
+					null,
+					null,
+					"xepan_hr_reimbursement&reimbursement_id=".$this->id.""
+				)
+		->notifyWhoCan('inprogress,cancel,redraft,approve','Submitted',$this);
+		$this->save();
+	}
+
+	function approve(){
+		$this['status']='Approved';
+		$this->save();
+		
+		if($this['employee_id'] == $this['updated_by_id']){
+			$id = [];
+			$id = [$this['employee_id']];
+			$msg = " Your Reimbursement ( ".$this['name']." ) Approved";
+		}
+		else{
+			$id = [];
+			$id = [$this['employee_id'],$this['updated_by_id']];
+			$msg = "Reimbursement ( ".$this['name']." ) Approved, Related To : ".$this['employee']."";
+		}
+		$this->app->employee
+		->addActivity(
+					"Reimbursement ( ".$this['name']." ) of ".$this['employee']." Approved",
+					$this->id/* Related Document ID*/,
+					$this['contact_id'] /*Related Contact ID*/,
+					null,
+					null,
+					"xepan_hr_reimbursement&reimbursement_id=".$this->id.""
+				)
+		->notifyTo([$id],$msg);
+		$this->save();
+	}
+
+	function inprogress(){
+		$this['status']='InProgress';
+		$this->save();
+
+		if($this['employee_id'] == $this['updated_by_id']){
+			$id = [];
+			$id = [$this['employee_id']];
+			$msg = " Your Reimbursement ( ".$this['name']." ) is In-Progress";
+		}
+		else{
+			$id = [];
+			$id = [$this['employee_id'],$this['updated_by_id']];
+			$msg = "Reimbursement ( ".$this['name']." ) is In-Progress, Related To : ".$this['employee']."";
+		}
+
+		$this->app->employee
+		->addActivity(
+					"Reimbursement ( ".$this['name']." ) is Inprogress",
+					$this->id/* Related Document ID*/,
+					$this['contact_id'] /*Related Contact ID*/,
+					null,
+					null,
+					"xepan_hr_reimbursement&reimbursement_id=".$this->id.""
+				)
+		->notifyTo([$id],$msg);
+		$this->save();
+	}
+
+	function cancel(){
+		$this['status']='Canceled';
+		$this->save();
+
+		if($this['employee_id'] == $this['updated_by_id']){
+			$id = [];
+			$id = [$this['employee_id']];
+			$msg = " Your Reimbursement ( ".$this['name']." ) has Canceled";
+		}
+		else{
+			$id = [];
+			$id = [$this['employee_id'],$this['updated_by_id']];
+			$msg = "Reimbursement ( ".$this['name']." ) has Canceled, Related To : ".$this['employee']."";
+		}
+
+		$this->app->employee
+		->addActivity(
+					"Reimbursement ( ".$this['name']." ) has Canceled",
+					$this->id/* Related Document ID*/,
+					$this['contact_id'] /*Related Contact ID*/,
+					null,
+					null,
+					"xepan_hr_reimbursement&reimbursement_id=".$this->id.""
+				)
+		->notifyTo([$id],$msg);
+		$this->save();
+	}	
+
+	function redraft(){
+		$this['status']='Draft';
+		$this->save();
+
+		if($this['employee_id'] == $this['updated_by_id']){
+			$id = [];
+			$id = [$this['employee_id']];
+			$msg = " Your Reimbursement ( ".$this['name']." ) Re-Drafted";
+		}
+		else{
+			$id = [];
+			$id = [$this['employee_id'],$this['updated_by_id']];
+			$msg = "Reimbursement ( ".$this['name']." ) Re-Drafted, Related To : ".$this['employee']."";
+		}
+
+		$this->app->employee
+		->addActivity(
+					"Reimbursement ( ".$this['name']." ) Re-Draft",
+					$this->id/* Related Document ID*/,
+					$this['contact_id'] /*Related Contact ID*/,
+					null,
+					null,
+					"xepan_hr_reimbursement&reimbursement_id=".$this->id.""
+				)
+		->notifyTo([$id],$msg);
+		$this->save();
+	}
+
 /**
 Commerce Application
 */
@@ -562,6 +690,90 @@ Commerce Application
 /**
 Marketing Application
 */
+
+	// Model Campaign
+	function submit(){
+		$this['status']='Submitted';
+        $this->app->employee
+            ->addActivity(" Campaign : '".$this['title']."' Submitted For Approval [ Based On Type : '".ucfirst($this['campaign_type'])."']", $this->id,null,null,null,"xepan_marketing_subscriberschedule&campaign_id=".$this->id."")
+            ->notifyWhoCan('approve,redesign','Submitted',$this);
+        $this->saveAndUnload();    
+	}
+
+	function redesign(){
+		$this['status']='Redesign';
+        $this->app->employee
+            ->addActivity(" Campaign : '".$this['title']."' is being proceed to Redesigned [ Based On Type : '".ucfirst($this['campaign_type'])."']", $this->id,null,null,null,"xepan_marketing_subscriberschedule&campaign_id".$this->id."")
+            ->notifyWhoCan('submit,schedule','Redesign',$this);
+        $this->saveAndUnload();     
+	}
+
+
+	function onhold(){
+		$this['status']='Onhold';
+        $this->app->employee
+            ->addActivity(" Campaign : '".$this['title']."' putting On-Hold [ Based On Type : '".ucfirst($this['campaign_type'])."']", $this->id,null,null,null,"xepan_marketing_subscriberschedule&campaign_id".$this->id."")
+            ->notifyWhoCan('redesign','Onhold',$this);
+		$this->saveAndUnload(); 	
+		
+	}
+
+	function approve(){
+		$this['status']='Approved';
+        $this->app->employee
+            ->addActivity( "Campaign : '".$this['title']."' Approved [ Based On Type : '".ucfirst($this['campaign_type'])."']", $this->id,null,null,null,"xepan_marketing_subscriberschedule&campaign_id".$this->id."")
+            ->notifyWhoCan('redesign,onhold','Approved',$this);
+		$this->saveAndUnload(); 
+	}
+
+	// Model_Lead
+	function page_create_opportunity($page){
+		$crud = $page->add('xepan\hr\CRUD',null,null,['grid\miniopportunity-grid']);		
+		$opportunity = $this->add('xepan\marketing\Model_Opportunity');
+		$crud->grid->addQuickSearch(['title']);
+		$opportunity->addCondition('lead_id',$this->id);
+		$opportunity->setOrder('created_at','desc');
+		$opportunity->getElement('assign_to_id')->getModel()->addCondition('type','Employee');
+		
+		$opportunity->addHook('afterInsert',function($m){
+			$this->opportunityMessage();
+		});
+
+		$crud->setModel($opportunity,['title','description','status','assign_to_id','fund','discount_percentage','closing_date']);
+	}
+
+	function opportunityMessage(){
+		$opportunity = $this->add('xepan\marketing\Model_Opportunity');
+		$opportunity->addCondition('lead_id',$this->id);
+		$opportunity->setOrder('id','desc');
+		$opportunity->tryLoadAny();
+		$this->app->employee
+            ->addActivity("Opportunity : '".$opportunity['title']."' Created, Related To Lead : '".$this['name']."'", null/* Related Document ID*/, $this->id /*Related Contact ID*/,null,null,"xepan_marketing_leaddetails&contact_id=".$this->id."")
+            ->notifyWhoCan('create_opportunity','Active',$this);
+	}
+
+	function activate(){
+		$this['status']='Active';
+		$this->app->employee
+            ->addActivity("Lead : '".$this['name']."' Activated", null/* Related Document ID*/, $this->id /*Related Contact ID*/,null,null,"xepan_marketing_leaddetails&contact_id=".$this->id."")
+            ->notifyWhoCan('deactivate','Active',$this);
+		$this->save();
+	}
+
+
+	//deactivate Lead
+	function deactivate(){
+		$this['status']='InActive';
+		$this->app->employee
+            ->addActivity("Lead : '".$this['name']."' has deactivated", null/* Related Document ID*/, $this->id /*Related Contact ID*/,null,null,"xepan_marketing_leaddetails&contact_id=".$this->id."")
+            ->notifyWhoCan('activate','InActive',$this);
+		$this->save();
+	}
+
+	// Newsletter send mail
+	$this->app->employee
+				->addActivity("Newsletter : '".$newsletter_model['content_name']."' successfully sent to '".$this['name']."'", $newsletter_model->id/* Related Document ID*/, /*Related Contact ID*/$this->id,null,null,"xepan_marketing_newsletterdesign&0&action=view&document_id=".$newsletter_model->id."")
+				->notifyWhoCan(' ',' ',$this);
 /**
 Account Application
 */
