@@ -409,7 +409,7 @@ class Model_Task extends \xepan\base\Model_Table
 		
 		$reminder_task = $this->add('xepan\projects\Model_Task');
 		$reminder_task->addCondition('set_reminder',true);
-		$reminder_task->addCondition('is_reminded',null);
+		$reminder_task->addCondition([['is_reminded',0],['is_reminded',null]]);
 
 		foreach ($reminder_task as $task) {	
 			
