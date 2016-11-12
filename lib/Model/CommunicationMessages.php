@@ -774,12 +774,230 @@ Marketing Application
 	$this->app->employee
 				->addActivity("Newsletter : '".$newsletter_model['content_name']."' successfully sent to '".$this['name']."'", $newsletter_model->id/* Related Document ID*/, /*Related Contact ID*/$this->id,null,null,"xepan_marketing_newsletterdesign&0&action=view&document_id=".$newsletter_model->id."")
 				->notifyWhoCan(' ',' ',$this);
+
+	//Model_NewsLetter
+	function submit(){
+		$this['status']='Submitted';
+        $this->app->employee
+            ->addActivity("Newsletter : '".$this['title']."' Submitted For Approval",$this->id/* Related Document ID*/, /*Related Contact ID*/null,null,null,"xepan_marketing_newsletterdesign&0&action=view&document_id=".$this->id."")
+            ->notifyWhoCan('reject,approve,test','Submitted');
+        $this->saveAndUnload();    
+	}
+
+	function reject(){
+		$this['status']='Rejected';
+        $this->app->employee
+            ->addActivity("Newsletter : '".$this['title']."' Rejected ",$this->id/* Related Document ID*/, /*Related Contact ID*/null,null,null,"xepan_marketing_newsletterdesign&0&action=view&document_id=".$this->id."")
+            ->notifyWhoCan('submit,test','Rejected');
+        $this->saveAndUnload();     
+	}
+
+	function approve(){
+		$this['status']='Approved';
+        $this->app->employee
+            ->addActivity("Newsletter : '".$this['title']."' Approved ",$this->id/* Related Document ID*/, /*Related Contact ID*/null,null,null,"xepan_marketing_newsletterdesign&0&action=view&document_id=".$this->id."")
+            ->notifyWhoCan('reject,schedule,test','Approved');
+		$this->saveAndUnload(); 
+	}
+
+	//Model_Opportunity
+	function page_qualify($p){
+		$form = $p->add('Form');
+		$form->addField('text','narration')->set($this['narration']);
+		$form->addField('probability_percentage')->set($this['probability_percentage']);
+		$form->addSubmit('Save');
+		
+		if($form->isSubmitted()){
+			$this->qualify($form['narration'],$form['probability_percentage']);
+			$this->app->employee
+				->addActivity("Opportunity '".$this['title']."' Qualified", $this->id, $this['lead_id'],null,null,"xepan_marketing_leaddetails&contact_id=".$this['lead_id']."")
+				->notifyWhoCan('analyse_needs,lose','Qualified');
+			return $p->js()->univ()->closeDialog();
+		}
+	}	
+
+
+	function page_analyse_needs($p){
+		$form = $p->add('Form');
+		$form->addField('text','narration')->set($this['narration']);
+		$form->addField('probability_percentage')->set($this['probability_percentage']);
+		$form->addSubmit('Save');
+		
+		if($form->isSubmitted()){
+			$this->analyse_needs($form['narration'],$form['probability_percentage']);
+			$this->app->employee
+				->addActivity("Opportunity : ".$this['title']." 's  Needs Analyzed", $this->id, $this['lead_id'],null,null,"xepan_marketing_leaddetails&contact_id=".$this['lead_id']."")
+				->notifyWhoCan('quote,negotiate,lose','NeedsAnalysis');
+			return $p->js()->univ()->closeDialog();
+		}
+	}
+
+	function page_quote($p){
+		$form = $p->add('Form');
+		$form->addField('text','narration')->set($this['narration']);
+		$form->addField('probability_percentage')->set($this['probability_percentage']);
+		$form->addField('billing_address');
+		$form->addField('DropDown','billing_country')->setModel('xepan\base\Country');
+		$form->addField('DropDown','billing_state')->setModel('xepan\base\State');
+		$form->addField('billing_city');
+		$form->addField('billing_pincode');
+		$form->addField('DatePicker','due_date');
+		$form->addSubmit('Save');
+		if($form->isSubmitted()){
+			$quotation_model  = $this->quote($form->getAllFields());
+			$this->app->employee
+				->addActivity("Quoted to Opportunity '".$this['title']."'", $this->id, $this['lead_id'],null,null,"xepan_marketing_leaddetails&contact_id=".$this['lead_id']."")
+				->notifyWhoCan('negotiate,win,lose','Quoted');
+			return $this->app->page_action_result = $form->js()->univ()->frameURL('Quotation',$this->app->url('xepan_commerce_quotationdetail',['action'=>'edit','document_id'=>$quotation_model->id]));		
+		}	
+	}
+
+	function page_negotiate($p){
+		$quotation = $this->add('xepan\commerce\Model_Quotation');
+		$quotation->addCondition('related_qsp_master_id',$this->id);
+		$quotation->tryLoadAny();
+
+		if($quotation->loaded()){
+			$view = $p->add('View');	
+			$view->setHTML('Lead Already Quoted with<br> <b>Discount Amount :</b> '.'<b>'.$quotation['discount_amount'].'</b><br>'.' <b>Net Amount : </b> '.'<b>'.$quotation['net_amount'].'</b><br>'.'<b><span style = "cursor:pointer; cursor: hand; max-width:600px;" class ="view-quotation-detail small" data-quotation-id ='.$quotation['id'].' data-id = '.$quotation['id'].'>click to view detail</a></b><hr>');
+			$view->js('click')->_selector('.view-quotation-detail')->univ()->frameURL('Quotation Details',[$this->api->url('xepan_commerce_quotationdetail'),'document_id'=>$view->js()->_selectorThis()->closest('[data-quotation-id]')->data('id')]);
+		}
+
+		$form = $p->add('Form');
+		$form->addField('text','narration')->set($this['narration']);
+		$form->addField('probability_percentage')->set($this['probability_percentage']);
+		$form->addSubmit('Save');
+		
+		if($form->isSubmitted()){
+			$this->negotiate($form['narration'],$form['probability_percentage']);
+			$this->app->employee
+				->addActivity("Negotiated with Opportunity '".$this['title']."'", $this->id, $this['lead_id'],null,null,"xepan_marketing_leaddetails&contact_id=".$this['lead_id']."")
+				->notifyWhoCan('win,quote,lose','Negotiated');
+			return $p->js()->univ()->closeDialog();
+		}	
+	}
+
+	function page_win($p){
+		$form = $p->add('Form');
+		$form->addField('text','narration')->set($this['narration']);
+		$form->addSubmit('Save');
+		
+		if($form->isSubmitted()){
+			$this->win($form['narration'],$form['probability_percentage']);
+			$this->app->employee
+				->addActivity("Won Opportunity : '".$this['title']."'", $this->id, $this['lead_id'],null,null,"xepan_marketing_leaddetails&contact_id=".$this['lead_id']."");			
+			return $p->js()->univ()->closeDialog();
+		}	
+	}
+
+	function page_lose($p){
+		$form = $p->add('Form');
+		$form->addField('text','narration')->set($this['narration']);
+		$form->addSubmit('Save');
+		
+		if($form->isSubmitted()){
+			$this->lose($form['narration'],$form['probability_percentage']);
+			$this->app->employee
+				->addActivity("Lost Opportunity : '".$this['title']."'", $this->id, $this['lead_id'],null,null,"xepan_marketing_leaddetails&contact_id=".$this['lead_id']."");
+			return $p->js()->univ()->closeDialog();	
+		}
+	}
+
+	function page_reassess($p){
+		$form = $p->add('Form');
+		$form->addField('text','narration')->set($this['narration']);
+		$form->addField('fund')->set($this['fund']);
+		$form->addField('discount_percentage')->set($this['discount_percentage']);
+		$form->addField('DatePicker','closing_date')->set($this['closing_date']);
+		$form->addSubmit('Save');
+		
+		if($form->isSubmitted()){
+			$this->reassess($form['fund'],$form['discount_percentage'],$form['narration'],$form['closing_date']);
+			$this->app->employee
+				->addActivity("Reassessed Opportunity : '".$this['title']."'", $this->id, $this['lead_id'],null,null,"xepan_marketing_leaddetails&contact_id=".$this['lead_id']."");
+			return $p->js()->univ()->closeDialog();	
+		}
+	}
+
+	// Model_Sms
+	function submit(){
+		$this['status']='Submitted';
+        $this->app->employee
+            ->addActivity("Sms : '".$this['title']."' Submitted For Approval",$this->id/* Related Document ID*/, /*Related Contact ID*/null,null,null,"xepan_marketing_addsms&0&action=view&document_id=".$this->id."")
+            ->notifyWhoCan('reject,approve,test','Submitted');
+        $this->saveAndUnload();    
+	}
+
+	function reject(){
+		$this['status']='Rejected';
+        $this->app->employee
+            ->addActivity("Sms : '".$this['title']."' Rejected ",$this->id/* Related Document ID*/, /*Related Contact ID*/null,null,null,"xepan_marketing_addsms&0&action=view&document_id=".$this->id."")
+            ->notifyWhoCan('submit,test','Rejected');
+        $this->saveAndUnload();     
+	}
+
+	function approve(){
+		$this['status']='Approved';
+        $this->app->employee
+            ->addActivity("Sms : '".$this['title']."' Approved ",$this->id/* Related Document ID*/, /*Related Contact ID*/null,null,null,"xepan_marketing_addsms&0&action=view&document_id=".$this->id."")
+            ->notifyWhoCan('reject,schedule,test','Approved');
+		$this->saveAndUnload(); 
+	}
+
+	// Model Social_Post
+	function submit(){
+		$this['status']='Submitted';
+        $this->app->employee
+        	->addActivity("Social Post : '".$this['title']."' Submitted For Approval ", $this->id,null,null,null,"xepan_marketing_socialpost&post_id=".$this->id."")
+            ->notifyWhoCan('approve,reject,test','Submitted');
+        $this->saveAndUnload();    
+	}
+
+	function reject(){
+		$this['status']='Rejected';
+        $this->app->employee
+        	->addActivity("Social Post : '".$this['title']." Rejected ", $this->id,null,null,null,"xepan_marketing_socialpost&post_id=".$this->id."")
+            ->notifyWhoCan('submit,test','Rejected');
+        $this->saveAndUnload();     
+	}
+
+	function approve(){
+		$this['status']='Approved';
+        $this->app->employee
+        	->addActivity("Social Post : '".$this['title']."' Approved ", $this->id,null,null,null,"xepan_marketing_socialpost&post_id=".$this->id."")
+            ->notifyWhoCan('schedule,reject,test','Approved');
+		$this->saveAndUnload(); 
+	}
 /**
 Account Application
 */
 /**
 Production Application
 */
+
+	//Model_Jobcard
+	$this->app->employee
+			->addActivity("Jobcard No : ".$this->id." Successfully Received By Department : '".$this['department']."'", $this->id/* Related Document ID*/, $this['contact_id'] /*Related Contact ID*/,null,null,"xepan_production_jobcarddetail&document_id=".$this->id."")
+			->notifyWhoCan('processing,complete,cancel','Received');
+
+	// Model_OutsoouceParty
+	//activate OutsourceParty
+	function activate(){
+		$this['status']='Active';
+		$this->app->employee
+            ->addActivity("OutsourceParty : '".$this['name']."' now active", null/* Related Document ID*/, $this->id /*Related Contact ID*/,null,null,"xepan_production_outsourcepartiesdetails&contact_id=".$this->id."")
+            ->notifyWhoCan('deactivate','Active',$this);
+		$this->save();
+	}
+
+	//deactivate OutsourceParty
+	function deactivate(){
+		$this['status']='InActive';
+		$this->app->employee
+            ->addActivity("OutsourceParty : '".$this['name']."' has deactivated", null/* Related Document ID*/, $this->id /*Related Contact ID*/,null,null,"xepan_production_outsourcepartiesdetails&contact_id=".$this->id."")
+            ->notifyWhoCan('activate','InActive',$this);
+		$this->save();
+	}
 /**
 CRM Application
 */
@@ -862,6 +1080,29 @@ Communication Application
 /**
 CMS Application
 */
+
+	// Model_Custom_Form
+	function activate(){
+		$this['status']='Active';
+		$this->app->employee
+            ->addActivity("CustomForm : '".$this['name']."' now active, For use on website", null/* Related Document ID*/, $this->id /*Related Contact ID*/,null,null,"xepan_cms_customform")
+            ->notifyWhoCan('deactivate','Active',$this);
+		$this->save();
+	}
+
+	function deactivate(){
+		$this['status']='InActive';
+		$this->app->employee
+            ->addActivity("CustomForm '".$this['name']."' has deactivated, not available use on website", null/* Related Document ID*/, $this->id /*Related Contact ID*/,null,null,"xepan_cms_customform")
+            ->notifyWhoCan('activate','InActive',$this);
+		$this->save();
+	}
+	
+	//Model_Custom_FormSubmission
+	function afterInsert(){
+		$this->app->employee->
+		addActivity("Enquiry Received On Website",null, null /*Related Contact ID*/,null,null,null);
+	}
 /**
 BLOG Application
 */
