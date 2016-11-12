@@ -2,9 +2,9 @@
 
 namespace xepan\projects;
 
-class Model_Widgets_AccountableSystemUse extends \xepan\hr\Model_Employee{
-	$start_date; 		
-	$end_date;
+class Model_Widget_AccountableSystemUse extends \xepan\hr\Model_Employee{
+	public $start_date; 		
+	public $end_date;
 
 	function init(){
 		parent::init();
@@ -17,9 +17,8 @@ class Model_Widgets_AccountableSystemUse extends \xepan\hr\Model_Employee{
 				 ->addCondition('type','Task')
 				 ->addCondition('created_by_id','<>',$q->getField('id'))
 				 ->addCondition('status','Pending')
-				 ->addCondition($task->dsql()->andExpr()
-				 ->where('created_at','>=',$this->start_date)
-				 ->where('created_at','<=',$this->end_date));
+				 ->addCondition('created_at','>=',$this->start_date)
+				 ->addCondition('created_at','<=',$this->end_date);
 			return $task->count();
 		});
 
@@ -29,9 +28,8 @@ class Model_Widgets_AccountableSystemUse extends \xepan\hr\Model_Employee{
 				 ->addCondition('type','Task')
       	         ->addCondition('created_by_id','<>',$q->getField('id'))
 				 ->addCondition('status','Assigned')
-				 ->addCondition($task->dsql()->andExpr()
-				 ->where('created_at','>=',$this->start_date)
-				 ->where('created_at','<=',$this->end_date));
+				 ->addCondition('created_at','>=',$this->start_date)
+				 ->addCondition('created_at','<=',$this->end_date);
             return $task->count();
 		});
 
@@ -40,9 +38,8 @@ class Model_Widgets_AccountableSystemUse extends \xepan\hr\Model_Employee{
 			$task->addCondition('assign_to_id',$q->getField('id'))
 				 ->addCondition('type','Task')
 				 ->addCondition('created_by_id','<>',$q->getField('id'))
-				 ->addCondition($task->dsql()->andExpr()
-				 ->where('created_at','>=',$this->start_date)
-				 ->where('created_at','<=',$this->end_date));	 
+				 ->addCondition('created_at','>=',$this->start_date)
+				 ->addCondition('created_at','<=',$this->end_date);	 
 			return $task->count();
 		});
 
@@ -51,9 +48,8 @@ class Model_Widgets_AccountableSystemUse extends \xepan\hr\Model_Employee{
 			$task->addCondition('assign_to_id','<>',$q->getField('id'))
 				 ->addCondition('type','Task')
                  ->addCondition('created_by_id',$q->getField('id'))
-                 ->addCondition($task->dsql()->andExpr()
-				 ->where('created_at','>=',$this->start_date)
-				 ->where('created_at','<=',$this->end_date));
+                 ->addCondition('created_at','>=',$this->start_date)
+				 ->addCondition('created_at','<=',$this->end_date);
 			return $task->count();
 		});
 
@@ -63,9 +59,8 @@ class Model_Widgets_AccountableSystemUse extends \xepan\hr\Model_Employee{
 				 ->addCondition('type','Task')
                  ->addCondition('created_by_id',$q->getField('id'))
 				 ->addCondition('status',['Pending','Assigned'])
-				 ->addCondition($task->dsql()->andExpr()
-				 ->where('created_at','>=',$this->start_date)
-				 ->where('created_at','<=',$this->end_date));
+				 ->addCondition('created_at','>=',$this->start_date)
+				 ->addCondition('created_at','<=',$this->end_date);
 			return $task->count();
 		});
 
@@ -75,9 +70,8 @@ class Model_Widgets_AccountableSystemUse extends \xepan\hr\Model_Employee{
 				 ->addCondition('type','Task')
 				 ->addCondition('created_by_id',$q->getField('id'))
 				 ->addCondition('status','Submitted')
-				 ->addCondition($task->dsql()->andExpr()
-				 ->where('created_at','>=',$this->start_date)
-				 ->where('created_at','<=',$this->end_date));
+				 ->addCondition('created_at','>=',$this->start_date)
+				 ->addCondition('created_at','<=',$this->end_date);
 			return $task->count();
 		});
 	}

@@ -25,9 +25,9 @@ class Widget_EmployeeTimesheet extends \xepan\base\Widget{
 		if(isset($this->report->employee))
 			$timesheet->addCondition('employee_id',$this->report->employee);
 
-		$this->grid->setModel($timesheet,['employee','task_id','task','starttime','endtime','duration','project']);
+		$this->grid->setModel($timesheet,['task','starttime','endtime','duration','project']);
 		$this->grid->addPaginator(10);
 
-		parent::recursiveRender();
+		return parent::recursiveRender();
 	}
 }

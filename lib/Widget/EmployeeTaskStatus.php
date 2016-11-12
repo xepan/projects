@@ -2,20 +2,22 @@
 
 namespace xepan\projects;
 
-class Widget_EmployeeTaskStatus extends \View{
+class Widget_EmployeeTaskStatus extends \xepan\base\Widget{
 	function init(){
 		parent::init();
+		
+		$this->chart = $this->add('xepan\base\View_Chart');
 	}
 
 	function recursiveRender(){
-		// $this->model,['name','total_tasks','total_pending_tasks','total_hours_alloted','total_estimated_hours','total_minutes_taken','total_hours_taken']);
-		$this->add('xepan\base\View_Chart')
-     		->setType('bar')
-     		->setModel($this->model,'name',['total_tasks','total_pending_tasks','total_hours_alloted','total_estimated_hours','total_hours_taken'])
-     		->setGroup(['total_tasks','total_pending_tasks','total_hours_alloted','total_estimated_hours','total_hours_taken'])
-     		->setTitle('Employee Task Status')
-     		->addClass('col-md-8')
-     		->rotateAxis();
-		parent::recursiveRender();
+		$employee_task_status = $this->add('xepan\projects\Model_Widget_EmployeeTaskStatus');
+
+		$this->chart->setType('bar')
+     		        ->setModel($employee_task_status,'name',['total_tasks','total_pending_tasks','total_hours_alloted','total_estimated_hours','total_hours_taken'])
+     		        ->setGroup(['total_tasks','total_pending_tasks','total_hours_alloted','total_estimated_hours','total_hours_taken'])
+     		        ->setTitle('Employee Task Status')
+     		        ->rotateAxis();
+
+		return parent::recursiveRender();
 	}
 }

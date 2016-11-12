@@ -10,7 +10,6 @@ class Model_Widget_HourConsumption extends \xepan\projects\Model_Project{
 		parent::init();
 
 		$this->addExpression('Estimate')->set(function($m,$q){
-			return "'1'";
 			$task = $this->add('xepan\projects\Model_Task');
 			$task->addCondition('project_id',$m->getElement('id'))
 				 ->addCondition('created_at','>=',$this->start_date)
@@ -19,12 +18,10 @@ class Model_Widget_HourConsumption extends \xepan\projects\Model_Project{
 		});
 
 		$this->addExpression('Alloted')->set(function($m,$q){
-			return "'1'";
 			$task = $this->add('xepan\projects\Model_Task');
 			$task->addCondition('project_id',$m->getElement('id'))
-				 ->addCondition($task->dsql()->andExpr()
-				 ->where('created_at','>=',$this->start_date)
-				 ->where('created_at','<=',$this->end_date));	
+				 ->addCondition('created_at','>=',$this->start_date)
+				 ->addCondition('created_at','<=',$this->end_date);	
 
 			$task->addExpression('diff_time')->set(function($m,$q){
 				return $q->expr('TIMESTAMPDIFF([0],[1],[2])',
@@ -34,13 +31,11 @@ class Model_Widget_HourConsumption extends \xepan\projects\Model_Project{
 		}); 
 
 		$this->addExpression('Consumed')->set(function($m,$q){
-			return "'1'";
 			$task = $this->add('xepan\projects\Model_Task');
 			$task->addCondition('project_id',$m->getElement('id'));
 			$task->addCondition('status','Completed')
-				 ->addCondition($task->dsql()->andExpr()
-				 ->where('created_at','>=',$this->start_date)
-				 ->where('created_at','<=',$this->end_date));	
+				 ->addCondition('created_at','>=',$this->start_date)
+				 ->addCondition('created_at','<=',$this->end_date);	
 
 			$task->addExpression('diff_time')->set(function($m,$q){
 				return $q->expr('TIMESTAMPDIFF([0],[1],[2])',
