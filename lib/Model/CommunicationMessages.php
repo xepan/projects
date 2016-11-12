@@ -399,7 +399,7 @@ Commerce Application
 	function activate(){
 		$this['status']='Active';
 		$this->app->employee
-            ->addActivity("Voucher : '".$this['name']."' now active", null/* Related Document ID*/, $this->id /*Related Contact ID*/,null,null,"xepan_commerce_discountvoucher")
+            ->addActivity("Voucher : '".$this['name']."' now active", null/* Related Document ID*/, null /*Related Contact ID*/,null,null,"xepan_commerce_discountvoucher")
             ->notifyWhoCan('activate','InActive',$this);
 		$this->save();
 	}
@@ -408,9 +408,30 @@ Commerce Application
 	function deactivate(){
 		$this['status']='InActive';
 		$this->app->employee
-            ->addActivity("Voucher : '". $this['name'] ."' has been deactivated", null /*Related Document ID*/, $this->id /*Related Contact ID*/,null,null,"xepan_commerce_discountvoucher")
+            ->addActivity("Voucher : '". $this['name'] ."' has been deactivated", null /*Related Document ID*/,null /*Related Contact ID*/,null,null,"xepan_commerce_discountvoucher")
             ->notifyWhoCan('deactivate','Active',$this);
 		return $this->save();
+	}
+
+	function beforeDelete($m){	
+		if($m->ref('xepan/commerce/DiscountVoucherUsed')->count()->getOne())
+			throw new \Exception("First Delete the Related Orders/Invoices");
+  	}
+
+  	function discountVoucherUsed($discount_voucher){
+
+		$this->addCondition('name',$discount_voucher);
+		$this->tryLoadAny();
+		$discountvoucherused=$this->add('xepan/commerce/Model_DiscountVoucherUsed');
+		$discountvoucherused['contact_id']=$this->app->auth->model->id;
+		$discountvoucherused['discountvoucher_id']=$this['id'];
+		$discountvoucherused['qsp_master_id']=$this[''];
+		$discountvoucherused->save();
+		$discountvoucherused->addHook('afterSave',function($m){
+			$this->app->employee
+					->addActivity("Discount Voucher : '".$this['name']."' Used By Customer : '".$m['contact']."' On Sales Order No :'".$m['qsp_master_id']."'", null/* Related Document ID*/, null /*Related Contact ID*/,null,null,"xepan_commerce_discountvoucher")
+					->notifyWhoCan('used','Active');
+		});
 	}
 
 	// Model_Customer
@@ -451,6 +472,12 @@ Commerce Application
 		$this->save();
 	}
 
+	function duplicate()
+	{
+		$this->app->employee
+				->addActivity("Item : '".$this['name']."' Duplicated as New Item : '".$name."'", $this->id/* Related Document ID*/, null /*Related Contact ID*/,null,null,"xepan_commerce_itemdetail&document_id=".$this->id."")
+				->notifyWhoCan('unpublish,duplicate','Published');
+	}
 	//Model_PurchaseInvoice
 	function approve(){
 
@@ -1076,6 +1103,12 @@ Communication Application
 	$company_m->app->employee
 			    ->addActivity("Company Information Updated", null/* Related Document ID*/, null /*Related Contact ID*/,null,null,"xepan_communication_general_emailcontent_usertool")
 				->notifyWhoCan(' ',' ',$company_m);
+	//Model_Communication
+	$new_email->addHook('afterSave',function($m){
+			$this->app->employee
+					->addActivity("Email Settings Of Email : '".$this['name']."' Duplicated To New Email : '".$m['name']."' ", $m->id/* Related Document ID*/, null /*Related Contact ID*/,null,null,"xepan_communication_general_email&emailsetting_id=".$m->id."")
+					->notifyWhoCan('used','Active');
+		});
 
 /**
 CMS Application
