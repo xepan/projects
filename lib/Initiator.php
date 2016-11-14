@@ -49,20 +49,20 @@ class Initiator extends \Controller_Addon {
 	}
 
 	function exportWidgets($app,&$array){
-        $array[] = 'xepan\projects\Widget_AccountableSystemUse';
-        $array[] = 'xepan\projects\Widget_EmployeeTaskStatus';
-        $array[] = 'xepan\projects\Widget_EmployeeTimesheet';
-        $array[] = 'xepan\projects\Widget_ProjectHourConsumption';
-        $array[] = 'xepan\projects\Widget_MyTask';
-        $array[] = 'xepan\projects\Widget_MyAssignedTask';
-        $array[] = 'xepan\projects\Widget_SubmittedTask';
-        $array[] = 'xepan\projects\Widget_FollowUps';
-        $array[] = 'xepan\projects\Widget_DepartmentFollowUps';
-        $array[] = 'xepan\projects\Widget_GlobalFollowUps';
-   		$array[] = 'xepan\projects\Widget_MyTaskPerformance';
-   		$array[] = 'xepan\projects\Widget_DepartmentTaskPerformance';
-   		$array[] = 'xepan\projects\Widget_PostTaskPerformance';
-   		$array[] = 'xepan\projects\Widget_GlobalTaskPerformance';
+        $array[] = ['xepan\projects\Widget_AccountableSystemUse','level'=>'Global'];
+        $array[] = ['xepan\projects\Widget_EmployeeTaskStatus','level'=>'Global'];
+        $array[] = ['xepan\projects\Widget_EmployeeTimesheet','level'=>'Global'];
+        $array[] = ['xepan\projects\Widget_ProjectHourConsumption','level'=>'Global'];
+        $array[] = ['xepan\projects\Widget_MyTask','level'=>'Individual'];
+        $array[] = ['xepan\projects\Widget_MyAssignedTask','level'=>'Individual'];
+        $array[] = ['xepan\projects\Widget_SubmittedTask','level'=>'Individual'];
+        $array[] = ['xepan\projects\Widget_FollowUps','level'=>'Individual'];
+        $array[] = ['xepan\projects\Widget_DepartmentFollowUps','level'=>'Department'];
+        $array[] = ['xepan\projects\Widget_GlobalFollowUps','level'=>'Global'];
+   		$array[] = ['xepan\projects\Widget_MyTaskPerformance','level'=>'Individual'];
+   		$array[] = ['xepan\projects\Widget_DepartmentTaskPerformance','level'=>'Department'];
+   		$array[] = ['xepan\projects\Widget_PostTaskPerformance','level'=>'Sibling'];
+   		$array[] = ['xepan\projects\Widget_GlobalTaskPerformance','level'=>'Global'];
    	 }
 
     function exportEntities($app,&$array){
