@@ -27,7 +27,7 @@ class Initiator extends \Controller_Addon {
 			});
 			
 			$m = $this->app->top_menu->addMenu('Projects');
-			$m->addItem(['Dashboard','icon'=>'fa fa-dashboard'],'xepan_projects_projectdashboard');
+			// $m->addItem(['Dashboard','icon'=>'fa fa-dashboard'],'xepan_projects_projectdashboard');
 			$m->addItem(['Project','icon'=>'fa fa-sitemap'],'xepan_projects_project');
 			$m->addItem(['Trace Employee','icon'=>' fa fa-paw'],'xepan_projects_projectlive');
 			$this->app->user_menu->addItem(['Tasks','icon'=>'fa fa-tasks'],'xepan_projects_mytasks');
@@ -39,7 +39,7 @@ class Initiator extends \Controller_Addon {
 
 		$search_project = $this->add('xepan\projects\Model_Project');
 		$this->app->addHook('quick_searched',[$search_project,'quickSearch']);
-		$this->app->addHook('epan_dashboard_page',[$this,'epanDashboard']);
+		// $this->app->addHook('epan_dashboard_page',[$this,'epanDashboard']);
 		$this->app->addHook('logout_page',[$this,'logoutPageManage']);
 		$this->app->addHook('widget_collection',[$this,'exportWidgets']);
         $this->app->addHook('entity_collection',[$this,'exportEntities']);
@@ -79,37 +79,37 @@ class Initiator extends \Controller_Addon {
 			$logout_page->add('View')->setHtml('<b>A task is running. You can stop it or leave it running if your outing is official</b>')->addClass('label label-danger');
 	}
 
-	function epanDashboard($layout,$page){
+	// function epanDashboard($layout,$page){
 		
-		$v = $page->add('View');
-		$v->addClass('col-md-4');
-		$task_assigned_to_me = $v->add('xepan\hr\CRUD',['allow_add'=>null,'grid_class'=>'xepan\projects\View_TaskList']);	    
-	    $task_assigned_to_me->grid->addClass('task-assigned-to-me');
-	    $task_assigned_to_me->grid->template->trySet('task_view_title','My Tasks');
-	    $task_assigned_to_me->js('reload')->reload();
+	// 	$v = $page->add('View');
+	// 	$v->addClass('col-md-4');
+	// 	$task_assigned_to_me = $v->add('xepan\hr\CRUD',['allow_add'=>null,'grid_class'=>'xepan\projects\View_TaskList']);	    
+	//     $task_assigned_to_me->grid->addClass('task-assigned-to-me');
+	//     $task_assigned_to_me->grid->template->trySet('task_view_title','My Tasks');
+	//     $task_assigned_to_me->js('reload')->reload();
 
-		if(!$task_assigned_to_me->isEditing())
-			$task_assigned_to_me->grid->addPaginator(10);
+	// 	if(!$task_assigned_to_me->isEditing())
+	// 		$task_assigned_to_me->grid->addPaginator(10);
 
-		$task_assigned_to_me_model = $page->add('xepan\projects\Model_Formatted_Task');
-	    $task_assigned_to_me_model
-	    			->addCondition('status',['Pending','Inprogress'])
-	    			->addCondition(
-	    				$task_assigned_to_me_model->dsql()->orExpr()
-	    					->where('assign_to_id',$this->app->employee->id)
-	    					->where(
-    								$task_assigned_to_me_model->dsql()->andExpr()
-    									->where('created_by_id',$this->app->employee->id)
-    									->where('assign_to_id',null)
-	    							)
-	    				)
-	    			->addCondition('type','Task');
+	// 	$task_assigned_to_me_model = $page->add('xepan\projects\Model_Formatted_Task');
+	//     $task_assigned_to_me_model
+	//     			->addCondition('status',['Pending','Inprogress'])
+	//     			->addCondition(
+	//     				$task_assigned_to_me_model->dsql()->orExpr()
+	//     					->where('assign_to_id',$this->app->employee->id)
+	//     					->where(
+ //    								$task_assigned_to_me_model->dsql()->andExpr()
+ //    									->where('created_by_id',$this->app->employee->id)
+ //    									->where('assign_to_id',null)
+	//     							)
+	//     				)
+	//     			->addCondition('type','Task');
 
-	    $task_assigned_to_me->setModel($task_assigned_to_me_model)->setOrder('updated_at','desc');			
+	//     $task_assigned_to_me->setModel($task_assigned_to_me_model)->setOrder('updated_at','desc');			
 	
-	    $followups_view = $page->add('xepan\projects\View_MyFollowups');
-	    $followups_view->addClass('col-md-4');
-	}
+	//     $followups_view = $page->add('xepan\projects\View_MyFollowups');
+	//     $followups_view->addClass('col-md-4');
+	// }
 
 	function setup_frontend(){
 		$this->routePages('xepan_projects');
