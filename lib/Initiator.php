@@ -59,7 +59,8 @@ class Initiator extends \Controller_Addon {
         $array[] = 'xepan\projects\Widget_FollowUps';
         $array[] = 'xepan\projects\Widget_DepartmentFollowUps';
         $array[] = 'xepan\projects\Widget_GlobalFollowUps';
-    }	$array[] = 'xepan\projects\Widget_MyTaskPerformance';
+   		$array[] = 'xepan\projects\Widget_MyTaskPerformance';
+   	 }
 
     function exportEntities($app,&$array){
         $array['project'] = ['caption'=>'Project','type'=>'DropDown','model'=>'xepan\projects\Model_Project'];
