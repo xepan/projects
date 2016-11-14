@@ -41,10 +41,27 @@ class Initiator extends \Controller_Addon {
 		$this->app->addHook('quick_searched',[$search_project,'quickSearch']);
 		$this->app->addHook('epan_dashboard_page',[$this,'epanDashboard']);
 		$this->app->addHook('logout_page',[$this,'logoutPageManage']);
+		$this->app->addHook('widget_collection',[$this,'exportWidgets']);
+        $this->app->addHook('entity_collection',[$this,'exportEntities']);
 		$this->app->user_menu->addItem(['My Timesheet','icon'=>'fa fa-clock-o'],'xepan_projects_todaytimesheet');
 		return $this;
 
 	}
+
+	function exportWidgets($app,&$array){
+        $array[] = 'xepan\projects\Widget_AccountableSystemUse';
+        $array[] = 'xepan\projects\Widget_EmployeeTaskStatus';
+        $array[] = 'xepan\projects\Widget_EmployeeTimesheet';
+        $array[] = 'xepan\projects\Widget_ProjectHourConsumption';
+        $array[] = 'xepan\projects\Widget_MyTask';
+        $array[] = 'xepan\projects\Widget_MyAssignedTask';
+        $array[] = 'xepan\projects\Widget_SubmittedTask';
+        $array[] = 'xepan\projects\Widget_FollowUps';
+    }
+
+    function exportEntities($app,&$array){
+        $array['project'] = ['caption'=>'Project','type'=>'DropDown','model'=>'xepan\projects\Model_Project'];
+    }
 
 	function logoutPageManage($app,$logout_page){		
 		$timesheet = $this->add('xepan\projects\Model_Timesheet');
