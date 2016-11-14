@@ -57,6 +57,8 @@ class Initiator extends \Controller_Addon {
         $array[] = 'xepan\projects\Widget_MyAssignedTask';
         $array[] = 'xepan\projects\Widget_SubmittedTask';
         $array[] = 'xepan\projects\Widget_FollowUps';
+        $array[] = 'xepan\projects\Widget_DepartmentFollowUps';
+        $array[] = 'xepan\projects\Widget_GlobalFollowUps';
     }
 
     function exportEntities($app,&$array){
