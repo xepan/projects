@@ -27,15 +27,11 @@ class Model_Task extends \xepan\base\Model_Table
 		$this->hasOne('xepan\base\Contact','related_id');
 		
 		$this->addField('task_name');
-		$employee_model = $this->add('xepan\hr\Model_Employee')->addCondition('status','Active');		
-		$this->addField('notify_to')->display(['form'=>'xepan\base\DropDown'])->setModel($employee_model);
 		$this->addField('description')->type('text')->display(['form'=>'xepan\base\RichText']);
 		$this->addField('deadline')->display(['form'=>'DateTimePicker'])->type('datetime');
 		$this->addField('starting_date')->display(['form'=>'DateTimePicker'])->type('datetime')->defaultValue($this->app->now);
 		$this->addField('estimate_time')/*->display(['form'=>'TimePicker'])*/;
-		$this->addField('created_at')->type('datetime')->defaultValue($this->app->now);
 		$this->addField('status')->defaultValue('Pending');
-		$this->addField('updated_at')->type('datetime');
 		$this->addField('type')->enum(['Task','Followup','Reminder']);
 		$this->addField('priority')->setValueList(['25'=>'Low','50'=>'Medium','75'=>'High','90'=>'Critical'])->EmptyText('Priority')->defaultValue(50);
 		$this->addField('set_reminder')->type('boolean');
@@ -47,6 +43,17 @@ class Model_Task extends \xepan\base\Model_Table
 		$this->addField('is_reminded')->type('boolean');
 		$this->addField('is_reminder_only')->type('boolean')->defaultValue(false);
 		$this->addField('reminder_time_compare_with')->setValueList(['starting_date'=>'starting_date','deadline'=>'deadline'])->defaultValue('starting_date');
+		
+		$employee_model = $this->add('xepan\hr\Model_Employee')->addCondition('status','Active');		
+		$this->addField('notify_to')->display(['form'=>'xepan\base\DropDown'])->setModel($employee_model);
+		
+		$this->addField('created_at')->type('datetime')->defaultValue($this->app->now);
+		$this->addField('updated_at')->type('datetime');
+		$this->addField('rejected_at')->type('datetime');
+		$this->addField('received_at')->type('datetime');
+		$this->addField('submitted_at')->type('datetime');
+		$this->addField('reopened_at')->type('datetime');
+		$this->addField('completed_at')->type('datetime');
 
 		$this->hasMany('xepan\projects\Follower_Task_Association','task_id');
 		$this->hasMany('xepan\projects\Comment','task_id');	
@@ -240,6 +247,7 @@ class Model_Task extends \xepan\base\Model_Table
 	function submit(){
 		$this['status']='Submitted';
 		$this['updated_at']=$this->app->now;
+		$this['submitted_at']=$this->app->now;
 		$this->save();
 		
 		$model_close_timesheet = $this->add('xepan\projects\Model_Timesheet');
@@ -267,6 +275,7 @@ class Model_Task extends \xepan\base\Model_Table
 		
 		$this['status']='Pending';
 		$this['updated_at']=$this->app->now;
+		$this['received_at']=$this->app->now;
 		$this->save();
 		
 		if($this['assign_to_id']){
@@ -282,6 +291,7 @@ class Model_Task extends \xepan\base\Model_Table
 
 		$this['status']='Pending';
 		$this['updated_at']=$this->app->now;
+		$this['rejected_at']=$this->app->now;
 		$this['assign_to_id']=$this['created_by_id'];
 		$this->save();
 		
@@ -342,6 +352,7 @@ class Model_Task extends \xepan\base\Model_Table
 
 		$this['status']='Completed';
 		$this['updated_at']=$this->app->now;
+		$this['completed_at']=$this->app->now;
 		$this->save();
 		
 		if($this['assign_to_id'] == $this['created_by_id']){
@@ -383,6 +394,7 @@ class Model_Task extends \xepan\base\Model_Table
 
 		$this['status'] = 'Pending';
 		$this['updated_at']=$this->app->now;
+		$this['reopened_at']=$this->app->now;
 		$this->save();
 	}
 
