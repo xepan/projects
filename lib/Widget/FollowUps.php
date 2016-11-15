@@ -15,8 +15,10 @@ class Widget_FollowUps extends \xepan\base\Widget{
 	    $this->grid->template->trySet('task_view_title','Followups');
 	    $this->grid->js('reload')->reload();
 
-		if(!$this->grid->isEditing())
+		if(!$this->grid->isEditing()){
+			$this->grid->grid->template->trySet('task_view_title', 'My FollowUps');
 			$this->grid->grid->addPaginator(10);
+		}
 
 		$this->grid->add('xepan\base\Controller_Avatar',['name_field'=>'created_by','image_field'=>'created_by_image','extra_classes'=>'profile-img center-block','options'=>['size'=>50,'display'=>'block','margin'=>'auto'],'float'=>null,'model'=>$this->model]);
 

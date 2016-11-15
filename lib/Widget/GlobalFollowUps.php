@@ -16,8 +16,10 @@ class Widget_GlobalFollowUps extends \xepan\base\Widget{
 	function recursiveRender(){
 	    $this->grid->js('reload')->reload();
 
-		if(!$this->grid->isEditing())
+		if(!$this->grid->isEditing()){
+			$this->grid->grid->template->trySet('task_view_title', 'DepartmentFollowUps');
 			$this->grid->grid->addPaginator(10);
+		}
 
 		$this->grid->add('xepan\base\Controller_Avatar',['name_field'=>'created_by','image_field'=>'created_by_image','extra_classes'=>'profile-img center-block','options'=>['size'=>50,'display'=>'block','margin'=>'auto'],'float'=>null,'model'=>$this->model]);
 

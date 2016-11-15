@@ -15,8 +15,10 @@ class Widget_MyAssignedTask extends \xepan\base\Widget{
 		$this->grid->addClass('task-assigned-by-me');
 	    $this->grid->js('reload')->reload();
 
-		if(!$this->grid->isEditing())
+		if(!$this->grid->isEditing()){
+			$this->grid->grid->template->trySet('task_view_title', 'My Assigned Tasks');
 			$this->grid->grid->addPaginator(10);
+		}
 
 		$this->grid->add('xepan\base\Controller_Avatar',['name_field'=>'assign_to','image_field'=>'assigned_to_image','extra_classes'=>'profile-img center-block','options'=>['size'=>50,'display'=>'block','margin'=>'auto'],'float'=>null,'model'=>$this->model]);
 

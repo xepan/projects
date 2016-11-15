@@ -10,7 +10,7 @@ class Widget_EmployeeTimesheet extends \xepan\base\Widget{
 		$this->report->enableFilterEntity('project');
 		$this->report->enableFilterEntity('employee');
 
-		$this->grid = $this->add('Grid');
+		$this->grid = $this->add('xepan\base\Grid');
 	}
 
 	function recursiveRender(){
@@ -27,6 +27,9 @@ class Widget_EmployeeTimesheet extends \xepan\base\Widget{
 
 		$this->grid->setModel($timesheet,['task','starttime','endtime','duration','project']);
 		$this->grid->addPaginator(10);
+
+		$this->grid->add('H2',null,'grid_buttons')->set('Employee Timesheet')->addClass('text-muted');
+		$this->grid->removeSearchIcon();
 
 		return parent::recursiveRender();
 	}
