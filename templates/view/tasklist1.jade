@@ -24,7 +24,9 @@
           i.fa.fa-comment(style="font-size:16px;color:{$comment_color};" title="total comment {$comment_count}") &nbsp;{$comment_count}&nbsp;
           i.fa.fa-paperclip(style="font-size:16px;color:green;" title="total attachment {$attachment_count}") &nbsp;{$attachment_count}
           br
+          {action_wrapper}  
           {$action}
+          {/}
           {$delete} 
           span(class="label label-xs label-{$color}" title="task priority : {$priority}") {$priority_name} 
         .time-ago

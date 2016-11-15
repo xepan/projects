@@ -7,7 +7,7 @@ class View_TaskList extends \xepan\base\Grid{
 	public $view_reload_url=null;
 	public $running_task_id = null;
 	public $play_wrapper_template=null;
-	
+	public $del_action_wrapper;
 	function init(){
 		parent::init();
 
@@ -55,6 +55,9 @@ class View_TaskList extends \xepan\base\Grid{
 
 		$this->current_row['task_no']= str_pad($this->model->id, 4, '0', STR_PAD_LEFT);
 		
+		if($this->del_action_wrapper)		
+			$this->current_row['action_wrapper']= ' ';
+
 		if($this->isCurrentTask()){
 			$this->createRunning();
 		}else{

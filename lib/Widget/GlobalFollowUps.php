@@ -10,12 +10,10 @@ class Widget_GlobalFollowUps extends \xepan\base\Widget{
 		$this->report->enableFilterEntity('employee');
 		$this->report->enableFilterEntity('department');
 		
-		$this->grid = $this->add('xepan\hr\CRUD',['allow_add'=>null,'grid_class'=>'xepan\projects\View_TaskList']);	    
+		$this->grid = $this->add('xepan\hr\CRUD',['allow_add'=>null,'grid_class'=>'xepan\projects\View_TaskList','grid_options'=>['del_action_wrapper'=>true]]);	    
 	}
 
 	function recursiveRender(){
-
-	    $this->grid->template->trySet('task_view_title','Followups');
 	    $this->grid->js('reload')->reload();
 
 		if(!$this->grid->isEditing())
