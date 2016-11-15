@@ -23,7 +23,7 @@ class Widget_MyTask extends \xepan\base\Widget{
 
 		$task_assigned_to_me_model = $this->add('xepan\projects\Model_Formatted_Task');
 	    $task_assigned_to_me_model
-	    			->addCondition('status',['Pending','Inprogress'])
+	    			->addCondition('status',['Pending','Inprogress','Assigned'])
 	    			->addCondition(
 	    				$task_assigned_to_me_model->dsql()->orExpr()
 	    					->where('assign_to_id',$this->app->employee->id)
