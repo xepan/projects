@@ -17,7 +17,7 @@ class Widget_GlobalFollowUps extends \xepan\base\Widget{
 	    $this->grid->js('reload')->reload();
 
 		if(!$this->grid->isEditing()){
-			$this->grid->grid->template->trySet('task_view_title', 'DepartmentFollowUps');
+			$this->grid->grid->template->trySet('task_view_title', 'Company Followups');
 			$this->grid->grid->addPaginator(10);
 		}
 
