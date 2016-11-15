@@ -32,19 +32,20 @@ class Widget_GlobalFollowUps extends \xepan\base\Widget{
 	    	if(isset($this->report->employee))
 	    		$department_employees->addCondition('id',$this->report->employee);
 			$department_employees->addCondition('department_id',$this->report->department);
+			
+			$followups_model->addCondition(
+					$followups_model->dsql()->orExpr()
+						->where('assign_to_id','in',$department_employees->fieldQuery('id'))
+						->where(
+							$followups_model->dsql()->andExpr()
+								->where('created_by_id','in',$department_employees->fieldQuery('id'))
+								->where('assign_to_id',null)
+							   )
+				);
 	    }
-		else
-			$department_employees->addCondition('department_id',$this->app->employee['department_id']);
+		// else
+			// $department_employees->addCondition('department_id',$this->app->employee['department_id']);
 
-		$followups_model->addCondition(
-				$followups_model->dsql()->orExpr()
-					->where('assign_to_id','in',$department_employees->fieldQuery('id'))
-					->where(
-						$followups_model->dsql()->andExpr()
-							->where('created_by_id','in',$department_employees->fieldQuery('id'))
-							->where('assign_to_id',null)
-						   )
-			);
 	   
 	    if(isset($this->report->start_date))
 			$followups_model->addCondition('starting_date','>',$this->report->start_date);
