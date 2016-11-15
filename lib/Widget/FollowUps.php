@@ -35,10 +35,10 @@ class Widget_FollowUps extends \xepan\base\Widget{
 	    				)
 	    				->addCondition('type','Followup');
 	   
-	    if(isset($this->report->start_date))
-			$followups_model->addCondition('starting_date','>',$this->report->start_date);
-		if(isset($this->report->end_date))
-			$followups_model->addCondition('starting_date','<',$this->app->nextDate($this->report->end_date));			
+	 //    if(isset($this->report->start_date))
+		// 	$followups_model->addCondition('starting_date','>',$this->report->start_date);
+		// if(isset($this->report->end_date))
+		// 	$followups_model->addCondition('starting_date','<',$this->app->nextDate($this->report->end_date));			
 	  
 	    $this->grid->setModel($followups_model)->setOrder('updated_at','desc');			
 

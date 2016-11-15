@@ -32,10 +32,10 @@ class Widget_SubmittedTask extends \xepan\base\Widget{
 	    					->where('created_by_id',$this->app->employee->id))
 	    			->addCondition('type','Task');
 	   
-	    if(isset($this->report->start_date))
-			$submitted_task_model->addCondition('starting_date','>',$this->report->start_date);
-		if(isset($this->report->end_date))
-			$submitted_task_model->addCondition('starting_date','<',$this->app->nextDate($this->report->end_date));			
+	 //    if(isset($this->report->start_date))
+		// 	$submitted_task_model->addCondition('starting_date','>',$this->report->start_date);
+		// if(isset($this->report->end_date))
+		// 	$submitted_task_model->addCondition('starting_date','<',$this->app->nextDate($this->report->end_date));			
 	  
 	    $this->grid->setModel($submitted_task_model)->setOrder('updated_at','desc');			
 

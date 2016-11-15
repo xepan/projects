@@ -37,10 +37,10 @@ class Widget_MyTask extends \xepan\base\Widget{
 	    				)
 	    			->addCondition('type','Task');
 	   
-	    if(isset($this->report->start_date))
-			$task_assigned_to_me_model->addCondition('starting_date','>',$this->report->start_date);
-		if(isset($this->report->end_date))
-			$task_assigned_to_me_model->addCondition('starting_date','<',$this->app->nextDate($this->report->end_date));			
+	 //    if(isset($this->report->start_date))
+		// 	$task_assigned_to_me_model->addCondition('starting_date','>',$this->report->start_date);
+		// if(isset($this->report->end_date))
+		// 	$task_assigned_to_me_model->addCondition('starting_date','<',$this->app->nextDate($this->report->end_date));			
 	  
 	    $this->grid->setModel($task_assigned_to_me_model)->setOrder('updated_at','desc');			
 
