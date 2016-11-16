@@ -55,8 +55,13 @@ class View_TaskList extends \xepan\base\Grid{
 
 		$this->current_row['task_no']= str_pad($this->model->id, 4, '0', STR_PAD_LEFT);
 		
-		if($this->del_action_wrapper)		
+		if($this->del_action_wrapper){
+			$this->current_row['dashboard_sport_for_action']= $thisTask['status'];
 			$this->current_row['action_wrapper']= ' ';
+		}else{
+			$this->current_row['dashboard_sport_for_action']= ' ';
+			$this->current_row['status_wrapper']= ' ';
+		}		
 
 		if($this->isCurrentTask()){
 			$this->createRunning();
