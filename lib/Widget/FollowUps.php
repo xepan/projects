@@ -8,15 +8,14 @@ class Widget_FollowUps extends \xepan\base\Widget{
 
 		$this->report->enableFilterEntity('date_range');
 		
-		$this->grid = $this->add('xepan\hr\CRUD',['allow_add'=>null,'grid_class'=>'xepan\projects\View_TaskList']);	    
+		$this->grid = $this->add('xepan\hr\CRUD',['allow_add'=>null,'grid_class'=>'xepan\projects\View_TaskList','grid_options'=>['del_action_wrapper'=>true]]);	    
 	}
 
-	function recursiveRender(){
-	    $this->grid->template->trySet('task_view_title','Followups');
-	    $this->grid->js('reload')->reload();
+	function recursiveRender(){		
 
 		if(!$this->grid->isEditing()){
 			$this->grid->grid->template->trySet('task_view_title', 'My FollowUps');
+	    	$this->grid->grid->template->trySet('title_url',$this->app->url('xepan_projects_myfollowups'));
 			$this->grid->grid->addPaginator(10);
 		}
 

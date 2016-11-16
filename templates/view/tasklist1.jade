@@ -1,5 +1,6 @@
 .main-box.feed.xepan-grid.xepan-tasklist-grid(id="{$_name}" class="{$class}")
-  h2.text-center {$task_view_title}
+  a(href= "{title_url}\#{/}")
+    h2.text-center {$task_view_title}
   {$grid_buttons} 
   {$quick_search}
   {$filterform}

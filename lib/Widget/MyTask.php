@@ -8,7 +8,7 @@ class Widget_MyTask extends \xepan\base\Widget{
 
 		$this->report->enableFilterEntity('date_range');
 		
-		$this->grid = $this->add('xepan\hr\CRUD',['allow_add'=>null,'grid_class'=>'xepan\projects\View_TaskList']);	    
+		$this->grid = $this->add('xepan\hr\CRUD',['allow_add'=>null,'grid_class'=>'xepan\projects\View_TaskList','grid_options'=>['del_action_wrapper'=>true]]);	    
 		$this->grid->addClass('task-assigned-to-me');
 	}
 
@@ -18,6 +18,7 @@ class Widget_MyTask extends \xepan\base\Widget{
 
 		if(!$this->grid->isEditing()){
 			$this->grid->grid->template->trySet('task_view_title', 'My Tasks');
+			$this->grid->grid->template->trySet('title_url',$this->app->url('xepan_projects_mytasks'));
 			$this->grid->grid->addPaginator(10);
 		}
 
