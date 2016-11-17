@@ -439,11 +439,14 @@ class Model_Task extends \xepan\base\Model_Table
 				$employee_array = [];
 				$employee_array = explode(',', $task['notify_to']);
 
+
+
 				if(in_array("Email", $remind_via_array)){
 					$emails = [];
 					foreach ($employee_array as $value){
 						if(!$value) continue; // in case user kept 'Please select' also
 						$emp = $this->add('xepan\hr\Model_Employee')->load($value);
+						if($emp['status'] != 'Active') continue;
 						array_push($emails, $emp['first_email']);
 					}
 					$to_emails = implode(', ', $emails);
@@ -526,7 +529,9 @@ class Model_Task extends \xepan\base\Model_Table
 		$recurring_task->addCondition('starting_date','<=',$this->app->now);
 
 		foreach ($recurring_task as $task) {
-			
+			if($this->IsEmployeeInactive($task['created_by_id'],$task['assign_to_id']))
+				return;				
+
 			$model_task = $this->add('xepan\projects\Model_Task');
 			$model_task['project_id'] = $task['project_id']; 
 			$model_task['task_name']  = $task['task_name'];
@@ -581,6 +586,18 @@ class Model_Task extends \xepan\base\Model_Table
 			$task->saveAs('xepan\projects\Model_Task');
 		}
 
+	}
+
+	function IsEmployeeInactive($creator_id = null, $assignee_id = null){
+		$emp = $this->add('xepan\hr\Model_Employee');
+		$emp->addCondition('status','InActive');
+		$emp->addCondition('id',[$creator_id,$assignee_id]);
+		$emp->tryLoadAny();
+
+		if($emp->loaded())
+			return true;
+
+		return false;
 	}
 
 
