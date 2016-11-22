@@ -16,9 +16,8 @@ class Model_Widget_TaskStatus extends \xepan\hr\Model_Employee{
 			$task->addCondition('assign_to_id',$q->getField('id'))
 				 ->addCondition('type','Task')
 				 ->addCondition('created_by_id','<>',$q->getField('id'))
-				 ->addCondition('status','Pending')
 				 ->addCondition('received_at','>=',$this->start_date)
-				 ->addCondition('submitted_at','<',[$this->end_date,null]);
+				 ->addCondition([['submitted_at','<',$this->end_date],['submitted_at',null]]);
 			return $task->count();
 		});
 
@@ -26,10 +25,9 @@ class Model_Widget_TaskStatus extends \xepan\hr\Model_Employee{
 			$task = $this->add('xepan\projects\Model_Task');
 			$task->addCondition('assign_to_id',$q->getField('id'))
 				 ->addCondition('type','Task')
-				 ->addCondition('status','Assigned')
       	         ->addCondition('created_by_id','<>',$q->getField('id'))
       	         ->addCondition('created_at','>=',$this->start_date)
-				 ->addCondition('created_at','<=',$this->end_date);
+				 ->addCondition([['received_at','<',$this->end_date],['received_at',null]]);
             return $task->count();
 		});
 
@@ -38,8 +36,8 @@ class Model_Widget_TaskStatus extends \xepan\hr\Model_Employee{
 			$task->addCondition('assign_to_id',$q->getField('id'))
 				 ->addCondition('type','Task')
 				 ->addCondition('created_by_id','<>',$q->getField('id'))
-				 ->addCondition('received_at','>=',$this->start_date)
-				 ->addCondition('received_at','<=',$this->end_date);	 
+      	         ->addCondition('received_at','>=',$this->start_date)
+				 ->addCondition([['submitted_at','<',$this->end_date],['submitted_at',null]]);	 
 			return $task->count();
 		});
 
@@ -49,7 +47,7 @@ class Model_Widget_TaskStatus extends \xepan\hr\Model_Employee{
 				 ->addCondition('type','Task')
                  ->addCondition('created_by_id',$q->getField('id'))
                  ->addCondition('created_at','>=',$this->start_date)
-				 ->addCondition('created_at','<=',$this->end_date);
+                 ->addCondition([['received_at','<',$this->end_date],['received_at',null]]);	
 			return $task->count();
 		});
 
@@ -58,9 +56,8 @@ class Model_Widget_TaskStatus extends \xepan\hr\Model_Employee{
 			$task->addCondition('assign_to_id','<>',$q->getField('id'))
 				 ->addCondition('type','Task')
                  ->addCondition('created_by_id',$q->getField('id'))
-				 ->addCondition('status','Pending')
 				 ->addCondition('received_at','>=',$this->start_date)
-				 ->addCondition('received_at','<=',$this->end_date);
+				 ->addCondition([['submitted_at','<',$this->end_date],['submitted_at',null]]);	
 			return $task->count();
 		});
 
@@ -69,9 +66,8 @@ class Model_Widget_TaskStatus extends \xepan\hr\Model_Employee{
 			$task->addCondition('assign_to_id','<>',$q->getField('id'))
 				 ->addCondition('type','Task')
 				 ->addCondition('created_by_id',$q->getField('id'))
-				 ->addCondition('status','Submitted')
 				 ->addCondition('submitted_at','>=',$this->start_date)
-				 ->addCondition('submitted_at','<=',$this->end_date);
+				 ->addCondition([['completed_at','<',$this->end_date],['completed_at',null]]);
 			return $task->count();
 		});
 	}
