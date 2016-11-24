@@ -235,7 +235,7 @@ class Model_Task extends \xepan\base\Model_Table
 			// if($this['assign_to_id'] == $this['created_by_id']){
 			// 	$assigntask_notify_msg = "Just you have assign a task '" . $this['task_name'] ."' to yourself";
 			// }else{
-				$assigntask_notify_msg = " Task Assigned to you : '" . $this['task_name'] ."' by '". $created_by ."' ";
+				$assigntask_notify_msg = ['title'=>'New task','message'=>" Task Assigned to you : '" . $this['task_name'] ."' by '". $created_by ."' ",'type'=>'info','sticky'=>true,'desktop'=>true];
 			// }
 			
 			$this->app->employee
