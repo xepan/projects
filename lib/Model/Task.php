@@ -10,9 +10,9 @@ class Model_Task extends \xepan\base\Model_Table
 	public $status=['Pending','Submitted','Completed','Assigned','Inprogress'];
 	
 	public $actions=[
-		'Pending'=>['submit','mark_complete','stop_recurrence'],
+		'Pending'=>['submit','mark_complete','stop_recurrence','reset_deadline'],
 		'Inprogress'=>['submit','mark_complete','stop_recurrence'],
-		'Assigned'=>['receive','reject','stop_recurrence'],
+		'Assigned'=>['receive','reject','stop_recurrence','reset_deadline'],
 		'Submitted'=>['mark_complete','reopen','stop_recurrence'],
 		'Completed'=>['stop_recurrence']
 	];
@@ -302,6 +302,33 @@ class Model_Task extends \xepan\base\Model_Table
 		}
 
 		return true;	
+	}
+
+	function page_reset_deadline($p){
+		if($this['created_by_id'] != $this->app->employee->id){			
+			 $p->add('View')->set('Sorry you have to ask assignee to change deadline');
+			return;
+		}
+
+		$form = $p->add('Form');
+		$form->addField('DateTimePicker','deadline');
+		$form->addSubmit('Save');
+			
+		if($form->isSubmitted()){
+			$this->reset_deadline($form['deadline']);
+			$this->app->employee
+			          ->addActivity("Task '".$this['task_name']."' deadline changed by'".$this->app->employee['name']."'",null, $this['assign_to_id'] /*Related Contact ID*/,null,null,null)
+			          ->notifyTo([$this['created_by_id'],$this['assign_to_id']],"Task : ".$this['task_name']."' deadline changed by'".$this->app->employee['name']."'");
+
+			return $this->app->page_action_result = $this->app->js(true,$p->js()->univ()->closeDialog())->univ()->successMessage('Done');
+		}
+	}
+
+	function reset_deadline($deadline){
+		if($deadline){			
+			$this['deadline'] = $deadline;
+			$this->save();
+		} 
 	}
 
 	function page_mark_Complete($p){

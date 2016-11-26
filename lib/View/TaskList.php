@@ -90,9 +90,14 @@ class View_TaskList extends \xepan\base\Grid{
 		}
 
 		// Second Column
-		if($thisTask->IhaveAssignedToOthers() && $this['status'] != "Submitted") 
+		if($thisTask->IhaveAssignedToOthers() && ($this['status'] == "Inprogress" OR $this['status'] == "Completed")) 
 			$action_btn_list = [];
-		
+
+		if($thisTask->IhaveAssignedToOthers() && ($this['status'] == "Pending" OR $this['status'] == "Assigned")){
+			unset($action_btn_list[0]);
+			unset($action_btn_list[1]);
+			unset($action_btn_list[2]);
+		} 
 
 		if(!$thisTask->canDelete()){
 			$this->current_row_html['delete'] = ' ';
