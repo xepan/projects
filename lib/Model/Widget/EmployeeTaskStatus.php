@@ -3,11 +3,15 @@
 namespace xepan\projects;
 
 class Model_Widget_EmployeeTaskStatus extends \xepan\hr\Model_Employee{
-	
+	public $entity;
+
 	function init(){
 		parent::init();
 		
 		$this->addCondition('status','Active');
+		
+		if($this->entity == 'Personal')
+			$this->addCondition('id',$this->app->employee->id);
 
 		// total number of tasks alloted to employee
 		$this->addExpression('total_tasks')->set(function($m,$q){

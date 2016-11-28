@@ -5,11 +5,15 @@ namespace xepan\projects;
 class Model_Widget_AccountableSystemUse extends \xepan\hr\Model_Employee{
 	public $start_date; 		
 	public $end_date;
+	public $entity;
 
 	function init(){
 		parent::init();
 
      	$this->addCondition('status','Active');
+     	
+     	if($this->entity)
+     		$this->addCondition('id',$this->app->employee->id);
 
 		$this->addExpression('pending_works')->set(function($m,$q){
 			$task = $this->add('xepan\projects\Model_Task');
