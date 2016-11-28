@@ -6,14 +6,23 @@ class Model_Widget_AccountableSystemUse extends \xepan\hr\Model_Employee{
 	public $start_date; 		
 	public $end_date;
 	public $entity;
+	public $dept_id;
 
 	function init(){
 		parent::init();
 
      	$this->addCondition('status','Active');
      	
-     	if($this->entity)
+     	if($this->entity=='Personal')
      		$this->addCondition('id',$this->app->employee->id);
+
+     	if($this->entity == 'Department'){
+     		if($this->dept_id)
+     			$this->addCondition('department_id',$this->dept_id);
+     		else
+     			$this->addCondition('department_id',$this->app->employee['department_id']);
+     	}
+
 
 		$this->addExpression('pending_works')->set(function($m,$q){
 			$task = $this->add('xepan\projects\Model_Task');

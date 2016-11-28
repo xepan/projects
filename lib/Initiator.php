@@ -53,22 +53,26 @@ class Initiator extends \Controller_Addon {
         $array[] = ['xepan\projects\Widget_EmployeeTaskStatus','level'=>'Global','title'=>'Employee Task Status'];
         $array[] = ['xepan\projects\Widget_EmployeeTimesheet','level'=>'Global','title'=>'Employee Timesheet'];
         $array[] = ['xepan\projects\Widget_ProjectHourConsumption','level'=>'Global','title'=>'Project Hour Consumption'];
-        $array[] = ['xepan\projects\Widget_MyTask','level'=>'Individual','title'=>'My Tasks'];
-        $array[] = ['xepan\projects\Widget_MyAssignedTask','level'=>'Individual','title'=>'My Assigned Tasks'];
-        $array[] = ['xepan\projects\Widget_SubmittedTask','level'=>'Individual','title'=>'Submitted Tasks'];
-        $array[] = ['xepan\projects\Widget_FollowUps','level'=>'Individual','title'=>'My Followups'];
-        $array[] = ['xepan\projects\Widget_DepartmentFollowUps','level'=>'Department','title'=>'Departmental Followups'];
         $array[] = ['xepan\projects\Widget_GlobalFollowUps','level'=>'Global','title'=>'Company Followups'];
-   		$array[] = ['xepan\projects\Widget_MyTaskPerformance','level'=>'Individual','title'=>'My Performance'];
-   		$array[] = ['xepan\projects\Widget_DepartmentTaskPerformance','level'=>'Department','title'=>'Department Performance'];
-   		$array[] = ['xepan\projects\Widget_PostTaskPerformance','level'=>'Sibling','title'=>'Post Performance'];
    		$array[] = ['xepan\projects\Widget_GlobalTaskPerformance','level'=>'Global','title'=>'Company Performance'];
    		$array[] = ['xepan\projects\Widget_TaskStatus','level'=>'Global','title'=>'Task Status Chart'];
+        
+   		$array[] = ['xepan\projects\Widget_PostTaskPerformance','level'=>'Sibling','title'=>'Post Performance'];
+        
+        $array[] = ['xepan\projects\Widget_DepartmentFollowUps','level'=>'Department','title'=>'Departmental Followups'];
+   		$array[] = ['xepan\projects\Widget_DepartmentTaskPerformance','level'=>'Department','title'=>'Department Performance'];
+   		$array[] = ['xepan\projects\Widget_DepartmentAccountableSystemUse','level'=>'Department','title'=>'Department Accountable System Use'];
+        
+   		$array[] = ['xepan\projects\Widget_MyTaskPerformance','level'=>'Individual','title'=>'My Performance'];
    		$array[] = ['xepan\projects\Widget_HotTasks','level'=>'Individual','title'=>'Tasks Near Deadline'];
    		$array[] = ['xepan\projects\Widget_OverdueTasks','level'=>'Individual','title'=>'Overdue Tasks'];
    		$array[] = ['xepan\projects\Widget_TaskToReceive','level'=>'Individual','title'=>'Tasks Waiting To Be Received'];
    		$array[] = ['xepan\projects\Widget_MyTaskStatus','level'=>'Individual','title'=>'My Task Status'];
         $array[] = ['xepan\projects\Widget_MyAccountableSystemUse','level'=>'Individual','title'=>'My Accountable System Use'];
+        $array[] = ['xepan\projects\Widget_MyTask','level'=>'Individual','title'=>'My Tasks'];
+        $array[] = ['xepan\projects\Widget_MyAssignedTask','level'=>'Individual','title'=>'My Assigned Tasks'];
+        $array[] = ['xepan\projects\Widget_SubmittedTask','level'=>'Individual','title'=>'Submitted Tasks'];
+        $array[] = ['xepan\projects\Widget_FollowUps','level'=>'Individual','title'=>'My Followups'];
    	 }
 
     function exportEntities($app,&$array){
