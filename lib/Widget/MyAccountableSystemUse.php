@@ -17,7 +17,8 @@ class Widget_MyAccountableSystemUse extends \xepan\base\Widget{
 		$this->chart->setType('bar')
      		        ->setModel($accountablity,'name',['pending_works','please_receive','received_so_far','total_tasks_assigned','take_report_on_pending','check_submitted'])
      		        ->setGroup([['received_so_far','total_tasks_assigned'],['pending_works','take_report_on_pending']])
-     		        ->setTitle('Staff Accountable System Use');
+     		        ->setTitle('Staff Accountable System Use')
+     		        ->openOnClick('xepan_projects_widget_accountablesystemuse');
 
 		return parent::recursiveRender();
 	}
