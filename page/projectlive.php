@@ -20,6 +20,8 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 		// $top_view->setModel($model_project,['name']);
 
 		$model_employee = $this->add('xepan\projects\Model_Employee');
+		$model_employee->addCondition('status','Active');
+		$model_employee->setOrder('pending_tasks_count','desc');
 		$model_employee->getElement('pending_tasks_count')->destroy();
 		$model_employee->addExpression('pending_tasks_count')->set(function ($m,$q)use($project_id){
 			return $m->refSQL('xepan\projects\Task')
