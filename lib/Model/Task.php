@@ -148,7 +148,7 @@ class Model_Task extends \xepan\base\Model_Table
 							->setOrder('created_at','desc')
 							->setLimit(1)
 							->fieldQuery('created_at');
-			});
+		});
  	}
 	
  	function checkEmployeeHasEmail(){
@@ -232,11 +232,7 @@ class Model_Task extends \xepan\base\Model_Table
 			if($model_emp->loaded())
 				$created_by = $model_emp['name'];
 			
-			// if($this['assign_to_id'] == $this['created_by_id']){
-			// 	$assigntask_notify_msg = "Just you have assign a task '" . $this['task_name'] ."' to yourself";
-			// }else{
-				$assigntask_notify_msg = ['title'=>'New task','message'=>" Task Assigned to you : '" . $this['task_name'] ."' by '". $created_by ."' ",'type'=>'info','sticky'=>true,'desktop'=>true];
-			// }
+			$assigntask_notify_msg = ['title'=>'New task','message'=>" Task Assigned to you : '" . $this['task_name'] ."' by '". $created_by ."' ",'type'=>'info','sticky'=>true,'desktop'=>true];
 			
 			$this->app->employee
 	            ->addActivity("Task '".$this['task_name']."' assigned to '". $emp_name ."'",null, $this['created_by_id'] /*Related Contact ID*/,null,null,null)
@@ -332,17 +328,20 @@ class Model_Task extends \xepan\base\Model_Table
 	}
 
 	function page_mark_Complete($p){
-		$form = $p->add('Form');
-		$form->addField('text','comment');
+		if($this['type'] =='Followup'){
+			$contact = $this->add('xepan\base\Model_Contact');
+			$contact->load($this['related_id']);
+			$form = $p->add('xepan\communication\Form_Communication');
+			$form->setContact($contact);
+		}else{
+			$form = $p->add('Form');
+			$form->addField('text','comment');
+		}
+
 		$form->addSubmit('Save');
 			
 		if($form->isSubmitted()){
-			$this->mark_complete($form['comment']);
-			// if($this['assign_to_id']){
-			// 	$this->app->employee
-			//             ->addActivity("Task '".$this['task_name']."' mark completed by '".$this->app->employee['name']."'",null, $this['assign_to_id'] /*Related Contact ID*/,null,null,null)
-			//             ->notifyTo([$this['created_by_id']],"Task Completed : " . $this['task_name']);
-			// }
+			$this->mark_complete($form);
 			if($this['assign_to_id'] == $this['created_by_id']){
 			$this->app->employee
 		            ->addActivity("Task '".$this['task_name']."' completed by '".$this->app->employee['name']."'",null, $this['assign_to_id'] /*Related Contact ID*/,null,null,null);
@@ -356,13 +355,14 @@ class Model_Task extends \xepan\base\Model_Table
 		}
 	}
 
-	function mark_complete($comment_text){
-
-		if($comment_text){
+	function mark_complete($form){		
+		if($form instanceOf \xepan\communication\Form_Communication){			
+			$form->process();
+		}else{
 			$comment = $this->add('xepan\projects\Model_Comment');
 			$comment['task_id'] = $this->id;
 			$comment['employee_id'] = $this->app->employee->id;
-			$comment['comment'] = $comment_text;
+			$comment['comment'] = $form['comment'];
 			$comment->save();
 		}
 
