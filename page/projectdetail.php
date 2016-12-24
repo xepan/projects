@@ -140,6 +140,7 @@ class page_projectdetail extends \xepan\projects\page_sidemenu{
 	    $task_waiting_for_approval_model = $this->add('xepan\projects\Model_Formatted_Task')
 										  ->addCondition('status','Submitted')
 										  ->addCondition('assign_to_id','<>',null)
+										  ->addCondition('project_id',$project_id)
 										  ->addCondition( 
 										  	$this->app->db->dsql()->orExpr()
 												->where('created_by_id',$this->app->employee->id)
