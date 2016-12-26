@@ -15,7 +15,8 @@ class View_FollowUps extends \View{
 		$model_task = $this->add('xepan\projects\Model_Task');
 		$model_task->addExpression('contact_id')->set(function($m,$q){
 			$comm = $this->add('xepan\communication\Model_Communication');
-			$comm->addCondition('id',$m->getElement('related_id')); 
+			// $comm->addCondition('id',$m->getElement('related_id')); 
+			$comm->addCondition('to_id',$m->getElement('related_id')); 
 			$comm->setLimit(1);
 			return $comm->fieldQuery('to_id'); 
 		});
