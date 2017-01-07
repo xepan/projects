@@ -207,6 +207,7 @@ class page_mytasks extends \xepan\base\Page{
 
 			$tab1 = $tabs->addTab('Assigned To Me');
 			$task = $p->add('xepan\projects\Model_Task');
+			$task->addCondition('type','Task');
 			$task->addCondition('is_recurring',true);
 			$task->addCondition('assign_to_id',$this->app->employee->id);
 			$view = $tab1->add('xepan\projects\View_TaskList');
@@ -215,11 +216,21 @@ class page_mytasks extends \xepan\base\Page{
 			
 			$tab2 = $tabs->addTab('Assigned By Me');
 			$task1 = $p->add('xepan\projects\Model_Task');
+			$task1->addCondition('type','Task');
 			$task1->addCondition('is_recurring',true);
 			$task1->addCondition('created_by_id',$this->app->employee->id);
 			$view1 = $tab2->add('xepan\projects\View_TaskList');
 			$view1->setModel($task1);
 			$view1->add('xepan\base\Controller_Avatar',['name_field'=>'assign_to','extra_classes'=>'profile-img center-block','options'=>['size'=>50,'display'=>'block','margin'=>'auto'],'float'=>null,'model'=>$this->model]);
+		
+			$tab3 = $tabs->addTab('Recurring Reminders');
+			$task2 = $p->add('xepan\projects\Model_Task');
+			$task2->addCondition('is_recurring',true);
+			$task2->addCondition('type','Reminder');
+			$task2->addCondition('created_by_id',$this->app->employee->id);
+			$view2 = $tab3->add('xepan\projects\View_TaskList');
+			$view2->setModel($task2);
+			$view2->add('xepan\base\Controller_Avatar',['name_field'=>'assign_to','extra_classes'=>'profile-img center-block','options'=>['size'=>50,'display'=>'block','margin'=>'auto'],'float'=>null,'model'=>$this->model]);
 		});	
 
 		/***************************************************************************
