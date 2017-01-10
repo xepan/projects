@@ -43,6 +43,11 @@ class Initiator extends \Controller_Addon {
 		$this->app->addHook('logout_page',[$this,'logoutPageManage']);
 		$this->app->addHook('widget_collection',[$this,'exportWidgets']);
         $this->app->addHook('entity_collection',[$this,'exportEntities']);
+
+        $task = $this->add('xepan\projects\Model_Task');
+        $task->addCondition('type','Followups');
+
+		$this->app->addHook('communication_rendered',[$task,'addFollowups']);
 		$this->app->user_menu->addItem(['My Timesheet','icon'=>'fa fa-clock-o'],'xepan_projects_todaytimesheet');
 		return $this;
 

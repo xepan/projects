@@ -191,6 +191,21 @@ class Model_Task extends \xepan\base\Model_Table
 		}
 	}
 
+	function addFollowups($app,$contact_id,$followup_tab){
+		$followup_tab->add('View');
+
+		$followups_model = $followup_tab->add('xepan\projects\Model_Task');
+	    $followups_model->addCondition('related_id',$contact_id);
+	    $followups_model->addCondition('type','Followup');
+	    $followups_model->addCondition('status','<>','Completed');
+
+		$followups_crud = $followup_tab->add('xepan\hr\CRUD',['allow_add'=>null,'grid_class'=>'xepan\projects\View_TaskList','grid_options'=>['del_action_wrapper'=>true]]);
+		$followups_crud->setModel($followups_model);
+		$followups_crud->grid->template->trySet('task_view_title','FollowUps');
+		$followups_crud->grid->addPaginator(10);
+
+	}
+
 	function canUserDelete(){
 		if(($this['type'] != 'Reminder') && ($this['created_by_id'] == $this->app->employee->id) && ($this['assign_to_id']!= $this->app->employee->id) && $this['status'] != 'Completed')
 			throw new \Exception("You are not authorized to delete this task");		
