@@ -21,9 +21,6 @@ class View_FollowUps extends \View{
 		$tabs = $this->add('Tabs');
 		$tab1 = $tabs->addTab('Follow Up Task');
 		$tab2 = $tabs->addTab('Communicaion Details');
-		
-		$contact_info = $tab1->add('Button');
-		$contact_info->set('View Contact Information')->addClass('btn btn-info btn-block');
 
 		if($model_task['related_id']){
 			$tab3 = $tabs->addTabURL($this->api->url('xepan_marketing_leaddetails',['contact_id'=>$model_task['related_id']]),'Contact Detail');
