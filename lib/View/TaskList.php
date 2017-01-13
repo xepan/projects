@@ -72,43 +72,52 @@ class View_TaskList extends \xepan\base\Grid{
 
 		$action_btn_list = $this->model->actions[$this->model['status']];
 
-		// first Column
-		if($thisTask->isMyTask()){
-			if($this['status'] =='Pending' && !$thisTask->createdByMe())
-				unset($action_btn_list[1]); // submit
-			if($this['status'] =='Pending' && $thisTask->createdByMe())
-				unset($action_btn_list[0]); // submit
+		if($this['employeeStatus'] == "InActive"){
+			unset($action_btn_list[0]); // received
+			unset($action_btn_list[3]); // reset dadeline
+			$this->current_row_html['action'] = $action_btn_list;
+		}else{
+			// first Column
+			if($thisTask->isMyTask()){
+				if($this['status'] =='Pending' && !$thisTask->createdByMe())
+					unset($action_btn_list[1]); // submit
+				if($this['status'] =='Pending' && $thisTask->createdByMe())
+					unset($action_btn_list[0]); // submit
 
-			if(!$thisTask->createdByMe() && $this['status'] =='Submitted')
-				$action_btn_list=[];
+				if(!$thisTask->createdByMe() && $this['status'] =='Submitted')
+					$action_btn_list=[];
 
-			if($this['status'] =='Inprogress' && !$thisTask->createdByMe())
-				unset($action_btn_list[1]); // mark_submit
+				if($this['status'] =='Inprogress' && !$thisTask->createdByMe())
+					unset($action_btn_list[1]); // mark_submit
 
-			if($this['status'] =='Inprogress' && $thisTask->createdByMe())
-				unset($action_btn_list[0]); // mark_submit
+				if($this['status'] =='Inprogress' && $thisTask->createdByMe())
+					unset($action_btn_list[0]); // mark_submit
+			}
+
+			// Second Column
+
+			if($thisTask->IhaveAssignedToOthers() && ($this['status'] == "Inprogress" OR $this['status'] == "Completed")) 
+				$action_btn_list = [];
+
+			if($thisTask->IhaveAssignedToOthers() && ($this['status'] == "Pending" OR $this['status'] == "Assigned")){
+				unset($action_btn_list[0]);
+				unset($action_btn_list[1]);
+				unset($action_btn_list[2]);
+			} 
+
+			if(!$thisTask->canDelete()){
+				$this->current_row_html['delete'] = ' ';
+			}
+
+			if(!$thisTask->iCanPlay()){
+				$this->current_row['display_play_pause'] = 'none';
+			}
+			else{
+				$this->current_row['display_play_pause'] = 'block';
+			}	
 		}
-
-		// Second Column
-		if($thisTask->IhaveAssignedToOthers() && ($this['status'] == "Inprogress" OR $this['status'] == "Completed")) 
-			$action_btn_list = [];
-
-		if($thisTask->IhaveAssignedToOthers() && ($this['status'] == "Pending" OR $this['status'] == "Assigned")){
-			unset($action_btn_list[0]);
-			unset($action_btn_list[1]);
-			unset($action_btn_list[2]);
-		} 
-
-		if(!$thisTask->canDelete()){
-			$this->current_row_html['delete'] = ' ';
-		}
-
-		if(!$thisTask->iCanPlay()){
-			$this->current_row['display_play_pause'] = 'none';
-		}
-		else{
-			$this->current_row['display_play_pause'] = 'block';
-		}
+			
+		
 
 		$action_btn = $this->add('AbstractController')->add('xepan\hr\View_ActionBtn',['actions'=>$action_btn_list?:[],'id'=>$this->model->id,'status'=>$this->model['status'],'action_btn_group'=>'xs']);
 		$this->current_row_html['action'] = $action_btn->getHTML();

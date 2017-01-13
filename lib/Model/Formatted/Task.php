@@ -50,5 +50,10 @@ class Model_Formatted_Task extends \xepan\projects\Model_Task{
 		$this->addExpression('attachment_count')->set(function($m,$q){
 			return $m->refSQL('xepan\projects\Task_Attachment')->count();
 		});
+
+		$this->addExpression('employeeStatus')->set(function($m,$q){
+			return $m->refSQL('assign_to_id')
+							->fieldQuery('status');
+		});
 	}
 }
