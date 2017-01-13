@@ -191,6 +191,21 @@ class Model_Task extends \xepan\base\Model_Table
 		}
 	}
 
+	function addFollowups($app,$contact_id,$followup_tab){
+		$followup_tab->add('View');
+
+		$followups_model = $followup_tab->add('xepan\projects\Model_Task');
+	    $followups_model->addCondition('related_id',$contact_id);
+	    $followups_model->addCondition('type','Followup');
+	    $followups_model->addCondition('status','<>','Completed');
+
+		$followups_crud = $followup_tab->add('xepan\hr\CRUD',['allow_add'=>null,'grid_class'=>'xepan\projects\View_TaskList','grid_options'=>['del_action_wrapper'=>true]]);
+		$followups_crud->setModel($followups_model);
+		$followups_crud->grid->template->trySet('task_view_title','FollowUps');
+		$followups_crud->grid->addPaginator(10);
+
+	}
+
 	function canUserDelete(){
 		if(($this['type'] != 'Reminder') && ($this['created_by_id'] == $this->app->employee->id) && ($this['assign_to_id']!= $this->app->employee->id) && $this['status'] != 'Completed')
 			throw new \Exception("You are not authorized to delete this task");		
@@ -329,10 +344,21 @@ class Model_Task extends \xepan\base\Model_Table
 
 	function page_mark_Complete($p){
 		if($this['type'] =='Followup'){
+			$btn = $p->add('Button')->set('Immediate Complete')->addClass('btn btn-primary xepan-push-large');
+			if($btn->isClicked()){				
+				$this->mark_complete(null);
+				$this->app->employee
+			            ->addActivity("Task '".$this['task_name']."' completed by '".$this->app->employee['name']."'",null, $this['assign_to_id'] /*Related Contact ID*/,null,null,null)
+			            ->notifyTo([$this['created_by_id'],$this['assign_to_id']],"Task : ".$this['task_name']."' marked Complete by '".$this->app->employee['name']."'");
+				return $this->app->page_action_result = $this->app->js(true,$p->js()->univ()->closeDialog())->_selector('.xepan-mini-task')->trigger('reload');
+			}
+
 			$contact = $this->add('xepan\base\Model_Contact');
 			$contact->load($this['related_id']);
 			$form = $p->add('xepan\communication\Form_Communication');
 			$form->setContact($contact);
+			
+
 		}else{
 			$form = $p->add('Form');
 			$form->addField('text','comment');
@@ -340,7 +366,7 @@ class Model_Task extends \xepan\base\Model_Table
 
 		$form->addSubmit('Save');
 			
-		if($form->isSubmitted()){
+		if($form->isSubmitted()){			
 			$this->mark_complete($form);
 			if($this['assign_to_id'] == $this['created_by_id']){
 			$this->app->employee
@@ -358,7 +384,9 @@ class Model_Task extends \xepan\base\Model_Table
 	function mark_complete($form){		
 		if($form instanceOf \xepan\communication\Form_Communication){			
 			$form->process();
-		}else{
+		}
+
+		if($form != null AND (!$form instanceOf \xepan\communication\Form_Communication)){
 			$comment = $this->add('xepan\projects\Model_Comment');
 			$comment['task_id'] = $this->id;
 			$comment['employee_id'] = $this->app->employee->id;

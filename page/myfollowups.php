@@ -72,7 +72,53 @@ class page_myfollowups extends \xepan\base\Page{
 		$status->js('change',$frm->js()->submit());
 
 		$my_followups_model = $this->add('xepan\projects\Model_Task');
-	    $my_followups_model->addCondition([['assign_to_id',$this->app->employee->id],['created_by_id',$this->app->employee->id]]);
+		
+		// loading followups depending upon employees post permission level
+		$post_m = $this->add('xepan\hr\Model_Post');
+		$post_m->load($this->app->employee['post_id']);
+
+		switch ($post_m['permission_level']) {
+			case 'Sibling':
+				$post_employees = $this->add('xepan\hr\Model_Employee');
+				$post_employees->addCondition('post_id',$this->app->employee['post_id']);
+
+				$employee = [];
+				foreach ($post_employees as $emp){
+					$employee [] = $emp->id;
+				}
+
+				$my_followups_model->addCondition(
+					$my_followups_model->dsql()->orExpr()
+						->where('assign_to_id',$employee)
+						->where(
+							$my_followups_model->dsql()->andExpr()
+								->where('created_by_id',$employee)
+								->where('assign_to_id',null)
+							   )
+				);
+
+				break;
+			case 'Department':
+				$department_employees = $this->add('xepan\hr\Model_Employee')
+	    							         ->addCondition('department_id',$this->app->employee['department_id']);
+				
+				$my_followups_model->addCondition(
+					$my_followups_model->dsql()->orExpr()
+						->where('assign_to_id','in',$department_employees->fieldQuery('id'))
+						->where(
+							$my_followups_model->dsql()->andExpr()
+								->where('created_by_id','in',$department_employees->fieldQuery('id'))
+								->where('assign_to_id',null)
+							   )
+				);	
+				break;
+			case 'Global':				
+				# do nothing...
+				break;
+			default:
+				$my_followups_model->addCondition([['assign_to_id',$this->app->employee->id],['created_by_id',$this->app->employee->id]]);
+				break;
+		}
 		
 		if($show_overdue){
 			$my_followups_model->addCondition('starting_date','<=',$this->app->nextDate($this->end_date));
