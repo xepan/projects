@@ -7,12 +7,19 @@ class Widget_MyTask extends \xepan\base\Widget{
 		parent::init();
 
 		$this->report->enableFilterEntity('date_range');
+		$this->report->enableFilterEntity('employee');
 		
 		$this->grid = $this->add('xepan\hr\CRUD',['allow_add'=>null,'grid_class'=>'xepan\projects\View_TaskList','grid_options'=>['del_action_wrapper'=>true]]);	    
 		$this->grid->addClass('task-assigned-to-me');
 	}
 
 	function recursiveRender(){
+	   	
+	   	if(isset($this->report->employee))
+	   		$employee_id = $this->report->employee;
+	   	else
+	   		$employee_id = $this->app->employee->id;
+
 	    $this->grid->template->trySet('task_view_title','My Tasks');
 	    $this->grid->js('reload')->reload();
 
@@ -29,20 +36,15 @@ class Widget_MyTask extends \xepan\base\Widget{
 	    			->addCondition('status',['Pending','Inprogress','Assigned'])
 	    			->addCondition(
 	    				$task_assigned_to_me_model->dsql()->orExpr()
-	    					->where('assign_to_id',$this->app->employee->id)
+	    					->where('assign_to_id',$employee_id)
 	    					->where(
     								$task_assigned_to_me_model->dsql()->andExpr()
-    									->where('created_by_id',$this->app->employee->id)
+    									->where('created_by_id',$employee_id)
     									->where('assign_to_id',null)
 	    							)
 	    				)
 	    			->addCondition('type','Task');
-	   
-	 //    if(isset($this->report->start_date))
-		// 	$task_assigned_to_me_model->addCondition('starting_date','>',$this->report->start_date);
-		// if(isset($this->report->end_date))
-		// 	$task_assigned_to_me_model->addCondition('starting_date','<',$this->app->nextDate($this->report->end_date));			
-	  
+	   	  
 	    $this->grid->setModel($task_assigned_to_me_model)->setOrder('updated_at','desc');			
 
 		return parent::recursiveRender();

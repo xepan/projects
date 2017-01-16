@@ -43,9 +43,6 @@ class Widget_GlobalFollowUps extends \xepan\base\Widget{
 							   )
 				);
 	    }
-		// else
-			// $department_employees->addCondition('department_id',$this->app->employee['department_id']);
-
 	   
 	    if(isset($this->report->start_date))
 			$followups_model->addCondition('starting_date','>',$this->report->start_date);
