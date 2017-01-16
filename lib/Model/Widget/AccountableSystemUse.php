@@ -7,6 +7,7 @@ class Model_Widget_AccountableSystemUse extends \xepan\hr\Model_Employee{
 	public $end_date;
 	public $entity;
 	public $dept_id;
+	public $employee_id;
 
 	function init(){
 		parent::init();
@@ -15,6 +16,9 @@ class Model_Widget_AccountableSystemUse extends \xepan\hr\Model_Employee{
      	
      	if($this->entity=='Personal')
      		$this->addCondition('id',$this->app->employee->id);
+
+     	if($this->entity=='Employee' AND isset($this->employee_id))
+     		$this->addCondition('id',$this->employee_id);
 
      	if($this->entity == 'Department'){
      		if($this->dept_id)
