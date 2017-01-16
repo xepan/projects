@@ -61,6 +61,7 @@ class Initiator extends \Controller_Addon {
         $array[] = ['xepan\projects\Widget_GlobalFollowUps','level'=>'Global','title'=>'Company Followups'];
    		$array[] = ['xepan\projects\Widget_GlobalTaskPerformance','level'=>'Global','title'=>'Company Performance'];
    		$array[] = ['xepan\projects\Widget_TaskStatus','level'=>'Global','title'=>'Task Status Chart'];
+   		$array[] = ['xepan\projects\Widget_TabularTask','level'=>'Global','title'=>'Employee Task Detail'];
         
    		$array[] = ['xepan\projects\Widget_PostTaskPerformance','level'=>'Sibling','title'=>'Post Performance'];
         
