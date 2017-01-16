@@ -12,7 +12,9 @@ class Widget_AccountableSystemUse extends \xepan\base\Widget{
      }
 
 	function recursiveRender(){
-		$employee_id = $this->report->employee;
+		$employee_id = '';
+		if(isset($this->report->employee))
+			$employee_id = $this->report->employee;
 
 		$accountablity = $this->add('xepan\projects\Model_Widget_AccountableSystemUse',['start_date'=>$this->report->start_date,'end_date'=>$this->app->nextDate($this->report->end_date),'entity'=>'Employee','employee_id'=>$employee_id]);
 

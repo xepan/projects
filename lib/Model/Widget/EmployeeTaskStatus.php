@@ -14,7 +14,7 @@ class Model_Widget_EmployeeTaskStatus extends \xepan\hr\Model_Employee{
 		if($this->entity == 'Personal')
 			$this->addCondition('id',$this->app->employee->id);
 
-		if($this->entity == 'Employee' And isset($this->employee_id))
+		if($this->entity == 'Employee' And $this->employee_id != null)
 			$this->addCondition('id',$this->employee_id);
 
 		// total number of tasks alloted to employee

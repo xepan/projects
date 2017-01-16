@@ -11,7 +11,9 @@ class Widget_EmployeeTaskStatus extends \xepan\base\Widget{
 	}
 
 	function recursiveRender(){
-		$employee_id = $this->report->employee;
+		$employee_id ='';
+		if(isset($this->report->employee))
+			$employee_id = $this->report->employee;
 		
 		$employee_task_status = $this->add('xepan\projects\Model_Widget_EmployeeTaskStatus',['entity'=>'Employee','employee_id'=>$employee_id]);
 

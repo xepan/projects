@@ -17,7 +17,7 @@ class Model_Widget_AccountableSystemUse extends \xepan\hr\Model_Employee{
      	if($this->entity=='Personal')
      		$this->addCondition('id',$this->app->employee->id);
 
-     	if($this->entity=='Employee' AND isset($this->employee_id))
+     	if($this->entity=='Employee' AND $this->employee_id != null)
      		$this->addCondition('id',$this->employee_id);
 
      	if($this->entity == 'Department'){
