@@ -23,26 +23,20 @@ class Widget_GlobalFollowUps extends \xepan\base\Widget{
 
 		$this->grid->add('xepan\base\Controller_Avatar',['name_field'=>'created_by','image_field'=>'created_by_image','extra_classes'=>'profile-img center-block','options'=>['size'=>50,'display'=>'block','margin'=>'auto'],'float'=>null,'model'=>$this->model]);
 
-		$followups_model = $this->add('xepan\projects\Model_Formatted_Task');
+	    
+	    $followups_model = $this->add('xepan\projects\Model_Formatted_Task');
 	    $followups_model->addCondition('status',['Pending','Inprogress'])
 	    				->addCondition('type','Followup');
 
-	    $department_employees = $this->add('xepan\hr\Model_Employee');
-	    if(isset($this->report->department)){
-	    	if(isset($this->report->employee))
-	    		$department_employees->addCondition('id',$this->report->employee);
-			$department_employees->addCondition('department_id',$this->report->department);
-			
-			$followups_model->addCondition(
-					$followups_model->dsql()->orExpr()
-						->where('assign_to_id','in',$department_employees->fieldQuery('id'))
-						->where(
-							$followups_model->dsql()->andExpr()
-								->where('created_by_id','in',$department_employees->fieldQuery('id'))
-								->where('assign_to_id',null)
-							   )
-				);
-	    }
+		if(isset($this->report->employee)){
+	    	$employee_id = $this->report->employee;
+	    	$followups_model->addCondition(
+	    					$followups_model->dsql()->orExpr()
+	    						->where('assign_to_id',$this->app->employee->id)
+	    						->where($followups_model->dsql()->andExpr()
+    									->where('created_by_id',$this->app->employee->id)
+    									->where('assign_to_id',null)));
+		}
 	   
 	    if(isset($this->report->start_date))
 			$followups_model->addCondition('starting_date','>',$this->report->start_date);
