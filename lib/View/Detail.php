@@ -104,7 +104,7 @@ class View_Detail extends \View{
 				$attachment_acl_add = false;
 
 			$attachment_crud = $detail_view->add('xepan\hr\CRUD',['allow_add'=>$attachment_acl_add],'attachment',['view\attachment-grid']);
-			$attachment_crud->setModel($model_attachment,['file_id','thumb_url'])->addCondition('task_id',$task_id);
+			$attachment_crud->setModel($model_attachment,['file_id','thumb_url'],['file_id','thumb_url','created_at'])->addCondition('task_id',$task_id);
 			$detail_view->template->trySet('attachment_count',$model_task['attachment_count']);
 
 			$model_comment = $this->add('xepan\projects\Model_Comment');

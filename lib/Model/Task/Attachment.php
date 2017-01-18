@@ -11,6 +11,9 @@ class Model_Task_Attachment extends \xepan\base\Model_Table{
 		parent::init();
 		
 		$this->hasOne('xepan\projects\Task','task_id');
+		
+		$this->addField('created_at')->type('datetime')->defaultValue($this->app->now);
+
 		$this->add('xepan\filestore\Field_File','file_id');
 
 		$this->addExpression('thumb_url')->set(function($m,$q){
