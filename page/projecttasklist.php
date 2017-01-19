@@ -6,7 +6,7 @@ class page_projecttasklist extends \xepan\projects\page_configuration{
 	public $title ="Tasks/Requests";
 	function init(){
 		parent::init();
-		
+
 		$project_id = $this->app->stickyGET('project_id');
 		$created_by_id = $this->app->stickyGET('created_by');
 		$assigned_to_id = $this->app->stickyGET('assigned_to');
@@ -32,10 +32,16 @@ class page_projecttasklist extends \xepan\projects\page_configuration{
 	    $complete_task_list_view->addQuickSearch(['task_name']);
 
 	    $created_by_employee_m = $this->add('xepan\hr\Model_Employee');
-	    $created_by_employee_m->addCondition('id',array_unique($created_by_array));
+	    $created_by_employee_m->addCondition('status','Active');
+	    
+	   	if(!empty($created_by_array))
+	    	$created_by_employee_m->addCondition('id',array_unique($created_by_array));
 
 	    $assigned_by_employee_m = $this->add('xepan\hr\Model_Employee');
-	    $assigned_by_employee_m->addCondition('id',array_unique($assigned_to_array));
+	    $assigned_by_employee_m->addCondition('status','Active');
+	   	
+	   	if(!empty($assigned_to_array))
+	    	$assigned_by_employee_m->addCondition('id',array_unique($assigned_to_array));
 
 	    $frm = $this->add('Form',null,'form');
 	    $frm->setLayout('view/form/project-task-list-form');
