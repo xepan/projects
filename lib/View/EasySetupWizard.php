@@ -6,6 +6,9 @@ class View_EasySetupWizard extends \View{
 	function init(){
 		parent::init();
 		
+		/**
+		Reminder Email Content Wizard
+		*/
 		if($_GET[$this->name.'_task_reminder_mail_content']){
 			$task_config_mdl = $this->add('xepan\base\Model_ConfigJsonModel',
 				[
