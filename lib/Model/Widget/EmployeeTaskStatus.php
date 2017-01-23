@@ -4,6 +4,7 @@ namespace xepan\projects;
 
 class Model_Widget_EmployeeTaskStatus extends \xepan\hr\Model_Employee{
 	public $entity;
+	public $employee_id;
 
 	function init(){
 		parent::init();
@@ -12,6 +13,9 @@ class Model_Widget_EmployeeTaskStatus extends \xepan\hr\Model_Employee{
 		
 		if($this->entity == 'Personal')
 			$this->addCondition('id',$this->app->employee->id);
+
+		if($this->entity == 'Employee' And $this->employee_id != null)
+			$this->addCondition('id',$this->employee_id);
 
 		// total number of tasks alloted to employee
 		$this->addExpression('total_tasks')->set(function($m,$q){
