@@ -12,7 +12,7 @@ class View_TaskReminder extends \View{
         
 		$task = $this->add('xepan\projects\Model_Task');
 		$task->addCondition('set_reminder',true);
-		$task->addCondition('type','Reminder');
+		// $task->addCondition('type','Reminder');
 		$task->addCondition('created_by_id',$this->app->employee->id);
 		$task->setOrder('created_at','desc');
 		$task->addCondition('is_reminded',null);
