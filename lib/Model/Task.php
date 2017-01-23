@@ -87,6 +87,7 @@ class Model_Task extends \xepan\base\Model_Table
 					);
 			});
 
+
 			$this->addExpression('total_comment')->set($this->refSql('xepan\projects\Comment')->count());
 
 			$this->addExpression('total_comment_seen_by_creator')->set($this->refSql('xepan\projects\Comment')->addCondition('is_seen_by_creator',1)->count());
@@ -149,6 +150,11 @@ class Model_Task extends \xepan\base\Model_Table
 							->setLimit(1)
 							->fieldQuery('created_at');
 		});
+
+		$this->addExpression('employeeStatus')->set(function($m,$q){
+			return $m->refSQL('assign_to_id')
+							->fieldQuery('status');
+		});
  	}
 	
  	function checkEmployeeHasEmail(){
@@ -207,7 +213,7 @@ class Model_Task extends \xepan\base\Model_Table
 	}
 
 	function canUserDelete(){
-		if(($this['type'] != 'Reminder') && ($this['created_by_id'] == $this->app->employee->id) && ($this['assign_to_id']!= $this->app->employee->id) && $this['status'] != 'Completed')
+		if(($this['type'] != 'Reminder') && ($this['created_by_id'] == $this->app->employee->id) && ($this['assign_to_id']!= $this->app->employee->id) && $this['status'] != 'Completed' && $this['employeeStatus'] != "InActive")
 			throw new \Exception("You are not authorized to delete this task");		
 	}
 
