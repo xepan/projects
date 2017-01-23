@@ -71,8 +71,15 @@ class View_TaskList extends \xepan\base\Grid{
 
 
 		$action_btn_list = $this->model->actions[$this->model['status']];
+		// if($this['status'] =='Submitted' AND $this['created_by_employee_status'] == "InActive") {
+		// 	var_dump($action_btn_list);
+		// 	unset($action_btn_list[0]); // submit
+		// 	unset($action_btn_list[2]); // stop recurrence
+		// 	unset($action_btn_list[3]); // reset dadeline
+		// 	$this->current_row_html['action'] = $action_btn_list;
+		// }	
 
-		if($this['employeeStatus'] == "InActive"){
+		if($this['assign_employee_status'] == "InActive"){
 			unset($action_btn_list[0]); // received
 			unset($action_btn_list[3]); // reset dadeline
 			$this->current_row_html['action'] = $action_btn_list;
@@ -84,8 +91,16 @@ class View_TaskList extends \xepan\base\Grid{
 				if($this['status'] =='Pending' && $thisTask->createdByMe())
 					unset($action_btn_list[0]); // submit
 
-				if(!$thisTask->createdByMe() && $this['status'] =='Submitted')
-					$action_btn_list=[];
+				if(!$thisTask->createdByMe() && $this['status'] =='Submitted'){
+					if($this['created_by_employee_status'] == "InActive"){
+						unset($action_btn_list[1]); 
+						unset($action_btn_list[2]); 
+					}else{
+						$action_btn_list=[];
+						
+					}
+
+				}
 
 				if($this['status'] =='Inprogress' && !$thisTask->createdByMe())
 					unset($action_btn_list[1]); // mark_submit
@@ -104,6 +119,7 @@ class View_TaskList extends \xepan\base\Grid{
 				unset($action_btn_list[1]);
 				unset($action_btn_list[2]);
 			} 
+
 
 			if(!$thisTask->canDelete()){
 				$this->current_row_html['delete'] = ' ';

@@ -151,8 +151,13 @@ class Model_Task extends \xepan\base\Model_Table
 							->fieldQuery('created_at');
 		});
 
-		$this->addExpression('employeeStatus')->set(function($m,$q){
+		$this->addExpression('assign_employee_status')->set(function($m,$q){
 			return $m->refSQL('assign_to_id')
+							->fieldQuery('status');
+		});
+
+		$this->addExpression('created_by_employee_status')->set(function($m,$q){
+			return $m->refSQL('created_by_id')
 							->fieldQuery('status');
 		});
  	}
@@ -213,7 +218,7 @@ class Model_Task extends \xepan\base\Model_Table
 	}
 
 	function canUserDelete(){
-		if(($this['type'] != 'Reminder') && ($this['created_by_id'] == $this->app->employee->id) && ($this['assign_to_id']!= $this->app->employee->id) && $this['status'] != 'Completed' && $this['employeeStatus'] != "InActive")
+		if(($this['type'] != 'Reminder') && ($this['created_by_id'] == $this->app->employee->id) && ($this['assign_to_id']!= $this->app->employee->id) && $this['status'] != 'Completed' && $this['assign_employee_status'] != "InActive")
 			throw new \Exception("You are not authorized to delete this task");		
 	}
 
