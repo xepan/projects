@@ -14,8 +14,6 @@
                 th
                     span Task Name
                 th
-                    span Starting On
-                th
                     span Reminder Time 
 
                 th 
@@ -27,12 +25,11 @@
                 {rows}{row}
                 tr(class="{$odd_even}" data-id="{$id}")
                     {cols}
-                    td
+                    td(class="{$recurring}")
                       span {$task_name}
                       div.small.text-muted
-                        span.user-subhead {$recurring_task_info}
-                    td
-                      | {$starting_date}
+                        span.user-subhead 
+                            span {$recurring_task_info} {$dummy_spot}
                     td
                       | {$reminder_time} 
                     td
@@ -40,6 +37,7 @@
                           span(class ="{$class}") &nbsp;
                           span.text-muted.small {$is_task}   
                     td(style="width: 15%;")
+                        {$edit}
                         {$delete}
                     
                     {/}

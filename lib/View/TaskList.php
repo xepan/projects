@@ -10,9 +10,9 @@ class View_TaskList extends \xepan\base\Grid{
 	public $del_action_wrapper;
 	function init(){
 		parent::init();
-
+		
+		
 		$this->js('reload')->reload();
-
 		$this->running_task_id = $this->add('xepan\projects\Model_Employee')
 	    					->load($this->app->employee->id)
 	    					->get('running_task_id');
@@ -55,6 +55,12 @@ class View_TaskList extends \xepan\base\Grid{
 
 		$this->current_row['task_no']= str_pad($this->model->id, 4, '0', STR_PAD_LEFT);
 		
+		if($thisTask['type'] == 'Followup'){
+			$this->current_row[''] = 'dummy_spot';
+		}else{
+			$this->current_row['contact_info_wrapper'] = ' ';
+		}
+
 		if($this->del_action_wrapper){
 			$this->current_row['dashboard_sport_for_action']= $thisTask['status'];
 			$this->current_row['action_wrapper']= ' ';

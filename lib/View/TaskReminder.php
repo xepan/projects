@@ -12,10 +12,13 @@ class View_TaskReminder extends \View{
         
 		$task = $this->add('xepan\projects\Model_Task');
 		$task->addCondition('set_reminder',true);
-		// $task->addCondition('type','Reminder');
+		$task->addCondition('type','Reminder');
 		$task->addCondition('created_by_id',$this->app->employee->id);
 		$task->setOrder('created_at','desc');
-		$task->addCondition('is_reminded',null);
+		$task->addCondition([['is_reminded',null],['is_reminded',0]]);
+		$task->addCondition('assign_to_id',$this->app->employee->id);
+		$task->addCondition('remind_value',0);
+		$task->addCondition('remind_unit','Minutes');
 
 		$reminded_task = $this->add('xepan\projects\Model_Task');
 		$reminded_task->addCondition('set_reminder',true);
@@ -31,20 +34,26 @@ class View_TaskReminder extends \View{
 		
 		if($reminder_crud->isEditing()){
 			$reminder_crud->form->setLayout('view\reminder_form');
-			$reminder_crud->form->addField('checkbox','make_task','');
 		}
 		
+
 		$task->addHook('beforeSave',[$this,'formValidations']);
-		$reminder_crud->setModel($task,['is_reminder_only','assign_to_id','task_name','notify_to','starting_date','remind_via','remind_value','remind_unit','is_recurring','recurring_span','description'])->setOrder('created_at','desc');
+		$reminder_crud->setModel($task,['task_name','notify_to','reminder_time','remind_via','is_recurring','recurring_span'])->setOrder('created_at','desc');
 
 		if($reminder_crud->isEditing()){
+			$followup_field = $reminder_crud->form->getElement('is_recurring');
+
+			$followup_field->js(true)->univ()->bindConditionalShow([
+			true=>['recurring_span','snooze_duration'],
+			],'div.atk-form-row');
+			
 			if($reminder_crud->model->id){
 				$task = $this->add('xepan\projects\Model_Task')->load($reminder_crud->model->id);
 				$temp = [];
 				$temp = explode(',', $task['notify_to']);
 
 				$temp1 = [];
-				$temp1 = explode(',', $task['remind_via']);
+				$temp1 = explode(',', $task['remind_via']);																																														
 
 				$reminder_crud->form->getElement('notify_to')->set($temp)->js(true)->trigger('changed');
 				$reminder_crud->form->getElement('remind_via')->set($temp1)->js(true)->trigger('changed');
@@ -61,39 +70,41 @@ class View_TaskReminder extends \View{
 				$m = $reminder_crud->model;
 				$m['is_reminder_only'] = true;		
 				$m['type'] = 'Reminder';		
-				if($reminder_crud->form['make_task']){
-					$m['is_reminder_only'] = false;		
-					$m['type'] = 'Task';		
-				}
 				$m->save();	 					 					 					 									
 			}
 		}
 
-		$reminder_crud->grid->addHook('formatRow',function($g){						
-			$g->current_row['reminder_time'] = date("Y-m-d H:i:s", strtotime('-'.$g->model['remind_value'].' '.$g->model['remind_unit'], strtotime($g->model['starting_date'])));		
-			
+		$reminder_crud->grid->addHook('formatRow',function($g){								
 			if($g->model['is_recurring']){
-				$g->current_row_html['recurring_task_info'] = 'Recurring';		
+				$g->current_row_html['recurring'] = 'alert alert-info';		
+				$g->current_row_html['recurring_task_info'] = '[recurring Reminder]';
 			}else{
+				$g->current_row_html['recurring'] = ' ';		
 				$g->current_row_html['recurring_task_info'] = ' ';
 			}
 
-			if($g->model['is_reminder_only']){
-				$g->current_row_html['is_task'] = ' ';		
-				$g->current_row_html['class'] = ' ';		
+			if($g->model['is_reminded']){
+				$g->current_row_html['edit'] = ' ';
 			}else{
-				$g->current_row_html['is_task'] = 'View Task';		
-				$g->current_row_html['class'] = 'fa fa-tasks';
+				$g->current_row_html['dummy_spot'] = ' ';
 			}
+
 		});		
 
+		$reminded_crud->grid->addHook('formatRow',function($g){						
+			if($g->model['is_reminded']){
+				$g->current_row_html['edit'] = ' ';
+			}else{
+				$g->current_row_html['dummy_spot'] = ' ';
+			}
+		});
+
 		$reminder_crud->js('click')->_selector('.xepan-reminder-view-task')->univ()->frameURL('YOUR TASKS',[$this->api->url('xepan_projects_mytasks')]);
-		
 	}
 
 	function formValidations($m){
-		if($m['remind_via'] == '' || $m['notify_to'] == '' || $m['remind_value'] == '' || $m['remind_unit'] == '')
-			$this->app->js()->univ()->alert('Fill all the fields of `Set Task Reminder`')->execute();			
+		if($m['remind_via'] == null || $m['notify_to'] == null)
+			$this->app->js()->univ()->alert('Remind Via And Notify To Are Compulsory')->execute();			
 		
 		if($m['is_recurring'] == true AND $m['recurring_span'] == '')
 			throw $this->exception('Time gap is required','ValidityCheck')

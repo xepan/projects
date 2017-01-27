@@ -12,6 +12,8 @@ class page_myfollowups extends \xepan\base\Page{
         $this->status = $this->app->stickyGET('status');			 
         $this->show_overdue = $show_overdue = $this->app->stickyGET('show_overdue');
 
+        $contact_id = $this->app->stickyGET('contact_id');
+
         $filter_form = $this->add('Form',null,'filter_form');
         $fld = $filter_form->addField('DateRangePicker','period')
                 ->setStartDate($start_date)
@@ -25,7 +27,7 @@ class page_myfollowups extends \xepan\base\Page{
 			$filter_form->app->redirect($this->app->url(null,['show_overdue'=>$filter_form['overdue'],'start_date'=>$fld->getStartDate()?:0,'end_date'=>$fld->getEndDate()?:0]));
 		}
 
-		$my_followups = $this->add('xepan\hr\CRUD',['allow_add'=>null,'grid_class'=>'xepan\projects\View_TaskList'],'view');
+		$my_followups = $this->add('xepan\hr\CRUD',['entity_name'=>'Followup','grid_class'=>'xepan\projects\View_TaskList'],'view');
 		
 		$status_array = [];	
 		$status_array = [	'Pending'=>'Pending',
@@ -132,8 +134,40 @@ class page_myfollowups extends \xepan\base\Page{
 		$my_followups_model->addCondition('type','Followup');
 
 	    $my_followups_model->setOrder('updated_at','desc');
-		$my_followups->setModel($my_followups_model);
+		
+
+		if($my_followups->isEditing()){
+			$my_followups->form->setLayout('view\task_form');
+			$snooze_reminder_field = $my_followups->form->addField('checkbox','snooze_reminder','Force Reminder');
+		}
+
+
+		$my_followups->setModel($my_followups_model,['task_name','related_id','assign_to_id','reminder_time','priority','starting_date','deadline','estimate_time','set_reminder','remind_via','notify_to','snooze_duration','remind_unit','description','is_recurring','recurring_span'],['task_name','related_id','assign_to_id','reminder_time','priority','starting_date','deadline','estimate_time','set_reminder','remind_via','notify_to','snooze_duration','remind_unit','description','is_recurring','recurring_span']);
 		$my_followups->add('xepan\base\Controller_Avatar',['name_field'=>'assign_to','image_field'=>'assign_to_image','extra_classes'=>'profile-img center-block','options'=>['size'=>50,'display'=>'block','margin'=>'auto'],'float'=>null,'model'=>$this->model]);
+		
+		$my_followups->form->getElement('related_id')->set($contact_id);
+		$my_followups->form->getElement('starting_date')->js(true)->val('');
+		$my_followups->form->getElement('deadline')->js(true)->val('');
+		$my_followups->form->getElement('reminder_time')->js(true)->val('');
+		$my_followups->form->getElement('related_id')->set($contact_id);
+		
+		$reminder_field = $my_followups->form->getElement('set_reminder'); 
+		$recurring_field = $my_followups->form->getElement('is_recurring');
+
+		if($my_followups->isEditing()){
+			$reminder_field->js(true)->univ()->bindConditionalShow([
+				true=>['remind_via','notify_to','reminder_time','snooze_reminder']
+			],'div.atk-form-row');
+
+			$snooze_reminder_field->js(true)->univ()->bindConditionalShow([
+				true=>['snooze_reminder','snooze_duration','remind_unit']
+			],'div.atk-form-row');
+			
+			$recurring_field->js(true)->univ()->bindConditionalShow([
+				true=>['recurring_span']
+			],'div.atk-form-row');
+		
+		}
 	}
 
 	function defaultTemplate(){

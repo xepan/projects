@@ -31,16 +31,17 @@ class View_Detail extends \View{
 			$temp1 = [];
 			$temp1 = explode(',', $model_task['remind_via']);
 
-
 			$task_form = $detail_view->add('Form',null,'task_form');
 			$task_form->setLayout('view\task_form');
 			$task_form->template->tryDel('assign_to');
 
-			$task_form->setModel($model_task,['assign_to_id','task_name','description','starting_date','deadline','priority','estimate_time','set_reminder','remind_via','remind_value','remind_unit','notify_to','is_recurring','recurring_span','reminder_time_compare_with']);
+			$task_form->setModel($model_task,['assign_to_id','reminder_time','task_name','description','starting_date','deadline','priority','estimate_time','set_reminder','remind_via','remind_unit','notify_to','is_recurring','recurring_span','snooze_duration']);
 			
 			$task_form->getElement('notify_to')->set($temp)->js(true)->trigger('changed');
 			$task_form->getElement('remind_via')->set($temp1)->js(true)->trigger('changed');
 			$task_form->getElement('deadline')->js(true)->val('');
+			$task_form->getElement('starting_date')->js(true)->val('');
+			$task_form->getElement('reminder_time')->js(true)->val('');
 			$task_form->getElement('remind_via')
 						->addClass('multiselect-full-width')
 						->setAttr(['multiple'=>'multiple']);
@@ -49,8 +50,25 @@ class View_Detail extends \View{
 						->addClass('multiselect-full-width')
 						->setAttr(['multiple'=>'multiple']);			
 
+			$snooze_reminder_field = $task_form->addField('checkbox','snooze_reminder','Enable Snoozing [Repetitive Reminder]');
 			$task_form->addSubmit('Save')->addClass('btn btn-primary btn-block');
 
+			$reminder_field = $task_form->getElement('set_reminder');
+			$recurring_field = $task_form->getElement('is_recurring');
+			
+			$reminder_field->js(true)->univ()->bindConditionalShow([
+				true=>['remind_via','notify_to','reminder_time','snooze_reminder']
+			],'div.atk-form-row');
+
+			$snooze_reminder_field->js(true)->univ()->bindConditionalShow([
+				true=>['snooze_reminder','snooze_duration','remind_unit']
+			],'div.atk-form-row');
+		
+			$recurring_field->js(true)->univ()->bindConditionalShow([
+				true=>['recurring_span']
+			],'div.atk-form-row');
+
+				
 			if($task_form->isSubmitted()){				
 				if($task_form['set_reminder'] && $task_form['remind_value'] == null){
 					$task_form->displayError('remind_value','This field is required');

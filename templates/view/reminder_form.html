@@ -1,47 +1,21 @@
 
-<div class="row xepan-push">
-  <div class="col-md-6 atk-form-field atk-form-row"><strong>Reminder Task Name: </strong>{$task_name}</div>
-  <div class="col-md-4 atk-form-field atk-form-row"><strong>Task Starting Time: </strong>{$starting_date}</div>
-  <div class="col-md-2 atk-form-field atk-form-row"><strong>Make Task:</strong>{$make_task}</div>
-</div>
-<div class="row xepan-push">
-  <div class="col-md-12 atk-form-field atk-form-row"><strong>Assign To :</strong>{$assign_to_id}       </div>
-</div>
-<div class="row xepan-push">
-  <div class="col-md-12 atk-form-field atk-form-row"><strong>Description:</strong>{$description}    </div>
-</div>
-<div class="row">
-  <div class="col-md-6 atk-form-field atk-form-row">
-    <div class="panel panel-primary panel-heading"><b>Make Task Periodically Recur</b>
-      <hr/>
-      <div class="panel-body">
-        <div class="row">
-          <div class="col-md-4 atk-form-field atk-form-row"><strong>Repeat Task:</strong><br/>{$is_recurring}</div>
-          <div class="col-md-8 atk-form-field atk-form-row"><strong>Time Gap:    </strong>{$recurring_span}</div>
-        </div>
-      </div>
+<div class="row xepan-push panel panel-default">
+  <div class="panel-heading">Reminder Info</div>
+  <div class="panel-body">
+    <div class="row xepan-push">
+      <div class="col-md-6 atk-form-field atk-form-row"><strong>Reminder Title: </strong>{$task_name}</div>
+      <div class="col-md-6 atk-form-field atk-form-row"><strong>Remind At: </strong>{$reminder_time}  </div>
     </div>
-  </div>
-  <div class="col-md-6 atk-form-field atk-form-row"> 
-    <div class="panel panel-primary panel-heading strong"> <b> Set Task Reminder</b>
-      <hr/>
-      <div class="panel-body">
-        <div class="row xepan-push">
-          <div class="col-md-12 atk-form-field atk-form-row"><strong>Remind Medium:    </strong>{$remind_via}</div>
-        </div>
-        <div class="row xepan-push">
-          <div class="col-md-12 atk-form-field atk-form-row"><strong>Remind To:</strong>{$notify_to}</div>
-        </div>
-        <div class="row">
-          <div class="col-md-6 atk-form-field atk-form-row"><strong>Remind Value:</strong>{$remind_value}</div>
-          <div class="col-md-6 atk-form-field atk-form-row"><strong>Remind Unit:</strong>{$remind_unit}</div>
-        </div><span class="small text-muted">Hint: Value = '10', Unit = 'Minutes' to get reminded 10 minutes before task starts     </span>
-      </div>
+    <div class="row xepan-push"> 
+      <div class="col-md-6 atk-form-field atk-form-row"><strong>Remind Via :</strong>{$remind_via}</div>
+      <div class="col-md-6 atk-form-field atk-form-row"><strong>Remind To:</strong>{$notify_to}  </div>
     </div>
   </div>
 </div>
-<div style="display:none;" class="row">{$is_reminder_only}   </div>
-<style type="text/css" media="screen">
-  .atk-button{  
-  }
-</style>
+<div class="row xepan-push panel panel-default">
+  <div class="panel-heading">Make Reminder Recurring</div>
+  <div class="panel-body">
+    <div class="col-md-6 atk-form-field atk-form-row">{$is_recurring}</div>
+    <div class="col-md-6 atk-form-field atk-form-row"><strong>Time Gap:    </strong>{$recurring_span}</div>
+  </div>
+</div>

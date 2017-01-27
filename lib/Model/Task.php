@@ -24,12 +24,12 @@ class Model_Task extends \xepan\base\Model_Table
 		$this->hasOne('xepan\projects\Project','project_id');
 		$this->hasOne('xepan\hr\Employee','assign_to_id')->defaultValue($this->app->employee->id);
 		$this->hasOne('xepan\hr\Employee','created_by_id')->defaultValue($this->app->employee->id);
-		$this->hasOne('xepan\base\Contact','related_id');
+		$this->hasOne('xepan\base\Contact','related_id')->display(array('form'=>'autocomplete\Basic'));
 		
 		$this->addField('task_name');
 		$this->addField('description')->type('text')->display(['form'=>'xepan\base\RichText']);
 		$this->addField('deadline')->display(['form'=>'DateTimePicker'])->type('datetime');
-		$this->addField('starting_date')->display(['form'=>'DateTimePicker'])->type('datetime')->defaultValue($this->app->now);
+		$this->addField('starting_date')->display(['form'=>'DateTimePicker'])->type('datetime');
 		$this->addField('estimate_time')/*->display(['form'=>'TimePicker'])*/;
 		$this->addField('status')->defaultValue('Pending');
 		$this->addField('type')->enum(['Task','Followup','Reminder']);
@@ -42,7 +42,9 @@ class Model_Task extends \xepan\base\Model_Table
 		$this->addField('recurring_span')->setValueList(['Daily'=>'Daily','Weekely'=>'Weekely','Fortnight'=>'Fortnight','Monthly'=>'Monthly','Quarterly'=>'Quarterly','Halferly'=>'Halferly','Yearly'=>'Yearly']);
 		$this->addField('is_reminded')->type('boolean');
 		$this->addField('is_reminder_only')->type('boolean')->defaultValue(false);
+		$this->addField('reminder_time')->display(['form'=>'DateTimePicker'])->type('datetime');
 		$this->addField('reminder_time_compare_with')->setValueList(['starting_date'=>'starting_date','deadline'=>'deadline'])->defaultValue('starting_date');
+		$this->addField('snooze_duration');
 		
 		$employee_model = $this->add('xepan\hr\Model_Employee')->addCondition('status','Active');		
 		$this->addField('notify_to')->display(['form'=>'xepan\base\DropDown'])->setModel($employee_model);
@@ -160,6 +162,20 @@ class Model_Task extends \xepan\base\Model_Table
 			return $m->refSQL('created_by_id')
 							->fieldQuery('status');
 		});
+
+		$this->addExpression('contact_name')->set(function($m,$q){
+			return $this->add('xepan\base\Model_Contact')
+						->addCondition('id',$m->getElement('related_id'))
+						->setLimit(1)
+						->fieldQuery('name');
+		});
+
+		$this->addExpression('contact_organization')->set(function($m,$q){
+			return $this->add('xepan\base\Model_Contact')
+						->addCondition('id',$m->getElement('related_id'))
+						->setLimit(1)
+						->fieldQuery('organization');
+		});
  	}
 	
  	function checkEmployeeHasEmail(){
@@ -181,6 +197,9 @@ class Model_Task extends \xepan\base\Model_Table
  	}
 
 	function beforeSave(){		
+		if($this['task_name'] == '')
+			throw $this->exception('Title field is required','ValidityCheck')->setField('task_name');
+			
 		if($this->isDirty('assign_to_id') && $this['assign_to_id'] != $this->app->employee->id){
 			$this['status'] = 'Assigned';
 		}
@@ -200,6 +219,25 @@ class Model_Task extends \xepan\base\Model_Table
 		if(strtotime($this['deadline']) < strtotime($this['starting_date'])){			
 			throw $this->exception('Deadline can not be smaller then starting date','ValidityCheck')->setField('deadline');
 		}
+					
+		if($this['starting_date'] == '')
+			throw $this->exception('Starting Date is required','ValidityCheck')->setField('starting_date');
+		
+		if($this['type'] == 'Followup')
+			if($this['related_id'] == '')
+				throw $this->exception('Related Contact is required','ValidityCheck')->setField('related_id');
+		
+	
+		if($this['set_reminder']){
+			if($this['reminder_time'] == '')
+				throw $this->exception('Remind At is required','ValidityCheck')->setField('reminder_time');
+
+			if($this['remind_via'] == null || $this['notify_to'] == null)
+				$this->app->js()->univ()->alert('Remind Via And Notify To Are Compulsory')->execute();			
+		}
+		
+		if($this['is_recurring'] == true AND $this['recurring_span'] == '')
+			throw $this->exception('Time gap is required','ValidityCheck')->setField('recurring_span');
 	}
 
 	function addFollowups($app,$contact_id,$followup_tab){
@@ -209,6 +247,7 @@ class Model_Task extends \xepan\base\Model_Table
 	    $followups_model->addCondition('related_id',$contact_id);
 	    $followups_model->addCondition('type','Followup');
 	    $followups_model->addCondition('status','<>','Completed');
+	    $followups_model->setOrder('starting_date','asc');
 
 		$followups_crud = $followup_tab->add('xepan\hr\CRUD',['allow_add'=>null,'grid_class'=>'xepan\projects\View_TaskList','grid_options'=>['del_action_wrapper'=>true]]);
 		$followups_crud->setModel($followups_model);
@@ -484,28 +523,25 @@ class Model_Task extends \xepan\base\Model_Table
 	}
 
 	function reminder(){
-		
 		$reminder_task = $this->add('xepan\projects\Model_Task');
 		$reminder_task->addCondition('set_reminder',true);
 		$reminder_task->addCondition([['is_reminded',0],['is_reminded',null]]);
-
+		
 		foreach ($reminder_task as $task) {	
+			if(($task['type'] == 'Task' || $task['type'] == 'Followup') AND $task['status'] == 'Completed'){
+				$task['is_reminded'] = true;
+				$task->saveAs('xepan\projects\Model_Task');
+				continue;
+			}
+							
+			$reminder_time = $task['reminder_time'];
 			
-			if($task['time_compare_with'] == 'starting_date'){
-				$reminder_time = date("Y-m-d H:i:s", strtotime('-'.$task['remind_value'].' '.$task['remind_unit'], strtotime($task['starting_date'])));
-			}else{
-				$reminder_time = date("Y-m-d H:i:s", strtotime('-'.$task['remind_value'].' '.$task['remind_unit'], strtotime($task['deadline'])));
-			}							
-
 			if(($reminder_time <= ($this->app->now)) AND $task['is_reminded']==false){
-				
 				$remind_via_array = [];
 				$remind_via_array = explode(',', $task['remind_via']);
 
 				$employee_array = [];
 				$employee_array = explode(',', $task['notify_to']);
-
-
 
 				if(in_array("Email", $remind_via_array)){
 					$emails = [];
@@ -583,8 +619,14 @@ class Model_Task extends \xepan\base\Model_Table
 					$activity->save();  
 				}
 
+				if($task['type'] == 'Reminder' OR (($task['type'] == 'Task' OR $task['type'] == 'Followup') And $task['snooze_duration'] == null)){
 					$task['is_reminded'] = true;
 					$task->saveAs('xepan\projects\Model_Task');
+				}else{
+					$reminder_time = date("Y-m-d H:i:s", strtotime('+'.$task['snooze_duration'].' '.$task['remind_unit'], strtotime($task['reminder_time'])));
+					$task['reminder_time'] = $reminder_time;
+					$task->saveAs('xepan\projects\Model_Task');
+				}	
 			}
 		}
 	}
@@ -608,7 +650,8 @@ class Model_Task extends \xepan\base\Model_Table
 			$model_task['priority'] = $task['priority'];
 			$model_task['estimate_time'] = $task['estimate_time'];
 			$model_task['type'] = $task['type'];
-			// $model_task['is_reminder_only'] = $task['is_reminder_only'];
+			$model_task['snooze_duration'] = $task['snooze_duration'];
+			$model_task['type'] = $task['type'];
 			$model_task['remind_via'] = $task['remind_via'];
 			$model_task['set_reminder'] = $task['set_reminder'];
 			$model_task['notify_to'] = $task['notify_to'];
@@ -617,35 +660,43 @@ class Model_Task extends \xepan\base\Model_Table
 			$model_task['is_recurring'] = $task['is_recurring'];
 			$model_task['recurring_span'] = $task['recurring_span'];
 			$model_task['created_by_id'] = $task['created_by_id'];
- 
+			// CALCULATE REMIND TIME AND STORE IN FIELD
+
 			switch ($task['recurring_span']) {
 				case 'Weekely':
 					$starting = date("Y-m-d H:i:s", strtotime('+ 1 Weeks', strtotime($task['starting_date'])));
+					$reminder = date("Y-m-d H:i:s", strtotime('+ 1 Weeks', strtotime($task['reminder_time'])));
 					break;
 				case 'Fortnight':
 					$starting = date("Y-m-d H:i:s", strtotime('+ 2 Weeks', strtotime($task['starting_date'])));
+					$reminder = date("Y-m-d H:i:s", strtotime('+ 2 Weeks', strtotime($task['reminder_time'])));
 					break;
 				case 'Monthly':
 					$starting = date("Y-m-d H:i:s", strtotime('+ 1 months', strtotime($task['starting_date'])));
+					$reminder = date("Y-m-d H:i:s", strtotime('+ 1 months', strtotime($task['reminder_time'])));
 					break;
 				case 'Quarterly':
 					$starting = date("Y-m-d H:i:s", strtotime('+ 4 months', strtotime($task['starting_date'])));
+					$reminder = date("Y-m-d H:i:s", strtotime('+ 4 months', strtotime($task['reminder_time'])));
 					break;
 				case 'Halferly':
 					$starting = date("Y-m-d H:i:s", strtotime('+ 6 months', strtotime($task['starting_date'])));
+					$reminder = date("Y-m-d H:i:s", strtotime('+ 6 months', strtotime($task['reminder_time'])));
 					break;
 				case 'Yearly':
 					$starting = date("Y-m-d H:i:s", strtotime('+ 12 months', strtotime($task['starting_date'])));
+					$reminder = date("Y-m-d H:i:s", strtotime('+ 12 months', strtotime($task['reminder_time'])));
 					break;					
-				
 				default:
 					$starting = date("Y-m-d H:i:s", strtotime('+ 1 day', strtotime($task['starting_date'])));
+					$reminder = date("Y-m-d H:i:s", strtotime('+ 1 day', strtotime($task['reminder_time'])));
 					break;
 			}
 			
 			$new_deadline = date("Y-m-d H:i:s", strtotime('+ 1 day', strtotime($starting)));
 			$model_task['deadline'] = $new_deadline;
 			$model_task['starting_date'] = $starting;
+			$model_task['reminder_time'] = $reminder;
 			$model_task->saveAndUnload();
 
 			$task['is_recurring'] = false;

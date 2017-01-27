@@ -33,6 +33,9 @@
           {/}
           {$delete} 
           span(class="label label-xs label-{$color}" title="task priority : {$priority}") {$priority_name} 
+          {contact_info_wrapper}
+          span.do-view-contact(style="cursor:pointer; cursor:hand;" data-id = "{$related_id}") [{$contact_name} :: {$contact_organization} {$dummy_spot}]
+          {/}
         .time-ago
           i.fa.fa-clock-o(title="Total Duration {$total_duration}")&nbsp; {total_duration}0.00{/}
           br
