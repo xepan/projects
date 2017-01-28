@@ -25,6 +25,16 @@ class View_FollowUps extends \View{
 		if($model_task['related_id']){
 			$tab3 = $tabs->addTabURL($this->api->url('xepan_marketing_leaddetails',['contact_id'=>$model_task['related_id']]),'Contact Detail');
 			// $this->js()->univ()->frameURL('Lead Details',[$this->api->url('xepan_marketing_leaddetails'),'contact_id'=>$model_task['related_id']]);
+			
+			$tab4 = $tabs->addTab('All Follow Ups');
+			$all_followup_view = $tab4->add('xepan\projects\View_TaskList');
+			$task_followup_model = $this->add('xepan\projects\Model_Task');
+			$task_followup_model->addCondition(
+											  	$task_followup_model->dsql()->andExpr()
+											  	->where('related_id',$model_task['related_id'])
+											  	)
+											  ->addCondition('type','Followup');
+			$all_followup_view->setModel($task_followup_model);
 		}
 
 		$task_view = $tab1->add('xepan\projects\View_Detail',['task_id'=>$task_id,'project_id'=>$project_id,'task_type'=>'followup']);	
