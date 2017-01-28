@@ -27,7 +27,7 @@ class page_test extends \Page{
 	}
 
 	function compatibleToRestructure(){
-		$tasks = $this->add('xepan\projects\Model_1Task');
+		$tasks = $this->add('xepan\projects\Model_Task');
 		$tasks->addCondition('set_reminder',true);
 
 		foreach ($tasks as $task) {
