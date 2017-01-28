@@ -20,7 +20,6 @@ class View_Detail extends \View{
 
 		$detail_view = $p->add('xepan\projects\View_TaskDetail');
 
-
 		if($model_task->ICanEdit()){
 			if($model_task['status'] == 'Pending' && $model_task['assign_to_id'] != $this->app->employee->id)			
 				goto elsepart;
@@ -78,6 +77,10 @@ class View_Detail extends \View{
 
 				
 			if($task_form->isSubmitted()){				
+				if(!$task_form['snooze_reminder']){
+					$task_form['snooze_duration'] == null;
+				}
+
 				if($task_form['set_reminder'] && $task_form['reminder_time'] == null){
 					$task_form->displayError('reminder_time','This field is required');
 				}
@@ -116,8 +119,27 @@ class View_Detail extends \View{
 			$desc = $model_task['description'];
 			$model_task['description'] = "";
 			$detail_view_form = $detail_view->add('View',null,'task_form',['view\task_form']);
+			
+			if($model_task['set_reminder']){
+				$model_task['set_reminder']='Yes';	
+			}
+
+			if($model_task['is_recurring']){
+				$model_task['is_recurring']='Yes';	
+			}
+
+			$notify_array = explode(',', $model_task['notify_to']);
+			$notified_employees = $this->add('xepan\hr\Model_Employee')->addCondition('id',$notify_array)->getRows(['name']);
+			$notified_employees_names = [];
+			foreach ($notified_employees as $temp_emp) {
+				$notified_employees_names [] = $temp_emp['name'];
+			}
+			
+			$model_task['notify_to'] = implode(", ", $notified_employees_names);
+
 			$detail_view_form->setModel($model_task);
 			$detail_view_form->template->setHtml('description1',$desc);
+			$detail_view_form->template->tryDel('display_wrapper');
 		}
 
 		if($model_task->loaded()){																								

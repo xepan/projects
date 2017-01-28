@@ -24,6 +24,9 @@
           br
           i.fa.fa-comment(style="font-size:16px;color:{$comment_color};" title="total comment {$comment_count}") &nbsp;{$comment_count}&nbsp;
           i.fa.fa-paperclip(style="font-size:16px;color:green;" title="total attachment {$attachment_count}") &nbsp;{$attachment_count}
+          {alarm_wrapper}
+          i.fa.fa-bell
+          {/}
           br
           {status_wrapper}  
           span(class="label label-xs label-primary") {$dashboard_sport_for_action}  

@@ -6,7 +6,7 @@ class page_test extends \Page{
 		parent::init();
 
 		$task = $this->add('xepan\projects\Model_Task');
-		$task->reminder();
+		// $task->reminder();
 		$task->recurring();
 	}
 }

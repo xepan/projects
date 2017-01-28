@@ -85,6 +85,7 @@ class View_InstantTaskFeed extends \View{
 			$model_new_task->addCondition('assign_to_id',$this->app->employee->id);
 			$model_new_task['task_name'] = $form['new_task'];
 			$model_new_task['project_id'] = $form['project'];
+			$model_new_task['starting_date'] = $this->app->now;
 			$model_new_task['type'] = 'Task';
 			$model_new_task->save();
 

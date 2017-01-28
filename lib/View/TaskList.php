@@ -56,9 +56,15 @@ class View_TaskList extends \xepan\base\Grid{
 		$this->current_row['task_no']= str_pad($this->model->id, 4, '0', STR_PAD_LEFT);
 		
 		if($thisTask['type'] == 'Followup'){
-			$this->current_row[''] = 'dummy_spot';
+			$this->current_row['dummy_spot'] = ' ';
 		}else{
 			$this->current_row['contact_info_wrapper'] = ' ';
+		}
+
+		if(($thisTask['set_reminder'] AND !$thisTask['is_reminded']) OR ($thisTask['snooze_duration'] != null AND $thisTask['snooze_duration'] != 0)){
+			$this->current_row['dummy_spot'] = ' ';
+		}else{			
+			$this->current_row['alarm_wrapper'] = ' ';
 		}
 
 		if($this->del_action_wrapper){

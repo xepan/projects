@@ -1,32 +1,7 @@
 <?php
 
 // TODO 
-// 1. emp 1 assigned task to emp 2 (snoozed reminder)
-// 	emp1 absent, series of reminders ---> how to stop ?
-
-// 2. because reminder runs before recurring 
-// 	reminder makes reminder_time increased 
-// 	recurring stores increased reminder_time
-
-// 3. Action in followup
-
-// 4. deadline calculation in recurring function 
-
-// 5. created at of recurring task
-
-// 6. is reminder only field in recurring task
-
-// 7. remove every thing else except hours and minutes remind_value from dropdown
-
-// 8. when creating task values of other field also saved if filled
-
-// 9. If reminder is true and snppzing is false and snozing field is filled then problem occrs
-
-// 10. how to show tasks whose is_reminder is true
-
-// 11. myfollowup form change force reminder
-
-// 12. followups having reminder
+// 1) Deadline calculation in recurring function.
 
 namespace xepan\projects;
 
@@ -38,10 +13,10 @@ class Model_Task extends \xepan\base\Model_Table
 	public $status=['Pending','Submitted','Completed','Assigned','Inprogress'];
 	
 	public $actions=[
-		'Pending'=>['submit','mark_complete','stop_recurrence','reset_deadline'],
-		'Inprogress'=>['submit','mark_complete','stop_recurrence'],
-		'Assigned'=>['receive','reject','stop_recurrence','reset_deadline'],
-		'Submitted'=>['mark_complete','reopen','stop_recurrence'],
+		'Pending'=>['submit','mark_complete','stop_recurrence','reset_deadline','stop_reminder'],
+		'Inprogress'=>['submit','mark_complete','stop_recurrence','stop_reminder'],
+		'Assigned'=>['receive','reject','stop_recurrence','reset_deadline','stop_reminder'],
+		'Submitted'=>['mark_complete','reopen','stop_recurrence','stop_reminder'],
 		'Completed'=>['stop_recurrence']
 	];
 
@@ -65,7 +40,7 @@ class Model_Task extends \xepan\base\Model_Table
 		$this->addField('set_reminder')->type('boolean');
 		$this->addField('remind_via')->display(['form'=>'xepan\base\DropDown'])->setValueList(['Email'=>'Email','SMS'=>'SMS','Notification'=>'Notification']);
 		$this->addField('remind_value')->type('number');
-		$this->addField('remind_unit')->setValueList(['Minutes'=>'Minutes','hours'=>'Hours','day'=>'Days','Weeks'=>'Weeks','months'=>'Months']);
+		$this->addField('remind_unit')->setValueList(['Minutes'=>'Minutes','hours'=>'Hours','day'=>'Days']);
 		$this->addField('is_recurring')->type('boolean');
 		$this->addField('recurring_span')->setValueList(['Daily'=>'Daily','Weekely'=>'Weekely','Fortnight'=>'Fortnight','Monthly'=>'Monthly','Quarterly'=>'Quarterly','Halferly'=>'Halferly','Yearly'=>'Yearly']);
 		$this->addField('is_reminded')->type('boolean');
@@ -91,6 +66,7 @@ class Model_Task extends \xepan\base\Model_Table
 		$this->hasMany('xepan\projects\Task_Attachment','task_id');	
 
 		$this->addHook('beforeSave',[$this,'beforeSave']);
+		$this->addHook('beforeSave',[$this,'nullifyFields']);
 		$this->addHook('beforeSave',[$this,'notifyAssignement']);
 		$this->addHook('beforeSave',[$this,'checkEmployeeHasEmail']);
 		$this->addHook('beforeDelete',[$this,'closeTimesheet']);
@@ -206,6 +182,20 @@ class Model_Task extends \xepan\base\Model_Table
 		});
  	}
 	
+	function nullifyFields($m){
+		if(!$m['set_reminder']){
+			$m['remind_via'] = null;
+			$m['notify_to'] = null;
+			$m['reminder_time'] = null;
+			$m['snooze_duration'] = null;
+			$m['remind_unit'] = null;
+		}
+
+		if(!$m['is_recurring']){
+			$m['recurring_span'] = null;
+		}		
+	}
+
  	function checkEmployeeHasEmail(){
  		if($this['set_reminder']){
  			$remind_via_array = [];
@@ -541,6 +531,16 @@ class Model_Task extends \xepan\base\Model_Table
 			$this->app->js()->univ()->alert('Cant perform this action')->execute();
 	}
 
+	function stop_reminder(){		
+		if($this['set_reminder'] OR ($this['snooze_duration'] != null OR $this['snooze_duration'] != 0)){
+			$this['is_reminded'] = true;
+			$this['snooze_duration'] = null;
+			$this->save();
+		}
+		else
+			$this->app->js()->univ()->alert('Reminder not setted')->execute();
+	}
+
 	function getAssociatedfollowers(){
 		$associated_followers = $this->ref('xepan\projects\Follower_Task_Association')
 								->_dsql()->del('fields')->field('assign_to_id')->getAll();
@@ -661,6 +661,7 @@ class Model_Task extends \xepan\base\Model_Table
 	}
 
 	function recurring(){		
+		
 		$recurring_task = $this->add('xepan\projects\Model_Task');
 		$recurring_task->addCondition('is_recurring',true);
 		$recurring_task->addCondition('starting_date','<=',$this->app->now);
@@ -675,7 +676,7 @@ class Model_Task extends \xepan\base\Model_Table
 			$model_task['assign_to_id'] = $task['assign_to_id'];
 			$model_task['description'] = $task['description'];
 			$model_task['status'] = $task['status'];
-			$model_task['created_at'] = $task['created_at'];
+			$model_task['created_at'] = $this->app->now;
 			$model_task['priority'] = $task['priority'];
 			$model_task['estimate_time'] = $task['estimate_time'];
 			$model_task['type'] = $task['type'];
@@ -689,6 +690,7 @@ class Model_Task extends \xepan\base\Model_Table
 			$model_task['is_recurring'] = $task['is_recurring'];
 			$model_task['recurring_span'] = $task['recurring_span'];
 			$model_task['created_by_id'] = $task['created_by_id'];
+			$model_task['is_reminder_only'] = $task['is_reminder_only'];
 			// CALCULATE REMIND TIME AND STORE IN FIELD
 
 			switch ($task['recurring_span']) {
@@ -722,8 +724,17 @@ class Model_Task extends \xepan\base\Model_Table
 					break;
 			}
 			
+			// deducting snooze time of old remind_time to get exact reminder_time 
+			$reminder_time = date("Y-m-d H:i:s", strtotime('+'.$task['snooze_duration'].' '.$task['remind_unit'], strtotime($task['reminder_time'])));
+
 			// new deadline is "gap of days" between old deadline and old starting date 
-			// add those "gap of days" in old deadline
+			// add those "gap of days" in old starting
+
+			// LOGIC NOT WORKING FOR NOW
+			// $diff_array [] = $this->app->my_date_diff($task['starting_date'],$task['deadline']);
+			// $date_diff_in_minutes = $diff_array[0]['minutes_total']; 			
+			// $new_deadline = date("Y-m-d H:i:s", strtotime('+ ' .$date_diff_in_minutes .'Minutes', strtotime($task['starting_date'])));
+
 			$new_deadline = date("Y-m-d H:i:s", strtotime('+ 1 day', strtotime($starting)));
 			$model_task['deadline'] = $new_deadline;
 			$model_task['starting_date'] = $starting;
