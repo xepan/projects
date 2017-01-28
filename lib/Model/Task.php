@@ -63,6 +63,7 @@ class Model_Task extends \xepan\base\Model_Table
 		$this->hasMany('xepan\projects\Task_Attachment','task_id');	
 
 		$this->addHook('beforeSave',[$this,'beforeSave']);
+		$this->addHook('beforeSave',[$this,'dirtyReminder']);
 		$this->addHook('beforeSave',[$this,'nullifyFields']);
 		$this->addHook('beforeSave',[$this,'notifyAssignement']);
 		$this->addHook('beforeSave',[$this,'checkEmployeeHasEmail']);
@@ -177,6 +178,11 @@ class Model_Task extends \xepan\base\Model_Table
 						->setLimit(1)
 						->fieldQuery('organization');
 		});
+ 	}
+
+ 	function dirtyReminder(){
+ 		if($this['is_reminded'] AND ($this['reminder_time'] > $this->app->now)) 			
+ 			$this['is_reminded'] = null;
  	}
 	
 	function nullifyFields($m){
