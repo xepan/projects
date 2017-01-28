@@ -1,8 +1,5 @@
 <?php
 
-// TODO 
-// 1) Deadline calculation in recurring function.
-
 namespace xepan\projects;
 
 class Model_Task extends \xepan\base\Model_Table
@@ -661,7 +658,6 @@ class Model_Task extends \xepan\base\Model_Table
 	}
 
 	function recurring(){		
-		
 		$recurring_task = $this->add('xepan\projects\Model_Task');
 		$recurring_task->addCondition('is_recurring',true);
 		$recurring_task->addCondition('starting_date','<=',$this->app->now);
@@ -691,34 +687,40 @@ class Model_Task extends \xepan\base\Model_Table
 			$model_task['recurring_span'] = $task['recurring_span'];
 			$model_task['created_by_id'] = $task['created_by_id'];
 			$model_task['is_reminder_only'] = $task['is_reminder_only'];
-			// CALCULATE REMIND TIME AND STORE IN FIELD
 
 			switch ($task['recurring_span']) {
 				case 'Weekely':
+					$new_deadline = date("Y-m-d H:i:s", strtotime('+ 1 Weeks', strtotime($task['deadline'])));
 					$starting = date("Y-m-d H:i:s", strtotime('+ 1 Weeks', strtotime($task['starting_date'])));
 					$reminder = date("Y-m-d H:i:s", strtotime('+ 1 Weeks', strtotime($task['reminder_time'])));
 					break;
 				case 'Fortnight':
+					$new_deadline = date("Y-m-d H:i:s", strtotime('+ 2 Weeks', strtotime($task['deadline'])));
 					$starting = date("Y-m-d H:i:s", strtotime('+ 2 Weeks', strtotime($task['starting_date'])));
 					$reminder = date("Y-m-d H:i:s", strtotime('+ 2 Weeks', strtotime($task['reminder_time'])));
 					break;
 				case 'Monthly':
+					$new_deadline = date("Y-m-d H:i:s", strtotime('+ 1 months', strtotime($task['deadline'])));
 					$starting = date("Y-m-d H:i:s", strtotime('+ 1 months', strtotime($task['starting_date'])));
 					$reminder = date("Y-m-d H:i:s", strtotime('+ 1 months', strtotime($task['reminder_time'])));
 					break;
 				case 'Quarterly':
+					$new_deadline = date("Y-m-d H:i:s", strtotime('+ 4 months', strtotime($task['deadline'])));
 					$starting = date("Y-m-d H:i:s", strtotime('+ 4 months', strtotime($task['starting_date'])));
 					$reminder = date("Y-m-d H:i:s", strtotime('+ 4 months', strtotime($task['reminder_time'])));
 					break;
 				case 'Halferly':
+					$new_deadline = date("Y-m-d H:i:s", strtotime('+ 6 months', strtotime($task['deadline'])));
 					$starting = date("Y-m-d H:i:s", strtotime('+ 6 months', strtotime($task['starting_date'])));
 					$reminder = date("Y-m-d H:i:s", strtotime('+ 6 months', strtotime($task['reminder_time'])));
 					break;
 				case 'Yearly':
+					$new_deadline = date("Y-m-d H:i:s", strtotime('+ 12 months', strtotime($task['deadline'])));
 					$starting = date("Y-m-d H:i:s", strtotime('+ 12 months', strtotime($task['starting_date'])));
 					$reminder = date("Y-m-d H:i:s", strtotime('+ 12 months', strtotime($task['reminder_time'])));
 					break;					
 				default:
+					$new_deadline = date("Y-m-d H:i:s", strtotime('+ 1 day', strtotime($task['deadline'])));
 					$starting = date("Y-m-d H:i:s", strtotime('+ 1 day', strtotime($task['starting_date'])));
 					$reminder = date("Y-m-d H:i:s", strtotime('+ 1 day', strtotime($task['reminder_time'])));
 					break;
@@ -727,15 +729,6 @@ class Model_Task extends \xepan\base\Model_Table
 			// deducting snooze time of old remind_time to get exact reminder_time 
 			$reminder_time = date("Y-m-d H:i:s", strtotime('+'.$task['snooze_duration'].' '.$task['remind_unit'], strtotime($task['reminder_time'])));
 
-			// new deadline is "gap of days" between old deadline and old starting date 
-			// add those "gap of days" in old starting
-
-			// LOGIC NOT WORKING FOR NOW
-			// $diff_array [] = $this->app->my_date_diff($task['starting_date'],$task['deadline']);
-			// $date_diff_in_minutes = $diff_array[0]['minutes_total']; 			
-			// $new_deadline = date("Y-m-d H:i:s", strtotime('+ ' .$date_diff_in_minutes .'Minutes', strtotime($task['starting_date'])));
-
-			$new_deadline = date("Y-m-d H:i:s", strtotime('+ 1 day', strtotime($starting)));
 			$model_task['deadline'] = $new_deadline;
 			$model_task['starting_date'] = $starting;
 			$model_task['reminder_time'] = $reminder;			
