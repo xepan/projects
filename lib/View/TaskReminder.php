@@ -38,9 +38,14 @@ class View_TaskReminder extends \View{
 		
 
 		$task->addHook('beforeSave',[$this,'formValidations']);
-		$reminder_crud->setModel($task,['task_name','notify_to','reminder_time','remind_via','is_recurring','recurring_span'])->setOrder('created_at','desc');
+		$reminder_crud->setModel($task,['starting_date','task_name','notify_to','reminder_time','remind_via','is_recurring','recurring_span'])->setOrder('created_at','desc');
+
+		if($reminder_crud->isEditing() AND !$reminder_crud->model->id){
+			$reminder_time_field = $reminder_crud->form->getElement('reminder_time')->js(true)->val('');
+		}
 
 		if($reminder_crud->isEditing()){
+			
 			$followup_field = $reminder_crud->form->getElement('is_recurring');
 
 			$followup_field->js(true)->univ()->bindConditionalShow([
@@ -68,6 +73,11 @@ class View_TaskReminder extends \View{
 		
 			if($reminder_crud->form->isSubmitted()){				
 				$m = $reminder_crud->model;
+				// starting date and deadline are filled to avoide deadline is smaller then starting date condition
+				// starting date and deadline are filled to avoide null condition in recurring function
+				// starting date and deadline spot are display none in template
+				$m['starting_date'] = $this->app->now;		
+				$m['deadline'] = $m['starting_date'];		
 				$m['is_reminder_only'] = true;		
 				$m['type'] = 'Reminder';		
 				$m->save();	 					 					 					 									
@@ -104,7 +114,7 @@ class View_TaskReminder extends \View{
 
 	function formValidations($m){
 		if($m['remind_via'] == null || $m['notify_to'] == null)
-			$this->app->js()->univ()->alert('Remind Via And Notify To Are Compulsory')->execute();			
+			$this->app->js()->univ()->alert('Remind Via And Remind To Are Compulsory')->execute();			
 		
 		if($m['is_recurring'] == true AND $m['recurring_span'] == '')
 			throw $this->exception('Time gap is required','ValidityCheck')

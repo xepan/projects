@@ -5,10 +5,10 @@ namespace xepan\projects;
 class View_Detail extends \View{
 	public $task_id;
 	public $project_id = null;
+	public $task_type;
 
 	function init(){
-		parent::init();
-
+		parent::init();		
 		$p = $this;
 		$task_id = $this->task_id;
 		$project_id = $this->project_id;
@@ -35,13 +35,21 @@ class View_Detail extends \View{
 			$task_form->setLayout('view\task_form');
 			$task_form->template->tryDel('assign_to');
 
+			if($this->task_type != 'followup'){
+				$task_form->layout->template->tryDel('display_wrapper');
+			}
+
 			$task_form->setModel($model_task,['assign_to_id','reminder_time','task_name','description','starting_date','deadline','priority','estimate_time','set_reminder','remind_via','remind_unit','notify_to','is_recurring','recurring_span','snooze_duration']);
 			
 			$task_form->getElement('notify_to')->set($temp)->js(true)->trigger('changed');
 			$task_form->getElement('remind_via')->set($temp1)->js(true)->trigger('changed');
-			$task_form->getElement('deadline')->js(true)->val('');
-			$task_form->getElement('starting_date')->js(true)->val('');
-			$task_form->getElement('reminder_time')->js(true)->val('');
+			
+			if(!$task_id){
+				$task_form->getElement('deadline')->js(true)->val('');
+				$task_form->getElement('starting_date')->js(true)->val('');
+				$task_form->getElement('reminder_time')->js(true)->val('');
+			}
+
 			$task_form->getElement('remind_via')
 						->addClass('multiselect-full-width')
 						->setAttr(['multiple'=>'multiple']);
@@ -70,10 +78,10 @@ class View_Detail extends \View{
 
 				
 			if($task_form->isSubmitted()){				
-				if($task_form['set_reminder'] && $task_form['remind_value'] == null){
-					$task_form->displayError('remind_value','This field is required');
+				if($task_form['set_reminder'] && $task_form['reminder_time'] == null){
+					$task_form->displayError('reminder_time','This field is required');
 				}
-				if($task_form['set_reminder'] && $task_form['remind_unit'] == null){
+				if($task_form['set_reminder'] && $task_form['snooze_duration'] != null && $task_form['remind_unit'] == null){
 					$task_form->displayError('remind_unit','This field is required');
 				}
 				

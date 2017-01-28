@@ -1,5 +1,33 @@
 <?php
 
+// TODO 
+// 1. emp 1 assigned task to emp 2 (snoozed reminder)
+// 	emp1 absent, series of reminders ---> how to stop ?
+
+// 2. because reminder runs before recurring 
+// 	reminder makes reminder_time increased 
+// 	recurring stores increased reminder_time
+
+// 3. Action in followup
+
+// 4. deadline calculation in recurring function 
+
+// 5. created at of recurring task
+
+// 6. is reminder only field in recurring task
+
+// 7. remove every thing else except hours and minutes remind_value from dropdown
+
+// 8. when creating task values of other field also saved if filled
+
+// 9. If reminder is true and snppzing is false and snozing field is filled then problem occrs
+
+// 10. how to show tasks whose is_reminder is true
+
+// 11. myfollowup form change force reminder
+
+// 12. followups having reminder
+
 namespace xepan\projects;
 
 class Model_Task extends \xepan\base\Model_Table
@@ -216,11 +244,19 @@ class Model_Task extends \xepan\base\Model_Table
 		$this['updated_at'] = $this->app->now;
 		if(!$this['deadline']) $this['deadline'] = $this['starting_date'];
 		
+		if($this['set_reminder']){									
+			if($this['reminder_time'] == '')
+				throw $this->exception('Remind At is required','ValidityCheck')->setField('reminder_time');
+
+			if($this['remind_via'] == null || $this['notify_to'] == null)
+				$this->app->js()->univ()->alert('Remind Via And Notify To Are Compulsory')->execute();			
+		}
+
 		if(strtotime($this['deadline']) < strtotime($this['starting_date'])){			
 			throw $this->exception('Deadline can not be smaller then starting date','ValidityCheck')->setField('deadline');
 		}
 					
-		if($this['starting_date'] == '')
+		if($this['starting_date'] == '' AND $this['type'] != 'Reminder')
 			throw $this->exception('Starting Date is required','ValidityCheck')->setField('starting_date');
 		
 		if($this['type'] == 'Followup')
@@ -228,13 +264,6 @@ class Model_Task extends \xepan\base\Model_Table
 				throw $this->exception('Related Contact is required','ValidityCheck')->setField('related_id');
 		
 	
-		if($this['set_reminder']){
-			if($this['reminder_time'] == '')
-				throw $this->exception('Remind At is required','ValidityCheck')->setField('reminder_time');
-
-			if($this['remind_via'] == null || $this['notify_to'] == null)
-				$this->app->js()->univ()->alert('Remind Via And Notify To Are Compulsory')->execute();			
-		}
 		
 		if($this['is_recurring'] == true AND $this['recurring_span'] == '')
 			throw $this->exception('Time gap is required','ValidityCheck')->setField('recurring_span');
@@ -522,12 +551,12 @@ class Model_Task extends \xepan\base\Model_Table
 		$this->ref('xepan\projects\Follower_Task_Association')->deleteAll();
 	}
 
-	function reminder(){
+	function reminder(){		
 		$reminder_task = $this->add('xepan\projects\Model_Task');
 		$reminder_task->addCondition('set_reminder',true);
 		$reminder_task->addCondition([['is_reminded',0],['is_reminded',null]]);
 		
-		foreach ($reminder_task as $task) {	
+		foreach ($reminder_task as $task) {				
 			if(($task['type'] == 'Task' || $task['type'] == 'Followup') AND $task['status'] == 'Completed'){
 				$task['is_reminded'] = true;
 				$task->saveAs('xepan\projects\Model_Task');
@@ -619,7 +648,7 @@ class Model_Task extends \xepan\base\Model_Table
 					$activity->save();  
 				}
 
-				if($task['type'] == 'Reminder' OR (($task['type'] == 'Task' OR $task['type'] == 'Followup') And $task['snooze_duration'] == null)){
+				if($task['type'] == 'Reminder' OR (($task['type'] == 'Task' OR $task['type'] == 'Followup') And ($task['snooze_duration'] == null OR $task['snooze_duration'] == 0))){
 					$task['is_reminded'] = true;
 					$task->saveAs('xepan\projects\Model_Task');
 				}else{
@@ -693,10 +722,12 @@ class Model_Task extends \xepan\base\Model_Table
 					break;
 			}
 			
+			// new deadline is "gap of days" between old deadline and old starting date 
+			// add those "gap of days" in old deadline
 			$new_deadline = date("Y-m-d H:i:s", strtotime('+ 1 day', strtotime($starting)));
 			$model_task['deadline'] = $new_deadline;
 			$model_task['starting_date'] = $starting;
-			$model_task['reminder_time'] = $reminder;
+			$model_task['reminder_time'] = $reminder;			
 			$model_task->saveAndUnload();
 
 			$task['is_recurring'] = false;

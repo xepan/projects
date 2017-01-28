@@ -27,7 +27,7 @@ class View_FollowUps extends \View{
 			// $this->js()->univ()->frameURL('Lead Details',[$this->api->url('xepan_marketing_leaddetails'),'contact_id'=>$model_task['related_id']]);
 		}
 
-		$task_view = $tab1->add('xepan\projects\View_Detail',['task_id'=>$task_id,'project_id'=>$project_id]);	
+		$task_view = $tab1->add('xepan\projects\View_Detail',['task_id'=>$task_id,'project_id'=>$project_id,'task_type'=>'followup']);	
 
 		$form = $tab2->add('Form');
 		$form->setLayout('view\conversationfilter');
