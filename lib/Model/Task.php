@@ -678,7 +678,7 @@ class Model_Task extends \xepan\base\Model_Table
 			$model_task['task_name']  = $task['task_name'];
 			$model_task['assign_to_id'] = $task['assign_to_id'];
 			$model_task['description'] = $task['description'];
-			$model_task['status'] = $task['status'];
+			$model_task['status'] = 'Assigned';
 			$model_task['created_at'] = $this->app->now;
 			$model_task['priority'] = $task['priority'];
 			$model_task['estimate_time'] = $task['estimate_time'];
