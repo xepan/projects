@@ -15,6 +15,8 @@ class page_test extends \Page{
 							
 			if($form['do_what'] == 'CompatibleToRestructure')				
 				$this->CompatibleToRestructure();
+
+			$form->js()->reload()->execute();
 		}	
 	}
 
@@ -27,12 +29,12 @@ class page_test extends \Page{
 	function compatibleToRestructure(){
 		$tasks = $this->add('xepan\projects\Model_Task');
 		$tasks->addCondition('set_reminder',true);
-		$tasks->addCondition([['is_reminded',false],['is_reminded',null]]);
 
 		foreach ($tasks as $task) {
 			$reminder_time = date("Y-m-d H:i:s", strtotime('- '.$task['remind_value'].' '.$task['remind_unit'], strtotime($task['starting_date'])));
 			$task['reminder_time'] = $reminder_time;
 			$task['snooze_duration'] = null;
+			$task->save();
 		}
 		
 	}
