@@ -538,6 +538,7 @@ class Model_Task extends \xepan\base\Model_Table
 		if($this['set_reminder'] OR ($this['snooze_duration'] != null OR $this['snooze_duration'] != 0)){
 			$this['is_reminded'] = true;
 			$this['snooze_duration'] = null;
+			$this['set_reminder'] = false;
 			$this->save();
 		}
 		else
