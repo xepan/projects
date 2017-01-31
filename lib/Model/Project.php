@@ -103,6 +103,10 @@ class Model_Project extends \xepan\base\Model_Table
 		}
 	}
 
+	function activityReport($app,$emp,$start_date,$end_date,&$result_array){
+		throw new \Exception($emp."--".$start_date."--".$end_date);
+	}
+
 	function quickSearch($app,$search_string,&$result_array,$relevency_mode){		
 		$this->addExpression('Relevance')->set('MATCH(name, description, type) AGAINST ("'.$search_string.'" '.$relevency_mode.')');
 		$this->addCondition('Relevance','>',0);

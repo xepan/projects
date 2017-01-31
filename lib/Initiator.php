@@ -39,7 +39,7 @@ class Initiator extends \Controller_Addon {
 
 		$search_project = $this->add('xepan\projects\Model_Project');
 		$this->app->addHook('quick_searched',[$search_project,'quickSearch']);
-		// $this->app->addHook('epan_dashboard_page',[$this,'epanDashboard']);
+		$this->app->addHook('activity_report',[$search_project,'activityReport']);
 		$this->app->addHook('logout_page',[$this,'logoutPageManage']);
 		$this->app->addHook('widget_collection',[$this,'exportWidgets']);
         $this->app->addHook('entity_collection',[$this,'exportEntities']);
