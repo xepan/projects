@@ -104,55 +104,14 @@ class Model_Project extends \xepan\base\Model_Table
 	}
 
 	function activityReport($app,$report_view,$emp,$start_date,$end_date){		
-		$employee = $this->add('xepan\hr\Model_Employee')->load($emp);
 							  					  
-		$task = $this->add('xepan\projects\Model_Task');
-		$task->addCondition('type','Task');
-		$task->addCondition('created_at','>=',$start_date);
-		$task->addCondition('created_at','<=',$this->app->nextDate($end_date));
-		$task->addCondition('assign_to_id',$emp);
-		$task_count = $task->count()->getOne();
+		$task_status = $this->add('xepan\projects\Model_Widget_TaskStatus',['start_date'=>$start_date,'end_date'=>$end_date]);
+		$task_status->addCondition('id',$emp);
 		
-		$result_array[] = [
- 					'assign_to'=>$employee['name'],
- 					'from_date'=>$start_date,
- 					'to_date'=>$end_date,
- 					'type'=> 'Task',
- 					'count'=>$task_count,
- 				];
- 		
-		$followup = $this->add('xepan\projects\Model_Task');
-		$followup->addCondition('type','Followup');
-		$followup->addCondition('created_at','>=',$start_date);
-		$followup->addCondition('created_at','<=',$this->app->nextDate($end_date));
-		$followup->addCondition('assign_to_id',$emp);
-		$followup_count = $followup->count()->getOne();
+		// $cl = $report_view->add('CompleteLister',null,null,['view\projectactivityreport']);
+		// $cl->setSource($result_array);
 
-		$result_array[] = [
-				'assign_to'=>$employee['name'],
-				'from_date'=>$start_date,
-				'to_date'=>$end_date,
-				'type'=> 'Followup',
-				'count'=>$followup_count,
-			];
-
-		$reminder = $this->add('xepan\projects\Model_Task');
-		$reminder->addCondition('type','Reminder');
-		$reminder->addCondition('created_at','>=',$start_date);
-		$reminder->addCondition('created_at','<=',$this->app->nextDate($end_date));
-		$reminder->addCondition('assign_to_id',$emp);
-		$reminder_count = $reminder->count()->getOne();
-
-		$result_array[] = [
-				'assign_to'=>$employee['name'],
-				'from_date'=>$start_date,
-				'to_date'=>$end_date,
-				'type'=> 'Reminder',
-				'count'=>$reminder_count,
-			];
-
-		$cl = $report_view->add('CompleteLister',null,null,['view\projectactivityreport']);
-		$cl->setSource($result_array);
+		// $c->current_row_html['page_url'] = (string) $this->app->url('xepan_projects_activity_report',['type'=>$c->model['type']]);
 	}
 
 	function quickSearch($app,$search_string,&$result_array,$relevency_mode){		
