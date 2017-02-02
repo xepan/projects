@@ -103,6 +103,17 @@ class Model_Project extends \xepan\base\Model_Table
 		}
 	}
 
+	function activityReport($app,$report_view,$emp,$start_date,$end_date){		
+							  					  
+		$task_status = $this->add('xepan\projects\Model_Widget_TaskStatus',['start_date'=>$start_date,'end_date'=>$end_date]);
+		$task_status->addCondition('id',$emp);
+		
+		// $cl = $report_view->add('CompleteLister',null,null,['view\projectactivityreport']);
+		// $cl->setSource($result_array);
+
+		// $c->current_row_html['page_url'] = (string) $this->app->url('xepan_projects_activity_report',['type'=>$c->model['type']]);
+	}
+
 	function quickSearch($app,$search_string,&$result_array,$relevency_mode){		
 		$this->addExpression('Relevance')->set('MATCH(name, description, type) AGAINST ("'.$search_string.'" '.$relevency_mode.')');
 		$this->addCondition('Relevance','>',0);

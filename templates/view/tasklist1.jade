@@ -8,7 +8,7 @@
   .main-box-body.clearfix
     {$header}
     {nested_template}
-    ul
+    ul(id="{$assign_to_sortid}" style = "cursor:pointer; cursor:hand;") {$assign_to_sort}
       {rows}{row}
       {cols}  
       li.clearfix

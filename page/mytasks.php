@@ -148,7 +148,7 @@ class page_mytasks extends \xepan\base\Page{
 										  ->addCondition('assign_to_id','<>',null)
 										  ->addCondition('status','<>','Submitted')
 										  ->addCondition('type','Task');
-
+		$task_assigned_by_me_model->getElement('assign_to_id')->sortable(true);								  
 	    $task_assigned_by_me_model->setOrder(['updated_at','last_comment_time']);
 	    
 	    $task_waiting_for_approval_model = $this->add('xepan\projects\Model_Formatted_Task')
