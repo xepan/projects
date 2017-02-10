@@ -58,9 +58,16 @@ class Model_Comment extends \xepan\base\Model_Table
 			$task_created_by = $task['created_by_id'];
 			$task['updated_at'] = $this->app->now;
 			$task->save();
+
+			$notify_emp = [];
+			if($task_created_by !=  $this->app->employee->id)
+				$notify_emp []= $task_created_by;
+			if($task['assign_to_id'] != $this->app->employee->id)
+				$notify_emp []= $task['assign_to_id'];
+			
 			$this->app->employee->
 			addActivity("Comment On Task: '".$task_name."' Comment By'".$this->app->employee['name']."'",null, $this['employee_id'] /*Related Contact ID*/,null,null,null)->
-			notifyTo([$task['assign_to_id'],$task_created_by]," Comment : '".$this['comment']."' :: Commented by '".$this->app->employee['name']."' :: On Task '".$task_name."' ");
+			notifyTo($notify_emp," Comment : '".$this['comment']."' :: Commented by '".$this->app->employee['name']."' :: On Task '".$task_name."' ");
 		}
 
 	}

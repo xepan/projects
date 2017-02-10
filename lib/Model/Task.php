@@ -429,7 +429,13 @@ class Model_Task extends \xepan\base\Model_Table
 			$contact->load($this['related_id']);
 			$form = $p->add('xepan\communication\Form_Communication');
 			$form->setContact($contact);
-			
+			$member_phones = $contact->getPhones();
+			$called_to_field = $form->getElement('called_to');
+			$nos=[];
+				foreach ($member_phones as $no) {
+					$nos[$no] = $no;
+				}
+				$called_to_field->setValueList($nos);
 
 		}else{
 			$form = $p->add('Form');
