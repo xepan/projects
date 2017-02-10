@@ -53,6 +53,11 @@ class page_todaytimesheet extends \xepan\base\Page{
 		$grid->grid->removeColumn('attachment_icon');
 
 		if($form->isSubmitted()){
+			// to < from
+			// from > to
+			if($form['starttime'] >= $form['endtime'])
+				$form->displayError('starttime','Starttime cannot be smaller or equal to endtime');
+
 			$timestamp = $this->app->today;
 			$timestamp .= ' '.$form['starttime'];
 			$starting_time = date('Y-m-d H:i:s',strtotime($timestamp));
@@ -73,6 +78,7 @@ class page_todaytimesheet extends \xepan\base\Page{
 					$form->displayError('task','Add a new task or select from old');
 
 				$model_task['task_name']  = $form['task'];
+				$model_task['starting_date']  = $starting_time;
 				$model_task['assign_to_id'] = $this->app->employee->id;
 				$model_task['created_by_id'] = $this->app->employee->id;
 				$model_task['status'] = 'Pending';
