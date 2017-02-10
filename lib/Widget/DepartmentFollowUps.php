@@ -29,7 +29,8 @@ class Widget_DepartmentFollowUps extends \xepan\base\Widget{
 	    				->addCondition('type','Followup');
 
 	    $department_employees = $this->add('xepan\hr\Model_Employee')
-	    							->addCondition('department_id',$this->app->employee['department_id']);
+	    							->addCondition('department_id',$this->app->employee['department_id'])
+	    							->addCondition('status','Active');
 
 		if(isset($this->report->employee)){
 			$followups_model->addCondition(

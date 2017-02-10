@@ -11,6 +11,7 @@ class Widget_PostTaskPerformance extends \xepan\base\Widget{
 
 	function recursiveRender(){
 		$post_employees = $this->add('xepan\hr\Model_Employee');
+		$post_employees->addCondition('status','Active');
 		$post_employees->addCondition('post_id',$this->app->employee['post_id']);
 
 		$employee = [];

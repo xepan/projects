@@ -12,6 +12,7 @@ class Widget_DepartmentTaskPerformance extends \xepan\base\Widget{
 	function recursiveRender(){
 		$department_employees = $this->add('xepan\hr\Model_Employee');
 		$department_employees->addCondition('department_id',$this->app->employee['department_id']);
+		$department_employees->addCondition('status','Active');
 
 		$employee = [];
 		foreach ($department_employees as $emp){
