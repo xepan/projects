@@ -65,6 +65,8 @@ class page_todaytimesheet extends \xepan\base\Page{
 				$form->displayError('endtime','endtime cannot be smaller or equal to starttime');
 			
 			$check_timesheet = $this->add('xepan\projects\Model_Timesheet');
+
+			$check_timesheet->addCondition('employee_id',$this->app->employee->id);
 			$check_timesheet->addCondition('starttime','<=',$ending_time);
 			$check_timesheet->addCondition('endtime','>=',$starting_time);
 			$check_timesheet->tryLoadAny();
