@@ -53,11 +53,6 @@ class page_todaytimesheet extends \xepan\base\Page{
 		$grid->grid->removeColumn('attachment_icon');
 
 		if($form->isSubmitted()){
-			// to < from
-			// from > to
-			if($form['starttime'] >= $form['endtime'])
-				$form->displayError('starttime','Starttime cannot be smaller or equal to endtime');
-
 			$timestamp = $this->app->today;
 			$timestamp .= ' '.$form['starttime'];
 			$starting_time = date('Y-m-d H:i:s',strtotime($timestamp));
@@ -65,7 +60,19 @@ class page_todaytimesheet extends \xepan\base\Page{
 			$timestamp = $this->app->today;
 			$timestamp .= ' '.$form['endtime'];
 			$ending_time = date('Y-m-d H:i:s',strtotime($timestamp));
+
+			if(strtotime($starting_time) >= strtotime($ending_time))				
+				$form->displayError('endtime','endtime cannot be smaller or equal to starttime');
 			
+			$check_timesheet = $this->add('xepan\projects\Model_Timesheet');
+			$check_timesheet->addCondition('starttime','<=',$ending_time);
+			$check_timesheet->addCondition('endtime','>=',$starting_time);
+			$check_timesheet->tryLoadAny();
+			
+			if($check_timesheet->loaded())
+				$form->displayError('starttime','Overlapping Time');
+
+
 			$model_task = $this->add('xepan\projects\Model_Task');
 			$model_task->addCondition($model_task->dsql()->orExpr()
 	    					->where('assign_to_id',$this->app->employee->id)
