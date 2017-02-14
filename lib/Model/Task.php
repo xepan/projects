@@ -132,6 +132,13 @@ class Model_Task extends \xepan\base\Model_Table
 			return $q->expr('[0]',[$m->refSQL('assign_to_id')->fieldQuery('image')]);
 		});
 
+		$this->addExpression('related_name')->set(function($m,$q){
+			$contact = $this->add('xepan\base\Model_Contact');
+			$contact->addCondition('id',$m->getElement('related_id'));
+			$contact->setLimit(1);
+			return $contact->fieldQuery('name');
+		});
+
 		$this->addExpression('priority_name')->set(function($m){
 			return $m->dsql()->expr(
 					"IF([0]=90,'Critical',
@@ -652,8 +659,18 @@ class Model_Task extends \xepan\base\Model_Table
 					$notify_to = json_encode($employee_array);
 
 					$activity = $this->add('xepan\base\Model_Activity');
-					$activity['notify_to'] = $notify_to; 
-					$activity['notification'] = "Task reminder for: ".$task['task_name'];
+					$activity['notify_to'] = $notify_to;
+
+					if($task['type'] == 'Task') 
+						$activity['notification'] = "Task reminder for: ".$task['task_name'];
+					
+					if($task['type'] == 'Followup')
+						$activity['notification'] = "Followup Reminder For: ".$task['task_name'].' :: Related Contact:'.$task['related_name'];
+	
+
+					if($task['type'] == 'Reminder') 
+						$activity['notification'] = "Reminder Alert: ".$task['task_name'];
+
 					$activity['Created_at'] = $reminder_time;
 					$activity->save();  
 				}
