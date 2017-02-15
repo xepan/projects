@@ -67,6 +67,9 @@ class View_InstantTaskFeed extends \View{
 			$timestamp .= ' '.$form['time'];
 			$starting_time = date('Y-m-d H:i:s',strtotime($timestamp));
 
+			// checking previouly added timesheet entries for clash
+			// ToDo
+
 			// ending previous running task if any
 			$model_close_timesheet = $this->add('xepan\projects\Model_Timesheet');
 			$model_close_timesheet->addCondition('employee_id',$this->app->employee->id);

@@ -19,6 +19,10 @@ class Model_Timesheet extends \xepan\base\Model_Table{
 			return $q->expr("(TIMESTAMPDIFF(SECOND,[0], IFNULL([1],'[2]')))",[$m->getElement('starttime'),$m->getElement('endtime'),$this->app->now]);
 		});
 
+		$this->addExpression('duration_in_hms')->set(function($m,$q){
+			return $q->expr("SEC_TO_TIME([0])",[$m->getElement('duration')]);
+		})->caption('Duration');
+
 		$this->addExpression('project_id')->set(function($m,$q){
 			return $m->refSQL('task_id')->fieldQuery('project_id');
 		});

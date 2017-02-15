@@ -47,8 +47,8 @@ class page_todaytimesheet extends \xepan\base\Page{
 		$timesheet_m->acl = 'xepan\projects\Model_Task';
 		$timesheet_m->setOrder('starttime','asc');
 
-		$grid = $this->add('xepan\hr\CRUD');
-		$grid->setModel($timesheet_m,['task','starttime','endtime','duration']);
+		$grid = $this->add('xepan\hr\CRUD',['allow_add'=>false]);
+		$grid->setModel($timesheet_m,['task','starttime','endtime','duration_in_hms']);
 		$grid->grid->removeColumn('action');
 		$grid->grid->removeColumn('attachment_icon');
 
