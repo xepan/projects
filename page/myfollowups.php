@@ -154,6 +154,12 @@ class page_myfollowups extends \xepan\base\Page{
 		$recurring_field = $my_followups->form->getElement('is_recurring');
 
 		if($my_followups->isEditing()){
+			$my_followups->form->getElement('notify_to')
+							->setAttr(['multiple'=>'multiple']);
+
+			$my_followups->form->getElement('remind_via')
+							->setAttr(['multiple'=>'multiple']);
+											
 			$reminder_field->js(true)->univ()->bindConditionalShow([
 				true=>['remind_via','notify_to','reminder_time','snooze_reminder']
 			],'div.atk-form-row');
