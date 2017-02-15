@@ -20,6 +20,10 @@ class Model_Task_Attachment extends \xepan\base\Model_Table{
 			return $q->expr('[0]',[$m->getElement('file')]);
 		});
 
+		$this->addExpression('filename')->set(function($m,$q){
+			return $m->refSQL('file_id')->fieldQuery('original_filename');
+		});
+
 		$this->addHook('beforeDelete',$this);
 	}
 
