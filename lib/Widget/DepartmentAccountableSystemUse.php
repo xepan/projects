@@ -17,7 +17,7 @@ class Widget_DepartmentAccountableSystemUse extends \xepan\base\Widget{
 		if(isset($this->report->department))
 			$dept_id  = $this->report->department;  
 		else
-			$dept_id  = '';
+			$dept_id  = $this->app->employee['department_id'];
 
 		$accountablity = $this->add('xepan\projects\Model_Widget_AccountableSystemUse',['dept_id'=>$dept_id,'entity'=>'Department','start_date'=>$this->report->start_date,'end_date'=>$this->app->nextDate($this->report->end_date)]);
 
