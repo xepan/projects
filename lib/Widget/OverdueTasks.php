@@ -40,6 +40,7 @@ class Widget_OverdueTasks extends \xepan\base\Widget{
 		}	   	  
 			 
 		$task->addCondition('deadline','<',$this->app->now);			
+		$task->addCondition('status','<>','Completed');			
 		$task->addCondition('type','Task');
 	    
 	    $this->grid->setModel($task)->setOrder('updated_at','desc');			
