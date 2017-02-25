@@ -83,6 +83,8 @@ class Initiator extends \Controller_Addon {
 
     function exportEntities($app,&$array){
         $array['project'] = ['caption'=>'Project','type'=>'DropDown','model'=>'xepan\projects\Model_Project'];
+        $array['Task'] = ['caption'=>'Task','type'=>'DropDown','model'=>'xepan\projects\Model_Task'];
+        $array['EMPLOYEE_REMINDER_RELATED_EMAIL'] = ['caption'=>'EMPLOYEE_REMINDER_RELATED_EMAIL','type'=>'DropDown','model'=>'xepan\projects\Model_EMPLOYEE_REMINDER_RELATED_EMAIL'];
     }
 
 	function logoutPageManage($app,$logout_page){		
