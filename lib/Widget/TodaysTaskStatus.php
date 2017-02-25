@@ -55,6 +55,16 @@ class Widget_TodaysTaskStatus extends \xepan\base\Widget{
 		$task_completed_count = $task_completed_m->count();
 		$this->view->template->trySet('completed',$task_completed_count);
 
+		$task_assigned_m = $this->add('xepan\projects\Model_Task');
+		$task_assigned_m->addCondition('type','Task');
+		$task_assigned_m->addCondition('created_by_id',$employee_id);
+		$task_assigned_m->addCondition('assign_to_id','<>',$employee_id);
+		$task_assigned_m->addCondition('created_at','>=',$this->app->now);
+		$task_assigned_count = $task_assigned_m->count();
+		$this->view->template->trySet('assigned',$task_assigned_count);
+
+		$this->view->js('click')->_selector('.do-view-todaystask')->univ()->frameURL('Todays Task Status',[$this->app->url('xepan_projects_widget_todaystask'),['employee_id'=>$employee_id]]);
+		
 		parent::recursiveRender();
 	}
 }
