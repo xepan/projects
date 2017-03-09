@@ -7,9 +7,11 @@ class page_myfollowups extends \xepan\base\Page{
 	function init(){
 		parent::init();
 
-		$this->start_date = $start_date = $_GET['start_date']?:$this->app->today; 		
-		$this->end_date = $end_date = $_GET['end_date']?:$this->app->today;  
-        $this->status = $this->app->stickyGET('status');			 
+		$this->app->stickyGET('start_date');
+		$this->app->stickyGET('end_date');
+		$this->start_date = $start_date = $_GET['start_date']?:$this->app->today;
+		$this->end_date = $end_date = $_GET['end_date']?:$this->app->today;
+        $this->status = $this->app->stickyGET('status');
         $this->show_overdue = $show_overdue = $this->app->stickyGET('show_overdue');
 
         $contact_id = $this->app->stickyGET('contact_id');
@@ -23,7 +25,7 @@ class page_myfollowups extends \xepan\base\Page{
         $filter_form->addField('CheckBox','overdue','Show Overdue Followups');
 		$filter_form->addSubmit("Filter")->addClass('btn btn-primary');
 		
-		if($filter_form->isSubmitted()){			
+		if($filter_form->isSubmitted()){
 			$filter_form->app->redirect($this->app->url(null,['show_overdue'=>$filter_form['overdue'],'start_date'=>$fld->getStartDate()?:0,'end_date'=>$fld->getEndDate()?:0]));
 		}
 
