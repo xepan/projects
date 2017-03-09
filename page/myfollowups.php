@@ -82,6 +82,7 @@ class page_myfollowups extends \xepan\base\Page{
 		$post_m->load($this->app->employee['post_id']);
 
 		switch ($post_m['permission_level']) {
+			
 			case 'Sibling':
 				$post_employees = $this->add('xepan\hr\Model_Employee');
 				$post_employees->addCondition('post_id',$this->app->employee['post_id']);
@@ -117,19 +118,20 @@ class page_myfollowups extends \xepan\base\Page{
 				);	
 				break;
 			case 'Global':				
-				# do nothing...
 				break;
 			default:
 				$my_followups_model->addCondition([['assign_to_id',$this->app->employee->id],['created_by_id',$this->app->employee->id]]);
 				break;
 		}
 		
-		if($show_overdue){
-			$my_followups_model->addCondition('starting_date','<=',$this->app->nextDate($this->end_date));
-			// status
-		}else{
-			$my_followups_model->addCondition('starting_date','>',$this->start_date);
-			$my_followups_model->addCondition('starting_date','<=',$this->app->nextDate($this->end_date));
+		if(!$my_followups->isEditing()){
+			if($show_overdue){
+				$my_followups_model->addCondition('starting_date','<=',$this->app->nextDate($this->end_date));
+				// status
+			}else{
+				$my_followups_model->addCondition('starting_date','>',$this->start_date);
+				$my_followups_model->addCondition('starting_date','<=',$this->app->nextDate($this->end_date));
+			}
 		}
 
 
@@ -143,7 +145,7 @@ class page_myfollowups extends \xepan\base\Page{
 			$snooze_reminder_field = $my_followups->form->addField('checkbox','snooze_reminder','Enable Snoozing [Repetitive Reminder]');
 		}
 
-		$my_followups->setModel($my_followups_model,['contact_name','task_name','related_id','assign_to_id','assign_to_image','reminder_time','priority','starting_date','deadline','estimate_time','set_reminder','remind_via','notify_to','snooze_duration','remind_unit','description','is_recurring','recurring_span','contact_organization'],['contact_organization','contact_name','assIgn_to_image','task_name','related_id','assign_to','reminder_time','priority','starting_date','deadline','estimate_time','set_reminder','remind_via','notify_to','snooze_duration','remind_unit','description','is_recurring','recurring_span','status']);
+		$my_followups->setModel($my_followups_model,['contact_name','task_name','related_id','assign_to_image','reminder_time','priority','starting_date','deadline','estimate_time','set_reminder','remind_via','notify_to','snooze_duration','remind_unit','description','is_recurring','recurring_span','contact_organization'],['contact_organization','contact_name','assIgn_to_image','task_name','related_id','assign_to','reminder_time','priority','starting_date','deadline','estimate_time','set_reminder','remind_via','notify_to','snooze_duration','remind_unit','description','is_recurring','recurring_span','status']);
 		$my_followups->add('xepan\base\Controller_Avatar',['name_field'=>'assign_to','image_field'=>'assign_to_image','extra_classes'=>'profile-img center-block','options'=>['size'=>50,'display'=>'block','margin'=>'auto'],'float'=>null,'model'=>$this->model]);
 		
 		$my_followups->form->getElement('related_id')->set($contact_id);
@@ -175,6 +177,8 @@ class page_myfollowups extends \xepan\base\Page{
 			],'div.atk-form-row');
 
 			if($my_followups->form->isSubmitted()){
+				$my_followups->model['assign_to_id'] = $this->app->employee->id;
+				// form field error if already added and is not same as before
 				if(!$my_followups->form['snooze_reminder']){
 					$my_followups->model['snooze_duration'] = null;
 					$my_followups->form->model->save();

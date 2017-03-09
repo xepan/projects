@@ -1,0 +1,20 @@
+.row.do-view-todaystask(style="cursor:pointer; cursor:hand;")
+	.panel.panel-default
+		.panel-heading
+			span Todays Task Status [Employee : {$employee} &nbsp; &nbsp;Date : {$date}]
+		.panel-body
+			.row
+				.col-md-6
+					span To Receive : {$to_receive}
+				.col-md-6
+					span Pending : {$pending}
+			.row
+				.col-md-6
+					span Submitted : {$submitted}
+				.col-md-6
+					span Completed : {$completed}
+			.row
+				.col-md-6
+					span Created : {$created}
+				.col-md-6
+					span Assigned : {$assigned}
