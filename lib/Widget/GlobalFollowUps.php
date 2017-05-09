@@ -32,9 +32,9 @@ class Widget_GlobalFollowUps extends \xepan\base\Widget{
 	    	$employee_id = $this->report->employee;
 	    	$followups_model->addCondition(
 	    					$followups_model->dsql()->orExpr()
-	    						->where('assign_to_id',$this->app->employee->id)
+	    						->where('assign_to_id',$employee_id)
 	    						->where($followups_model->dsql()->andExpr()
-    									->where('created_by_id',$this->app->employee->id)
+    									->where('created_by_id',$employee_id)
     									->where('assign_to_id',null)));
 		}
 	   
