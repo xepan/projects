@@ -32,7 +32,26 @@ class Model_Comment extends \xepan\base\Model_Table
 		});
 
 		$this->addHook('afterInsert',$this);
-		$this->addHook('beforeSave',[$this,'isSeenTrue']);
+		$this->addHook('beforeSave',[$this,'updateUnseenCount']);
+	}
+
+	function updateUnseenCount(){
+		$task = $this->add('xepan\projects\Model_Task');
+		$task->tryLoad($this['task_id']);		
+
+		if($task['created_by_id'] == $this->app->employee->id){
+			$task['assignee_unseen_comment_count'] =$task['assignee_unseen_comment_count'] + 1;
+		}else{
+			$task['creator_unseen_comment_count'] =$task['creator_unseen_comment_count'] + 1;
+		}
+
+		if(!$this->loaded()){
+			$task['comment_count'] = $task['comment_count'] + 1;
+		}
+
+		$task['last_comment_time'] = $this->app->now;
+
+		$task->save();
 	}
 
 	function isSeenTrue(){

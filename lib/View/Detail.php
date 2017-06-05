@@ -203,22 +203,12 @@ class View_Detail extends \View{
 			if(!$task_m->loaded())
 				return;
 
-			$comment_m = $this->add('xepan\projects\Model_Comment');
-			$comment_m->addCondition('task_id',$task_m->id);
-					
-			if($task_m['created_by_id'] == $this->app->employee->id){
-				foreach ($comment_m as $c) {
-					$c['is_seen_by_creator'] = true;
-					$c->save();
-				}
+			if($task_m['created_by_id'] === $this->app->employee->id){
+				$task_m['creator_unseen_comment_count'] = '0';
+			}elseif($task_m['assign_to_id'] === $this->app->employee->id){
+				$task_m['assignee_unseen_comment_count'] = '0';
 			}
-
-			if($task_m['assign_to_id'] == $this->app->employee->id){				
-				foreach ($comment_m as $c) {
-					$c['is_seen_by_assignee'] = true;
-					$c->save();
-				}
-			}
+			$task_m->save();
 
 		});
 	}	

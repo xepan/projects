@@ -130,6 +130,11 @@ class page_mytasks extends \xepan\base\Page{
 		$status = 'Completed';
 
 	    $task_assigned_to_me_model = $this->add('xepan\projects\Model_Formatted_Task')->addCondition('type','Task');
+	    $field_to_destroy = ['total_duration','is_started','is_running','follower_count','created_by_me','total_comment','created_comment_color','assignee_comment_color','comment_color','created_by_image','assigned_to_image','related_name','priority_name','assign_employee_status','created_by_employee_status','contact_name','contact_organization'];
+	    foreach ($field_to_destroy as $field) {
+		    $task_assigned_to_me_model->getElement($field)->destroy();
+	    }
+
 	    $task_assigned_to_me_model
 	    			->addCondition(
 	    				$task_assigned_to_me_model->dsql()->orExpr()
@@ -151,6 +156,11 @@ class page_mytasks extends \xepan\base\Page{
 		// $task_assigned_by_me_model->getElement('assign_to_id')->sortable(true);								  
 	    $task_assigned_by_me_model->setOrder(['updated_at','last_comment_time']);
 	    
+	    foreach ($field_to_destroy as $field) {
+		    $task_assigned_by_me_model->getElement($field)->destroy();
+	    }
+
+
 	    $task_waiting_for_approval_model = $this->add('xepan\projects\Model_Formatted_Task')
 										  ->addCondition('status','Submitted')
 										  ->addCondition('assign_to_id','<>',null)
@@ -160,6 +170,10 @@ class page_mytasks extends \xepan\base\Page{
 			  									->where('assign_to_id',$this->app->employee->id));	
 	    $task_waiting_for_approval_model->setOrder(['updated_at','last_comment_time']);
 		
+		foreach ($field_to_destroy as $field) {
+		    $task_waiting_for_approval_model->getElement($field)->destroy();
+	    }
+
 		if($from_date){			
 			$task_assigned_to_me_model->addCondition('starting_date','>=',$from_date);
 			$task_assigned_by_me_model->addCondition('starting_date','>=',$from_date);

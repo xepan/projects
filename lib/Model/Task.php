@@ -56,6 +56,10 @@ class Model_Task extends \xepan\base\Model_Table
 		$this->addField('submitted_at')->type('datetime');
 		$this->addField('reopened_at')->type('datetime');
 		$this->addField('completed_at')->type('datetime');
+		$this->addField('last_comment_time')->type('datetime');
+		$this->addField('comment_count')->type('int');
+		$this->addField('creator_unseen_comment_count')->type('int');
+		$this->addField('assignee_unseen_comment_count')->type('int');
 
 		$this->hasMany('xepan\projects\Follower_Task_Association','task_id');
 		$this->hasMany('xepan\projects\Comment','task_id');	
@@ -92,26 +96,22 @@ class Model_Task extends \xepan\base\Model_Table
 			});
 
 
-			$this->addExpression('total_comment')->set($this->refSql('xepan\projects\Comment')->count());
+			$this->addExpression('total_comment')->set('comment_count');
 
-			$this->addExpression('total_comment_seen_by_creator')->set($this->refSql('xepan\projects\Comment')->addCondition('is_seen_by_creator',1)->count());
-			$this->addExpression('total_comment_seen_by_assignee')->set($this->refSql('xepan\projects\Comment')->addCondition('is_seen_by_assignee',1)->count());
+			// $this->addExpression('total_comment_seen_by_creator')->set('creator_unseen_comment_count');
+			// $this->addExpression('total_comment_seen_by_assignee')->set('assignee_unseen_comment_count');
 
-			$this->addExpression('creator_unseen_comment')->set(function($m,$q){
-				return $q->expr("[0]-[1]",[$m->getElement('total_comment'),$m->getElement('total_comment_seen_by_creator')]);
-			});
+			// $this->addExpression('creator_unseen_comment')->set('creator_unseen_comment_count');
+			// $this->addExpression('assignee_unseen_comment')->set('assignee_unseen_comment_count');
 
-			$this->addExpression('assignee_unseen_comment')->set(function($m,$q){
-				return $q->expr("[0]-[1]",[$m->getElement('total_comment'),$m->getElement('total_comment_seen_by_assignee')]);
-			});
 
 			$this->addExpression('created_comment_color')->set(function($m,$q){
-				return $q->expr("IF([0] > 0,'RED','GRAY')",[$m->getElement('creator_unseen_comment')]);
+				return $q->expr("IF([0] > 0,'RED','GRAY')",[$m->getElement('creator_unseen_comment_count')]);
 			});
 
 
 			$this->addExpression('assignee_comment_color')->set(function($m,$q){
-				return $q->expr("IF([0] > 0,'RED','GRAY')",[$m->getElement('assignee_unseen_comment')]);
+				return $q->expr("IF([0] > 0,'RED','GRAY')",[$m->getElement('assignee_unseen_comment_count')]);
 			});
 
 			$this->addExpression('comment_color')->set(function($m,$q){
@@ -154,13 +154,13 @@ class Model_Task extends \xepan\base\Model_Table
 					);
 		});
 
-		$this->addExpression('last_comment_time')->set(function($m,$q){
-				return $this->add('xepan\projects\Model_Comment')
-							->addCondition('task_id',$m->getElement('id'))
-							->setOrder('created_at','desc')
-							->setLimit(1)
-							->fieldQuery('created_at');
-		});
+		// $this->addExpression('last_comment_time')->set(function($m,$q){
+		// 		return $this->add('xepan\projects\Model_Comment')
+		// 					->addCondition('task_id',$m->getElement('id'))
+		// 					->setOrder('created_at','desc')
+		// 					->setLimit(1)
+		// 					->fieldQuery('created_at');
+		// });
 
 		$this->addExpression('assign_employee_status')->set(function($m,$q){
 			return $m->refSQL('assign_to_id')
