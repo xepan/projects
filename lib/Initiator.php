@@ -83,6 +83,7 @@ class Initiator extends \Controller_Addon {
         $array[] = ['xepan\projects\Widget_MyTask','level'=>'Individual','title'=>'My Tasks'];
         $array[] = ['xepan\projects\Widget_MyAssignedTask','level'=>'Individual','title'=>'My Assigned Tasks'];
         $array[] = ['xepan\projects\Widget_SubmittedTask','level'=>'Individual','title'=>'Submitted Tasks'];
+        $array[] = ['xepan\projects\Widget_CurrentTask','level'=>'Individual','title'=>'Current Tasks'];
         $array[] = ['xepan\projects\Widget_FollowUps','level'=>'Individual','title'=>'My Followups'];
    	 }
 
