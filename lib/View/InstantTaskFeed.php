@@ -28,6 +28,8 @@ class View_InstantTaskFeed extends \View{
 		$project_field->setModel($model_project);
 		$project_field->setEmptyText('Select a project or leave unchanged to create generic task');
 		$new_task_field = $form->addField('new_task');
+		$form->addField('DateTimePicker','starting_date');		
+		$form->addField('DateTimePicker','deadline');		
 		$time_field = $form->addField('TimePicker','time','Working on it since');
 			$time_field
 				->setOption('showMeridian',false)
@@ -89,6 +91,7 @@ class View_InstantTaskFeed extends \View{
 			$model_new_task['task_name'] = $form['new_task'];
 			$model_new_task['project_id'] = $form['project'];
 			$model_new_task['starting_date'] = $this->app->now;
+			$model_new_task['deadline'] = $form['deadline'];
 			$model_new_task['type'] = 'Task';
 			$model_new_task->save();
 
