@@ -31,7 +31,7 @@ class Widget_CurrentTask extends \xepan\base\Widget{
 		$task = $this->add('xepan\projects\Model_Formatted_Task');
 
 		if(isset($this->report->employee)){
-		    $task->addCondition('status','Inprogress')
+		    $task->addCondition('status',['Pending','Inprogress','Assigned'])
 		    	 ->addCondition($task->dsql()->orExpr()
 		    					     ->where('assign_to_id',$employee_id)
 		    					     ->where($task->dsql()->andExpr()
@@ -39,8 +39,8 @@ class Widget_CurrentTask extends \xepan\base\Widget{
 	    									      ->where('assign_to_id',null)));
 		}	   	  
 			 
-		$task->addCondition('deadline','<',$this->app->now);			
-		$task->addCondition('status','Inprogress');			
+		$task->addCondition('deadline','>',$this->app->now);			
+		$task->addCondition('status','<>','Completed');			
 		$task->addCondition('type','Task');
 	    
 	    $this->grid->setModel($task)->setOrder('updated_at','desc');			
