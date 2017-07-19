@@ -116,7 +116,7 @@ class page_taskandemployeereport extends page_reportsidebar{
 		********************************************************************/
 		if($employee_id){		
 			$grid = $view->add('Grid');			
-			$grid->setModel($task,['task_name','created_by','starting_date','deadline','estimate_time','time_consumed']);
+			$grid->setModel($task,['task_name','created_by','starting_date','received_at','submitted_at','reopened_at','completed_at','deadline','rejected_at','estimate_time','time_consumed','last_comment_time']);
 		}
 		/*******************************************************************
 		 HANDLING FORM SUBMISSION
