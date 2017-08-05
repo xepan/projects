@@ -12,11 +12,12 @@ class page_report_employee extends \xepan\base\Page{
 		parent::init();
 		$from_date = $this->app->stickyGET('from_date');
 		$to_date = $this->app->stickyGET('to_date');
+		$form = $this->add('Form',null,null,['form/empty']);
+		$date = $form->addField('DateRangePicker','date_range');
 		if($from_date){
 			$set_date = $from_date." to ".$to_date;
+			$date->set($set_date);	
 		}
-		$form = $this->add('Form',null,null,['form/empty']);
-		$date = $form->addField('DateRangePicker','date_range')->set($set_date);	
 		$emp_field = $form->addField('xepan\base\Basic','employee');
 		$emp_field->setModel('xepan\projects\Model_EmployeeCommunication');
 		$dept_field = $form->addField('DropDown','department')->setEmptyText('Please Select Department');
