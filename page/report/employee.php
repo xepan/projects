@@ -14,6 +14,7 @@ class page_report_employee extends \xepan\base\Page{
 		$to_date = $this->app->stickyGET('to_date');
 		$form = $this->add('Form',null,null,['form/empty']);
 		$date = $form->addField('DateRangePicker','date_range');
+		$set_date = $this->app->today." to ".$this->app->today;
 		if($from_date){
 			$set_date = $from_date." to ".$to_date;
 			$date->set($set_date);	
