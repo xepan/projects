@@ -8,7 +8,7 @@ class Model_EmployeeCommunication extends \xepan\hr\Model_Employee{
 	function init(){
 		parent::init();
 		// echo "string".$this->from_date;
-		
+		$this->addCondition('status','Active');
 		$this->addExpression('assign_to_pending_task')->set(function($m,$q){
 			// return $q->getField('id');
 			$task = $this->add('xepan\projects\Model_Task',['table_alias'=>'employee_assign_to_assigntask']);

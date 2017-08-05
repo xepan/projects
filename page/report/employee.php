@@ -41,6 +41,7 @@ class page_report_employee extends \xepan\base\Page{
 
 		$grid = $this->add('xepan\hr\Grid',null,null,['view/report/employee-comm-report']);
 		$grid->setModel($employee_comm);
+		$grid->addPaginator(50);
 
 		if($form->isSubmitted()){
 			
