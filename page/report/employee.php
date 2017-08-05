@@ -12,7 +12,9 @@ class page_report_employee extends \xepan\base\Page{
 		parent::init();
 		$from_date = $this->app->stickyGET('from_date');
 		$to_date = $this->app->stickyGET('to_date');
-		$set_date = $from_date." to ".$to_date;
+		if($from_date){
+			$set_date = $from_date." to ".$to_date;
+		}
 		$form = $this->add('Form',null,null,['form/empty']);
 		$date = $form->addField('DateRangePicker','date_range')->set($set_date);	
 		$emp_field = $form->addField('xepan\base\Basic','employee');
