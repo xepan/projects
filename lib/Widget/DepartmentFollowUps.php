@@ -8,6 +8,7 @@ class Widget_DepartmentFollowUps extends \xepan\base\Widget{
 
 		$this->report->enableFilterEntity('date_range');
 		$this->report->enableFilterEntity('employee');
+		$this->report->enableFilterEntity('followup_status');
 		
 		$this->grid = $this->add('xepan\hr\CRUD',['allow_add'=>null,'grid_class'=>'xepan\projects\View_TaskList','grid_options'=>['del_action_wrapper'=>true]]);	    
 	}
@@ -25,8 +26,12 @@ class Widget_DepartmentFollowUps extends \xepan\base\Widget{
 		$this->grid->add('xepan\base\Controller_Avatar',['name_field'=>'created_by','image_field'=>'created_by_image','extra_classes'=>'profile-img center-block','options'=>['size'=>50,'display'=>'block','margin'=>'auto'],'float'=>null,'model'=>$this->model]);
 
 		$followups_model = $this->add('xepan\projects\Model_Formatted_Task');
-	    $followups_model->addCondition('status',['Pending','Inprogress'])
-	    				->addCondition('type','Followup');
+	    $followups_model->addCondition('type','Followup');
+	    				// ->addCondition('status',['Pending','Inprogress'])
+		if(isset($this->report->followup_status)){
+		    $followups_model->addCondition('status',$this->report->followup_status);
+
+		}
 
 	    $department_employees = $this->add('xepan\hr\Model_Employee')
 	    							->addCondition('department_id',$this->app->employee['department_id'])
