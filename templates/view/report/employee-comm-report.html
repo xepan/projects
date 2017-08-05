@@ -1,0 +1,52 @@
+
+<div id="{$_name}" class="xepan-grid main-box clearfix atk-table atk-table-zebra atk-table-bordered {$class}">{Pannel}
+  <header class="main-box-header clearfix atk-actions  {$class} ">
+    <div style="100%" class="filter-block">
+      <div class="pull-right">{$grid_buttons} </div>
+      <div class="form-group pull-right xepan-filter-form"><span class="form-control pull-left">{$quick_search}<i class="fa fa-search search-icon"></i></span></div>
+    </div>
+  </header>{/Pannel}
+  <div class="main-box-body clearfix table">
+    <table style="width:100%" class="table user-list table-hover">{header}
+      <thead>{cols}{col}
+        <th><a href="#"><span>S.no</span></a></th>
+        <th><a href="#" class="asc"><span>Employee Name</span></a></th>
+        <th><a href="#"><span>Assigned To Task</span></a></th>
+        <th><a href="#"><span>Assigned By Task</span></a></th>
+        <th><a href="#"><span>OverDue Task</span></a></th>
+        <th><a href="#"><span>Total Message Received / Send</span></a></th>
+        <th><a href="#"><span>Total Email`s Received / Send</span></a></th>
+        <th>		</th>{/}{/}
+      </thead>{/}
+      {$subheader}
+      <tbody>{rows}{row}
+        <tr data-id="{$id}" class="{$odd_even}">{cols}
+          <td>{$sno}</td>
+          <td>{$name}</td>
+          <td>Pending: {$assign_to_pending_task}  <br/>Inprogress: {$assign_to_inprogress_task}  <br/>Completed: {$assign_to_complete_task}</td>
+          <td>Pending: {$assign_by_pending_task}  <br/>Inprogress: {$assign_by_inprogress_task}  <br/>Completed: {$assign_by_complete_task}    </td>
+          <td>{$overdue_task}</td>
+          <td>{$total_received_message} / {$total_send_message}</td>
+          <td>{$total_received_emails} / {$total_send_emails}</td>
+          <td style="width: 15%;">
+            {$edit}
+            {$delete}
+          </td>{/}
+        </tr>{/}{/}
+        {not_found}
+        <div class="row">
+          <div role="alert" class="col-md-12 text-center alert alert-warning"><span class="icon-attention fa fa-exclamation-triangle"> &nbsp;{$not_found_message}</span></div>
+        </div>{/}
+      </tbody>{totals}
+      <tfoot>
+        <tr class="totals">
+          {cols}{col}
+          <td {$tdparam}>
+          {$content}
+          </td>
+          {/}{/}
+        </tr>
+      </tfoot>{/}
+    </table>{$Paginator}
+  </div>
+</div>

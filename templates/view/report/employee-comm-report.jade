@@ -1,0 +1,90 @@
+.xepan-grid.main-box.clearfix.atk-table.atk-table-zebra.atk-table-bordered(id="{$_name}" class="{$class}")
+    {Pannel}
+    header.main-box-header.clearfix.atk-actions(class=" {$class} ")
+        div.filter-block( style="100%")
+            .pull-right {$grid_buttons} 
+            .form-group.pull-right.xepan-filter-form
+                span(class="form-control pull-left")|{$quick_search}
+                    i(class="fa fa-search search-icon")
+    {/Pannel}
+    .main-box-body.clearfix.table
+        table.table.user-list.table-hover(style="width:100%")
+            {header}
+            thead
+                {cols}{col}
+                th
+                    a(href='#')
+                        span S.no
+                th
+                    a.asc(href='#')
+                        span Employee Name
+                th
+                    a(href="#")
+                      span Assigned To Task
+                th
+                    a(href="#")
+                      span Assigned By Task
+                th
+                    a(href="#")
+                      span OverDue Task
+                th
+                    a(href="#")
+                      span Total Message Received / Send
+                th
+                    a(href="#")
+                       span Total Email`s Received / Send
+                th		
+                {/}{/}
+            {/}
+            {$subheader}
+
+            tbody
+                {rows}{row}
+                tr(class="{$odd_even}" data-id="{$id}")
+                    {cols}
+                    td
+                      | {$sno}
+                    td
+                      | {$name}
+                    td
+                      | Pending: {$assign_to_pending_task}  
+                      br
+                      | Inprogress: {$assign_to_inprogress_task}  
+                      br
+                      | Completed: {$assign_to_complete_task}
+                    td
+                      | Pending: {$assign_by_pending_task}  
+                      br
+                      | Inprogress: {$assign_by_inprogress_task}  
+                      br
+                      | Completed: {$assign_by_complete_task}    
+                    td
+                      | {$overdue_task}
+                    td
+                      | {$total_received_message} / {$total_send_message}
+                    td
+                      | {$total_received_emails} / {$total_send_emails}
+                    //- td
+                    //-     | {action}Action Here{/}
+                    td(style="width: 15%;")
+                        {$edit}
+                        {$delete}
+                    
+                    {/}
+                {/}{/}
+                {not_found}
+                div.row
+                    .col-md-12.text-center.alert.alert-warning(role="alert")
+                        span.icon-attention.fa.fa-exclamation-triangle  &nbsp;{$not_found_message}
+                {/}
+
+            {totals}
+            tfoot
+                tr(class="totals")
+                    {cols}{col}
+                    <td {$tdparam}>
+                    {$content}
+                    </td>
+                    {/}{/}
+            {/}
+        {$Paginator}
