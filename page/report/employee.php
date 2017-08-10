@@ -28,7 +28,7 @@ class page_report_employee extends \xepan\base\Page{
 			// throw new \Exception($from_date, 1);
 					
 
-		$employee_comm = $this->add('xepan\projects\Model_EmployeeCommunication',['from_date'=>$from_date,'to_date'=>$to_date]);
+		$employee_comm = $this->add('xepan\projects\Model_EmployeeCommunicationActivity',['from_date'=>$from_date,'to_date'=>$to_date]);
 		if($_GET['from_date']){
 			$employee_comm->from_date = $_GET['from_date'];
 		}		

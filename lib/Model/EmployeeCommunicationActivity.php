@@ -2,7 +2,7 @@
 
 namespace xepan\projects;
 
-class Model_EmployeeCommunication extends \xepan\hr\Model_Employee{
+class Model_EmployeeCommunicationActivity extends \xepan\hr\Model_Employee{
 	public $from_date;
 	public $to_date;
 	function init(){
