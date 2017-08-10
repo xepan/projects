@@ -54,7 +54,7 @@ class Initiator extends \Controller_Addon {
 		$this->app->addHook('communication_rendered',[$task,'addFollowups']);
 		$this->app->user_menu->addItem(['My Timesheet','icon'=>'fa fa-clock-o'],'xepan_projects_todaytimesheet');
 		
-		$this->app->report_menu->addItem(['Employee Communication','icon'=>'fa fa-users'],$this->app->url('xepan_projects_report_employee'));
+		$this->app->report_menu->addItem(['Employee Communication Activity Report','icon'=>'fa fa-users'],$this->app->url('xepan_projects_report_employee'));
 
 		return $this;
 
