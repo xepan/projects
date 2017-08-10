@@ -20,7 +20,7 @@ class page_report_employee extends \xepan\base\Page{
 			$date->set($set_date);	
 		}
 		$emp_field = $form->addField('xepan\base\Basic','employee');
-		$emp_field->setModel('xepan\projects\Model_EmployeeCommunication');
+		$emp_field->setModel('xepan\projects\Model_EmployeeCommunicationActivity');
 		$dept_field = $form->addField('DropDown','department')->setEmptyText('Please Select Department');
 		$dept_field->setModel('xepan\hr\Model_Department');
 		$form->addSubmit('Get Details');
