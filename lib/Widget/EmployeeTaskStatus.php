@@ -7,7 +7,7 @@ class Widget_EmployeeTaskStatus extends \xepan\base\Widget{
 		parent::init();
 		
 		$this->chart = $this->add('xepan\base\View_Chart');
-		$this->report->enableFilterEntity('employee');
+		$this->report->enableFilterEntity('Employee');
 	}
 
 	function recursiveRender(){

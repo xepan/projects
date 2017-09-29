@@ -6,7 +6,7 @@ class Widget_TodaysTaskStatus extends \xepan\base\Widget{
 	function init(){
 		parent::init();
 
-		$this->report->enableFilterEntity('employee');
+		$this->report->enableFilterEntity('Employee');
 		$this->view = $this->add('View',null,null,['widget\todays-task-status']);
 	}
 

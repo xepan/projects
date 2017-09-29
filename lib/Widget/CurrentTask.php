@@ -6,7 +6,7 @@ class Widget_CurrentTask extends \xepan\base\Widget{
 	function init(){
 		parent::init();
 		
-		$this->report->enableFilterEntity('employee');
+		$this->report->enableFilterEntity('Employee');
 
 		$this->grid = $this->add('xepan\hr\CRUD',['allow_add'=>null,'grid_class'=>'xepan\projects\View_TaskList','grid_options'=>['del_action_wrapper'=>true]]);	    
 		$this->grid->addClass('hot-tasks');

@@ -8,7 +8,7 @@ class Widget_EmployeeTimesheet extends \xepan\base\Widget{
 		
 		$this->report->enableFilterEntity('date_range');
 		$this->report->enableFilterEntity('project');
-		$this->report->enableFilterEntity('employee');
+		$this->report->enableFilterEntity('Employee');
 
 		$this->grid = $this->add('xepan\base\Grid');
 	}

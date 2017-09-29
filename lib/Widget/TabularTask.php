@@ -7,7 +7,7 @@ class Widget_TabularTask extends \xepan\base\Widget{
 		parent::init();
 
 		$this->report->enableFilterEntity('date_range');
-		$this->report->enableFilterEntity('employee');
+		$this->report->enableFilterEntity('Employee');
 		
 		/********************************************
 			TABS FOR TASKS

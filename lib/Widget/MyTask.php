@@ -7,7 +7,7 @@ class Widget_MyTask extends \xepan\base\Widget{
 		parent::init();
 
 		$this->report->enableFilterEntity('date_range');
-		$this->report->enableFilterEntity('employee');
+		$this->report->enableFilterEntity('Employee');
 		
 		$this->grid = $this->add('xepan\hr\CRUD',['allow_add'=>null,'grid_class'=>'xepan\projects\View_TaskList','grid_options'=>['del_action_wrapper'=>true]]);	    
 		$this->grid->addClass('task-assigned-to-me');
