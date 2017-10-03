@@ -13,9 +13,9 @@ class Model_Project extends \xepan\base\Model_Table
 	];
 	
 	public $actions=[
-		'Running'=>['view','edit','delete','onhold','complete'],
-		'Onhold'=>['view','edit','delete','run','complete'],
-		'Completed'=>['view','edit','delete']
+		'Running'=>['view','edit','delete','onhold','complete','delete_with_related_document'],
+		'Onhold'=>['view','edit','delete','run','complete','delete_with_related_document'],
+		'Completed'=>['view','edit','delete','delete_with_related_document']
 	];
 
 	function init()
@@ -78,14 +78,14 @@ class Model_Project extends \xepan\base\Model_Table
 
 	function checkExistingTask(){
 		// $m->ref('xepan\projects\Task')->each(function($m){$m->delete();});
+
 		$task=$this->add('xepan\projects\Model_Task');
 		$task->addCondition('project_id',$this->id);
 		$task->tryLoadAny();
-
 		if($task->count()->getOne()){
-			throw new \Exception("Can'not Delete Project, First delete associated tasks", 1);
-			
+			throw new \Exception("Can'not Delete Project, First delete associated tasks", 1);	
 		}
+
 	}
 
 	function checkExistingTeamProjectAssociation(){
@@ -148,4 +148,44 @@ class Model_Project extends \xepan\base\Model_Table
  			}
 		}
 	}	
+
+
+	function page_delete_with_related_document($page){
+
+		$task = $this->add('xepan\projects\Model_Task',['force_delete'=>true]);
+		$task->addCondition('project_id',$this->id);
+		$total_task = $task->count()->getOne();
+		$total_team_association = $this->ref('xepan\projects\Team_Project_Association')->count()->getOne();
+
+		$form = $page->add('Form');
+		$form->add('View')->set("Total Task to be delete: ".$total_task);
+		$form->add('View')->set("Total Team Association to be delete: ".$total_team_association);
+
+		$form->addSubmit('are you sure, you want to delete')->addClass('btn btn-primary');
+		if($form->isSubmitted()){
+			$name = $this['name'];
+			$this->delete_with_related_document();
+
+			$this->app->employee
+            	->addActivity("Project '".$name."' Forcefully deleted, that include total task: '".$total_task." and team association: ".$total_team_association, null/* Related Document ID*/, $this->id /*Related Contact ID*/,null,null,null);
+            
+			return $this->api->js(null,$form->js()->univ()->closeDialog())->univ()->successMessage('Record Deleted Successfully');
+		}
+	}
+
+	function delete_with_related_document(){
+
+		$task = $this->add('xepan\projects\Model_Task',['force_delete'=>true]);
+		$task->addCondition('project_id',$this->id);
+		$task->each(function($m){
+			$m->delete();
+		});
+
+		$this->ref('xepan\projects\Team_Project_Association')
+							->each(function($m){
+								$m->delete();
+							});
+		$this->delete();
+	}
+
 }

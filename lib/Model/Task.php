@@ -8,7 +8,7 @@ class Model_Task extends \xepan\base\Model_Table
 	public $title_field ='task_name';
 	public $acl = false;
 	public $status=['Pending','Submitted','Completed','Assigned','Inprogress'];
-	
+	public $force_delete = false;
 	public $actions=[
 		'Pending'=>['submit','mark_complete','stop_recurrence','reset_deadline','stop_reminder'],
 		'Inprogress'=>['submit','mark_complete','stop_recurrence','stop_reminder'],
@@ -286,8 +286,10 @@ class Model_Task extends \xepan\base\Model_Table
 	}
 
 	function canUserDelete(){
-		if(($this['type'] != 'Reminder') && ($this['created_by_id'] == $this->app->employee->id) && ($this['assign_to_id']!= $this->app->employee->id) && $this['status'] != 'Completed' && $this['assign_employee_status'] != "InActive")
-			throw new \Exception("You are not authorized to delete this task");		
+		if(!$this->force_delete){
+			if(($this['type'] != 'Reminder') && ($this['created_by_id'] == $this->app->employee->id) && ($this['assign_to_id']!= $this->app->employee->id) && $this['status'] != 'Completed' && $this['assign_employee_status'] != "InActive")
+				throw new \Exception("You are not authorized to delete this task");
+		}
 	}
 
 	function checkExistingFollwerTaskAssociation(){
