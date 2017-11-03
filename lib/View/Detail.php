@@ -12,7 +12,7 @@ class View_Detail extends \View{
 		$p = $this;
 		$task_id = $this->task_id;
 		$project_id = $this->project_id;
-																		
+		
 		$model_task = $p->add('xepan\projects\Model_Formatted_Task')->tryLoad($task_id);
 
 		if($this->project_id)
@@ -68,7 +68,7 @@ class View_Detail extends \View{
 			],'div.atk-form-row');
 
 			$snooze_reminder_field->js(true)->univ()->bindConditionalShow([
-				true=>['snooze_reminder','snooze_duration','remind_unit']
+				true=>['snooze_duration','remind_unit']
 			],'div.atk-form-row');
 		
 			$recurring_field->js(true)->univ()->bindConditionalShow([
@@ -82,14 +82,14 @@ class View_Detail extends \View{
 				}
 
 				if($task_form['set_reminder'] && $task_form['reminder_time'] == null){
-					$task_form->displayError('reminder_time','This field is required');
+					$task_form->displayError('reminder_time','reminder_time field is required');
 				}
-				if($task_form['set_reminder'] && $task_form['snooze_duration'] != null && $task_form['remind_unit'] == null){
-					$task_form->displayError('remind_unit','This field is required');
+				if($task_form['set_reminder'] && $task_form['snooze_duration'] && $task_form['remind_unit'] == null){
+					$task_form->displayError('remind_unit','remind_unit field is required');
 				}
 				
 				if($task_form['is_recurring'] && $task_form['recurring_span'] == null){
-					$task_form->displayError('recurring_span','This field is required');
+					$task_form->displayError('recurring_span','recurring_span field is required');
 				}
 
 				$task_form->save();
