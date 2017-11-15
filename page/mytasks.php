@@ -5,7 +5,7 @@ namespace xepan\projects;
 class page_mytasks extends \xepan\base\Page{
 	public $title = "My Tasks/Requests";
 	function init(){
-		parent::init();
+		parent::init();		
 
 		$from_date = $this->app->stickyGET('from_date');			   
         $to_date = $this->app->stickyGET('to_date');			   
@@ -130,7 +130,7 @@ class page_mytasks extends \xepan\base\Page{
 		$status = 'Completed';
 
 	    $task_assigned_to_me_model = $this->add('xepan\projects\Model_Formatted_Task')->addCondition('type','Task');
-	    $field_to_destroy = ['total_duration','is_started','is_running','follower_count','created_by_me','total_comment','created_comment_color','assignee_comment_color','comment_color'/*,'created_by_image'*//*,'assigned_to_image'*/,'related_name','priority_name','assign_employee_status','created_by_employee_status','contact_name','contact_organization'];
+	    $field_to_destroy = ['total_duration','is_started','is_running','follower_count','total_comment'/*,'created_by_image'*//*,'assigned_to_image'*/,'related_name','priority_name','assign_employee_status','created_by_employee_status','contact_name','contact_organization'];
 	    foreach ($field_to_destroy as $field) {
 		    $task_assigned_to_me_model->getElement($field)->destroy();
 	    }
