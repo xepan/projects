@@ -114,6 +114,8 @@ class Initiator extends \Controller_Addon {
 		$shortcuts[]=["title"=>"Projects","keywords"=>"projects running works","description"=>"Companies Projects","normal_access"=>"Projects -> Project","url"=>$this->app->url('xepan_projects_project'),'mode'=>'frame'];
 		$shortcuts[]=["title"=>"Trace Employee","keywords"=>"trace what everyone is doing working on what","description"=>"What Everyone is working on","normal_access"=>"Projects -> Trace Employee","url"=>$this->app->url('xepan_projects_projectlive'),'mode'=>'frame'];
 		$shortcuts[]=["title"=>"Alert Reminder Email Content","keywords"=>"alert reminder email layout content","description"=>"Set Alert Email Reminder layout","normal_access"=>"Projects -> Configuration","url"=>$this->app->url('xepan_projects_layout'),'mode'=>'frame'];
+		$shortcuts[]=["title"=>"Todays Followup","keywords"=>"today todo followup follow up","description"=>"Your todays follow-ups","normal_access"=>"My Menu -> My Followups","url"=>$this->app->url('xepan_projects_myfollowups'),'mode'=>'frame'];
+		$shortcuts[]=["title"=>"My OverDue Followup","keywords"=>"all overdue pending previous missed followup follow up","description"=>"Your overdue follow-ups","normal_access"=>"My Menu -> My Followups","url"=>$this->app->url('xepan_projects_myfollowups',['show_overdue'=>1]),'mode'=>'frame'];
 		// $shortcuts[]=["title"=>"HR Posts 1","keywords"=>"My Followup","description"=>"Bla bla bla","normal_access"=>"Commerce -> Configuration, Sidebar -> Payement Gateway","url"=>$this->app->url('xepan_hr_post',['status'=>'Active']),'mode'=>'frame'];
 	}
 
