@@ -86,6 +86,10 @@ class Model_Task extends \xepan\base\Model_Table
 			return $m->refSQL('xepan\projects\Follower_Task_Association')->count();
 		});
 
+		$this->addExpression('task_complete_in_deadline')->set(function($m,$q){
+			return $q->expr('if([0] >= [1],1,0)',[$m->getElement('deadline'),$m->getElement('completed_at')]);
+		})->type('boolean');
+
 		if($this->app->employee->id){
 			$this->addExpression('created_by_me')->set(function($m,$q){
 				return $q->expr("IF([0]=[1],1,0)",[
