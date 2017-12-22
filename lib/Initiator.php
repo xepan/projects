@@ -47,6 +47,7 @@ class Initiator extends \Controller_Addon {
 		$this->app->addHook('logout_page',[$this,'logoutPageManage']);
 		$this->app->addHook('widget_collection',[$this,'exportWidgets']);
         $this->app->addHook('entity_collection',[$this,'exportEntities']);
+        $this->app->addHook('collect_shortcuts',[$this,'collect_shortcuts']);
 
         $task = $this->add('xepan\projects\Model_Task');
         $task->addCondition('type','Followups');
@@ -106,6 +107,15 @@ class Initiator extends \Controller_Addon {
 		
 		if($timesheet->loaded())
 			$logout_page->add('View')->setHtml('<b>A task is running. You can stop it or leave it running if your outing is official</b>')->addClass('label label-danger');
+	}
+
+	function collect_shortcuts($app,&$shortcuts){
+		$shortcuts[]=["title"=>"New Task","keywords"=>"new quick task assign work","description"=>"Assign a new task to any one or your self","normal_access"=>"My Menu -> Tasks / New Task Button","url"=>$this->app->url('xepan/projects/mytasks',['admin_layout_cube_mytasks_virtualpage'=>'true']),'mode'=>'frame'];
+		$shortcuts[]=["title"=>"Tasks","keywords"=>"task list my pending work assigned","description"=>"Current status of your tasks","normal_access"=>"My Menu -> Tasks","url"=>$this->app->url('xepan/projects/mytasks'),'mode'=>'frame'];
+		$shortcuts[]=["title"=>"Projects","keywords"=>"projects running works","description"=>"Companies Projects","normal_access"=>"Projects -> Project","url"=>$this->app->url('xepan_projects_project'),'mode'=>'frame'];
+		$shortcuts[]=["title"=>"Trace Employee","keywords"=>"trace what everyone is doing working on what","description"=>"What Everyone is working on","normal_access"=>"Projects -> Trace Employee","url"=>$this->app->url('xepan_projects_projectlive'),'mode'=>'frame'];
+		$shortcuts[]=["title"=>"Alert Reminder Email Content","keywords"=>"alert reminder email layout content","description"=>"Set Alert Email Reminder layout","normal_access"=>"Projects -> Configuration","url"=>$this->app->url('xepan_projects_layout'),'mode'=>'frame'];
+		// $shortcuts[]=["title"=>"HR Posts 1","keywords"=>"My Followup","description"=>"Bla bla bla","normal_access"=>"Commerce -> Configuration, Sidebar -> Payement Gateway","url"=>$this->app->url('xepan_hr_post',['status'=>'Active']),'mode'=>'frame'];
 	}
 
 	// function epanDashboard($layout,$page){
