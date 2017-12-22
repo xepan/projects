@@ -61,6 +61,7 @@ class page_report_task extends \xepan\base\Page{
 
 		// adding grid
 		$grid = $this->add('xepan\hr\Grid');
+		$employee_task->setOrder('name','asc');
 		$grid->setModel($employee_task,['name','total_task','self_task','task_assigned_to_me','task_assigned_by_me','received_task','submitted_task','rejected_task','task_complete_in_deadline','task_complete_after_deadline']);
 
 		// handling form submission
@@ -74,7 +75,7 @@ class page_report_task extends \xepan\base\Page{
 						)->execute();
 		}
 
-
+		$grid->addPaginator($ipp=100);
 		//virtual page formats for
 		// total_task format
 		$grid->addFormatter('total_task','template')
