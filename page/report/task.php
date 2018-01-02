@@ -8,12 +8,12 @@ class page_report_task extends \xepan\base\Page{
 
 	function page_index(){
 		// parent::init();
-
+		
 		// sticky get the variable
 		$from_date = $this->app->stickyGET('from_date');
 		$to_date = $this->app->stickyGET('to_date');
-		$department_id = $this->app->stickyGET('department');
-		$employee_id = $this->app->stickyGET('employee');
+		$department_id = $this->app->stickyGET('department_id');
+		$employee_id = $this->app->stickyGET('employee_id');
 
 		// setting up from and to date
 		if(!$from_date)
@@ -49,6 +49,8 @@ class page_report_task extends \xepan\base\Page{
 		
 		// adding model
 		$employee_task = $this->add('xepan\projects\Model_EmployeeTask',['from_date'=>$from_date,'to_date'=>$to_date]);
+		$employee_task->addCondition('status','Active');
+		
 		if($from_date){
 			$employee_task->from_date = $from_date;
 		}
@@ -66,7 +68,8 @@ class page_report_task extends \xepan\base\Page{
 
 		// handling form submission
 		if($form->isSubmitted()){
-			$form->js()->univ()->redirect($this->app->url(),[
+			$grid->js()->reload(
+							[
 								'employee_id'=>$form['employee'],
 								'department_id'=>$form['department'],
 								'from_date'=>$date->getStartDate()?:0,
