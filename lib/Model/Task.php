@@ -790,7 +790,8 @@ class Model_Task extends \xepan\base\Model_Table
 
 
 	function myTask(){
-		$task_model = $this->add('xepan\projects\Model_Task')->load($this->id);
+
+		$task_model = $this;//->add('xepan\projects\Model_Task')->load($this->id);
 
 		return (
 			(
