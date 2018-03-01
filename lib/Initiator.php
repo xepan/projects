@@ -13,7 +13,7 @@ class Initiator extends \Controller_Addon {
 
 		if($this->app->auth->isLoggedIn()){ 
 
-			$reminder = $this->app->layout->add('View',null,'page_top_right',['view\reminder']);
+			$reminder = $this->app->page_top_right_button_set->addButton('Reminder')->addClass('btn btn-primary');
 			$reminder->js('click')->univ()->frameURL("REMINDERS",$this->api->url('xepan_projects_reminder'));
 
 			$this->app->addHook('post-init',function($app){
