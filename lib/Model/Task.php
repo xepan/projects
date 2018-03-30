@@ -236,11 +236,17 @@ class Model_Task extends \xepan\base\Model_Table
 			$this['status'] = 'Assigned';
 		}
 
-		if($this['type'] != 'Reminder' && $this->isDirty('assign_to_id')){
-			if($this->loaded() && !$this->ICanAssign() and !$this->ICanReject())
-				throw $this->exception('Cannot assign running task','ValidityCheck')
+		if($this['type'] != 'Reminder' && $this->isDirty('assign_to_id') && !isset($this->isRejecting)){
+			if($this->loaded() && !$this->ICanAssign())
+				throw $this->exception('You are not authorised to assign this task','ValidityCheck')
 							->setField('assign_to_id');
 		}
+
+		if($this['type'] != 'Reminder' && $this->isDirty('assign_to_id') && !isset($this->isRejecting)){
+			if($this->loaded() & !$this->ICanReject())
+				throw $this->exception('You are not authorised to reject this task','ValidityCheck')
+							->setField('assign_to_id');
+		}		
 
 		if(!$this['id'] && $this['assign_to_id'] && $this['assign_to_id'] != $this['created_by_id']){
 			$this['status'] = "Assigned";
@@ -384,7 +390,7 @@ class Model_Task extends \xepan\base\Model_Table
 	}
 
 	function reject(){
-
+		$this->isRejecting = true;
 		$this['status']='Pending';
 		$this['updated_at']=$this->app->now;
 		$this['rejected_at']=$this->app->now;
