@@ -435,7 +435,7 @@ class Model_Task extends \xepan\base\Model_Table
 
 	function page_mark_Complete($p){
 		if($this['type'] =='Followup'){
-			$btn = $p->add('Button')->set('Immediate Complete')->addClass('btn btn-primary xepan-push-large');
+			$btn = $p->add('Button')->set('Immediate Complete')->addClass('btn btn-primary xepan-push-large btn-block');
 			if($btn->isClicked()){				
 				$this->mark_complete(null);
 				$this->app->employee
@@ -445,16 +445,23 @@ class Model_Task extends \xepan\base\Model_Table
 			}
 
 			$contact = $this->add('xepan\base\Model_Contact');
-			$contact->load($this['related_id']);
-			$form = $p->add('xepan\communication\Form_Communication');
-			$form->setContact($contact);
-			$member_phones = $contact->getPhones();
-			$called_to_field = $form->getElement('called_to');
-			$nos=[];
-				foreach ($member_phones as $no) {
-					$nos[$no] = $no;
-				}
-				$called_to_field->setValueList($nos);
+			$contact->tryLoad($this['related_id']);
+
+			if($contact->loaded()){
+				$p->add('View')->setClass('alert alert-info')->set('Add Coomunication with '. $contact['name_with_type']);
+				$form = $p->add('xepan\communication\Form_Communication');
+				$form->setContact($contact);
+				$member_phones = $contact->getPhones();
+				$called_to_field = $form->getElement('called_to');
+				$nos=[];
+					foreach ($member_phones as $no) {
+						$nos[$no] = $no;
+					}
+					$called_to_field->setValueList($nos);
+			}else{
+				$form= $this->add('Form');
+				$p->add('View')->setClass('alert alert-danger')->set('Associated Contact not found or removed');
+			}
 
 		}else{
 			$form = $p->add('Form');
