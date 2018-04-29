@@ -448,7 +448,7 @@ class Model_Task extends \xepan\base\Model_Table
 			$contact->tryLoad($this['related_id']);
 
 			if($contact->loaded()){
-				$p->add('View')->setClass('alert alert-info')->set('Add Coomunication with '. $contact['name_with_type']);
+				$p->add('View')->setClass('alert alert-info')->set('Add Communication with '. $contact['name_with_type']);
 				$form = $p->add('xepan\communication\Form_Communication');
 				$form->setContact($contact);
 				$member_phones = $contact->getPhones();
