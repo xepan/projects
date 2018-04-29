@@ -4,6 +4,7 @@ namespace xepan\projects;
 
 class page_mytasks extends \xepan\base\Page{
 	public $title = "My Tasks/Requests";
+	
 	function init(){
 		parent::init();		
 
@@ -125,7 +126,7 @@ class page_mytasks extends \xepan\base\Page{
 
 		$task_assigned_to_me->add('xepan\base\Controller_Avatar',['name_field'=>'created_by','image_field'=>'created_by_image','extra_classes'=>'profile-img center-block','options'=>['size'=>50,'display'=>'block','margin'=>'auto'],'float'=>null,'model'=>$this->model]);
 		$task_assigned_by_me->add('xepan\base\Controller_Avatar',['name_field'=>'assign_to','image_field'=>'assigned_to_image','extra_classes'=>'profile-img center-block','options'=>['size'=>50,'display'=>'block','margin'=>'auto'],'float'=>null,'model'=>$this->model]);
-		$task_waiting_for_approval->add('xepan\base\Controller_Avatar',['name_field'=>'assign_to','image_field'=>'assigned_to_image','extra_classes'=>'profile-img center-block','options'=>['size'=>50,'display'=>'block','margin'=>'auto'],'float'=>null,'model'=>$this->model]);
+		$task_waiting_for_approval->add('xepan\base\Controller_Avatar',['name_field'=>'approval_to','image_field'=>'approval_to_image','extra_classes'=>'profile-img center-block','options'=>['size'=>50,'display'=>'block','margin'=>'auto'],'float'=>null,'model'=>$this->model]);
 
 		$status = 'Completed';
 
@@ -161,8 +162,27 @@ class page_mytasks extends \xepan\base\Page{
 	    }
 
 
-	    $task_waiting_for_approval_model = $this->add('xepan\projects\Model_Formatted_Task')
-										  ->addCondition('status','Submitted')
+	    $task_waiting_for_approval_model = $this->add('xepan\projects\Model_Formatted_Task');
+	    
+	    // to show correct avatar - If I have assigned show created_by (Who is about to approve my submittion) or if someone else has submitted show asigned_to (Who submitted)
+	    $task_waiting_for_approval_model->addExpression('approval_to')->set(function($m,$q){
+	    	return $q->expr('IF([created_by_id]=[employee_id],[assigned_to],[created_by])',[
+	    		'created_by_id'=>$m->getElement('created_by_id'),
+	    		'employee_id'=>$m->app->employee->id,
+	    		'assigned_to'=>$m->getElement('assign_to'),
+	    		'created_by'=>$m->getElement('created_by')
+	    	]);
+	    });
+	    // to show correct avatar - If I have assigned show created_by (Who is about to approve my submittion) or if someone else has submitted show asigned_to (Who submitted)
+	    $task_waiting_for_approval_model->addExpression('approval_to_image')->set(function($m,$q){
+	    	return $q->expr('IF([created_by_id]=[employee_id],[assigned_to],[created_by])',[
+	    		'created_by_id'=>$m->getElement('created_by_id'),
+	    		'employee_id'=>$m->app->employee->id,
+	    		'assigned_to'=>$m->getElement('assigned_to_image'),
+	    		'created_by'=>$m->getElement('created_by_image')
+	    	]);
+	    });
+		$task_waiting_for_approval_model->addCondition('status','Submitted')
 										  ->addCondition('assign_to_id','<>',null)
 										  ->addCondition( 
 										  	$this->app->db->dsql()->orExpr()
