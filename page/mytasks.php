@@ -45,7 +45,7 @@ class page_mytasks extends \xepan\base\Page{
 	    $filter_form->setLayout('view\form\task-list-filter-form');
 		$filter_form->addField('DatePicker','from_date')->set($this->app->now);
 		$filter_form->addField('DatePicker','to_date')->set($this->app->now);		
-		$filter_form->addField('Dropdown','priority')->setvalueList(['25'=>'Low','50'=>'Medium','75'=>'High','90'=>'Critical']);
+		$filter_form->addField('Dropdown','priority')->setvalueList([0=>'Any','25'=>'Low','50'=>'Medium','75'=>'High','90'=>'Critical']);
 	    $filter_form->addSubmit('ApplyFilter')->addClass('btn btn-primary btn-block');
 
 		$status_array = [];	
