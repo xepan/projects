@@ -50,7 +50,7 @@ class page_mytasks extends \xepan\base\Page{
 				'from_date'=>'Filter~c1~3~closed',
 				'to_date'=>'c2~3',
 				'priority'=>'c3~3',
-				'FormButtons'=>'c4~3'
+				'FormButtons~'=>'c4~3'
 			]);
 
 	    // $filter_form->setLayout('view\form\task-list-filter-form');
