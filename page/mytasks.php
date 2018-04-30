@@ -57,6 +57,13 @@ class page_mytasks extends \xepan\base\Page{
 						];	
 
 		$frm = $task_assigned_to_me->grid->addQuickSearch(['task_name']);
+		$frm->add('xepan\base\Controller_FLC')
+		->showLables(true)
+		->makePanelsCoppalsible(true)
+		->layout([
+				'task_status'=>'Filter (To Me)~c1~12~closed',
+				'project'=>'c3~12'
+			]);
 		if(!$frm->recall('task_status',false)) $frm->memorize('task_status',['Pending','Inprogress','Assigned']);
 		$status = $frm->addField('Dropdown','task_status');
 		$status->setvalueList(['Pending'=>'Pending','Inprogress'=>'Inprogress','Assigned'=>'Assigned','Submitted'=>'Submitted','Completed'=>'Completed'])->setEmptyText('Select a status');
@@ -67,8 +74,21 @@ class page_mytasks extends \xepan\base\Page{
 		$project_field->setModel('xepan\projects\Project');
 	
 		$frm1 = $task_assigned_by_me->grid->addQuickSearch(['task_name']);
+		$frm1->add('xepan\base\Controller_FLC')
+		->showLables(true)
+		->makePanelsCoppalsible(true)
+		->layout([
+				'task_status'=>'Filter (By Me)~c1~12~closed',
+				'project'=>'c3~12'
+			]);
 		if(!$frm1->recall('task_status',false)) $frm1->memorize('task_status',['Pending','Inprogress','Assigned']);
 		$frm2 = $task_waiting_for_approval->grid->addQuickSearch(['task_name']);
+		$frm2->add('xepan\base\Controller_FLC')
+		->showLables(true)
+		->makePanelsCoppalsible(true)
+		->layout([
+				'project'=>'Filter (To Approve)~c1~12~closed',
+			]);
 		$status1 = $frm1->addField('Dropdown','task_status');
 		$status1->setAttr(['multiple'=>'multiple']);
 		$status1->setValueList($status_array);
