@@ -35,7 +35,7 @@ class Initiator extends \Controller_Addon {
 				$this->app->user_menu->addItem(['Tasks','icon'=>'fa fa-tasks'],'xepan_projects_mytasks');
 				$this->app->user_menu->addItem(['My Followups','icon'=>'fa fa-stack-exchange'],'xepan_projects_myfollowups');
 				$projects = $this->add('xepan\projects\Model_Project');
-				$m->addItem(['Configuration','icon'=>' fa fa-cog'],'xepan_projects_layout');
+				$m->addItem(['Configuration','icon'=>' fa fa-cog'],'xepan_projects_configuration');
 				$m->addItem(['Reports','icon'=>' fa fa-cog'],'xepan_projects_projectreport');
 			}
 			
@@ -114,7 +114,7 @@ class Initiator extends \Controller_Addon {
 		$shortcuts[]=["title"=>"Tasks","keywords"=>"task list my pending work assigned","description"=>"Current status of your tasks","normal_access"=>"My Menu -> Tasks","url"=>$this->app->url('xepan/projects/mytasks'),'mode'=>'frame'];
 		$shortcuts[]=["title"=>"Projects","keywords"=>"projects running works","description"=>"Companies Projects","normal_access"=>"Projects -> Project","url"=>$this->app->url('xepan_projects_project'),'mode'=>'frame'];
 		$shortcuts[]=["title"=>"Trace Employee","keywords"=>"trace what everyone is doing working on what","description"=>"What Everyone is working on","normal_access"=>"Projects -> Trace Employee","url"=>$this->app->url('xepan_projects_projectlive'),'mode'=>'frame'];
-		$shortcuts[]=["title"=>"Alert Reminder Email Content","keywords"=>"alert reminder email layout content","description"=>"Set Alert Email Reminder layout","normal_access"=>"Projects -> Configuration","url"=>$this->app->url('xepan_projects_layout'),'mode'=>'frame'];
+		$shortcuts[]=["title"=>"Alert Reminder Email Content Force Sitting Ideal","keywords"=>"alert reminder email layout content what are you doing sitting ideal","description"=>"Set Alert Email Reminder layout & Task Configuration","normal_access"=>"Projects -> Configuration","url"=>$this->app->url('xepan_projects_configuration'),'mode'=>'frame'];
 		$shortcuts[]=["title"=>"Todays Followup","keywords"=>"today todo followup follow up","description"=>"Your todays follow-ups","normal_access"=>"My Menu -> My Followups","url"=>$this->app->url('xepan_projects_myfollowups'),'mode'=>'frame'];
 		$shortcuts[]=["title"=>"My OverDue Followup","keywords"=>"all overdue pending previous missed followup follow up","description"=>"Your overdue follow-ups","normal_access"=>"My Menu -> My Followups","url"=>$this->app->url('xepan_projects_myfollowups',['show_overdue'=>1]),'mode'=>'frame'];
 		// $shortcuts[]=["title"=>"HR Posts 1","keywords"=>"My Followup","description"=>"Bla bla bla","normal_access"=>"Commerce -> Configuration, Sidebar -> Payement Gateway","url"=>$this->app->url('xepan_hr_post',['status'=>'Active']),'mode'=>'frame'];

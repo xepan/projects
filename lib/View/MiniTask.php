@@ -30,6 +30,25 @@ class View_MiniTask extends \View{
 		$task_list->setModel($model_task);
 
 		// $task_list->js('click')->_selector('.xepan-mini-task')->univ()->frameURL('INSTANT TASK FEED',[$this->api->url($vp->getURL())]);
-		$task_list->js('click')->_selector('.xepan-mini-task')->univ()->dialogURL('TASK DETAIL',[$this->app->url('xepan_projects_instanttaskfeed')]);
+		$task_list->js('click')->_selector('.xepan-mini-task')->univ()->dialogURL('What are you doing now?',[$this->app->url('xepan_projects_instanttaskfeed')]);
+
+		$force_to_fill_sitting_ideal = $this->recall('force_to_fill_sitting_ideal',null);
+		
+		if($force_to_fill_sitting_ideal === NULL ){
+			$config_m = $this->add('xepan\projects\Model_Config_ReminderAndTask');
+			$config_m->tryLoadAny();			
+
+			$force_to_fill_sitting_ideal = false;
+			if($config_m['force_to_fill_sitting_ideal'] && (trim($config_m['for_selected_posts'])=='' || in_array($this->app->employee['post_id'], explode(",", $config_m['for_selected_posts']))) ){
+				$force_to_fill_sitting_ideal = true;
+			}
+			$this->memorize('force_to_fill_sitting_ideal',$force_to_fill_sitting_ideal);
+		}
+
+
+
+		if(!$task_list->running_task_id && $force_to_fill_sitting_ideal){
+			$task_list->js(true)->_selector('.xepan-mini-task')->univ()->dialogURL('What are you doing now?',[$this->app->url('xepan_projects_instanttaskfeed')]);
+		}
 	}
 }
