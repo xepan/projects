@@ -2,11 +2,12 @@
 <div id="{$_name}" class="row">
   <div class="main-box">
     <header class="main-box-header clearfix">
-      <div class="row">
+      {name_wrapper}<div class="row">
         <div class="col-md-4 text-center">
           <h1>{$name}</h1>
         </div>
       </div>
+      {/name_wrapper}
       <div class="row">
         <div class="col-md-12"> 
           <div class="pull-right top-page-ui "><span data-id="{$id}"><a href="#" style="margin-top:10px;" class="btn btn-primary btn-sm pull-right"><i class="fa fa-plus-circle fa-lg add-task">&nbsp; New Task/Requests</i></a></span>{my-timesheet-button-wrapper}<a href="#" style="margin-top:10px;" class="btn btn-primary btn-sm pull-right"><i class="fa fa-repeat fa-lg show-recurring-task">&nbsp; Recurring  </i></a>{/}</div>

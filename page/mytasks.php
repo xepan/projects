@@ -17,6 +17,7 @@ class page_mytasks extends \xepan\base\Page{
 		$top_view->setModel($model_project);
 
 		$top_view->template->tryDel('progress_bar_wrapper');
+		$top_view->template->tryDel('name_wrapper');
 
 		$task_assigned_to_me = $this->add('xepan\hr\CRUD',['allow_add'=>null,'grid_class'=>'xepan\projects\View_TaskList'],'leftview');	    
 	    $task_assigned_to_me->grid->addClass('task-assigned-to-me');
@@ -42,7 +43,17 @@ class page_mytasks extends \xepan\base\Page{
 			$task_waiting_for_approval->grid->addPaginator(25);
 
 		$filter_form = $this->add('Form',null,'filter_form');
-	    $filter_form->setLayout('view\form\task-list-filter-form');
+		$filter_form->add('xepan\base\Controller_FLC')
+		->showLables(true)
+		->makePanelsCoppalsible(true)
+		->layout([
+				'from_date'=>'Filter~c1~3~closed',
+				'to_date'=>'c2~3',
+				'priority'=>'c3~3',
+				'FormButtons'=>'c4~3'
+			]);
+
+	    // $filter_form->setLayout('view\form\task-list-filter-form');
 		$filter_form->addField('DatePicker','from_date')->set($this->app->now);
 		$filter_form->addField('DatePicker','to_date')->set($this->app->now);		
 		$filter_form->addField('Dropdown','priority')->setvalueList([0=>'Any','25'=>'Low','50'=>'Medium','75'=>'High','90'=>'Critical']);
