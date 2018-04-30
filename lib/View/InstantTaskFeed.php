@@ -24,10 +24,22 @@ class View_InstantTaskFeed extends \View{
 		************************************************************************/
 		$model_project = $this->add('xepan\projects\Model_Project');
 		$form = $this->add('Form',null,'project_form');
+		$form->add('xepan\base\Controller_FLC')
+		->showLables(true)
+		->makePanelsCoppalsible(true)
+		->layout([
+				'project~Project, If you want this new task to be in that project'=>'New Task Create and Run~c1~12~closed',
+				'new_task'=>'c2~12',
+				'starting_date'=>'c3~4',
+				'deadline'=>'c4~4',
+				'time'=>'c5~4~Working on it today since',
+				'FormButtons~'=>'c6~4'
+			]);
+
 		$project_field = $form->addField('DropDown','project');
 		$project_field->setModel($model_project);
 		$project_field->setEmptyText('Select a project or leave unchanged to create generic task');
-		$new_task_field = $form->addField('new_task');
+		$new_task_field = $form->addField('new_task')->validate('required');
 		$form->addField('DateTimePicker','starting_date')->set($this->app->now);		
 		$form->addField('DateTimePicker','deadline')->set($this->app->nextDate($this->app->now));
 		$time_field = $form->addField('TimePicker','time','Working on it since');
@@ -35,6 +47,7 @@ class View_InstantTaskFeed extends \View{
 				->setOption('showMeridian',false)
 				->setOption('minuteStep',1)
 				->setOption('showSeconds',true);
+		$form->addSubmit('Create & Run');
 
 		/****************************************************************
 		 showing Today's tasks
