@@ -17,6 +17,15 @@ class page_myfollowups extends \xepan\base\Page{
         $contact_id = $this->app->stickyGET('contact_id');
 
         $filter_form = $this->add('Form',null,'filter_form');
+        $filter_form->add('xepan\base\Controller_FLC')
+		->showLables(true)
+		->makePanelsCoppalsible(true)
+		->layout([
+				'period'=>'Filter (Date Range and See Overdue) Followups~c1~4~closed',
+				'overdue'=>'c2~4',
+				'FormButtons'=>'c3~4',
+			]);
+
         $fld = $filter_form->addField('DateRangePicker','period')
                 ->setStartDate($start_date)
                 ->setEndDate($end_date)
@@ -40,6 +49,16 @@ class page_myfollowups extends \xepan\base\Page{
 						];	
 		
 		$frm = $my_followups->grid->addQuickSearch(['task_name']);
+
+		// $frm->add('xepan\base\Controller_FLC')
+		// ->addContentSpot()
+		// ->showLables(true)
+		// ->makePanelsCoppalsible(true)
+		// ->layout([
+		// 		'q'=>'Search~c1~4~closed',
+		// 		'task_status'=>'c2~4',
+		// 		'FormButtons'=>'c3~4',
+		// 	]);
 
 		$temp_status = ['Pending','Inprogress','Assigned'];
 
@@ -84,6 +103,7 @@ class page_myfollowups extends \xepan\base\Page{
 		switch ($post_m['permission_level']) {
 			
 			case 'Sibling':
+				$filter_form->add('View')->set($this->app->employee['post'].' Post is defined to see Sibling followups and you are seeing everyones followups who are on same post as you are');
 				$post_employees = $this->add('xepan\hr\Model_Employee');
 				$post_employees->addCondition('post_id',$this->app->employee['post_id']);
 
@@ -104,6 +124,7 @@ class page_myfollowups extends \xepan\base\Page{
 
 				break;
 			case 'Department':
+				$filter_form->add('View')->set($this->app->employee['post'].' Post is defined to see Department followups and you are seeing everyones followups who are  in same department as you are');
 				$department_employees = $this->add('xepan\hr\Model_Employee')
 	    							         ->addCondition('department_id',$this->app->employee['department_id']);
 				
@@ -118,6 +139,7 @@ class page_myfollowups extends \xepan\base\Page{
 				);	
 				break;
 			case 'Global':				
+				$filter_form->add('View')->set($this->app->employee['post'].' Post is defined to see Global followups and you are seeing everyones followups');
 				break;
 			default:
 				$my_followups_model->addCondition([['assign_to_id',$this->app->employee->id],['created_by_id',$this->app->employee->id]]);
