@@ -56,7 +56,7 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 		$tasks->addCondition('assign_to_id',$emp_id);
 		$tasks->addCondition('status',['Pending','Submitted','Assigned','Inprogress']);
 
-		$grid->setModel($tasks,['task_name','description','created_by','assign_to','related','status','project']);
+		$grid->setModel($tasks,['task_name','description','created_by','assign_to','related','status','type','project']);
 
 		$grid->addPaginator(50);
 	}
