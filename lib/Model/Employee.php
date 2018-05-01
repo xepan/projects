@@ -46,7 +46,7 @@ class Model_Employee extends \xepan\hr\Model_Employee{
 
 		$this->addExpression('pending_tasks_count')->set(function ($m,$q){
 			return $m->refSQL('xepan\projects\Task')
-						->addCondition('status','Pending')
+						->addCondition('status',['Pending','Submitted','Assigned','Inprogress'])
 						->count();
 		})->sortable(true);
 

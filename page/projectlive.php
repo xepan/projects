@@ -5,8 +5,9 @@ namespace xepan\projects;
 class page_projectlive extends \xepan\projects\page_sidemenu{
 	public $title = "Trace Employee";
 	public $breadcrumb=['Home'=>'index','Project'=>'xepan_projects_project','Status'=>'#'];
-	function init(){
-		parent::init();
+	
+	function page_index(){
+		// parent::init();
 
 		$project_id = $this->app->stickyGET('project_id');
 		
@@ -22,15 +23,15 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 		$model_employee = $this->add('xepan\projects\Model_Employee');
 		$model_employee->addCondition('status','Active');
 		$model_employee->setOrder('pending_tasks_count','desc');
-		$model_employee->getElement('pending_tasks_count')->destroy();
-		$model_employee->addExpression('pending_tasks_count')->set(function ($m,$q)use($project_id){
-			return $m->refSQL('xepan\projects\Task')
-						->addCondition('status','Pending')
-						->addCondition('project_id',$project_id)
-						->count();
-		});
+		// $model_employee->getElement('pending_tasks_count')->destroy();
+		// $model_employee->addExpression('pending_tasks_count')->set(function ($m,$q)use($project_id){
+		// 	return $m->refSQL('xepan\projects\Task')
+		// 				->addCondition('status','Pending')
+		// 				->addCondition('project_id',$project_id)
+		// 				->count();
+		// });
 		
-		$project_detail_grid=$this->add('xepan\hr\Grid',null,'grid');
+		$project_detail_grid=$this->add('xepan\hr\Grid');
 		$project_detail_grid->add('xepan\base\Controller_Avatar',['options'=>['size'=>40,'border'=>['width'=>0]],'name_field'=>'name','default_value'=>'']);
 		$project_detail_grid->addPaginator(50);
 		$project_detail_grid->addQuickSearch(['name']);
@@ -38,10 +39,26 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 		
 		$project_detail_grid->addHook('formatRow',function($g){
 			$g->current_row['running_task_since'] = $this->seconds2human($g->model['running_task_since']);
+			$g->current_row_html['pending_tasks_count'] = '<a href="#'.$g->model->id.'" data-id="'.$g->model->id.'" class="do-show-pending-task" >'.$g->model['pending_tasks_count'].'</a>';
 		});
 
 		$project_detail_grid->js('click')->_selector('.do-view-project-live')->univ()->frameURL('Employee Project Status',[$this->api->url('xepan_projects_dailyanalysis'),'contact_id'=>$this->js()->_selectorThis()->closest('[data-id]')->data('id')]);
+		$project_detail_grid->js('click')->_selector('.do-show-pending-task')->univ()->frameURL('Employee Pending Tasks',[$this->api->url('./employee_pending_tasks'),'employee_id'=>$this->js()->_selectorThis()->data('id')]);
 
+	}
+
+	function page_employee_pending_tasks(){
+		$emp_id = $this->app->stickyGET('employee_id');
+
+		$grid = $this->add('xepan\base\Grid');
+		
+		$tasks = $this->add('xepan\projects\Model_Task');
+		$tasks->addCondition('assign_to_id',$emp_id);
+		$tasks->addCondition('status',['Pending','Submitted','Assigned','Inprogress']);
+
+		$grid->setModel($tasks,['task_name','description','created_by','assign_to','related','status','project']);
+
+		$grid->addPaginator(50);
 	}
 
 	function seconds2human($ss) {
@@ -53,7 +70,7 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 		return "$M $d $h $m $s seconds";
 	}
 
-	function defaultTemplate(){
-		return['view\projectlive'];
-	}
+	// function defaultTemplate(){
+	// 	return['view\projectlive'];
+	// }
 }
