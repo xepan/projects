@@ -34,13 +34,15 @@ class View_MiniTask extends \View{
 
 		$force_to_fill_sitting_ideal = $this->recall('force_to_fill_sitting_ideal',null);
 		
+		
 		if($force_to_fill_sitting_ideal === NULL ){
+
 			$config_m = $this->add('xepan\projects\Model_Config_ReminderAndTask');
-			$config_m->tryLoadAny();			
+			$config_m->tryLoadAny();
 
 			$force_to_fill_sitting_ideal = false;
 			if($config_m['force_to_fill_sitting_ideal'] && (trim($config_m['for_selected_posts'])=='' || in_array($this->app->employee['post_id'], explode(",", $config_m['for_selected_posts']))) ){
-				$force_to_fill_sitting_ideal = true;
+				$force_to_fill_sitting_ideal = $config_m['repeate_check_in_seconds']?$config_m['repeate_check_in_seconds']:60;
 			}
 			$this->memorize('force_to_fill_sitting_ideal',$force_to_fill_sitting_ideal);
 		}
@@ -49,7 +51,7 @@ class View_MiniTask extends \View{
 
 		if(!$task_list->running_task_id && $force_to_fill_sitting_ideal){
 
-			$task_list->js(true)->univ()->setInterval($task_list->js()->univ()->notify('Sitting Ideal ?', 'You looks sitting idea, please tell what you are doing !', 'success', true, null, true, 'warning')->_enclose(),30000);
+			$task_list->js(true)->univ()->setInterval($task_list->js()->univ()->notify('Sitting Ideal ?', 'You looks sitting idea, please tell what you are doing !', 'success', true, null, true, 'warning')->_enclose(),$force_to_fill_sitting_ideal?($force_to_fill_sitting_ideal*1000):60000);
 			$task_list->js(true)->_selector('.xepan-mini-task')->univ()->dialogURL('What are you doing now?',[$this->app->url('xepan_projects_instanttaskfeed')]);
 		}
 	}

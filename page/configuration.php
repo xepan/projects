@@ -13,7 +13,7 @@ class page_configuration extends \xepan\base\Page{
 		$config_m = $this->add('xepan\projects\Model_Config_ReminderAndTask');
 		$config_m->tryLoadAny();
 
-		$form=$tsk_tab->add('Form');
+		$form=$lay_tab->add('Form');
 		$form->setModel($config_m,['reminder_subject','reminder_body']);
 		$form->getElement('reminder_subject')->set($config_m['reminder_subject']);
 		$form->getElement('reminder_body')->setFieldHint('{$name}, {$task}, {$description}')->set($config_m['reminder_body']);
@@ -24,11 +24,11 @@ class page_configuration extends \xepan\base\Page{
 			$form->js(null,$form->js()->reload())->univ()->successMessage('Information Updated')->execute();
 		}
 
-		$form=$lay_tab->add('Form');
+		$form=$tsk_tab->add('Form');
 		$config_m = $this->add('xepan\projects\Model_Config_ReminderAndTask');
 		$config_m->tryLoadAny();
 
-		$form->setModel($config_m,['force_to_fill_sitting_ideal','for_selected_posts']);
+		$form->setModel($config_m,['force_to_fill_sitting_ideal','for_selected_posts','repeate_check_in_seconds']);
 		$form->getElement('for_selected_posts')->multiSelect()->set(explode(",",$config_m['for_selected_posts']))->setEmptyText('For All Posts');
 		$form->addSubmit('Save')->addClass('btn btn-primary');
 		if($form->isSubmitted()){
