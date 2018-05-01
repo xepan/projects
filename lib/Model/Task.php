@@ -242,8 +242,8 @@ class Model_Task extends \xepan\base\Model_Table
 							->setField('assign_to_id');
 		}
 
-		if($this['type'] != 'Reminder' && $this->isDirty('assign_to_id') && !isset($this->isRejecting)){
-			if($this->loaded() & !$this->ICanReject())
+		if($this['type'] != 'Reminder' && $this->isDirty('assign_to_id') && !$this->ICanAssign() && !isset($this->isRejecting)){
+			// if($this->loaded() & !$this->ICanReject())
 				throw $this->exception('You are not authorised to reject this task','ValidityCheck')
 							->setField('assign_to_id');
 		}		
