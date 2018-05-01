@@ -30,14 +30,27 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 						->count();
 		});
 		
-		$project_detail_grid=$this->add('xepan\hr\Grid',null,'grid',['view\status']);
+		$project_detail_grid=$this->add('xepan\hr\Grid',null,'grid');
 		$project_detail_grid->add('xepan\base\Controller_Avatar',['options'=>['size'=>40,'border'=>['width'=>0]],'name_field'=>'name','default_value'=>'']);
 		$project_detail_grid->addPaginator(50);
 		$project_detail_grid->addQuickSearch(['name']);
 		$project_detail_grid->setModel($model_employee,['name','running_task','project','pending_tasks_count','running_task_since']); 
 		
+		$project_detail_grid->addHook('formatRow',function($g){
+			$g->current_row['running_task_since'] = $this->seconds2human($g->model['running_task_since']);
+		});
+
 		$project_detail_grid->js('click')->_selector('.do-view-project-live')->univ()->frameURL('Employee Project Status',[$this->api->url('xepan_projects_dailyanalysis'),'contact_id'=>$this->js()->_selectorThis()->closest('[data-id]')->data('id')]);
 
+	}
+
+	function seconds2human($ss) {
+		$s = $ss % 60;
+		$m = (floor(($ss%3600)/60)>0)?floor(($ss%3600)/60).' minutes':'';
+		$h = (floor(($ss % 86400) / 3600)>0)?floor(($ss % 86400) / 3600).' hours':'';
+		$d = (floor(($ss % 2592000) / 86400)>0)?floor(($ss % 2592000) / 86400).' days':'';
+		$M = (floor($ss / 2592000)>0)?floor($ss / 2592000).' months':'';
+		return "$M $d $h $m $s seconds";
 	}
 
 	function defaultTemplate(){
