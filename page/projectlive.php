@@ -56,7 +56,20 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 		$tasks->addCondition('assign_to_id',$emp_id);
 		$tasks->addCondition('status',['Pending','Submitted','Assigned','Inprogress']);
 
-		$grid->setModel($tasks,['task_name','description','created_by','assign_to','related','status','type','project']);
+		$grid->setModel($tasks,['task_name','description','created_by','assign_to','related','status','type','project','is_recurring']);
+
+		$grid->addHook('formatRow',function($g){
+			$g->current_row_html['task_name']=$g->model['task_name']. '<br/> ('. $g->model['type'].')' . ($g->model['is_recurring']?'<br/>[Recurring]':'');
+			$g->current_row_html['from_to']=$g->model['created_by']. '<br/> => <br/> '. $g->model['assign_to'];
+		});
+
+		$grid->addColumn('from_to');
+		$grid->removeColumn('created_by');
+		$grid->removeColumn('assign_to');
+		$grid->removeColumn('type');
+		$grid->removeColumn('is_recurring');
+
+		$grid->addOrder()->move('from_to','before','task_name')->now();
 
 		$grid->addPaginator(50);
 	}
