@@ -54,7 +54,7 @@ class View_MiniTask extends \View{
 			$task_list->js(true,"sitting_ideal_interval = setInterval(function(){\$.univ().notify('Sitting Ideal ?','You looks sitting idea, please tell what you are doing !','success',true,null,true,'warning');},".($force_to_fill_sitting_ideal?($force_to_fill_sitting_ideal*1000):60000).")");
 			$task_list->js(true)->_selector('.xepan-mini-task')->univ()->dialogURL('What are you doing now?',[$this->app->url('xepan_projects_instanttaskfeed')]);
 		}else{
-			$task_list->js(true,'if(typeof sitting_ideal_interval == "undefined") clearInterval(sitting_ideal_interval)');
+			$task_list->js(true,'if(typeof sitting_ideal_interval != "undefined") clearInterval(sitting_ideal_interval)');
 		}
 	}
 }
