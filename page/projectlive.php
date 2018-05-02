@@ -40,10 +40,36 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 		$project_detail_grid->addHook('formatRow',function($g){
 			$g->current_row['running_task_since'] = $this->seconds2human($g->model['running_task_since']);
 			$g->current_row_html['pending_tasks_count'] = '<a href="#'.$g->model->id.'" data-id="'.$g->model->id.'" class="do-show-pending-task" >'.$g->model['pending_tasks_count'].'</a>';
+			$g->current_row_html['running_task'] = '<a href="#'.$g->model['running_task_id'].'" data-id="'.$g->model->id.'" data-running_task_id="'.$g->model['running_task_id'].'" class="do-show-timesheet" >'.$g->model['running_task'].'</a>';
 		});
 
+		$project_detail_grid->js('click')->_selector('.do-show-timesheet')->univ()->frameURL('Employee\'s Today\'s TimeSheet',[$this->api->url('./employeetimesheet'),'contact_id'=>$this->js()->_selectorThis()->closest('[data-id]')->data('id')]);
 		$project_detail_grid->js('click')->_selector('.do-view-project-live')->univ()->frameURL('Employee Project Status',[$this->api->url('xepan_projects_dailyanalysis'),'contact_id'=>$this->js()->_selectorThis()->closest('[data-id]')->data('id')]);
 		$project_detail_grid->js('click')->_selector('.do-show-pending-task')->univ()->frameURL('Employee Pending Tasks',[$this->api->url('./employee_pending_tasks'),'employee_id'=>$this->js()->_selectorThis()->data('id')]);
+
+	}
+
+	function page_employeetimesheet(){
+		$employee_id= $this->app->stickyGET('contact_id');
+		$timesheet_m = $this->add('xepan\projects\Model_Timesheet');
+		$timesheet_m->addCondition('employee_id',$employee_id);
+		$timesheet_m->addCondition('starttime','>=',$this->app->today);
+		$timesheet_m->addCondition('endtime','<',$this->app->nextDate($this->app->today));
+
+		$timesheet_m->getElement('starttime')->type('time');
+		$timesheet_m->getElement('endtime')->type('time');
+
+		$grid = $this->add('Grid');
+		$grid->setModel($timesheet_m,['task','starttime','endtime','duration','remark']);
+		$grid->addPaginator(50);
+
+		$grid->setFormatter('remark','wrap');
+
+		$grid->addHook('formatRow',function($g){
+			$g->current_row_html['starttime'] = date('g:i:s A',strtotime($g->model['starttime']));
+			$g->current_row_html['endtime'] = date('g:i:s A',strtotime($g->model['endtime']));
+			$g->current_row['duration'] = $this->seconds2human($g->model['duration']);
+		});
 
 	}
 

@@ -38,7 +38,7 @@ class View_Detail extends \View{
 				$task_form->layout->template->tryDel('display_wrapper');
 			}
 
-			$task_form->setModel($model_task,['assign_to_id','reminder_time','task_name','description','starting_date','deadline','priority','estimate_time','set_reminder','remind_via','remind_unit','notify_to','is_recurring','recurring_span','snooze_duration']);
+			$task_form->setModel($model_task,['assign_to_id','reminder_time','task_name','is_regular_work','describe_on_end','description','starting_date','deadline','priority','estimate_time','set_reminder','remind_via','remind_unit','notify_to','is_recurring','recurring_span','snooze_duration']);
 			
 			$task_form->getElement('notify_to')->set($temp)->js(true)->trigger('changed');
 			$task_form->getElement('remind_via')->set($temp1)->js(true)->trigger('changed');
@@ -77,6 +77,28 @@ class View_Detail extends \View{
 
 				
 			if($task_form->isSubmitted()){				
+				
+				if($task_form['is_regular_work'] ){
+					if($task_form['assign_to_id'] != $this->app->employee->id && !$this->app->auth->model->isSuperUser())
+						$task_form->displayError('assign_to_id','Regular Works cannot be assigned to others, unless you are super user');
+					if($task_form['set_reminder']){
+						$task_form->displayError('set_reminder','Regular Works cannot be set to remined');
+					}
+
+					if($task_form['is_recurring']){
+						$task_form->displayError('is_recurring','Regular Works cannot recurring');
+					}
+
+					if($task_form['project_id']){
+						$task_form->displayError('project_id','Regular Works cannot belong to any project');
+					}
+
+					if($task_form['deadline']){
+						$task_form['deadline']=null;
+					}
+				}
+
+
 				if(!$task_form['snooze_reminder']){
 					$task_form['snooze_duration'] == null;
 				}
@@ -91,6 +113,7 @@ class View_Detail extends \View{
 				if($task_form['is_recurring'] && $task_form['recurring_span'] == null){
 					$task_form->displayError('recurring_span','recurring_span field is required');
 				}
+
 
 				$task_form->save();
 				

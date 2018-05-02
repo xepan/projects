@@ -11,6 +11,7 @@ class View_InstantTaskFeed extends \View{
 		$model_pending_task = $this->add('xepan\projects\Model_Task');
 		$model_pending_task->addCondition('assign_to_id',$this->app->employee->id);
 		$model_pending_task->addCondition('status','Pending');
+		$model_pending_task->addCondition('is_regular_work',false);
 		$model_pending_task->addCondition('type','Task');
 		
 		$pending_task_view = $this->add('xepan\projects\View_TaskList',['no_records_message'=>'No pending task found'],'pending_tasks');
@@ -53,7 +54,7 @@ class View_InstantTaskFeed extends \View{
 		 showing Today's tasks
 		*****************************************************************/ 
 		$model_task = $this->add('xepan\projects\Model_Task');
-		$model_task->addCondition('starting_date','>',$this->app->today);
+		$model_task->addCondition([['starting_date','>',$this->app->today],['is_regular_work',true],['status','Inprogress']]);
 		$model_task->addCondition('assign_to_id',$this->app->employee->id);
 		$model_task->addCondition('type','Task');
 
@@ -64,7 +65,7 @@ class View_InstantTaskFeed extends \View{
 		$task_view = $this->add('xepan\projects\View_TaskList',['no_records_message'=>'No task found, try adding new task'],'task');
 		$task_view->setModel($model_task);
 		$task_view->add('xepan\hr\Controller_ACL',['action_btn_group'=>'xs']);
-		$task_view->addPaginator(5);
+		$task_view->addPaginator(25);
 		$task_view->add('xepan\base\Controller_Avatar',['name_field'=>'created_by','extra_classes'=>'profile-img center-block','options'=>['size'=>50,'display'=>'block','margin'=>'auto'],'float'=>null,'model'=>$this->model]);
 
 		/************************************************************************************

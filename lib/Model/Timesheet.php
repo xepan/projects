@@ -11,7 +11,7 @@ class Model_Timesheet extends \xepan\base\Model_Table{
 		$this->hasOne('xepan\hr\Employee', 'employee_id');
 		$this->addField('starttime')->type('datetime')->display(['form'=>'DateTimePicker']);
 		$this->addField('endtime')->type('datetime')->display(['form'=>'DateTimePicker']);
-		$this->addField('remark');
+		$this->addField('remark')->type('text');
 
 		$this->setOrder('starttime','desc');
 

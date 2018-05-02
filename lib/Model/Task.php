@@ -46,6 +46,9 @@ class Model_Task extends \xepan\base\Model_Table
 		$this->addField('reminder_time_compare_with')->setValueList(['starting_date'=>'starting_date','deadline'=>'deadline'])->defaultValue('starting_date');
 		$this->addField('snooze_duration');
 		
+		$this->addField('is_regular_work')->type('boolean')->defaultValue(false);
+		$this->addField('describe_on_end')->type('boolean')->defaultValue(true);
+		
 		$employee_model = $this->add('xepan\hr\Model_Employee')->addCondition('status','Active');		
 		$this->addField('notify_to')->display(['form'=>'xepan\base\DropDown'])->setModel($employee_model);
 		

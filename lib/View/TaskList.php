@@ -30,24 +30,86 @@ class View_TaskList extends \xepan\base\Grid{
 		/***************************************************************************
 		  Timesheet PLAY/STOP
 		***************************************************************************/
-		$grid_id = $this->getJSID();
-		$this->on('click','.current_task_btn',function($js,$data){
+		$vp_describe = $this->add('VirtualPage');
+		$vp_describe->set(function($p){
+			$data = $this->app->stickyGET('data');
+			$data=json_decode($data,true);
+
+			$my_running_task = $this->getMyRunningTask();
+
+			$msg ="";
+			if($data['action']=='start'){
+				$new_task = $this->add('xepan\projects\Model_Task')->load($data['id']);
+				$msg = 'Starting "<strong>'.$new_task['task_name'].'</strong>" and <br/>';
+			}
+
+			$msg .= 'Stopping "<strong>'.$my_running_task['task_name'].'</strong>" but this task requires you to fill about your ended task slot';
+			$p->add('View')->addClass('alert alert-info')->setHTML($msg);
+
+			$form = $p->add('Form');
+			if($my_running_task['describe_on_end']){
+				$form->addField('Text','what_you_did','What Exactly Did You Do In This Time');
+			}
+
+			if($my_running_task['manage_points']){
+				$form->add('View')->addClass('alert alert-danger')->set('TODO');
+			}
+
+			$form->addSubmit('Stop And Proceed');
+
+			if($form->isSubmitted()){
+				try{
+					$this->app->db->beginTransaction();
+					$my_running_tasksheet = $this->getMyRunningTimeSheet();
+					$my_running_tasksheet['remark'] = $form['what_you_did'];
+					$my_running_tasksheet['endtime'] = $this->app->now;
+					$my_running_tasksheet->saveAndUnload();
+
+					$my_running_task['status'] = 'Pending';
+					$my_running_task->save();
+
+					$js = $form->js();
+					$stop_js =  $this->stopAll($js);
+					$run_current_js = [];
+					if($data['action']=='start'){ // needs to start now
+						$run_current_js =  $this->runTask($data,$js);
+					}
+
+					$run_current_js[] = $this->js()->closest('.xepan-tasklist-grid')->trigger('reload');
+					$this->app->db->commit();
+					$form->js(null,array_merge($stop_js, $run_current_js))->univ()->closeDialog()->execute();
+				}catch(\Execption $e){
+					$this->app->db->rollback();
+					throw $e;
+				}
+
+				// throw new \Exception($my_running_task['task_name'], 1);
 				
+			}
+
+		});
+
+		$grid_id = $this->getJSID();
+		$this->on('click','.current_task_btn',function($js,$data)use($vp_describe) {
+				
+				$my_running_task = $this->getMyRunningTask();
+
+				if($my_running_task && ($my_running_task['describe_on_end'] || $my_running_task['manage_points'])){
+					return $js->univ()->frameURL($this->app->url($vp_describe->getURL(),['data'=>json_encode($data)]));
+				}
+
 				$this->endAnyTaskIfRunning();	
 
 				$stop_js =  $this->stopAll($js);
 				$run_current_js = [];
 				if($data['action']=='start'){ // needs to start now
 					$run_current_js =  $this->runTask($data,$js);
-				
 				}
 
 				$run_current_js[] = $this->js()->closest('.xepan-tasklist-grid')->trigger('reload');
 				return array_merge($stop_js, $run_current_js);
 				
 			});
-
-
 		}
 	
 	function formatRow(){
@@ -298,14 +360,30 @@ class View_TaskList extends \xepan\base\Grid{
 				];
 	}
 
-	function endAnyTaskIfRunning(){
+	function getMyRunningTimeSheet(){
 		$model_close_timesheet = $this->add('xepan\projects\Model_Timesheet');
 
 		$model_close_timesheet->addCondition('employee_id',$this->app->employee->id);
 		$model_close_timesheet->addCondition('endtime',null);
 		$model_close_timesheet->tryLoadAny();
+		
+		if($model_close_timesheet->loaded()) return $model_close_timesheet;
+		return false;
+	}
 
-		if($model_close_timesheet->loaded()){
+	function getMyRunningTask(){
+		$model_close_timesheet = $this->getMyRunningTimeSheet();
+
+		if($model_close_timesheet) {
+			$task = $this->add('xepan\projects\Model_Task')->load($model_close_timesheet['task_id']);
+			return $task;
+		}
+		return false;
+	}
+
+	function endAnyTaskIfRunning(){
+
+		if($model_close_timesheet = $this->getMyRunningTimeSheet()){
 			$task = $this->add('xepan\projects\Model_Task')->load($model_close_timesheet['task_id']);
 			$task['status'] = 'Pending';
 			$task->save();
