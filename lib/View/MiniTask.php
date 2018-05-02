@@ -30,7 +30,7 @@ class View_MiniTask extends \View{
 		$task_list->setModel($model_task);
 
 		// $task_list->js('click')->_selector('.xepan-mini-task')->univ()->frameURL('INSTANT TASK FEED',[$this->api->url($vp->getURL())]);
-		$task_list->js('click')->_selector('.xepan-mini-task')->univ()->dialogURL('What are you doing now?',[$this->app->url('xepan_projects_instanttaskfeed')]);
+		$task_list->js('click')->_selector('.xepan-mini-task')->univ()->frameURL('What are you doing now?',[$this->app->url('xepan_projects_instanttaskfeed')]);
 
 		$force_to_fill_sitting_ideal = $this->recall('force_to_fill_sitting_ideal',null);
 		
