@@ -51,10 +51,26 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 
 	function page_employeetimesheet(){
 		$employee_id= $this->app->stickyGET('contact_id');
+		$for_date = $this->app->stickyGET('for_date');
+
+		if(!$for_date) $for_date = $this->app->today;
+
+		$form = $this->add('Form');
+		$form->add('xepan\base\Controller_FLC')
+		->showLables(true)
+		->makePanelsCoppalsible(true)
+		->layout([
+				'for_date'=>'Date Select~c1~6~closed',
+				'FormButtons'=>'c2~6'
+			]);
+
+		$form->addField('DatePicker','for_date')->set($for_date);
+		$form->addSubmit('Update')->addClass('btn btn-primary');
+
 		$timesheet_m = $this->add('xepan\projects\Model_Timesheet');
 		$timesheet_m->addCondition('employee_id',$employee_id);
-		$timesheet_m->addCondition('starttime','>=',$this->app->today);
-		$timesheet_m->addCondition('endtime','<',$this->app->nextDate($this->app->today));
+		$timesheet_m->addCondition('starttime','>=',$for_date);
+		$timesheet_m->addCondition('endtime','<',$this->app->nextDate($for_date));
 
 		$timesheet_m->getElement('starttime')->type('time');
 		$timesheet_m->getElement('endtime')->type('time');
@@ -70,6 +86,10 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 			$g->current_row_html['endtime'] = date('g:i:s A',strtotime($g->model['endtime']));
 			$g->current_row['duration'] = $this->seconds2human($g->model['duration']);
 		});
+
+		if($form->isSubmitted()){
+			$grid->js()->reload(['for_date'=>$form['for_date']])->execute();
+		}
 
 	}
 
