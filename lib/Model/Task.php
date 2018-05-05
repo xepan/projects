@@ -49,6 +49,9 @@ class Model_Task extends \xepan\base\Model_Table
 		$this->addField('is_regular_work')->type('boolean')->defaultValue(false);
 		$this->addField('describe_on_end')->type('boolean')->defaultValue(true);
 		
+		$this->addField('manage_points')->type('boolean')->defaultValue(false);
+		$this->addField('applied_rules');
+		
 		$employee_model = $this->add('xepan\hr\Model_Employee')->addCondition('status','Active');		
 		$this->addField('notify_to')->display(['form'=>'xepan\base\DropDown'])->setModel($employee_model);
 		

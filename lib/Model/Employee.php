@@ -3,6 +3,11 @@
 namespace xepan\projects;
 
 class Model_Employee extends \xepan\hr\Model_Employee{
+
+	public $status = ['Active','InActive'];
+	public $actions = ['Active'=>['view','manage_regular_tasks'],'InActive'=>['view']];
+	public $acl_type = 'Employee_Running_Task_And_Timesheet';
+
 	function init(){
 		parent::init();
 		
@@ -53,5 +58,35 @@ class Model_Employee extends \xepan\hr\Model_Employee{
 
 
 		$this->addExpression('performance')->set("'Todo'");
+	}
+
+	function page_manage_regular_tasks($p){
+		$tasks = $this->add('xepan\projects\Model_Task');
+		$tasks->addCondition('assign_to_id',$this->id);
+		$tasks->addCondition('is_regular_work',true);
+		$tasks->addCondition('type','Task');
+
+		$tasks->getElement('applied_rules')->display(['form'=>'xepan\base\NoValidateDropDown']);
+
+		$tasks->getElement('starting_date')->defaultValue($this->app->now);
+
+		$crud = $p->add('xepan\base\CRUD');
+		$crud->setModel($tasks,['task_name','description','describe_on_end','applied_rules','manage_points'],['task_name','description','describe_on_end','manage_points']);
+
+		if($crud->isEditing()){
+
+			if($crud->form->isSubmitted()){
+				if($crud->form['applied_rules'] && !$crud->form['manage_points']){
+					$crud->form->displayError('manage_points','To set rules, please mark manage_points on');
+				}
+			}
+
+			$crud->form->getElement('applied_rules')
+					->setAttr('multiple',true)
+					->set(explode(",",$crud->form->model['applied_rules']))
+					->setModel('xepan\base\Rules')
+					;
+		}
+
 	}
 }

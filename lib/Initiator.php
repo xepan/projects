@@ -32,9 +32,10 @@ class Initiator extends \Controller_Addon {
 				// $m->addItem(['Dashboard','icon'=>'fa fa-dashboard'],'xepan_projects_projectdashboard');
 				$m->addItem(['Project','icon'=>'fa fa-sitemap'],'xepan_projects_project');
 				$m->addItem(['Trace Employee','icon'=>' fa fa-paw'],'xepan_projects_projectlive');
+				$m->addItem(['Manage Point Rules','icon'=>' fa fa-paw'],'xepan_projects_pointsystem');
 				$this->app->user_menu->addItem(['Tasks','icon'=>'fa fa-tasks'],'xepan_projects_mytasks');
 				$this->app->user_menu->addItem(['My Followups','icon'=>'fa fa-stack-exchange'],'xepan_projects_myfollowups');
-				$projects = $this->add('xepan\projects\Model_Project');
+				// $projects = $this->add('xepan\projects\Model_Project');
 				$m->addItem(['Configuration','icon'=>' fa fa-cog'],'xepan_projects_configuration');
 				$m->addItem(['Reports','icon'=>' fa fa-cog'],'xepan_projects_projectreport');
 			}
@@ -97,6 +98,7 @@ class Initiator extends \Controller_Addon {
         $array['Task'] = ['caption'=>'Task','type'=>'DropDown','model'=>'xepan\projects\Model_Task'];
         $array['followup_status'] = ['caption'=>'Status','type'=>'DropDown','values'=>['Pending'=>'Pending','Submitted'=>'Submitted','Completed'=>'Completed','Assigned'=>'Assigned','Inprogress'=>'Inprogress']];
         $array['EMPLOYEE_REMINDER_RELATED_EMAIL'] = ['caption'=>'EMPLOYEE_REMINDER_RELATED_EMAIL','type'=>'DropDown','model'=>'xepan\projects\Model_EMPLOYEE_REMINDER_RELATED_EMAIL'];
+        $array['Employee_Running_Task_And_Timesheet'] = ['caption'=>'Employee Running Task And Timesheet','type'=>'DropDown','model'=>'xepan\projects\Model_Employee'];
     }
 
 	function logoutPageManage($app,$logout_page){		

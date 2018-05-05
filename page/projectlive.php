@@ -24,28 +24,31 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 		$model_employee->addCondition('status','Active');
 		$model_employee->setOrder('pending_tasks_count','desc');
 		// $model_employee->getElement('pending_tasks_count')->destroy();
-		// $model_employee->addExpression('pending_tasks_count')->set(function ($m,$q)use($project_id){
-		// 	return $m->refSQL('xepan\projects\Task')
-		// 				->addCondition('status','Pending')
-		// 				->addCondition('project_id',$project_id)
-		// 				->count();
-		// });
+		$model_employee->addExpression('total_score')->set(function ($m,$q){
+			return $m->add('xepan\base\Model_PointSystem')
+						->addCondition('contact_id',$m->getElement('id'))
+						->addCondition('timesheet_id','>',0)
+						->sum('score');
+		});
 		
-		$project_detail_grid=$this->add('xepan\hr\Grid');
+		$project_detail_grid=$this->add('xepan\hr\Grid',['pass_acl'=>false]);
 		$project_detail_grid->add('xepan\base\Controller_Avatar',['options'=>['size'=>40,'border'=>['width'=>0]],'name_field'=>'name','default_value'=>'']);
 		$project_detail_grid->addPaginator(50);
 		$project_detail_grid->addQuickSearch(['name']);
-		$project_detail_grid->setModel($model_employee,['name','running_task','project','pending_tasks_count','running_task_since']); 
+		$project_detail_grid->setModel($model_employee,['name','running_task','project','total_score','pending_tasks_count','running_task_since']); 
+		$project_detail_grid->removeAttachment();
 		
 		$project_detail_grid->addHook('formatRow',function($g){
 			$g->current_row['running_task_since'] = $this->seconds2human($g->model['running_task_since']);
 			$g->current_row_html['pending_tasks_count'] = '<a href="#'.$g->model->id.'" data-id="'.$g->model->id.'" class="do-show-pending-task" >'.$g->model['pending_tasks_count'].'</a>';
 			$g->current_row_html['running_task'] = '<a href="#'.$g->model['running_task_id'].'" data-id="'.$g->model->id.'" data-running_task_id="'.$g->model['running_task_id'].'" class="do-show-timesheet" >'.($g->model['running_task']?:' --- ').'</a>';
+			$g->current_row_html['total_score'] = '<a href="#'.$g->model['running_task_id'].'" data-id="'.$g->model->id.'" data-running_task_id="'.$g->model['running_task_id'].'" class="do-show-score" >'.($g->model['total_score']?:' --- ').'</a>';
 		});
 
 		$project_detail_grid->js('click')->_selector('.do-show-timesheet')->univ()->frameURL('Employee\'s Today\'s TimeSheet',[$this->api->url('./employeetimesheet'),'contact_id'=>$this->js()->_selectorThis()->closest('[data-id]')->data('id')]);
 		$project_detail_grid->js('click')->_selector('.do-view-project-live')->univ()->frameURL('Employee Project Status',[$this->api->url('xepan_projects_dailyanalysis'),'contact_id'=>$this->js()->_selectorThis()->closest('[data-id]')->data('id')]);
 		$project_detail_grid->js('click')->_selector('.do-show-pending-task')->univ()->frameURL('Employee Pending Tasks',[$this->api->url('./employee_pending_tasks'),'employee_id'=>$this->js()->_selectorThis()->data('id')]);
+		$project_detail_grid->js('click')->_selector('.do-show-score')->univ()->frameURL('Employee Scores',[$this->api->url('./employee_scores'),'employee_id'=>$this->js()->_selectorThis()->data('id')]);
 
 	}
 
@@ -91,6 +94,19 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 			$grid->js()->reload(['for_date'=>$form['for_date']])->execute();
 		}
 
+	}
+
+	function page_employee_scores(){
+		$employee_id = $this->app->stickyGET('employee_id');
+		
+		$m= $this->add('xepan\base\Model_PointSystem');
+		$m->addCondition('contact_id',$employee_id);
+		$m->addCondition('timesheet_id','>',0);
+		$m->addExpression('score_per_qty')->set($m->refSQL('rule_option_id')->fieldQuery('score_per_qty'));
+		$m->setOrder('created_at desc');
+		
+		$grid = $this->add('xepan\base\Grid');
+		$grid->setModel($m,['created_at','rule_option','score_per_qty','qty','score']);
 	}
 
 	function page_employee_pending_tasks(){

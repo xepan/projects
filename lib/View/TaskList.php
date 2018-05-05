@@ -46,13 +46,49 @@ class View_TaskList extends \xepan\base\Grid{
 			$msg .= 'Stopping "<strong>'.$my_running_task['task_name'].'</strong>" but this task requires you to fill about your ended task slot';
 			$p->add('View')->addClass('alert alert-info')->setHTML($msg);
 
-			$form = $p->add('Form');
-			if($my_running_task['describe_on_end']){
-				$form->addField('Text','what_you_did','What Exactly Did You Do In This Time');
+			$ro_array=[];
+			if($my_running_task['manage_points']){
+				foreach (explode(",",$my_running_task['applied_rules']) as $rule_id) {
+					if(!$rule_id) continue;
+					$rule = $this->add('xepan\base\Model_Rules')->tryLoad($rule_id);
+					if(!$rule->loaded()) continue;
+					foreach ($rule->ref('xepan\base\RulesOption') as $ro) {
+						$ro_array[$ro->id]=$ro['name'];
+						// $form->addField('Readonly','rule_o_name_'.$ro->id,$ro['name']);
+						// $form->addField('Number','rule_o_qty_'.$ro->id,'Work Done');
+					}
+				}
+				// $form->add('View')->addClass('alert alert-danger')->set('TODO');
 			}
 
-			if($my_running_task['manage_points']){
-				$form->add('View')->addClass('alert alert-danger')->set('TODO');
+			if($my_running_task['describe_on_end']){
+				$form_layout_array = ['what_you_did~What Exactly Did You Do In This Time'=>'Work Report~c1~12'];
+			}else{
+				$form_layout_array = [];
+			}
+
+			$i=2;
+			foreach ($ro_array as $id => $title) {
+				$form_layout_array['rule_o_name_'.$id.'~'.($i-1).': '.$title] = ($i==2?'Rules Qty~':'').'c'.$i.'~6';
+				$form_layout_array['rule_qty_'.$id.'~Qty'] = 'cq'.$i.'~6';
+				$i++;
+			}
+			
+			$form = $p->add('Form');
+			$form->add('xepan\base\Controller_FLC')
+				->showLables(true)
+				->addContentSpot()
+				->makePanelsCoppalsible(true)
+				->layout($form_layout_array);
+
+			if($my_running_task['describe_on_end']){
+				$form->addField('Text','what_you_did');
+			}
+
+
+			foreach ($ro_array as $id => $title) {
+				$form->addField('Readonly','rule_o_name_'.$id,$title);
+				$form->addField('Line','rule_qty_'.$id);
 			}
 
 			$form->addSubmit('Stop And Proceed');
@@ -61,6 +97,7 @@ class View_TaskList extends \xepan\base\Grid{
 				try{
 					$this->app->db->beginTransaction();
 					$my_running_tasksheet = $this->getMyRunningTimeSheet();
+					$my_running_tasksheet_id = $my_running_tasksheet->id;
 					$my_running_tasksheet['remark'] = $form['what_you_did'];
 					$my_running_tasksheet['endtime'] = $this->app->now;
 					$my_running_tasksheet->saveAndUnload();
@@ -76,6 +113,21 @@ class View_TaskList extends \xepan\base\Grid{
 					}
 
 					$run_current_js[] = $this->js()->closest('.xepan-tasklist-grid')->trigger('reload');
+
+					foreach ($ro_array as $id => $title) {
+						if($form['rule_qty_'.$id] && !is_numeric($form['rule_qty_'.$id])) $form->displayError('rule_qty_'.$id,'This value must be a integer');
+						$ro = $this->add('xepan\base\Model_RulesOption');
+						$ro->load($id);
+						$ps = $this->add('xepan\base\Model_PointSystem');
+						$ps['rule_id'] = $ro['rule_id'];
+						$ps['rule_option_id'] = $id;
+						$ps['timesheet_id'] = $my_running_tasksheet_id;
+						$ps['contact_id'] = $this->app->employee->id;
+						$ps['qty'] = $form['rule_qty_'.$id];
+						$ps['score'] = $ro['score_per_qty'] * $form['rule_qty_'.$id];
+						$ps->save();
+					}	
+					
 					$this->app->db->commit();
 					$form->js(null,array_merge($stop_js, $run_current_js))->univ()->closeDialog()->execute();
 				}catch(\Execption $e){
