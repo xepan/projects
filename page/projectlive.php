@@ -106,7 +106,7 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 		$m->setOrder('created_at desc');
 		
 		$grid = $this->add('xepan\base\Grid');
-		$grid->setModel($m,['created_at','rule_option','score_per_qty','qty','score']);
+		$grid->setModel($m,['created_at','rule_option','score_per_qty','qty','score','remarks']);
 	}
 
 	function page_employee_pending_tasks(){
