@@ -55,7 +55,7 @@ class page_pointsystem extends \xepan\projects\page_sidemenu{
 
 		$crud = $this->add('xepan\hr\CRUD',['pass_acl'=>true]);
 		$crud->setModel($rpo,['name','description','score_per_qty']);
-
+		$crud->grid->addFormatter('name','wrap');
 
 	}
 }

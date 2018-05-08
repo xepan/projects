@@ -70,7 +70,10 @@ class View_TaskList extends \xepan\base\Grid{
 			$i=2;
 			foreach ($ro_array as $id => $title) {
 				$form_layout_array['rule_o_name_'.$id.'~'.($i-1).': '.$title] = ($i==2?'Rules Qty~':'').'c'.$i.'~6';
-				$form_layout_array['rule_qty_'.$id.'~Qty'] = 'cq'.$i.'~6';
+				$form_layout_array['rule_qty_'.$id.'~'] = 'cq'.$i.'~1';
+				$form_layout_array['rule_remark_'.$id.'~'] = 'cr'.$i.'~4';
+				$form_layout_array['rule_btn_'.$id.'~'] = 'hs'.$i.'~1';
+				$form_layout_array['empty'.$id.'~'] = 'br'.$i.'~12';
 				$i++;
 			}
 			
@@ -89,8 +92,23 @@ class View_TaskList extends \xepan\base\Grid{
 			foreach ($ro_array as $id => $title) {
 				$form->addField('Readonly','rule_o_name_'.$id,$title);
 				$form->addField('Line','rule_qty_'.$id);
+				$form->addField('Line','rule_remark_'.$id);
+				$form->layout->add('View',null,'rule_btn_'.$id)->setHtml('<a href="#" class="history" data-rule_opt_id="'.$id.'">History</a>');
 			}
 
+			$rule_history_vp = $p->add('VirtualPage');
+			$rule_history_vp->set(function($p){
+				$rule_opt_id = $this->app->stickyGET('rule_opt_id');
+				$points = $this->add('xepan\base\Model_PointSystem');
+				$points->addCondition('rule_option_id',$rule_opt_id);
+				$points->addCondition('created_by_id',$this->app->employee->id);
+				$points->setOrder('created_at','desc');
+				$g=$p->add('Grid');
+				$g->setModel($points,['created_at','timesheet_id','qty','score','remarks']);
+				$g->addPaginator(100);
+			});
+
+			$form->js('click')->_selector('.history')->univ()->frameURL('Rule History',[$rule_history_vp->getURL(),'rule_opt_id'=>$this->js()->_selectorThis()->data('rule_opt_id')]);
 			$form->addSubmit('Stop And Proceed');
 
 			if($form->isSubmitted()){
@@ -124,6 +142,7 @@ class View_TaskList extends \xepan\base\Grid{
 						$ps['rule_id'] = $ro['rule_id'];
 						$ps['rule_option_id'] = $id;
 						$ps['timesheet_id'] = $my_running_tasksheet_id;
+						$ps['remarks'] = $form['rule_remark_'.$id];
 						$ps['contact_id'] = $this->app->employee->id;
 						$ps['qty'] = $form['rule_qty_'.$id];
 						$ps['score'] = $ro['score_per_qty'] * $form['rule_qty_'.$id];
