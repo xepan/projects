@@ -303,8 +303,14 @@ class Model_Task extends \xepan\base\Model_Table
 
 	function canUserDelete(){
 		if(!$this->force_delete){
-			if(($this['type'] != 'Reminder') && ($this['created_by_id'] == $this->app->employee->id) && ($this['assign_to_id']!= $this->app->employee->id) && $this['status'] != 'Completed' && $this['assign_employee_status'] != "InActive")
-				throw new \Exception("You are not authorized to delete this task");
+			if(($this['type'] != 'Reminder') && ($this['created_by_id'] == $this->app->employee->id) && ($this['assign_to_id']!= $this->app->employee->id) && (!in_array($this['status'],['Completed','Assigned'])) && $this['assign_employee_status'] != "InActive")
+				throw $this->exception("You are not authorized to delete this task")
+						->addMoreInfo('type',$this['type'])
+						->addMoreInfo('created_by',$this['created_by'])
+						->addMoreInfo('assign_to_id',$this['assign_to_id'])
+						->addMoreInfo('status',$this['status'])
+						->addMoreInfo('assign_employee_status',$this['assign_employee_status'])
+						;
 		}
 	}
 

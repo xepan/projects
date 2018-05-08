@@ -61,7 +61,14 @@ class Model_Employee extends \xepan\hr\Model_Employee{
 	}
 
 	function page_manage_regular_tasks($p){
-		$tasks = $this->add('xepan\projects\Model_Task');
+		$vp = $p->add('VirtualPage');
+		$vp->set([$this,'copy_tasks_from_other_employee']);
+		
+
+		$p->add('Button')->set('Copy from Other Employee')
+			->js('click')->univ()->frameURL('Copy Tasks',$vp->getURL());
+
+		$tasks = $p->add('xepan\projects\Model_Task');
 		$tasks->addCondition('assign_to_id',$this->id);
 		$tasks->addCondition('is_regular_work',true);
 		$tasks->addCondition('type','Task');
@@ -71,7 +78,14 @@ class Model_Employee extends \xepan\hr\Model_Employee{
 		$tasks->getElement('starting_date')->defaultValue($this->app->now);
 
 		$crud = $p->add('xepan\base\CRUD');
-		$crud->setModel($tasks,['task_name','description','describe_on_end','applied_rules','manage_points'],['task_name','description','describe_on_end','manage_points']);
+		$crud->addClass('temp');
+		$crud->js('reload')->reload();
+		$crud->setModel($tasks,['task_name','description','describe_on_end','applied_rules','manage_points'],['task_name','description','describe_on_end','manage_points','assign_employee_status','status','assign_to_id','created_by_id']);
+
+		$crud->grid->removeColumn('assign_employee_status');
+		$crud->grid->removeColumn('status');
+		$crud->grid->removeColumn('assign_to_id');
+		$crud->grid->removeColumn('created_by_id');
 
 		if($crud->isEditing()){
 
@@ -80,13 +94,50 @@ class Model_Employee extends \xepan\hr\Model_Employee{
 					$crud->form->displayError('manage_points','To set rules, please mark manage_points on');
 				}
 			}
+			$r_m = $this->add('xepan\base\Model_Rules');
+			$r_m->addExpression('rule_with_group')->set(function($m,$q){
+				return $q->expr('CONCAT([0]," - ",[1])',[$m->getElement('rulegroup'),$m->getElement('name')]);
+			});
+
+			$r_m->title_field = 'rule_with_group';
 
 			$crud->form->getElement('applied_rules')
 					->setAttr('multiple',true)
 					->set(explode(",",$crud->form->model['applied_rules']))
-					->setModel('xepan\base\Rules')
+					->setModel($r_m)
 					;
 		}
 
+	}
+
+	function copy_tasks_from_other_employee($p){
+		$form = $p->add('Form');
+		$form->addField('xepan\hr\Employee','copy_from');
+		$form->addSubmit('Copy');
+
+		if($form->isSubmitted()){
+			if(!$form['copy_from']) $form->displayError('copy_from','Must be defined');
+			if($form['copy_from'] == $this->id) $form->displayError('copy_from','Must not be seft employee');
+			$tasks = $p->add('xepan\projects\Model_Task');
+			$tasks->addCondition('assign_to_id',$form['copy_from']);
+			$tasks->addCondition('is_regular_work',true);
+			$tasks->addCondition('type','Task');
+
+			foreach ($tasks as $o_e_t) {
+				$new_tasks = $p->add('xepan\projects\Model_Task');
+				$new_tasks['assign_to_id']=$this->id;
+				$new_tasks['is_regular_work']=true;
+				$new_tasks['type']='Task';
+				$new_tasks['task_name']=$o_e_t['task_name'];
+				$new_tasks['description']=$o_e_t['description'];
+				$new_tasks['describe_on_end']=$o_e_t['describe_on_end'];
+				$new_tasks['applied_rules']=$o_e_t['applied_rules'];
+				$new_tasks['manage_points']=$o_e_t['manage_points'];
+				$new_tasks['starting_date']=$this->app->now;
+				$new_tasks->save();
+			}
+
+			$form->js(null,$form->js()->_selector('.temp')->trigger('reload'))->univ()->closeDialog()->execute();
+		}
 	}
 }

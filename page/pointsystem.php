@@ -13,15 +13,32 @@ class page_pointsystem extends \xepan\projects\page_sidemenu{
 				->js('click')->univ()->frameURL('Manage Rule Groups',$this->app->url('./rulegroups'));
 				;
 
-		$rules_m = $this->add('xepan\base\Model_Rules');
+		$groups = $this->add('xepan\base\Model_RuleGroup');
 
-		$crud = $this->add('xepan\hr\CRUD');
-		$crud->setModel($rules_m);
+		$layout_array = [];
+		foreach ($groups as $g) {
+			$layout_array[$g->id.'~'] = $g['name'].'~c'.($g->id).'~12';
+		}
 
-		$crud->noAttachment();
 
-		$crud->grid->addColumn('Expander','point_options');
+		$v = $this->add('View')->addClass('temp');
+		$v->js('reload')->reload();
+		$v->add('xepan\base\Controller_FLC')
+		->showLables(true)
+		->makePanelsCoppalsible(true)
+		->layout($layout_array);
 
+
+		foreach ($groups as $g) {
+			$rules_m = $this->add('xepan\base\Model_Rules');
+			$rules_m->addCondition('rulegroup_id',$g->id);
+			$crud = $v->add('xepan\hr\CRUD',['grid_options'=>['fixed_header'=>false]],$g->id);
+			$crud->setModel($rules_m);
+
+			$crud->noAttachment();
+
+			$crud->grid->addColumn('Expander','point_options');
+		}
 		
 	}
 

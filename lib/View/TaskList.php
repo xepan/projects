@@ -115,7 +115,9 @@ class View_TaskList extends \xepan\base\Grid{
 					$run_current_js[] = $this->js()->closest('.xepan-tasklist-grid')->trigger('reload');
 
 					foreach ($ro_array as $id => $title) {
+						if(!$form['rule_qty_'.$id]) continue;
 						if($form['rule_qty_'.$id] && !is_numeric($form['rule_qty_'.$id])) $form->displayError('rule_qty_'.$id,'This value must be a integer');
+						
 						$ro = $this->add('xepan\base\Model_RulesOption');
 						$ro->load($id);
 						$ps = $this->add('xepan\base\Model_PointSystem');
