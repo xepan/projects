@@ -12,6 +12,9 @@ class page_todaytimesheet extends \xepan\base\Page{
 		$on_date = $this->app->today;
 		if($_GET['for_date']) $on_date = $_GET['for_date'];
 
+		$rule_btn = $this->app->page_top_right_button_set->addButton('Rules')->addClass('btn btn-primary');
+		$rule_btn->js('click')->univ()->frameURL('Compay Rules with Points', $this->app->url('./rules'));
+
 		$f=$this->add('Form');
 		$f->add('xepan\base\Controller_FLC')
 		->showLables(true)
@@ -92,6 +95,16 @@ class page_todaytimesheet extends \xepan\base\Page{
 
 		$grid->addFormatter('rule_option','wrap');
 
+	}
+
+	function page_rules(){
+		$rule_options = $this->add('xepan\base\Model_RulesOption');
+		$rule_options->setOrder('rule_id');
+
+		$grid = $this->add('xepan\base\Grid');
+		$grid->setModel($rule_options,['rule','name','description','score_per_qty']);
+
+		$grid->addFormatter('name','wrap');
 	}
 
 	function manageTimeSheetScore($p){
