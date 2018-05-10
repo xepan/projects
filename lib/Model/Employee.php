@@ -156,6 +156,10 @@ class Model_Employee extends \xepan\hr\Model_Employee{
 		$crud= $p->add('xepan\hr\CRUD',['pass_acl'=>true]);
 		$crud->setModel($point_system_m,['rule_option_id','qty','remarks'],['created_at_date','rule_option','qty','score','remarks','created_by']);
 
+		if($crud->isEditing()){
+			$crud->form->getElement('rule_option_id')->getModel()->title_field='name_with_score';
+		}
+
 		$crud->grid->addFormatter('rule_option','wrap');
 	}
 }
