@@ -161,7 +161,10 @@ class page_mytasks extends \xepan\base\Page{
 
 		$status = 'Completed';
 
-	    $task_assigned_to_me_model = $this->add('xepan\projects\Model_Formatted_Task')->addCondition('type','Task');
+	    $task_assigned_to_me_model = $this->add('xepan\projects\Model_Formatted_Task')
+	    	->addCondition('type','Task')
+	    	->addCondition('is_regular_work',false)
+	    	;
 	    $field_to_destroy = ['total_duration','is_started','is_running','follower_count','total_comment'/*,'created_by_image'*//*,'assigned_to_image'*/,'related_name','priority_name','assign_employee_status','created_by_employee_status','contact_name','contact_organization'];
 	    foreach ($field_to_destroy as $field) {
 		    $task_assigned_to_me_model->getElement($field)->destroy();
@@ -184,6 +187,7 @@ class page_mytasks extends \xepan\base\Page{
 										  ->addCondition('assign_to_id','<>',$this->app->employee->id)
 										  ->addCondition('assign_to_id','<>',null)
 										  ->addCondition('status','<>','Submitted')
+										  ->addCondition('is_regular_work',false)
 										  ->addCondition('type','Task');
 		// $task_assigned_by_me_model->getElement('assign_to_id')->sortable(true);								  
 	    $task_assigned_by_me_model->setOrder(['updated_at','last_comment_time']);

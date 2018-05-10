@@ -91,11 +91,10 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 
 		$timesheet_m = $this->add('xepan\projects\Model_Timesheet');
 		$timesheet_m->addCondition('employee_id',$employee_id);
-		$timesheet_m->addCondition('starttime','>=',$for_date);
-		$timesheet_m->addCondition('endtime','<',$this->app->nextDate($for_date));
+		$timesheet_m->addCondition([['start_date',$for_date],['end_date',$for_date]]);
 
-		$timesheet_m->getElement('starttime')->type('time');
-		$timesheet_m->getElement('endtime')->type('time');
+		// $timesheet_m->getElement('starttime')->type('time');
+		// $timesheet_m->getElement('endtime')->type('time');
 
 		$grid = $this->add('Grid');
 		$grid->setModel($timesheet_m,['task','starttime','endtime','duration','remark']);
@@ -104,8 +103,8 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 		$grid->setFormatter('remark','wrap');
 
 		$grid->addHook('formatRow',function($g){
-			$g->current_row_html['starttime'] = date('g:i:s A',strtotime($g->model['starttime']));
-			$g->current_row_html['endtime'] = date('g:i:s A',strtotime($g->model['endtime']));
+			$g->current_row_html['starttime'] = date('d-M-Y g:i:s A',strtotime($g->model['starttime']));
+			$g->current_row_html['endtime'] = $g->model['endtime']?date('d-M-Y g:i:s A',strtotime($g->model['endtime'])):'';
 			$g->current_row['duration'] = $this->seconds2human($g->model['duration']);
 		});
 
