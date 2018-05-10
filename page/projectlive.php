@@ -17,19 +17,38 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 			$model_project->load($project_id);
 		}
 
-		// $top_view = $this->add('xepan\projects\View_TopView',null,'topview');
-		// $top_view->setModel($model_project,['name']);
 
 		$model_employee = $this->add('xepan\projects\Model_Employee');
 		$model_employee->addCondition('status','Active');
 		$model_employee->setOrder('pending_tasks_count','desc');
-		// $model_employee->getElement('pending_tasks_count')->destroy();
+
 		$model_employee->addExpression('total_score')->set(function ($m,$q){
 			return $m->add('xepan\base\Model_PointSystem')
 						->addCondition('contact_id',$m->getElement('id'))
-						->addCondition('timesheet_id','>',0)
+						->addCondition('timesheet_id','<>',0)
 						->sum('score');
 		});
+
+		$post_m = $this->add('xepan\hr\Model_Post');
+		$post_m->load($this->app->employee['post_id']);
+
+		switch ($post_m['permission_level']) {
+			
+			case 'Sibling':
+				$this->add('View')->set($this->app->employee['post'].' Post is defined to see Sibling followups and you are seeing everyones followups who are on same post as you are');
+				$model_employee->addCondition('post_id',$this->app->employee['post_id']);
+
+				break;
+			case 'Department':
+				$this->add('View')->set($this->app->employee['post'].' Post is defined to see Department followups and you are seeing everyones followups who are  in same department as you are');
+	    		$model_employee->addCondition('department_id',$this->app->employee['department_id']);
+				break;
+			case 'Global':				
+				break;
+			default: //SELF
+				$model_employee->addCondition('id',$this->app->employee->id);
+				break;
+		}
 		
 		$project_detail_grid=$this->add('xepan\hr\Grid',['pass_acl'=>false]);
 		$project_detail_grid->add('xepan\base\Controller_Avatar',['options'=>['size'=>40,'border'=>['width'=>0]],'name_field'=>'name','default_value'=>'']);
@@ -101,12 +120,15 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 		
 		$m= $this->add('xepan\base\Model_PointSystem');
 		$m->addCondition('contact_id',$employee_id);
-		$m->addCondition('timesheet_id','>',0);
+		$m->addCondition('timesheet_id','<>',0);
 		$m->addExpression('score_per_qty')->set($m->refSQL('rule_option_id')->fieldQuery('score_per_qty'));
 		$m->setOrder('created_at desc');
 		
 		$grid = $this->add('xepan\base\Grid');
 		$grid->setModel($m,['created_at','rule_option','score_per_qty','qty','score','remarks']);
+
+		$grid->addFormatter('rule_option','wrap');
+		$grid->addFormatter('remarks','wrap');
 	}
 
 	function page_employee_pending_tasks(){

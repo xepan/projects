@@ -5,104 +5,107 @@ namespace xepan\projects;
 class page_todaytimesheet extends \xepan\base\Page{
 	public $title = "My Timesheet";
 
-	function init(){
-		parent::init();
+	function page_index(){
 
-		$task = $this->add('xepan\projects\Model_Task');
-		$task->addCondition($task->dsql()->orExpr()
-	    		->where('assign_to_id',$this->app->employee->id)
-				->where('created_by_id',$this->app->employee->id)
-			);
-		$task->addCondition('status','not in',['Assigned','Completed']);
+		$this->app->stickyGET('for_date');
 
-		$form = $this->add('Form')->addClass('main-box');
-		$col = $form->add('Columns');
-		$col1 = $col->addColumn(6)->addClass('col-md-6')->setStyle('height','80px');
-		$col2 = $col->addColumn(3)->addClass('col-md-3')->setStyle('height','80px');
-		$col3 = $col->addColumn(3)->addClass('col-md-3')->setStyle('height','80px');
+		$on_date = $this->app->today;
+		if($_GET['for_date']) $on_date = $_GET['for_date'];
 
-		$task_field = $col1->addField('xepan\base\DropDown','task');
-		$task_field->setEmptyText('Please select a task or add new by typing');
-		$task_field->setModel($task);
+		$f=$this->add('Form');
+		$f->add('xepan\base\Controller_FLC')
+		->showLables(true)
+		->makePanelsCoppalsible(true)
+		->layout([
+				'for_date'=>'Filter~c1~4~closed',
+				'FormButtons'=>'c2~4',
+			]);
+		$f->addField('DatePicker','for_date');
+		$f->addSubmit('Update');
 
-		$task_field->validate_values= false;
-		$task_field->select_menu_options=['tags'=>true];
-		$starttime_field = $col2->addField('TimePicker','starttime');
-		$endtime_field = $col3->addField('TimePicker','endtime');
-		
-		$starttime_field
-				->setOption('showMeridian',false)
-				->setOption('minuteStep',1)
-				->setOption('showSeconds',true);
-		$endtime_field
-				->setOption('showMeridian',false)
-				->setOption('minuteStep',1)
-				->setOption('showSeconds',true);
 
-		$form->addSubmit('Save')->addClass('btn btn-primary')->setStyle('text-align','center');
-		
 		$timesheet_m = $this->add('xepan\projects\Model_Timesheet');
 		$timesheet_m->addCondition('employee_id',$this->app->employee->id);
-		$timesheet_m->addCondition('starttime','>=',$this->app->today);
+		$timesheet_m->addCondition([['start_date',$on_date],['end_date',$on_date]]);
+
 		$timesheet_m->acl = 'xepan\projects\Model_Task';
 		$timesheet_m->setOrder('starttime','asc');
 
-		$grid = $this->add('xepan\hr\CRUD',['allow_add'=>false]);
-		$grid->setModel($timesheet_m,['task','starttime','endtime','duration_in_hms']);
-		$grid->grid->removeColumn('action');
-		$grid->grid->removeColumn('attachment_icon');
 
-		if($form->isSubmitted()){
-			$timestamp = $this->app->today;
-			$timestamp .= ' '.$form['starttime'];
-			$starting_time = date('Y-m-d H:i:s',strtotime($timestamp));
-
-			$timestamp = $this->app->today;
-			$timestamp .= ' '.$form['endtime'];
-			$ending_time = date('Y-m-d H:i:s',strtotime($timestamp));
-
-			if(strtotime($starting_time) >= strtotime($ending_time))				
-				$form->displayError('endtime','endtime cannot be smaller or equal to starttime');
-			
-			$check_timesheet = $this->add('xepan\projects\Model_Timesheet');
-
-			$check_timesheet->addCondition('employee_id',$this->app->employee->id);
-			$check_timesheet->addCondition('starttime','<=',$ending_time);
-			$check_timesheet->addCondition('endtime','>=',$starting_time);
-			$check_timesheet->tryLoadAny();
-			
-			if($check_timesheet->loaded())
-				$form->displayError('starttime','Overlapping Time');
+		$crud = $this->add('xepan\hr\CRUD',['allow_add'=>true]);
+		$crud->setModel($timesheet_m,['task_id','starttime','endtime','duration_in_hms','remark'],['task','starttime','endtime','duration_in_hms','score','remark','start_date','end_date']);
+		
+		$crud->grid->removeColumn('action');
+		$crud->grid->removeColumn('attachment_icon');
+		$crud->grid->removeColumn('start_date');
+		$crud->grid->removeColumn('end_date');
 
 
-			$model_task = $this->add('xepan\projects\Model_Task');
-			$model_task->addCondition($model_task->dsql()->orExpr()
-	    					->where('assign_to_id',$this->app->employee->id)
-	    					->where('created_by_id',$this->app->employee->id)
-	    					);	
-			$model_task->tryLoadBy('id',$form['task']);
-			
-			if(!$model_task->loaded()){
-				if(!$form['task'])
-					$form->displayError('task','Add a new task or select from old');
-
-				$model_task['task_name']  = $form['task'];
-				$model_task['starting_date']  = $starting_time;
-				$model_task['assign_to_id'] = $this->app->employee->id;
-				$model_task['created_by_id'] = $this->app->employee->id;
-				$model_task['status'] = 'Pending';
-				$model_task['created_at'] = $this->app->now;
-				$model_task->save();
-			}			
-			
-			$model_timesheet = $this->add('xepan\projects\Model_Timesheet');
-			$model_timesheet['employee_id'] = $this->app->employee->id;			
-			$model_timesheet['task_id'] = $model_task->id;			
-			$model_timesheet['starttime'] = $starting_time; 			
-			$model_timesheet['endtime'] = $ending_time;		
-			$model_timesheet->save();
-
-			$form->js('true',$grid->js()->reload())->univ()->successMessage('Saved')->execute();
+		if($crud->isEditing()){
+			$crud->form->getElement('task_id')
+				->getModel()
+				->addCondition([['assign_to_id',$this->app->employee->id],['created_by_id',$this->app->employee->id]])
+				->addCondition('status','not in',['Assigned','Completed'])
+				;
 		}
+
+		if($crud->isEditing('add')){
+			$crud->form->getElement('starttime')->set($this->app->now);
+			$crud->form->getElement('endtime')->set($this->app->now);
+		}
+
+		$crud->grid->addHook('formatRow',function($g){
+			if($g->model->IcanEdit()){
+				$g->current_row_html['score'] = '<a class="timesheetedit" href="#'.$g->model->id.'" data-timesheet_id="'.$g->model->id.'">'.$g->model['score'].'</a>';
+				$g->row_delete=true;
+				$g->row_edit=true;
+			}else{
+				$g->current_row_html['score'] = $g->model['score'];
+				$g->row_delete=false;
+				$g->row_edit=false;
+			}
+		});
+
+		$vp= $this->add('VirtualPage');
+		$vp->set([$this,'manageTimeSheetScore']);
+
+		$crud->grid->js('click')->_selector('.timesheetedit')->univ()->frameURL('Edit Score',[$vp->getURL(),['timesheet_id'=>$this->js()->_SelectorThis()->data('timesheet_id')]]);
+
+		if($f->isSubmitted()){
+			$crud->js()->reload(['for_date'=>$f['for_date']])->execute();
+		}
+
+		$this->add('H3')->set('Other Scores Given');
+
+		$point_system_m = $this->add('xepan\base\Model_PointSystem');
+		$point_system_m->addCondition('contact_id',$this->app->employee->id);
+		$point_system_m->addCondition('timesheet_id',-1);
+		$point_system_m->addCondition('created_at_date',$this->app->today);
+		$point_system_m->getElement('created_at_date')->caption('On Date');
+
+		$point_system_m->addHook('beforeSave',function($m){
+			$m['created_by_id'] = $this->app->employee->id; // to save last updater
+		});
+
+		$grid= $this->add('xepan\hr\Grid');
+		$grid->setModel($point_system_m, ['created_at_date','rule_option','qty','score','remarks','created_by']);
+
+		$grid->addFormatter('rule_option','wrap');
+
+	}
+
+	function manageTimeSheetScore($p){
+		$this->app->stickyGET('timesheet_id');
+
+		$pointsystem_m= $this->add('xepan\base\Model_PointSystem');
+		$pointsystem_m->addCondition('timesheet_id',$_GET['timesheet_id']);
+
+		$crud = $p->add('xepan\base\CRUD',['pass_acl'=>true,'allow_add'=>false,'allow_del'=>false]);
+		$crud->setModel($pointsystem_m,['qty','remarks'],['rule_option','qty','score','remarks']);
+
+		$crud->grid->addFormatter('rule_option','wrap');
+		$crud->grid->addFormatter('remarks','wrap');
+
+
 	}
 }

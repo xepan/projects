@@ -141,7 +141,7 @@ class page_myfollowups extends \xepan\base\Page{
 			case 'Global':				
 				$filter_form->add('View')->set($this->app->employee['post'].' Post is defined to see Global followups and you are seeing everyones followups');
 				break;
-			default:
+			default: //SELF
 				$my_followups_model->addCondition([['assign_to_id',$this->app->employee->id],['created_by_id',$this->app->employee->id]]);
 				break;
 		}

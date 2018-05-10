@@ -145,7 +145,7 @@ class View_TaskList extends \xepan\base\Grid{
 						$ps['remarks'] = $form['rule_remark_'.$id];
 						$ps['contact_id'] = $this->app->employee->id;
 						$ps['qty'] = $form['rule_qty_'.$id];
-						$ps['score'] = $ro['score_per_qty'] * $form['rule_qty_'.$id];
+						// $ps['score'] = $ro['score_per_qty'] * $form['rule_qty_'.$id];
 						$ps->save();
 					}	
 					

@@ -28,7 +28,7 @@ class page_configuration extends \xepan\base\Page{
 		$config_m = $this->add('xepan\projects\Model_Config_ReminderAndTask');
 		$config_m->tryLoadAny();
 
-		$form->setModel($config_m,['force_to_fill_sitting_ideal','for_selected_posts','repeate_check_in_seconds']);
+		$form->setModel($config_m,['force_to_fill_sitting_ideal','for_selected_posts','repeate_check_in_seconds','allow_editing_timesheet_in_days']);
 		$form->getElement('for_selected_posts')->multiSelect()->set(explode(",",$config_m['for_selected_posts']))->setEmptyText('For All Posts');
 		$form->addSubmit('Save')->addClass('btn btn-primary');
 		if($form->isSubmitted()){
