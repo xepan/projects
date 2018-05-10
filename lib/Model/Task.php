@@ -852,6 +852,7 @@ class Model_Task extends \xepan\base\Model_Table
 	}
 
 	function ICanAssign(){
+		if($this->app->auth->model->isSuperUser()) return true;
 		return $this->createdByMe() && !in_array($this['status'], ['Inprogress','Completed','Submitted']);
 	}
 
