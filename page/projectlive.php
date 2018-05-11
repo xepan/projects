@@ -226,7 +226,7 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 		$grid = $rmd->add('xepan\base\Grid');
 		
 		$rmd_m = $rmd->add('xepan\projects\Model_Task');
-		$rmd_m->addCondition('assign_to_id',$emp_id);
+		$rmd_m->addCondition([['assign_to_id',$emp_id],['created_by_id',$emp_id]]);
 		$rmd_m->addCondition('type','Reminder');
 		$rmd_m->addCondition('is_regular_work',false);
 		$rmd_m->addCondition('status',['Pending','Submitted','Assigned','Inprogress']);
