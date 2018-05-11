@@ -359,6 +359,10 @@ class Model_Task extends \xepan\base\Model_Table
 	}
 
 	function submit(){
+
+		if($this['is_regular_work']) 
+			throw $this->exception('This is regular work and cannot be submitted');
+
 		$this['status']='Submitted';
 		$this['updated_at']=$this->app->now;
 		$this['submitted_at']=$this->app->now;
