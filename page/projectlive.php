@@ -27,7 +27,7 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 						->addCondition('contact_id',$m->getElement('id'))
 						->addCondition('timesheet_id','<>',0)
 						->sum('score');
-		});
+		})->sortable(true);
 
 		$post_m = $this->add('xepan\hr\Model_Post');
 		$post_m->load($this->app->employee['post_id']);
@@ -133,13 +133,23 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 	function page_employee_pending_tasks(){
 		$emp_id = $this->app->stickyGET('employee_id');
 
-		$grid = $this->add('xepan\base\Grid');
-		
-		$tasks = $this->add('xepan\projects\Model_Task');
-		$tasks->addCondition('assign_to_id',$emp_id);
-		$tasks->addCondition('status',['Pending','Submitted','Assigned','Inprogress']);
+		$tabs = $this->add('Tabs');
+		$odf = $tabs->addTab('OverDue Followups');
+		$ucf = $tabs->addTab('UpComing Followups');
+		$tsk = $tabs->addTab('Tasks');
+		$rmd = $tabs->addTab('Reminders');
 
-		$grid->setModel($tasks,['task_name','description','created_by','assign_to','related','status','type','project','is_recurring']);
+		// ====== Overdue followups
+		$grid = $odf->add('xepan\base\Grid');
+		
+		$due_f = $odf->add('xepan\projects\Model_Task');
+		$due_f->addCondition('assign_to_id',$emp_id);
+		$due_f->addCondition('type','Followup');
+		$due_f->addCondition('starting_date','<',$this->app->today);
+		$due_f->addCondition('status',['Pending','Submitted','Assigned','Inprogress']);
+
+		$due_f->getElement('starting_date')->caption('Followup Date');
+		$grid->setModel($due_f,['starting_date','task_name','description','created_by','assign_to','related','status','type','project','is_recurring']);
 
 		$grid->addHook('formatRow',function($g){
 			$g->current_row_html['task_name']=$g->model['task_name']. '<br/> ('. $g->model['type'].')' . ($g->model['is_recurring']?'<br/>[Recurring]':'');
@@ -153,8 +163,91 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 		$grid->removeColumn('is_recurring');
 
 		$grid->addOrder()->move('from_to','before','task_name')->now();
-
 		$grid->addPaginator(50);
+
+
+		// ====== Upcoming followups
+
+		$grid = $ucf->add('xepan\base\Grid');
+		
+		$upc_m = $ucf->add('xepan\projects\Model_Task');
+		$upc_m->addCondition('assign_to_id',$emp_id);
+		$upc_m->addCondition('type','Followup');
+		$upc_m->addCondition('starting_date','>=',$this->app->today);
+		$upc_m->addCondition('status',['Pending','Submitted','Assigned','Inprogress']);
+
+		$upc_m->getElement('starting_date')->caption('Followup Date');
+		$grid->setModel($upc_m,['starting_date','task_name','description','created_by','assign_to','related','status','type','project','is_recurring']);
+
+		$grid->addHook('formatRow',function($g){
+			$g->current_row_html['task_name']=$g->model['task_name']. '<br/> ('. $g->model['type'].')' . ($g->model['is_recurring']?'<br/>[Recurring]':'');
+			$g->current_row_html['from_to']=$g->model['created_by']. '<br/> => <br/> '. $g->model['assign_to'];
+		});
+
+		$grid->addColumn('from_to');
+		$grid->removeColumn('created_by');
+		$grid->removeColumn('assign_to');
+		$grid->removeColumn('type');
+		$grid->removeColumn('is_recurring');
+
+		$grid->addOrder()->move('from_to','before','task_name')->now();
+		$grid->addPaginator(50);
+
+		// ====== Tasks followups
+
+		$grid = $tsk->add('xepan\base\Grid');
+		
+		$tsk_m = $tsk->add('xepan\projects\Model_Task');
+		$tsk_m->addCondition('assign_to_id',$emp_id);
+		$tsk_m->addCondition('type','Task');
+		$tsk_m->addCondition('is_regular_work',false);
+		$tsk_m->addCondition('status',['Pending','Submitted','Assigned','Inprogress']);
+
+		$tsk_m->getElement('starting_date')->caption('StartDate');
+		$grid->setModel($tsk_m,['starting_date','task_name','description','created_by','assign_to','related','status','type','project','is_recurring']);
+
+		$grid->addHook('formatRow',function($g){
+			$g->current_row_html['task_name']=$g->model['task_name']. '<br/> ('. $g->model['type'].')' . ($g->model['is_recurring']?'<br/>[Recurring]':'');
+			$g->current_row_html['from_to']=$g->model['created_by']. '<br/> => <br/> '. $g->model['assign_to'];
+		});
+
+		$grid->addColumn('from_to');
+		$grid->removeColumn('created_by');
+		$grid->removeColumn('assign_to');
+		$grid->removeColumn('type');
+		$grid->removeColumn('is_recurring');
+
+		$grid->addOrder()->move('from_to','before','task_name')->now();
+		$grid->addPaginator(50);
+
+
+		// ====== Reminder followups
+
+		$grid = $rmd->add('xepan\base\Grid');
+		
+		$rmd_m = $rmd->add('xepan\projects\Model_Task');
+		$rmd_m->addCondition('assign_to_id',$emp_id);
+		$rmd_m->addCondition('type','Reminder');
+		$rmd_m->addCondition('is_regular_work',false);
+		$rmd_m->addCondition('status',['Pending','Submitted','Assigned','Inprogress']);
+
+		$rmd_m->getElement('starting_date')->caption('StartDate');
+		$grid->setModel($rmd_m,['starting_date','task_name','description','created_by','assign_to','related','status','type','project','is_recurring']);
+
+		$grid->addHook('formatRow',function($g){
+			$g->current_row_html['task_name']=$g->model['task_name']. '<br/> ('. $g->model['type'].')' . ($g->model['is_recurring']?'<br/>[Recurring]':'');
+			$g->current_row_html['from_to']=$g->model['created_by']. '<br/> => <br/> '. $g->model['assign_to'];
+		});
+
+		$grid->addColumn('from_to');
+		$grid->removeColumn('created_by');
+		$grid->removeColumn('assign_to');
+		$grid->removeColumn('type');
+		$grid->removeColumn('is_recurring');
+
+		$grid->addOrder()->move('from_to','before','task_name')->now();
+		$grid->addPaginator(50);
+
 	}
 
 	function seconds2human($ss) {
