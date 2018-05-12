@@ -116,18 +116,94 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 
 	function page_employee_scores(){
 		$employee_id = $this->app->stickyGET('employee_id');
+		$for_date = $this->app->stickyGET('for_date');
+		$time_wise_seperate = $this->app->stickyGET('time_wise_seperate');
+
+		if(!$for_date) $for_date = $this->app->today;
+
+		// filter form
+
+		$form = $this->add('Form');
+		$form->add('xepan\base\Controller_FLC')
+		->showLables(true)
+		->makePanelsCoppalsible(true)
+		->layout([
+				'for_date'=>'Filter~c1~4~closed',
+				'time_wise_seperate'=>'c2~4',
+				'FormButtons~'=>'c3~4',
+				'activity_count'=>'Actula Activities~c1~12~closed'
+			]);
+		$form->addField('DatePicker','for_date')->set($for_date);
+		$form->addField('Checkbox','time_wise_seperate');
+		$form->addSubmit('Filter')->addClass('btn btn-primary');
+
+		// cross checking activity counts
+
+		$grid_comm = $form->layout->add('xepan\base\Grid',['add_sno'=>false],'activity_count');
+
+		$grid_comm->addColumn('communications');
+		$grid_comm->addColumn('newsletters');
+		$grid_comm->addColumn('leads_created');
+		$grid_comm->addColumn('followup_closed');
+		$grid_comm->addColumn('followup_created');
+
+		$data_array=[[]];
+		$data_array[0]['communications'] = $this->add('xepan\communication\Model_Communication')
+											->addCondition('created_by_id',$employee_id)
+											->addCondition('to_id','<>',$employee_id)
+											->addCondition('created_at','>=',$for_date)
+											->addCondition('created_at','<',$this->app->nextDate($for_date))
+											->count()->getOne();
+
+
+		$grid_comm->setSource($data_array);
+		$grid_comm->removeColumn('id');
+		// points show section
 		
 		$m= $this->add('xepan\base\Model_PointSystem');
 		$m->addCondition('contact_id',$employee_id);
 		$m->addCondition('timesheet_id','<>',0);
 		$m->addExpression('score_per_qty')->set($m->refSQL('rule_option_id')->fieldQuery('score_per_qty'));
 		$m->setOrder('created_at desc');
+
+		$m->addCondition('created_at_date',$for_date);
+
+		$score_field='score';
+		$qty_field='qty';
+		if(!$time_wise_seperate){
+			$qty_field='qty_sum';
+			$score_field='score_sum';
+			$m->addExpression('score_sum')->set(function($m,$q)use($employee_id,$for_date){
+				return $m->add('xepan\base\Model_PointSystem',['table_alias'=>'score_sum'])
+						->addCondition('contact_id',$employee_id)
+						->addCondition('created_at_date',$for_date)
+						->addCondition('rule_option_id',$m->getElement('rule_option_id'))
+						->sum('score')
+						->group('rule_option_id')
+						;
+			});
+
+			$m->addExpression('qty_sum')->set(function($m,$q)use($employee_id,$for_date){
+				return $m->add('xepan\base\Model_PointSystem',['table_alias'=>'qty_sum'])
+						->addCondition('contact_id',$employee_id)
+						->addCondition('created_at_date',$for_date)
+						->addCondition('rule_option_id',$m->getElement('rule_option_id'))
+						->sum('qty')
+						->group('rule_option_id')
+						;
+			});
+			$m->_dsql()->group('rule_option_id');
+		}
 		
 		$grid = $this->add('xepan\base\Grid');
-		$grid->setModel($m,['created_at','rule_option','score_per_qty','qty','score','remarks']);
+		$grid->setModel($m,['created_at','rule_option','score_per_qty',$qty_field,$score_field,'remarks']);
 
 		$grid->addFormatter('rule_option','wrap');
 		$grid->addFormatter('remarks','wrap');
+
+		if($form->isSubmitted()){
+			$grid->js(null,$grid_comm->js()->reload(['for_date'=>$form['for_date'],'time_wise_seperate'=>$form['time_wise_seperate']?:0]))->reload(['for_date'=>$form['for_date'],'time_wise_seperate'=>$form['time_wise_seperate']?:0])->execute();
+		}
 	}
 
 	function page_employee_pending_tasks(){
