@@ -175,6 +175,7 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 											->getOne();
 
 		$data_array[0]['followup_created'] = $this->add('xepan\projects\Model_Task')
+											->addCondition('created_by_id',$employee_id)
 											->addCondition('created_at','>=',$for_date)
 											->addCondition('created_at','<',$this->app->nextDate($for_date))
 											->count()
