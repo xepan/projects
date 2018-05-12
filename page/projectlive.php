@@ -141,19 +141,51 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 
 		$grid_comm = $form->layout->add('xepan\base\Grid',['add_sno'=>false],'activity_count');
 
-		$grid_comm->addColumn('communications');
+		$grid_comm->addColumn('communications_with');
 		$grid_comm->addColumn('newsletters');
 		$grid_comm->addColumn('leads_created');
 		$grid_comm->addColumn('followup_closed');
 		$grid_comm->addColumn('followup_created');
 
 		$data_array=[[]];
-		$data_array[0]['communications'] = $this->add('xepan\communication\Model_Communication')
+		$data_array[0]['communications_with'] = $this->add('xepan\communication\Model_Communication')
 											->addCondition('created_by_id',$employee_id)
 											->addCondition('to_id','<>',$employee_id)
 											->addCondition('created_at','>=',$for_date)
 											->addCondition('created_at','<',$this->app->nextDate($for_date))
-											->count()->getOne();
+											->addCondition('communication_type',['Call','Email','Comment','Sms','Personal'])
+											->_dsql()->del('fields')
+											->field('COUNT(DISTINCT(to_id))')
+											->getOne();
+
+		$data_array[0]['newsletters'] = $this->add('xepan\communication\Model_Communication')
+											->addCondition('created_by_id',$employee_id)
+											->addCondition('to_id','<>',$employee_id)
+											->addCondition('created_at','>=',$for_date)
+											->addCondition('created_at','<',$this->app->nextDate($for_date))
+											->addCondition('communication_type',['Newsletter'])
+											->_dsql()->del('fields')
+											->field('COUNT(DISTINCT(to_id))')
+											->getOne();
+
+		$data_array[0]['followup_closed'] = $this->add('xepan\projects\Model_Task')
+											->addCondition('completed_at',$for_date)
+											->addCondition('assign_to_id',$employee_id)
+											->count()
+											->getOne();
+
+		$data_array[0]['followup_created'] = $this->add('xepan\projects\Model_Task')
+											->addCondition('created_at','>=',$for_date)
+											->addCondition('created_at','<',$this->app->nextDate($for_date))
+											->count()
+											->getOne();
+
+		$data_array[0]['leads_created'] = $this->add('xepan\base\Model_Contact')
+											->addCondition('created_by_id',$employee_id)
+											->addCondition('created_at','>=',$for_date)
+											->addCondition('created_at','<',$this->app->nextDate($for_date))
+											->count()
+											->getOne();
 
 
 		$grid_comm->setSource($data_array);
@@ -170,9 +202,15 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 
 		$score_field='score';
 		$qty_field='qty';
+		$created_at_field='created_at';
+		$remark_field='remarks';
+
 		if(!$time_wise_seperate){
 			$qty_field='qty_sum';
 			$score_field='score_sum';
+			$created_at_field='';
+			$remark_field='';
+
 			$m->addExpression('score_sum')->set(function($m,$q)use($employee_id,$for_date){
 				return $m->add('xepan\base\Model_PointSystem',['table_alias'=>'score_sum'])
 						->addCondition('contact_id',$employee_id)
@@ -196,10 +234,10 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 		}
 		
 		$grid = $this->add('xepan\base\Grid');
-		$grid->setModel($m,['created_at','rule_option','score_per_qty',$qty_field,$score_field,'remarks']);
+		$grid->setModel($m,[$created_at_field,'rule_option','score_per_qty',$qty_field,$score_field,$remark_field]);
 
 		$grid->addFormatter('rule_option','wrap');
-		$grid->addFormatter('remarks','wrap');
+		if($remark_field) $grid->addFormatter('remarks','wrap');
 
 		if($form->isSubmitted()){
 			$grid->js(null,$grid_comm->js()->reload(['for_date'=>$form['for_date'],'time_wise_seperate'=>$form['time_wise_seperate']?:0]))->reload(['for_date'=>$form['for_date'],'time_wise_seperate'=>$form['time_wise_seperate']?:0])->execute();
