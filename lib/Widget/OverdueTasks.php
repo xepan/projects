@@ -29,6 +29,7 @@ class Widget_OverdueTasks extends \xepan\base\Widget{
 		$this->grid->add('xepan\base\Controller_Avatar',['name_field'=>'created_by','image_field'=>'created_by_image','extra_classes'=>'profile-img center-block','options'=>['size'=>50,'display'=>'block','margin'=>'auto'],'float'=>null,'model'=>$this->model]);
 
 		$task = $this->add('xepan\projects\Model_Formatted_Task');
+		$task->addCondition('is_regular_work',false);
 
 		if(isset($this->report->employee)){
 		    $task->addCondition('status',['Pending','Inprogress','Assigned'])
