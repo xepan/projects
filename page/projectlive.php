@@ -191,6 +191,19 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 
 		$grid_comm->setSource($data_array);
 		$grid_comm->removeColumn('id');
+		
+		$grid_comm->addHook('formatRow',function($g){
+			$g->current_row_html['communications_with'] = '<a href="#'.$g->model->id.'" class="do-comm-details">'.$g->model['communications_with'].'</a>';
+			$g->current_row_html['newsletters'] = '<a href="#'.$g->model->id.'" class="do-newsletter-details">'.$g->model['newsletters'].'</a>';
+			$g->current_row_html['leads_created'] = '<a href="#'.$g->model->id.'" class="do-leadcreate-details">'.$g->model['leads_created'].'</a>';
+			$g->current_row_html['followup_closed'] = '<a href="#'.$g->model->id.'" class="do-followupclosed-details">'.$g->model['followup_closed'].'</a>';
+		});
+
+		$grid_comm->js('click')->_selector('.do-comm-details')->univ()->frameURL('Communication Details',$this->app->url('./comm_detail'));
+		$grid_comm->js('click')->_selector('.do-newsletter-details')->univ()->frameURL('Newsletter Details',$this->app->url('./newsletter_detail'));
+		$grid_comm->js('click')->_selector('.do-leadcreate-details')->univ()->frameURL('Leads Created Details',$this->app->url('./leadcreate_detail'));
+		$grid_comm->js('click')->_selector('.do-followupclosed-details')->univ()->frameURL('FollowUp Closed Details',$this->app->url('./followupclosed_detail'));
+
 		// points show section
 		
 		$m= $this->add('xepan\base\Model_PointSystem');
@@ -243,6 +256,86 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 		if($form->isSubmitted()){
 			$grid->js(null,$grid_comm->js()->reload(['for_date'=>$form['for_date'],'time_wise_seperate'=>$form['time_wise_seperate']?:0]))->reload(['for_date'=>$form['for_date'],'time_wise_seperate'=>$form['time_wise_seperate']?:0])->execute();
 		}
+	}
+
+	function page_employee_scores_comm_detail(){
+		$for_date = $this->app->stickyGET('for_date');
+		$employee_id = $this->app->stickyGET('employee_id');
+
+		$model = $this->add('xepan\communication\Model_Communication')
+				->addCondition('created_by_id',$employee_id)
+				->addCondition('to_id','<>',$employee_id)
+				->addCondition('created_at','>=',$for_date)
+				->addCondition('created_at','<',$this->app->nextDate($for_date))
+				->addCondition('communication_type',['Call','Email','Comment','Sms','Personal'])
+				;
+
+		$grid = $this->add('xepan\base\Grid');
+		$grid->setModel($model,['from','to','title','description','communication_type','status']);
+		$grid->addFormatter('description','html');
+		$grid->addPaginator(50);
+	}
+
+	function page_employee_scores_newsletter_detail(){
+		$for_date = $this->app->stickyGET('for_date');
+		$employee_id = $this->app->stickyGET('employee_id');
+
+		$model = $this->add('xepan\communication\Model_Communication')
+				->addCondition('created_by_id',$employee_id)
+				->addCondition('to_id','<>',$employee_id)
+				->addCondition('created_at','>=',$for_date)
+				->addCondition('created_at','<',$this->app->nextDate($for_date))
+				->addCondition('communication_type',['Newsletter'])
+				;
+
+		$grid = $this->add('xepan\base\Grid');
+		$grid->setModel($model,['from','to','title','description','communication_type','status']);
+		// $grid->addFormatter('description','html');
+		$grid->addPaginator(50);
+	}
+
+	function page_employee_scores_leadcreate_detail(){
+		$for_date = $this->app->stickyGET('for_date');
+		$employee_id = $this->app->stickyGET('employee_id');
+
+		$model = $this->add('xepan\marketing\Model_Lead')
+				->addCondition('created_by_id',$employee_id)
+				->addCondition('created_at','>=',$for_date)
+				->addCondition('created_at','<',$this->app->nextDate($for_date))
+				;
+		$model->addExpression('followup')->set(function($m,$q){
+			return $this->add('xepan\projects\Model_FollowUp')
+						->addCondition('related_id',$q->getField('id'))
+						->count();
+		});
+
+		$grid = $this->add('xepan\base\Grid');
+		$grid->setModel($model,['name','organization','city','country','score','followup']);
+		// $grid->addFormatter('description','html');
+		$grid->addPaginator(50);
+	}
+
+
+	function page_employee_scores_followupclosed_detail(){
+		$for_date = $this->app->stickyGET('for_date');
+		$employee_id = $this->app->stickyGET('employee_id');
+
+		$model = $this->add('xepan\projects\Model_FollowUp')
+				->addCondition('assign_to_id',$employee_id)
+				->addCondition('completed_at','>=',$for_date)
+				->addCondition('completed_at','<',$this->app->nextDate($for_date))
+				;
+		$model->addExpression('next_followup')->set(function($m,$q)use($for_date){
+			return $this->add('xepan\projects\Model_FollowUp')
+						->addCondition('related_id',$q->getField('id'))
+						->addCondition('starting_date','>',$for_date)
+						->count();
+		});
+
+		$grid = $this->add('xepan\base\Grid');
+		$grid->setModel($model,['task_name','description','related','next_followup']);
+		// $grid->addFormatter('description','html');
+		$grid->addPaginator(50);
 	}
 
 	function page_employee_pending_tasks(){

@@ -8,6 +8,7 @@ class View_TaskList extends \xepan\base\Grid{
 	public $running_task_id = null;
 	public $play_wrapper_template=null;
 	public $del_action_wrapper;
+	
 	function init(){
 		parent::init();
 		
@@ -234,14 +235,15 @@ class View_TaskList extends \xepan\base\Grid{
 			// first Column
 			if($thisTask->isMyTask()){
 				if($this['status'] =='Pending' && !$thisTask->createdByMe())
-					unset($action_btn_list[1]); // submit
+					$action_btn_list = array_diff( $action_btn_list, ['submit'] ); // unset($action_btn_list[1]); // submit
 				if($this['status'] =='Pending' && $thisTask->createdByMe())
-					unset($action_btn_list[0]); // submit
+					$action_btn_list = array_diff( $action_btn_list, ['submit'] );;//unset($action_btn_list[0]); // submit
 
 				if(!$thisTask->createdByMe() && $this['status'] =='Submitted'){
 					if($this['created_by_employee_status'] == "InActive"){
-						unset($action_btn_list[1]); 
-						unset($action_btn_list[2]); 
+						$action_btn_list = array_diff( $action_btn_list, ['mark_complete'] );;//unset($action_btn_list[1]);
+						$action_btn_list = array_diff( $action_btn_list, ['reopen'] ); //unset($action_btn_list[2]); 
+						
 					}else{
 						$action_btn_list=[];
 						
@@ -250,10 +252,10 @@ class View_TaskList extends \xepan\base\Grid{
 				}
 
 				if($this['status'] =='Inprogress' && !$thisTask->createdByMe())
-					unset($action_btn_list[1]); // mark_submit
+					$action_btn_list = array_diff( $action_btn_list, ['mark_submit'] ); //unset($action_btn_list[1]); // mark_submit
 
 				if($this['status'] =='Inprogress' && $thisTask->createdByMe())
-					unset($action_btn_list[0]); // mark_submit
+					$action_btn_list = array_diff( $action_btn_list, ['mark_submit'] ); //unset($action_btn_list[0]); // mark_submit
 			}
 
 			// Second Column
@@ -280,7 +282,11 @@ class View_TaskList extends \xepan\base\Grid{
 			}	
 		}
 			
-		
+		// if($thisTask instanceof Model_Followup){
+		// 	print_r($this->model->actions);
+		// 	echo $this->model['status'];
+		// 	die();
+		// }
 
 		$action_btn = $this->add('AbstractController')->add('xepan\hr\View_ActionBtn',['actions'=>$action_btn_list?:[],'id'=>$this->model->id,'status'=>$this->model['status'],'action_btn_group'=>'xs']);
 		$this->current_row_html['action'] = $action_btn->getHTML();
@@ -289,8 +295,9 @@ class View_TaskList extends \xepan\base\Grid{
 		return parent::formatRow();
 	}
 
-	function setModel($model,$fields=null){
+	function setModel($model,$fields=null){		
 		$m= parent::setModel($model,$fields);
+			
 		$this->on('click','.acl-action',[$this,'manageAction']);
 		
 		return $m;
