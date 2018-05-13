@@ -34,7 +34,7 @@ class Initiator extends \Controller_Addon {
 				$m->addItem(['Trace Employee','icon'=>' fa fa-paw'],'xepan_projects_projectlive');
 				$m->addItem(['Manage Point Rules','icon'=>' fa fa-paw'],'xepan_projects_pointsystem');
 				$this->app->user_menu->addItem(['Tasks','icon'=>'fa fa-tasks'],'xepan_projects_mytasks');
-				$this->app->user_menu->addItem(['My Followups','icon'=>'fa fa-stack-exchange'],'xepan_projects_myfollowups');
+				// $this->app->user_menu->addItem(['My Followups','icon'=>'fa fa-stack-exchange'],'xepan_projects_myfollowups');
 				// $projects = $this->add('xepan\projects\Model_Project');
 				$m->addItem(['Configuration','icon'=>' fa fa-cog'],'xepan_projects_configuration');
 				$m->addItem(['Reports','icon'=>' fa fa-cog'],'xepan_projects_projectreport');
