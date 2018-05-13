@@ -365,7 +365,7 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 		
 
 		$grid = $this->add('xepan\base\Grid');
-		$grid->setModel($model,['task_name','description','related','assign_to']);
+		$grid->setModel($model,['task_name','description','related','assign_to','starting_date']);
 		// $grid->addFormatter('description','html');
 		$grid->addPaginator(50);
 	}
