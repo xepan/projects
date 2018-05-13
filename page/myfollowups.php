@@ -13,7 +13,7 @@ class page_myfollowups extends \xepan\base\Page{
 		$this->start_date = $start_date = $_GET['start_date']?:$this->app->today;
 		$this->end_date = $end_date = $_GET['end_date']?:$this->app->today;
         $this->status = $this->app->stickyGET('status');
-        $this->show_overdue = $show_overdue = $this->app->stickyGET('show_overdue');
+        $this->exclude_overdue = $exclude_overdue = $this->app->stickyGET('exclude_overdue');
 
         $contact_id = $this->app->stickyGET('contact_id');
 
@@ -24,7 +24,7 @@ class page_myfollowups extends \xepan\base\Page{
 		->makePanelsCoppalsible(true)
 		->layout([
 				'period'=>'Filter (Date Range and See Overdue) Followups~c1~4~closed',
-				'overdue'=>'c2~4',
+				'exclude_overdue'=>'c2~4',
 				'FormButtons'=>'c3~4',
 			]);
 
@@ -33,11 +33,11 @@ class page_myfollowups extends \xepan\base\Page{
                 ->setEndDate($end_date)
                 ->getFutureDatesSet()
                 ->getBackDatesSet(false);
-        $filter_form->addField('CheckBox','overdue','Show Overdue Followups');
+        $filter_form->addField('CheckBox','exclude_overdue','Exlude Overdue Followups (Follow Given Date)')->set($exclude_overdue);
 		$filter_form->addSubmit("Filter")->addClass('btn btn-primary');
 		
 		if($filter_form->isSubmitted()){
-			$this->js()->reload(['show_overdue'=>$filter_form['overdue'],'start_date'=>$fld->getStartDate()?:0,'end_date'=>$fld->getEndDate()?:0])->execute();
+			$this->js()->reload(['exclude_overdue'=>$filter_form['exclude_overdue']?:0,'start_date'=>$fld->getStartDate()?:0,'end_date'=>$fld->getEndDate()?:0])->execute();
 		}
 
 		$my_followups = $this->add('xepan\hr\CRUD',['entity_name'=>'Followup','grid_class'=>'xepan\projects\View_TaskList'],'view');
@@ -150,7 +150,7 @@ class page_myfollowups extends \xepan\base\Page{
 		}
 		
 		if(!$my_followups->isEditing()){
-			if($show_overdue){
+			if(!$exclude_overdue){
 				$my_followups_model->addCondition('starting_date','<=',$this->app->nextDate($this->end_date));
 				// status
 			}else{
@@ -161,6 +161,7 @@ class page_myfollowups extends \xepan\base\Page{
 
 
 		$my_followups_model->addCondition('type','Followup');
+		$my_followups_model->addCondition('status','<>','Completed');
 
 	    $my_followups_model->setOrder('updated_at','desc');
 		
