@@ -117,6 +117,8 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 	function page_employee_scores(){
 		$employee_id = $this->app->stickyGET('employee_id');
 		$for_date = $this->app->stickyGET('for_date');
+		if($for_date) $for_date=$this->app->today;
+
 		$time_wise_seperate = $this->app->stickyGET('time_wise_seperate');
 
 		if(!$for_date) $for_date = $this->app->today;
@@ -168,13 +170,14 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 											->field('COUNT(DISTINCT(to_id))')
 											->getOne();
 
-		$data_array[0]['followup_closed'] = $this->add('xepan\projects\Model_Task')
-											->addCondition('completed_at',$for_date)
+		$data_array[0]['followup_closed'] = $this->add('xepan\projects\Model_FollowUp')
+											->addCondition('completed_at','>=',$for_date)
+											->addCondition('completed_at','<',$this->app->nextDate($for_date))
 											->addCondition('assign_to_id',$employee_id)
 											->count()
 											->getOne();
 
-		$data_array[0]['followup_created'] = $this->add('xepan\projects\Model_Task')
+		$data_array[0]['followup_created'] = $this->add('xepan\projects\Model_FollowUp')
 											->addCondition('created_by_id',$employee_id)
 											->addCondition('created_at','>=',$for_date)
 											->addCondition('created_at','<',$this->app->nextDate($for_date))
@@ -197,12 +200,14 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 			$g->current_row_html['newsletters'] = '<a href="#'.$g->model->id.'" class="do-newsletter-details">'.$g->model['newsletters'].'</a>';
 			$g->current_row_html['leads_created'] = '<a href="#'.$g->model->id.'" class="do-leadcreate-details">'.$g->model['leads_created'].'</a>';
 			$g->current_row_html['followup_closed'] = '<a href="#'.$g->model->id.'" class="do-followupclosed-details">'.$g->model['followup_closed'].'</a>';
+			$g->current_row_html['followup_created'] = '<a href="#'.$g->model->id.'" class="do-followupcreated-details">'.$g->model['followup_created'].'</a>';
 		});
 
 		$grid_comm->js('click')->_selector('.do-comm-details')->univ()->frameURL('Communication Details',$this->app->url('./comm_detail'));
 		$grid_comm->js('click')->_selector('.do-newsletter-details')->univ()->frameURL('Newsletter Details',$this->app->url('./newsletter_detail'));
 		$grid_comm->js('click')->_selector('.do-leadcreate-details')->univ()->frameURL('Leads Created Details',$this->app->url('./leadcreate_detail'));
 		$grid_comm->js('click')->_selector('.do-followupclosed-details')->univ()->frameURL('FollowUp Closed Details',$this->app->url('./followupclosed_detail'));
+		$grid_comm->js('click')->_selector('.do-followupcreated-details')->univ()->frameURL('FollowUp Created Details',$this->app->url('./followupcreated_detail'));
 
 		// points show section
 		
@@ -260,6 +265,7 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 
 	function page_employee_scores_comm_detail(){
 		$for_date = $this->app->stickyGET('for_date');
+		if(!$for_date) $for_date=$this->app->today;
 		$employee_id = $this->app->stickyGET('employee_id');
 
 		$model = $this->add('xepan\communication\Model_Communication')
@@ -278,6 +284,7 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 
 	function page_employee_scores_newsletter_detail(){
 		$for_date = $this->app->stickyGET('for_date');
+		if(!$for_date) $for_date=$this->app->today;
 		$employee_id = $this->app->stickyGET('employee_id');
 
 		$model = $this->add('xepan\communication\Model_Communication')
@@ -296,6 +303,7 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 
 	function page_employee_scores_leadcreate_detail(){
 		$for_date = $this->app->stickyGET('for_date');
+		if(!$for_date) $for_date=$this->app->today;
 		$employee_id = $this->app->stickyGET('employee_id');
 
 		$model = $this->add('xepan\marketing\Model_Lead')
@@ -317,8 +325,12 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 
 
 	function page_employee_scores_followupclosed_detail(){
+
 		$for_date = $this->app->stickyGET('for_date');
+		if(!$for_date) $for_date=$this->app->today;
+
 		$employee_id = $this->app->stickyGET('employee_id');
+
 
 		$model = $this->add('xepan\projects\Model_FollowUp')
 				->addCondition('assign_to_id',$employee_id)
@@ -327,13 +339,34 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 				;
 		$model->addExpression('next_followup')->set(function($m,$q)use($for_date){
 			return $this->add('xepan\projects\Model_FollowUp')
-						->addCondition('related_id',$q->getField('id'))
+						->addCondition('related_id',$q->getField('related_id'))
 						->addCondition('starting_date','>',$for_date)
 						->count();
 		});
 
 		$grid = $this->add('xepan\base\Grid');
 		$grid->setModel($model,['task_name','description','related','next_followup']);
+		// $grid->addFormatter('description','html');
+		$grid->addPaginator(50);
+	}
+
+	function page_employee_scores_followupcreated_detail(){
+
+		$for_date = $this->app->stickyGET('for_date');
+		if(!$for_date) $for_date=$this->app->today;
+
+		$employee_id = $this->app->stickyGET('employee_id');
+
+
+		$model = $this->add('xepan\projects\Model_FollowUp')
+				->addCondition('created_by_id',$employee_id)
+				->addCondition('created_at','>=',$for_date)
+				->addCondition('created_at','<',$this->app->nextDate($for_date))
+				;
+		
+
+		$grid = $this->add('xepan\base\Grid');
+		$grid->setModel($model,['task_name','description','related','assign_to']);
 		// $grid->addFormatter('description','html');
 		$grid->addPaginator(50);
 	}
