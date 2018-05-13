@@ -97,7 +97,7 @@ class page_myfollowups extends \xepan\base\Page{
 		
 		// $status->js('change',$frm->js()->submit());
 
-		$my_followups_model = $this->add('xepan\projects\Model_Followup');
+		$my_followups_model = $this->add('xepan\projects\Model_FollowUp');
 		
 		// loading followups depending upon employees post permission level
 		$post_m = $this->add('xepan\hr\Model_Post');
