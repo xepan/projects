@@ -97,7 +97,7 @@ class page_myfollowups extends \xepan\base\Page{
 		
 		// $status->js('change',$frm->js()->submit());
 
-		$my_followups_model = $this->add('xepan\projects\Model_Task');
+		$my_followups_model = $this->add('xepan\projects\Model_Followup');
 		
 		// loading followups depending upon employees post permission level
 		$post_m = $this->add('xepan\hr\Model_Post');
@@ -160,7 +160,6 @@ class page_myfollowups extends \xepan\base\Page{
 		}
 
 
-		$my_followups_model->addCondition('type','Followup');
 		$my_followups_model->addCondition('status','<>','Completed');
 
 	    $my_followups_model->setOrder('updated_at','desc');
