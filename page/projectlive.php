@@ -117,11 +117,10 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 	function page_employee_scores(){
 		$employee_id = $this->app->stickyGET('employee_id');
 		$for_date = $this->app->stickyGET('for_date');
-		if($for_date) $for_date=$this->app->today;
+		if(!$for_date) $for_date = $this->app->today;
 
 		$time_wise_seperate = $this->app->stickyGET('time_wise_seperate');
 
-		if(!$for_date) $for_date = $this->app->today;
 
 		// filter form
 
