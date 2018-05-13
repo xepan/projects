@@ -4,6 +4,7 @@ namespace xepan\projects;
 
 class page_myfollowups extends \xepan\base\Page{
 	public $title = "My FollowUps";
+	
 	function init(){
 		parent::init();
 
@@ -17,6 +18,7 @@ class page_myfollowups extends \xepan\base\Page{
         $contact_id = $this->app->stickyGET('contact_id');
 
         $filter_form = $this->add('Form',null,'filter_form');
+        $note_v = $filter_form->add('View');
         $filter_form->add('xepan\base\Controller_FLC')
 		->showLables(true)
 		->makePanelsCoppalsible(true)
@@ -35,7 +37,7 @@ class page_myfollowups extends \xepan\base\Page{
 		$filter_form->addSubmit("Filter")->addClass('btn btn-primary');
 		
 		if($filter_form->isSubmitted()){
-			$filter_form->app->redirect($this->app->url(null,['show_overdue'=>$filter_form['overdue'],'start_date'=>$fld->getStartDate()?:0,'end_date'=>$fld->getEndDate()?:0]));
+			$this->js()->reload(['show_overdue'=>$filter_form['overdue'],'start_date'=>$fld->getStartDate()?:0,'end_date'=>$fld->getEndDate()?:0])->execute();
 		}
 
 		$my_followups = $this->add('xepan\hr\CRUD',['entity_name'=>'Followup','grid_class'=>'xepan\projects\View_TaskList'],'view');
@@ -49,6 +51,7 @@ class page_myfollowups extends \xepan\base\Page{
 						];	
 		
 		$frm = $my_followups->grid->addQuickSearch(['task_name']);
+		
 
 		// $frm->add('xepan\base\Controller_FLC')
 		// ->addContentSpot()
@@ -60,39 +63,39 @@ class page_myfollowups extends \xepan\base\Page{
 		// 		'FormButtons'=>'c3~4',
 		// 	]);
 
-		$temp_status = ['Pending','Inprogress','Assigned'];
+		// $temp_status = ['Pending','Inprogress','Assigned'];
 
-		$count = 0;
-		if(is_array($frm->recall('task_status',false))){
-			foreach ($frm->recall('task_status',false) as $value) {
-				foreach ($temp_status as $v) {
-					if($v == $value)
-						$count++;
-				}
-			}
-		}
+		// $count = 0;
+		// if(is_array($frm->recall('task_status',false))){
+		// 	foreach ($frm->recall('task_status',false) as $value) {
+		// 		foreach ($temp_status as $v) {
+		// 			if($v == $value)
+		// 				$count++;
+		// 		}
+		// 	}
+		// }
 								
-		if((!$frm->recall('task_status',false)) || ($show_overdue AND $count==3)) $frm->memorize('task_status',['Pending','Inprogress','Assigned']);
-		$status = $frm->addField('Dropdown','task_status');
-		$status->setvalueList(['Pending'=>'Pending','Inprogress'=>'Inprogress','Assigned'=>'Assigned','Submitted'=>'Submitted','Completed'=>'Completed'])->setEmptyText('Select a status');
-		$status->setAttr(['multiple'=>'multiple']);
-		$status->setValueList($status_array);
+		// if((!$frm->recall('task_status',false)) || ($show_overdue AND $count==3)) $frm->memorize('task_status',['Pending','Inprogress','Assigned']);
+		// $status = $frm->addField('Dropdown','task_status');
+		// $status->setvalueList(['Pending'=>'Pending','Inprogress'=>'Inprogress','Assigned'=>'Assigned','Submitted'=>'Submitted','Completed'=>'Completed'])->setEmptyText('Select a status');
+		// $status->setAttr(['multiple'=>'multiple']);
+		// $status->setValueList($status_array);
 
-		$frm->addHook('applyFilter',function($f,$m){
-			if(!is_array($f['task_status'])) $f['task_status'] = explode(',',$f['task_status']);
+		// $frm->addHook('applyFilter',function($f,$m){
+		// 	if(!is_array($f['task_status'])) $f['task_status'] = explode(',',$f['task_status']);
 			
-			if($f['task_status'] AND $m instanceOf \xepan\projects\Model_Task){
-				$m->addCondition('status',$f['task_status']);
-				$f->memorize('task_status',$f['task_status']);
-			}else{
-				$f->forget('task_status');
-			}
-		});
+		// 	if($f['task_status'] AND $m instanceOf \xepan\projects\Model_Task){
+		// 		$m->addCondition('status',$f['task_status']);
+		// 		$f->memorize('task_status',$f['task_status']);
+		// 	}else{
+		// 		$f->forget('task_status');
+		// 	}
+		// });
 
 		if(!$my_followups->isEditing())
 			$my_followups->grid->addPaginator(25);	
 		
-		$status->js('change',$frm->js()->submit());
+		// $status->js('change',$frm->js()->submit());
 
 		$my_followups_model = $this->add('xepan\projects\Model_Task');
 		
@@ -103,7 +106,7 @@ class page_myfollowups extends \xepan\base\Page{
 		switch ($post_m['permission_level']) {
 			
 			case 'Sibling':
-				$filter_form->add('View')->set($this->app->employee['post'].' Post is defined to see Sibling followups and you are seeing everyones followups who are on same post as you are');
+				$note_v->add('View')->set($this->app->employee['post'].' Post is defined to see Sibling followups and you are seeing everyones followups who are on same post as you are');
 				$post_employees = $this->add('xepan\hr\Model_Employee');
 				$post_employees->addCondition('post_id',$this->app->employee['post_id']);
 
@@ -124,7 +127,7 @@ class page_myfollowups extends \xepan\base\Page{
 
 				break;
 			case 'Department':
-				$filter_form->add('View')->set($this->app->employee['post'].' Post is defined to see Department followups and you are seeing everyones followups who are  in same department as you are');
+				$note_v->add('View')->set($this->app->employee['post'].' Post is defined to see Department followups and you are seeing everyones followups who are  in same department as you are');
 				$department_employees = $this->add('xepan\hr\Model_Employee')
 	    							         ->addCondition('department_id',$this->app->employee['department_id']);
 				
@@ -139,7 +142,7 @@ class page_myfollowups extends \xepan\base\Page{
 				);	
 				break;
 			case 'Global':				
-				$filter_form->add('View')->set($this->app->employee['post'].' Post is defined to see Global followups and you are seeing everyones followups');
+				$note_v->add('View')->set($this->app->employee['post'].' Post is defined to see Global followups and you are seeing everyones followups');
 				break;
 			default: //SELF
 				$my_followups_model->addCondition([['assign_to_id',$this->app->employee->id],['created_by_id',$this->app->employee->id]]);
