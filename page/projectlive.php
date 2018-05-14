@@ -251,14 +251,14 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 			$m->_dsql()->group('rule_option_id');
 		}
 		
-		$grid = $this->add('xepan\base\Grid');
-		$grid->setModel($m,[$created_at_field,'rule_option','score_per_qty',$qty_field,$score_field,$remark_field]);
+		$crud = $this->add('xepan\base\CRUD',['allow_add'=>false,'allow_del'=>false,'allow_edit'=>($time_wise_seperate && $this->app->auth->model->isSuperUser())]);
+		$crud->setModel($m,[$created_at_field,'rule_option','score_per_qty',$qty_field,$score_field,$remark_field]);
 
-		$grid->addFormatter('rule_option','wrap');
-		if($remark_field) $grid->addFormatter('remarks','wrap');
+		$crud->grid->addFormatter('rule_option','wrap');
+		if($remark_field) $crud->grid->addFormatter('remarks','wrap');
 
 		if($form->isSubmitted()){
-			$grid->js(null,$grid_comm->js()->reload(['for_date'=>$form['for_date'],'time_wise_seperate'=>$form['time_wise_seperate']?:0]))->reload(['for_date'=>$form['for_date'],'time_wise_seperate'=>$form['time_wise_seperate']?:0])->execute();
+			$crud->js(null,$grid_comm->js()->reload(['for_date'=>$form['for_date'],'time_wise_seperate'=>$form['time_wise_seperate']?:0]))->reload(['for_date'=>$form['for_date'],'time_wise_seperate'=>$form['time_wise_seperate']?:0])->execute();
 		}
 	}
 
