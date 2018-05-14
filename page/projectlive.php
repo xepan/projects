@@ -212,7 +212,7 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 		
 		$m= $this->add('xepan\base\Model_PointSystem');
 		$m->addCondition('contact_id',$employee_id);
-		$m->addCondition('timesheet_id','<>',0);
+
 		$m->addExpression('score_per_qty')->set($m->refSQL('rule_option_id')->fieldQuery('score_per_qty'));
 		$m->setOrder('created_at desc');
 
@@ -250,9 +250,22 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 			});
 			$m->_dsql()->group('rule_option_id');
 		}
+
 		
-		$crud = $this->add('xepan\base\CRUD',['allow_add'=>false,'allow_del'=>false,'allow_edit'=>($time_wise_seperate && $this->app->auth->model->isSuperUser())]);
-		$crud->setModel($m,[$created_at_field,'rule_option','score_per_qty',$qty_field,$score_field,$remark_field]);
+		$edit = ($time_wise_seperate && $this->app->auth->model->isSuperUser());
+		$crud = $this->add('xepan\base\CRUD',['allow_add'=>$edit,'allow_del'=>$edit,'allow_edit'=>$edit]);
+		
+		if($crud->isEditing('add')){
+			$m->addCondition('created_at',$for_date);
+			$m->addCondition('timesheet_id',-1);
+		}else{
+			$m->addCondition('timesheet_id','<>',0);
+		}
+
+		$crud->setModel($m,[$created_at_field,'rule_option_id','score_per_qty',$qty_field,$score_field,$remark_field],[$created_at_field,'rule_option','score_per_qty',$qty_field,$score_field,$remark_field]);
+		if($crud->isEditing()){
+			$crud->form->getElement('rule_option_id')->getModel()->title_field='name_with_score';
+		}
 
 		$crud->grid->addFormatter('rule_option','wrap');
 		if($remark_field) $crud->grid->addFormatter('remarks','wrap');
