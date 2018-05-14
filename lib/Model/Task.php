@@ -391,7 +391,7 @@ class Model_Task extends \xepan\base\Model_Table
 	function receive(){
 		// throw new \Exception($this->id." = ".$this['status']);
 
-		if(!$this['assign_to_id'] != $this->app->employee->id){
+		if($this['assign_to_id'] != $this->app->employee->id){
 			$this->app->js()->univ()->errorMessage('You cannot receive task, not assigned to you')->execute();
 		}
 		
