@@ -50,7 +50,7 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 				break;
 		}
 		
-		$project_detail_grid=$this->add('xepan\hr\Grid',['pass_acl'=>true]);
+		$project_detail_grid=$this->add('xepan\hr\Grid',['pass_acl'=>false]);
 		$project_detail_grid->add('xepan\base\Controller_Avatar',['options'=>['size'=>40,'border'=>['width'=>0]],'name_field'=>'name','default_value'=>'']);
 		$project_detail_grid->addPaginator(50);
 		$project_detail_grid->addQuickSearch(['name']);
