@@ -291,7 +291,8 @@ class View_TaskList extends \xepan\base\Grid{
 		$action_btn = $this->add('AbstractController')->add('xepan\hr\View_ActionBtn',['actions'=>$action_btn_list?:[],'id'=>$this->model->id,'status'=>$this->model['status'],'action_btn_group'=>'xs']);
 		$this->current_row_html['action'] = $action_btn->getHTML();
 		
-		$this->current_row_html['starting_date'] = date_format(date_create($this['starting_date']), 'g:ia jS F Y');
+		$this->current_row_html['starting_date'] = date_format(date_create($this['starting_date']), 'jS F Y g:ia');
+		$this->current_row_html['deadline'] = date_format(date_create($this['deadline']), 'jS F Y g:ia');
 		return parent::formatRow();
 	}
 
