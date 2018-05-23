@@ -149,14 +149,16 @@ class Model_Employee extends \xepan\hr\Model_Employee{
 		$point_system_m = $this->add('xepan\base\Model_PointSystem');
 		$point_system_m->addCondition('contact_id',$this->id);
 		$point_system_m->addCondition('timesheet_id',-1);
-		$point_system_m->addCondition('created_at_date',$this->app->today);
+		// $point_system_m->addCondition('created_at_date',$this->app->today);
 		$point_system_m->getElement('created_at_date')->caption('On Date');
 
 		$point_system_m->addHook('beforeSave',function($m){
 			$m['created_by_id'] = $this->app->employee->id; // to save last updater
 		});
 
+
 		$crud= $p->add('xepan\hr\CRUD',['pass_acl'=>true]);
+		
 		$crud->setModel($point_system_m,['created_at','rule_option_id','qty','remarks'],['created_at_date','rule_option','qty','score','remarks','created_by']);
 
 		if($crud->isEditing()){
