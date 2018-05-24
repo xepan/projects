@@ -8,6 +8,7 @@ class page_project extends \xepan\projects\page_sidemenu{
 		parent::init();
 
 		$project = $this->add('xepan\projects\Model_Formatted_Project');
+		$project->add('xepan\base\Controller_TopBarStatusFilter');
 		$crud=$this->add('xepan\hr\CRUD',['entity_name'=>'Project'],null,['view\project-grid']);
 		$crud->setModel($project,['name','description','status','starting_date','ending_date']);
 		$crud->grid->addQuickSearch('name');
