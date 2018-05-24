@@ -16,7 +16,7 @@ class Initiator extends \Controller_Addon {
 			$reminder = $this->app->page_top_right_button_set->addButton('Reminder')->addClass('btn btn-primary');
 			$reminder->js('click')->univ()->frameURL("REMINDERS",$this->api->url('xepan_projects_reminder'));
 
-			$this->app->addHook('post-init',function($app){
+			$this->app->addHook('post-init',function($app)use($reminder){
 					try{
 						$this->app->profiler->mark('Adding_mini_task');
 						$app->layout->add('xepan\projects\View_MiniTask',null,'task_status');
@@ -24,6 +24,7 @@ class Initiator extends \Controller_Addon {
 					}catch(\Exception_StopInit $e){
 
 					}
+					$this->app->page_top_right_button_set->add('Order')->move($reminder,'last')->now();
 			});
 
 			if(!$this->app->getConfig('hidden_xepan_projects',false)){
