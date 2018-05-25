@@ -800,7 +800,8 @@ class Model_Task extends \xepan\base\Model_Table
 
 			$model_task['deadline'] = $new_deadline;
 			$model_task['starting_date'] = $starting;
-			$model_task['reminder_time'] = $reminder;			
+			$model_task['reminder_time'] = $reminder;
+			$model_task->isRejecting = true;
 			$model_task->saveAndUnload();
 
 			$task['is_recurring'] = false;
