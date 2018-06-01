@@ -197,10 +197,16 @@ class View_TaskList extends \xepan\base\Grid{
 			$this->current_row['contact_info_wrapper'] = ' ';
 		}
 
-		if(($thisTask['set_reminder'] AND !$thisTask['is_reminded']) OR ($thisTask['snooze_duration'] != null AND $thisTask['snooze_duration'] != 0)){
-			$this->current_row['dummy_spot'] = ' ';
+		if(($thisTask['set_reminder'] AND !$thisTask['is_reminded']) OR ($thisTask['snooze_duration'] != null AND $thisTask['snooze_duration'] >= 0)){
+			$this->current_row['alarm_wrapper'] = '<i class="fa fa-bell"></i>';
 		}else{			
 			$this->current_row['alarm_wrapper'] = ' ';
+		}
+
+		if($thisTask['is_recurring']){
+			$this->current_row_html['recurring_wrapper']='<i class="fa fa-repeat"></i>';
+		}else{
+			$this->current_row_html['recurring_wrapper']=' ';
 		}
 
 		if($this->del_action_wrapper){
