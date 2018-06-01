@@ -216,8 +216,6 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 		$m->addExpression('score_per_qty')->set($m->refSQL('rule_option_id')->fieldQuery('score_per_qty'));
 		$m->setOrder('created_at desc');
 
-		$m->addCondition('created_at_date',$for_date);
-
 		$score_field='score';
 		$qty_field='qty';
 		$created_at_field='created_at';
@@ -257,8 +255,16 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 		
 		if($crud->isEditing('add')){
 			$m->addCondition('created_at',$for_date);
+			$m->addCondition('created_at_date',$for_date);
 			$m->addCondition('timesheet_id',-1);
-		}else{
+		}
+
+		if($crud->isEditing('edit')){
+			$created_at_field=null;
+		}
+
+		if(!$crud->iSediting()){
+			$m->addCondition('created_at_date',$for_date);
 			$m->addCondition('timesheet_id','<>',0);
 		}
 
