@@ -195,6 +195,7 @@ class Model_Task extends \xepan\base\Model_Table
 						->setLimit(1)
 						->fieldQuery('organization');
 		});
+
  	}
 
  	function dirtyReminder(){
@@ -283,6 +284,15 @@ class Model_Task extends \xepan\base\Model_Table
 		
 		if($this['is_recurring'] == true AND $this['recurring_span'] == '')
 			throw $this->exception('Time gap is required','ValidityCheck')->setField('recurring_span');
+
+		if($this['remind_unit']=='Minutes' && $this['snooze_duration'] && $this['snooze_duration']<30){
+			throw $this->exception('Cannot set less then 30 Minutes','ValidityCheck')->setField('snooze_duration');
+		}
+
+		if($this['snooze_duration'] && $this['snooze_duration'] == 0){
+			throw $this->exception('Cannot be set 0','ValidityCheck')->setField('snooze_duration');
+		}
+
 	}
 
 	function addFollowups($app,$contact_id,$followup_tab){
