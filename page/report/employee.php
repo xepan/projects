@@ -12,7 +12,16 @@ class page_report_employee extends \xepan\base\Page{
 		parent::init();
 		$from_date = $this->app->stickyGET('from_date');
 		$to_date = $this->app->stickyGET('to_date');
-		$form = $this->add('Form',null,null,['form/empty']);
+		$form = $this->add('Form');
+		$form->add('xepan\base\Controller_FLC')
+			->makePanelsCoppalsible(true)
+			->layout([
+				'date_range'=>'Filter~c1~3',
+				'employee'=>'c2~3',
+				'department'=>'c3~3',
+				'FormButtons~&nbsp;'=>'c4~3'
+			]);
+			
 		$date = $form->addField('DateRangePicker','date_range');
 		$set_date = $this->app->today." to ".$this->app->today;
 		if($from_date){
