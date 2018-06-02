@@ -198,9 +198,9 @@ class View_TaskList extends \xepan\base\Grid{
 		}
 
 		if(($thisTask['set_reminder'] AND !$thisTask['is_reminded']) OR ($thisTask['snooze_duration'] != null AND $thisTask['snooze_duration'] >= 0)){
-			$this->current_row['alarm_wrapper'] = '<i class="fa fa-bell"></i>';
+			$this->current_row_html['alarm_wrapper'] = '<i class="fa fa-bell"></i>';
 		}else{			
-			$this->current_row['alarm_wrapper'] = ' ';
+			$this->current_row_html['alarm_wrapper'] = ' ';
 		}
 
 		if($thisTask['is_recurring']){
