@@ -241,7 +241,7 @@ class View_TaskList extends \xepan\base\Grid{
 			// first Column
 			if($thisTask->isMyTask()){
 				if($this['status'] =='Pending' && !$thisTask->createdByMe())
-					$action_btn_list = array_diff( $action_btn_list, ['submit'] ); // unset($action_btn_list[1]); // submit
+					$action_btn_list = array_diff( $action_btn_list, ['mark_complete'] ); // unset($action_btn_list[1]); // submit
 				if($this['status'] =='Pending' && $thisTask->createdByMe())
 					$action_btn_list = array_diff( $action_btn_list, ['submit'] );;//unset($action_btn_list[0]); // submit
 
