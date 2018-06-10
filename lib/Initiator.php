@@ -11,7 +11,13 @@ class Initiator extends \Controller_Addon {
 		$this->addLocation(array('template'=>'templates','js'=>'templates/js'))
 		->setBaseURL('../vendor/xepan/projects/');
 
+
 		if($this->app->auth->isLoggedIn()){ 
+
+			if($this->app->inConfigurationMode)
+	            $this->populateConfigurationMenus();
+	        else
+	            $this->populateApplicationMenus();
 
 			$reminder = $this->app->page_top_right_button_set->addButton('Reminder')->addClass('btn btn-primary');
 			$reminder->js('click')->univ()->frameURL("REMINDERS",$this->api->url('xepan_projects_reminder'));
@@ -26,20 +32,6 @@ class Initiator extends \Controller_Addon {
 					}
 					$this->app->page_top_right_button_set->add('Order')->move($reminder,'last')->now();
 			});
-
-			if(!$this->app->getConfig('hidden_xepan_projects',false)){
-
-				$m = $this->app->top_menu->addMenu('Projects');
-				// $m->addItem(['Dashboard','icon'=>'fa fa-dashboard'],'xepan_projects_projectdashboard');
-				$m->addItem(['Project','icon'=>'fa fa-sitemap'],'xepan_projects_project');
-				$m->addItem(['Trace Employee','icon'=>' fa fa-paw'],'xepan_projects_projectlive');
-				$m->addItem(['Manage Point Rules','icon'=>' fa fa-paw'],'xepan_projects_pointsystem');
-				$this->app->user_menu->addItem(['Tasks','icon'=>'fa fa-tasks'],'xepan_projects_mytasks');
-				// $this->app->user_menu->addItem(['My Followups','icon'=>'fa fa-stack-exchange'],'xepan_projects_myfollowups');
-				// $projects = $this->add('xepan\projects\Model_Project');
-				$m->addItem(['Configuration','icon'=>' fa fa-cog'],'xepan_projects_configuration');
-				$m->addItem(['Reports','icon'=>' fa fa-cog'],'xepan_projects_projectreport');
-			}
 			
 		}
 
@@ -62,6 +54,28 @@ class Initiator extends \Controller_Addon {
 
 		return $this;
 
+	}
+
+	function populateConfigurationMenus(){
+		$m = $this->app->top_menu->addMenu('Projects & Tasks');
+        $m->addItem(['Force Sitting Ideal Info','icon'=>'fa fa-cog'],$this->app->url('xepan_projects_configuration_task'));
+        $m->addItem(['Task Reminder Layout','icon'=>'fa fa-cog'],$this->app->url('xepan_projects_configuration_layouts'));
+	}
+
+	function populateApplicationMenus(){
+		if(!$this->app->getConfig('hidden_xepan_projects',false)){
+
+				$m = $this->app->top_menu->addMenu('Projects');
+				// $m->addItem(['Dashboard','icon'=>'fa fa-dashboard'],'xepan_projects_projectdashboard');
+				$m->addItem(['Project','icon'=>'fa fa-sitemap'],'xepan_projects_project');
+				$m->addItem(['Trace Employee','icon'=>' fa fa-paw'],'xepan_projects_projectlive');
+				$m->addItem(['Manage Point Rules','icon'=>' fa fa-paw'],'xepan_projects_pointsystem');
+				$this->app->user_menu->addItem(['Tasks','icon'=>'fa fa-tasks'],'xepan_projects_mytasks');
+				// $this->app->user_menu->addItem(['My Followups','icon'=>'fa fa-stack-exchange'],'xepan_projects_myfollowups');
+				// $projects = $this->add('xepan\projects\Model_Project');
+				// $m->addItem(['Configuration','icon'=>' fa fa-cog'],'xepan_projects_configuration');
+				$m->addItem(['Reports','icon'=>' fa fa-cog'],'xepan_projects_projectreport');
+			}
 	}
 
 	function exportWidgets($app,&$array){

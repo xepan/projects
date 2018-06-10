@@ -2,18 +2,20 @@
 namespace xepan\projects;
 class page_configuration extends \xepan\base\Page{
 	public $title = "Configuration";
-	function init(){
-		parent::init();		
+	
+	function page_index(){
 
 		$tabs= $this->add('Tabs');
-		$tsk_tab = $tabs->addTab('Task Configurations');
-		$lay_tab = $tabs->addTab('Layouts');
+		$tsk_tab = $tabs->addTabURL('./task','Task Configurations');
+		$lay_tab = $tabs->addTabURL('./layouts','Layouts');
+		
+	}
 
-
+	function page_layouts(){
 		$config_m = $this->add('xepan\projects\Model_Config_ReminderAndTask');
 		$config_m->tryLoadAny();
 
-		$form=$lay_tab->add('Form');
+		$form=$this->add('Form');
 		$form->setModel($config_m,['reminder_subject','reminder_body']);
 		$form->getElement('reminder_subject')->set($config_m['reminder_subject']);
 		$form->getElement('reminder_body')->setFieldHint('{$name}, {$task}, {$description}')->set($config_m['reminder_body']);
@@ -23,8 +25,10 @@ class page_configuration extends \xepan\base\Page{
 			$form->save();
 			$form->js(null,$form->js()->reload())->univ()->successMessage('Information Updated')->execute();
 		}
+	}
 
-		$form=$tsk_tab->add('Form');
+	function page_task(){
+		$form=$this->add('Form');
 		$config_m = $this->add('xepan\projects\Model_Config_ReminderAndTask');
 		$config_m->tryLoadAny();
 
@@ -35,8 +39,5 @@ class page_configuration extends \xepan\base\Page{
 			$form->save();
 			$form->js(null,$form->js()->reload())->univ()->successMessage('Information Updated, will take effect after new login for ever employee')->execute();
 		}
-
-		// $this->app->side_menu->addItem(['Layouts','icon'=>'fa fa-th'],'xepan_projects_layout')->setAttr(['title'=>'Layouts']);
-		// $this->app->side_menu->addItem(['Task Configurations','icon'=>'fa fa-cog'],'xepan_projects_taskconfig')->setAttr(['title'=>'Task Configurations']);
 	}
 }
