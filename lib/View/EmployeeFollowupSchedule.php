@@ -11,7 +11,7 @@ class View_EmployeeFollowupSchedule extends \View {
 		parent::init();
 
 		$btn = $this->add('Button')->set('Schedule');
-		$btn->js('click')->univ()->frameURL('Schedule',$this->app->url('xepan_projects_taskscalendar',['employee_field'=>$this->employee_field,'date_field'=>$this->date_field]),['width'=>$this->js()->width()->_selector('window')]);
+		$btn->js('click')->univ()->frameURL('Schedule',$this->app->url('xepan_projects_taskscalendar',['employee_field'=>$this->employee_field->name,'date_field'=>$this->date_field->name]),['width'=>$this->js()->width()->_selector('window')]);
 	}
 
 	// function init(){
