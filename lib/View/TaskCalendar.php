@@ -10,10 +10,17 @@ class View_TaskCalendar extends \View{
 	public $startingdate_field_to_set=null;
 
 	public $event_array=[];
+	public $calview;
+	public $form;
 
 	function init(){
 		parent::init();
 
+		$this->js(true)->_load('bootstrap-datetimepicker')
+        ->_css('libs/bootstrap-datetimepicker')
+        ;
+		$this->form = $this->add('View');
+		$this->calview = $this->add('View');
 	}
 
 	function setModel($model){
@@ -37,7 +44,7 @@ class View_TaskCalendar extends \View{
 	function render(){
 		$this->js(true)->_css('libs/fullcalendar')->_css('compiled/calendar');
 		$this->js(true)->_load('moment.min')->_load('fullcalendar.min')->_load('xepan-followup-scheduler');
-		$this->js(true)->univ()->showFollowupCalendar($this,$this->event_array, $this->employee_list, $this->employee_field_to_set, $this->startingdate_field_to_set);
+		$this->js(true)->univ()->showFollowupCalendar($this->calview,$this->event_array, $this->employee_list, $this->employee_field_to_set, $this->startingdate_field_to_set,$this->form);
 		return parent::render();
 	}
 
