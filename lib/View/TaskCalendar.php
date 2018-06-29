@@ -13,6 +13,9 @@ class View_TaskCalendar extends \View{
 	public $calview;
 	public $form;
 
+	public $defaultView='agendaWeek';
+	public $title_field='assign_to';
+
 	function init(){
 		parent::init();
 
@@ -31,7 +34,7 @@ class View_TaskCalendar extends \View{
 		$this->event_array=[];
 		// {title:value.title,start:value.start,document_id:value.document_id,'client_event_id':value._id}
 		foreach ($model as $m) {
-			$e =['title'=>$m['assign_to'],'start'=>$m['starting_date'],'document_id'=>$m->id,'allDay'=>false,'end'=>$m['starting_date']];
+			$e =['title'=>$m[$this->title_field],'start'=>$m['starting_date'],'task_id'=>$m->id,'allDay'=>false,'end'=>$m['starting_date'],'desc'=>$m->description()];
 			$this->event_array[] = $e;
 		}
 	}
@@ -44,8 +47,8 @@ class View_TaskCalendar extends \View{
 
 	function render(){
 		$this->js(true)->_css('libs/fullcalendar')->_css('compiled/calendar');
-		$this->js(true)->_load('moment.min')->_load('fullcalendar.min')->_load('xepan-followup-scheduler8');
-		$this->js(true)->univ()->showFollowupCalendar($this->calview,$this->event_array, $this->employee_list, $this->employee_field_to_set, $this->startingdate_field_to_set,$this->form);
+		$this->js(true)->_load('moment.min')->_load('fullcalendar.min')->_load('xepan-followup-scheduler12');
+		$this->js(true)->univ()->showFollowupCalendar($this->calview,$this->event_array, $this->employee_list, $this->employee_field_to_set, $this->startingdate_field_to_set,$this->form, $this->defaultView);
 		return parent::render();
 	}
 

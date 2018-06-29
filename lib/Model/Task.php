@@ -198,6 +198,17 @@ class Model_Task extends \xepan\base\Model_Table
 
  	}
 
+ 	function description($br='<br/>'){
+ 		$str  ='<div style="text-align:left">';
+ 		$str .= $this['task_name'] .$br;
+ 		$str .= 'On: ' . $this['created_at'] .$br;
+ 		$str .= 'By: ' . $this['created_by'] .$br;
+ 		$str .= 'To: ' . $this['assign_to'] .$br;
+ 		$str .= 'At: ' . $this['starting_date'] .$br;
+ 		$str .='</div>';
+ 		return $str;
+ 	}
+
  	function dirtyReminder(){
  		if($this['is_reminded'] AND ($this['reminder_time'] > $this->app->now)) 			
  			$this['is_reminded'] = null;

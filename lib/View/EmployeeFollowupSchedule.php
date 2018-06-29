@@ -6,12 +6,20 @@ namespace xepan\projects;
 class View_EmployeeFollowupSchedule extends \View {
 	public $employee_field;
 	public $date_field;
+	public $employee_only;
 	
 	function init(){
 		parent::init();
 
+		$this->setAttr('data-shortname','existing_schedule');
+
+		$pass_in_get=[];
+		if($this->employee_field) $pass_in_get['employee_field'] = $this->employee_field->name;
+		if($this->date_field) $pass_in_get['date_field'] = $this->date_field->name;
+		if($this->employee_only) $pass_in_get['employee_only'] = $this->employee_only;
+
 		$btn = $this->add('Button')->set('Schedule');
-		$btn->js('click')->univ()->frameURL('Schedule',$this->app->url('xepan_projects_taskscalendar',['employee_field'=>$this->employee_field->name,'date_field'=>$this->date_field->name]),['width'=>$this->js()->width()->_selector('window')]);
+		$btn->js('click')->univ()->frameURL('Schedule',$this->app->url('xepan_projects_taskscalendar',$pass_in_get),['width'=>$this->js()->width()->_selector('window')]);
 	}
 
 	// function init(){

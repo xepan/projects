@@ -10,6 +10,8 @@ class page_myfollowups extends \xepan\base\Page{
 
 		$this->app->stickyGET('start_date');
 		$this->app->stickyGET('end_date');
+		$this->app->stickyGET('filter_for_employee_id');
+
 		$this->start_date = $start_date = $_GET['start_date']?:$this->app->today;
 		$this->end_date = $end_date = $_GET['end_date']?:$this->app->today;
         $this->status = $this->app->stickyGET('status');
@@ -103,50 +105,55 @@ class page_myfollowups extends \xepan\base\Page{
 		$post_m = $this->add('xepan\hr\Model_Post');
 		$post_m->load($this->app->employee['post_id']);
 
-		switch ($post_m['permission_level']) {
-			
-			case 'Sibling':
-				$note_v->add('View')->set($this->app->employee['post'].' Post is defined to see Sibling followups and you are seeing everyones followups who are on same post as you are');
-				$post_employees = $this->add('xepan\hr\Model_Employee');
-				$post_employees->addCondition('post_id',$this->app->employee['post_id']);
-
-				$employee = [];
-				foreach ($post_employees as $emp){
-					$employee [] = $emp->id;
-				}
-
-				$my_followups_model->addCondition(
-					$my_followups_model->dsql()->orExpr()
-						->where('assign_to_id',$employee)
-						->where(
-							$my_followups_model->dsql()->andExpr()
-								->where('created_by_id',$employee)
-								->where('assign_to_id',null)
-							   )
-				);
-
-				break;
-			case 'Department':
-				$note_v->add('View')->set($this->app->employee['post'].' Post is defined to see Department followups and you are seeing everyones followups who are  in same department as you are');
-				$department_employees = $this->add('xepan\hr\Model_Employee')
-	    							         ->addCondition('department_id',$this->app->employee['department_id']);
+		if(!isset($_GET['filter_for_employee_id'])){
+			// Not called with sending such parameter then do as per post level
+			switch ($post_m['permission_level']) {
 				
-				$my_followups_model->addCondition(
-					$my_followups_model->dsql()->orExpr()
-						->where('assign_to_id','in',$department_employees->fieldQuery('id'))
-						->where(
-							$my_followups_model->dsql()->andExpr()
-								->where('created_by_id','in',$department_employees->fieldQuery('id'))
-								->where('assign_to_id',null)
-							   )
-				);	
-				break;
-			case 'Global':				
-				$note_v->add('View')->set($this->app->employee['post'].' Post is defined to see Global followups and you are seeing everyones followups');
-				break;
-			default: //SELF
-				$my_followups_model->addCondition([['assign_to_id',$this->app->employee->id],['created_by_id',$this->app->employee->id]]);
-				break;
+				case 'Sibling':
+					$note_v->add('View')->set($this->app->employee['post'].' Post is defined to see Sibling followups and you are seeing everyones followups who are on same post as you are');
+					$post_employees = $this->add('xepan\hr\Model_Employee');
+					$post_employees->addCondition('post_id',$this->app->employee['post_id']);
+
+					$employee = [];
+					foreach ($post_employees as $emp){
+						$employee [] = $emp->id;
+					}
+
+					$my_followups_model->addCondition(
+						$my_followups_model->dsql()->orExpr()
+							->where('assign_to_id',$employee)
+							->where(
+								$my_followups_model->dsql()->andExpr()
+									->where('created_by_id',$employee)
+									->where('assign_to_id',null)
+								   )
+					);
+
+					break;
+				case 'Department':
+					$note_v->add('View')->set($this->app->employee['post'].' Post is defined to see Department followups and you are seeing everyones followups who are  in same department as you are');
+					$department_employees = $this->add('xepan\hr\Model_Employee')
+		    							         ->addCondition('department_id',$this->app->employee['department_id']);
+					
+					$my_followups_model->addCondition(
+						$my_followups_model->dsql()->orExpr()
+							->where('assign_to_id','in',$department_employees->fieldQuery('id'))
+							->where(
+								$my_followups_model->dsql()->andExpr()
+									->where('created_by_id','in',$department_employees->fieldQuery('id'))
+									->where('assign_to_id',null)
+								   )
+					);	
+					break;
+				case 'Global':				
+					$note_v->add('View')->set($this->app->employee['post'].' Post is defined to see Global followups and you are seeing everyones followups');
+					break;
+				default: //SELF
+					$my_followups_model->addCondition([['assign_to_id',$this->app->employee->id],['created_by_id',$this->app->employee->id]]);
+					break;
+			}
+		}else{
+			$my_followups_model->addCondition([['assign_to_id',$_GET['filter_for_employee_id']],['created_by_id',$_GET['filter_for_employee_id']]]);
 		}
 		
 		if(!$my_followups->isEditing()){
