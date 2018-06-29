@@ -645,116 +645,122 @@ class Model_Task extends \xepan\base\Model_Table
 		$reminder_task->addCondition('set_reminder',true);
 		$reminder_task->addCondition([['is_reminded',0],['is_reminded',null]]);
 		
-		foreach ($reminder_task as $task) {				
+		foreach ($reminder_task as $task) {
 			if(($task['type'] == 'Task' || $task['type'] == 'Followup') AND $task['status'] == 'Completed'){
 				$task['is_reminded'] = true;
 				$task->saveAs('xepan\projects\Model_Task');
 				continue;
 			}
-							
-			$reminder_time = $task['reminder_time'];
-			
-			if(($reminder_time <= ($this->app->now)) AND $task['is_reminded']==false){
-				$remind_via_array = [];
-				$remind_via_array = explode(',', $task['remind_via']);
 
-				$employee_array = [];
-				$employee_array = explode(',', $task['notify_to']);
+			try{
 
-				if(in_array("Email", $remind_via_array)){
-					$emails = [];
-					foreach ($employee_array as $value){
-						if(!$value) continue; // in case user kept 'Please select' also
-						$emp = $this->add('xepan\hr\Model_Employee')->tryLoad($value);
-						if($emp['status'] != 'Active') continue;
-						array_push($emails, $emp['first_email']);
-					}
-					$to_emails = implode(', ', $emails);
-					$email_settings = $this->add('xepan\communication\Model_Communication_EmailSetting');
-					$email_settings->addCondition('is_active',true);
-					$email_settings->tryLoadAny();	
-					
-					$mail = $this->add('xepan\projects\Model_ReminderMail');
+								
+				$reminder_time = $task['reminder_time'];
+				
+				if(($reminder_time <= ($this->app->now)) AND $task['is_reminded']==false){
+					$remind_via_array = [];
+					$remind_via_array = explode(',', $task['remind_via']);
 
-					$config_m = $this->add('xepan\base\Model_ConfigJsonModel',
-					[
-						'fields'=>[
-									'reminder_subject'=>'Line',
-									'reminder_body'=>'xepan\base\RichText',
-									],
-							'config_key'=>'EMPLOYEE_REMINDER_RELATED_EMAIL',
-							'application'=>'projects'
-					]);
-					$config_m->tryLoadAny();
+					$employee_array = [];
+					$employee_array = explode(',', $task['notify_to']);
 
-					$email_subject = $config_m['reminder_subject'];
-        			$email_body = $config_m['reminder_body'];
+					if(in_array("Email", $remind_via_array)){
+						$emails = [];
+						foreach ($employee_array as $value){
+							if(!$value) continue; // in case user kept 'Please select' also
+							$emp = $this->add('xepan\hr\Model_Employee')->tryLoad($value);
+							if($emp['status'] != 'Active') continue;
+							array_push($emails, $emp['first_email']);
+						}
+						$to_emails = implode(', ', $emails);
+						$email_settings = $this->add('xepan\communication\Model_Communication_EmailSetting');
+						$email_settings->addCondition('is_active',true);
+						$email_settings->tryLoadAny();	
 						
-					$temp=$this->add('GiTemplate');
-					$temp->loadTemplateFromString($email_body);
-					
+						$mail = $this->add('xepan\projects\Model_ReminderMail');
 
-					$merge_model_array=[];
-					$merge_model_array = array_merge($merge_model_array,$task->get());
+						$config_m = $this->add('xepan\base\Model_ConfigJsonModel',
+						[
+							'fields'=>[
+										'reminder_subject'=>'Line',
+										'reminder_body'=>'xepan\base\RichText',
+										],
+								'config_key'=>'EMPLOYEE_REMINDER_RELATED_EMAIL',
+								'application'=>'projects'
+						]);
+						$config_m->tryLoadAny();
 
-					$subject_temp=$this->add('GiTemplate');
-					$subject_temp->loadTemplateFromString($email_subject);
-					$subject_v=$this->add('View',null,null,$subject_temp);
+						$email_subject = $config_m['reminder_subject'];
+	        			$email_body = $config_m['reminder_body'];
+							
+						$temp=$this->add('GiTemplate');
+						$temp->loadTemplateFromString($email_body);
+						
 
-					$subject_v->template->trySetHTML('task',$task['task_name']);
+						$merge_model_array=[];
+						$merge_model_array = array_merge($merge_model_array,$task->get());
 
-					$body_v=$this->add('View',null,null,$temp);
-					$body_v->template->trySet($merge_model_array);
-					$body_v->template->trySetHTML('task',$task['task_name']);
-					$body_v->template->trySetHTML('description',$task['description']);
-					$body_v->template->trySetHTML('name',$task['employee']);
-					
-					$mail->setfrom($email_settings['from_email'],$email_settings['from_name']);
-					foreach ($emails as  $email) {
-						$mail->addTo($email);
+						$subject_temp=$this->add('GiTemplate');
+						$subject_temp->loadTemplateFromString($email_subject);
+						$subject_v=$this->add('View',null,null,$subject_temp);
+
+						$subject_v->template->trySetHTML('task',$task['task_name']);
+
+						$body_v=$this->add('View',null,null,$temp);
+						$body_v->template->trySet($merge_model_array);
+						$body_v->template->trySetHTML('task',$task['task_name']);
+						$body_v->template->trySetHTML('description',$task['description']);
+						$body_v->template->trySetHTML('name',$task['employee']);
+						
+						$mail->setfrom($email_settings['from_email'],$email_settings['from_name']);
+						foreach ($emails as  $email) {
+							$mail->addTo($email);
+						}
+						
+						$mail->setSubject($subject_v->getHtml());
+						$mail->setBody($body_v->getHtml());
+						try{
+							$mail->send($email_settings);
+						}catch(\Exception $e){
+							echo $email_settings['name'];
+						}
 					}
-					
-					$mail->setSubject($subject_v->getHtml());
-					$mail->setBody($body_v->getHtml());
-					try{
-						$mail->send($email_settings);
-					}catch(\Exception $e){
-						echo $email_settings['name'];
+
+					if(in_array("SMS", $remind_via_array)){
+						// SMS CONFIGURATION REMAINING
 					}
+
+					if(in_array("Notification", $remind_via_array)){					
+						$notify_to = json_encode($employee_array);
+
+						$activity = $this->add('xepan\base\Model_Activity');
+						$activity['notify_to'] = $notify_to;
+
+						if($task['type'] == 'Task') 
+							$activity['notification'] = "Task reminder for: ".$task['task_name'];
+						
+						if($task['type'] == 'Followup')
+							$activity['notification'] = "Followup Reminder For: ".$task['task_name'].' :: Related Contact:'.$task['related_name'];
+		
+
+						if($task['type'] == 'Reminder') 
+							$activity['notification'] = "Reminder Alert: ".$task['task_name'];
+
+						$activity['Created_at'] = $reminder_time;
+						$activity->save();  
+					}
+
+					if($task['type'] == 'Reminder' OR (($task['type'] == 'Task' OR $task['type'] == 'Followup') And ($task['snooze_duration'] == null OR $task['snooze_duration'] == 0))){
+						$task['is_reminded'] = true;
+						$task->saveAs('xepan\projects\Model_Task');
+					}else{
+						$reminder_time = date("Y-m-d H:i:s", strtotime('+'.$task['snooze_duration'].' '.$task['remind_unit'], strtotime($task['reminder_time'])));
+						$task['reminder_time'] = $reminder_time;
+						$task->saveAs('xepan\projects\Model_Task');
+					}	
 				}
-
-				if(in_array("SMS", $remind_via_array)){
-					// SMS CONFIGURATION REMAINING
-				}
-
-				if(in_array("Notification", $remind_via_array)){					
-					$notify_to = json_encode($employee_array);
-
-					$activity = $this->add('xepan\base\Model_Activity');
-					$activity['notify_to'] = $notify_to;
-
-					if($task['type'] == 'Task') 
-						$activity['notification'] = "Task reminder for: ".$task['task_name'];
-					
-					if($task['type'] == 'Followup')
-						$activity['notification'] = "Followup Reminder For: ".$task['task_name'].' :: Related Contact:'.$task['related_name'];
-	
-
-					if($task['type'] == 'Reminder') 
-						$activity['notification'] = "Reminder Alert: ".$task['task_name'];
-
-					$activity['Created_at'] = $reminder_time;
-					$activity->save();  
-				}
-
-				if($task['type'] == 'Reminder' OR (($task['type'] == 'Task' OR $task['type'] == 'Followup') And ($task['snooze_duration'] == null OR $task['snooze_duration'] == 0))){
-					$task['is_reminded'] = true;
-					$task->saveAs('xepan\projects\Model_Task');
-				}else{
-					$reminder_time = date("Y-m-d H:i:s", strtotime('+'.$task['snooze_duration'].' '.$task['remind_unit'], strtotime($task['reminder_time'])));
-					$task['reminder_time'] = $reminder_time;
-					$task->saveAs('xepan\projects\Model_Task');
-				}	
+			}catch(\Exception $e){
+				continue;
 			}
 		}
 	}
