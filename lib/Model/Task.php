@@ -479,14 +479,18 @@ class Model_Task extends \xepan\base\Model_Table
 
 			$btn = $p->add('Button')->set('Immediate Complete')->addClass('btn btn-primary xepan-push-large btn-block');
 
-			$comm = $p->add('xepan\communication\View_Communication');
+			$comm = $p->add('xepan\communication\View_Communication',['showFilter'=>false]);
+			$comm->add('H5',null,'filter')->set('Complete Followup by creating Communication: What is status of This Followup');
 			$comm->setCommunicationsWith($this->ref('related_id'));
 			$comm->showCommunicationHistory(false);
+			$comm->addSuccessJs($this->app->js(null,$p->js()->univ()->closeDialog())->_selector('.xepan-mini-task, .xepan-tasklist-grid')->trigger('reload'));
+			$this->app->addHook('communication_created',function($app)use($p){
+				$this->mark_complete();
+			});
 
-			$comm->doAfterCommunicationCreate([$this,'mark_complete']);
 			
 			if($btn->isClicked()){				
-				$this->mark_complete(null);
+				$this->mark_complete();
 				$this->app->employee
 			            ->addActivity("Task '".$this['task_name']."' completed by '".$this->app->employee['name']."'",null, $this['assign_to_id'] /*Related Contact ID*/,null,null,null)
 			            ->notifyTo([$this['created_by_id'],$this['assign_to_id']],"Task : ".$this['task_name']."' marked Complete by '".$this->app->employee['name']."'");
@@ -534,18 +538,18 @@ class Model_Task extends \xepan\base\Model_Table
 		}
 	}
 
-	function mark_complete($form){		
-		if($form instanceOf \xepan\communication\Form_Communication){			
-			$form->process();
-		}
+	function mark_complete(){		
+		// if($form instanceOf \xepan\communication\Form_Communication){			
+		// 	$form->process();
+		// }
 
-		if($form != null AND (!$form instanceOf \xepan\communication\Form_Communication)){
-			$comment = $this->add('xepan\projects\Model_Comment');
-			$comment['task_id'] = $this->id;
-			$comment['employee_id'] = $this->app->employee->id;
-			$comment['comment'] = $form['comment'];
-			$comment->save();
-		}
+		// if($form != null AND (!$form instanceOf \xepan\communication\Form_Communication)){
+		// 	$comment = $this->add('xepan\projects\Model_Comment');
+		// 	$comment['task_id'] = $this->id;
+		// 	$comment['employee_id'] = $this->app->employee->id;
+		// 	$comment['comment'] = $form['comment'];
+		// 	$comment->save();
+		// }
 
 		$model_close_timesheet = $this->add('xepan\projects\Model_Timesheet');
 		$model_close_timesheet->addCondition('task_id',$this->id);
@@ -661,7 +665,7 @@ class Model_Task extends \xepan\base\Model_Table
 					$emails = [];
 					foreach ($employee_array as $value){
 						if(!$value) continue; // in case user kept 'Please select' also
-						$emp = $this->add('xepan\hr\Model_Employee')->load($value);
+						$emp = $this->add('xepan\hr\Model_Employee')->tryLoad($value);
 						if($emp['status'] != 'Active') continue;
 						array_push($emails, $emp['first_email']);
 					}
