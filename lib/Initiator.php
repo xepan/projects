@@ -60,6 +60,7 @@ class Initiator extends \Controller_Addon {
 		$m = $this->app->top_menu->addMenu('Projects & Tasks');
         $m->addItem(['Force Sitting Ideal Info','icon'=>'fa fa-cog'],$this->app->url('xepan_projects_configuration_task'));
         $m->addItem(['Task Reminder Layout','icon'=>'fa fa-cog'],$this->app->url('xepan_projects_configuration_layouts'));
+        $m->addItem(['Task Subtype','icon'=>'fa fa-cog'],$this->app->url('xepan_projects_configuration_tasksubtype'));
 	}
 
 	function populateApplicationMenus(){

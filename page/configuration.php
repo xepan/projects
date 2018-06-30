@@ -1,5 +1,6 @@
 <?php
 namespace xepan\projects;
+
 class page_configuration extends \xepan\base\Page{
 	public $title = "Configuration";
 	
@@ -8,6 +9,7 @@ class page_configuration extends \xepan\base\Page{
 		$tabs= $this->add('Tabs');
 		$tsk_tab = $tabs->addTabURL('./task','Task Configurations');
 		$lay_tab = $tabs->addTabURL('./layouts','Layouts');
+		$lay_tab = $tabs->addTabURL('./tasksubtype','Task Subtype');
 		
 	}
 
@@ -39,5 +41,21 @@ class page_configuration extends \xepan\base\Page{
 			$form->save();
 			$form->js(null,$form->js()->reload())->univ()->successMessage('Information Updated, will take effect after new login for ever employee')->execute();
 		}
+	}
+
+	function page_tasksubtype(){
+		$this->title = "Task Subtype";
+		$config = $this->add('xepan\projects\Model_Config_TaskSubtype');
+		$config->tryLoadAny();
+		$form = $this->add('Form');
+		$form->setModel($config);
+		$form->addSubmit('Save');
+
+		if($form->isSubmitted()){
+			$form->save();
+			$form->js()->univ()->successMessage("Task Subtype Saved Success fully")->execute();
+		}
+
+
 	}
 }
