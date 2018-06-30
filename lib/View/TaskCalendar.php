@@ -46,8 +46,8 @@ class View_TaskCalendar extends \View{
 	}
 
 	function render(){
-		$this->js(true)->_css('libs/fullcalendar')->_css('compiled/calendar');
-		$this->js(true)->_load('moment.min')->_load('fullcalendar.min')->_load('xepan-followup-scheduler12');
+		$this->js(true)->_css('fullcalendar-3.9.0/fullcalendar');//->_css('compiled/calendar');
+		$this->js(true)->_load('fullcalendar-3.9.0/lib/moment.min')->_load('fullcalendar-3.9.0/fullcalendar.min')->_load('xepan-followup-scheduler12');
 		$this->js(true)->univ()->showFollowupCalendar($this->calview,$this->event_array, $this->employee_list, $this->employee_field_to_set, $this->startingdate_field_to_set,$this->form, $this->defaultView);
 		return parent::render();
 	}
