@@ -33,6 +33,12 @@ class Model_Task extends \xepan\base\Model_Table
 		$this->addField('estimate_time')/*->display(['form'=>'TimePicker'])*/;
 		$this->addField('status')->defaultValue('Pending');
 		$this->addField('type')->enum(['Task','Followup','Reminder']);
+
+		$config = $this->add('xepan\projects\Model_Config_TaskSubtype');
+		$config->tryLoadAny();
+
+		$this->addField('sub_type')->enum(explode(",",$config['value']));
+
 		$this->addField('priority')->setValueList(['25'=>'Low','50'=>'Medium','75'=>'High','90'=>'Critical'])->EmptyText('Priority')->defaultValue(50);
 		$this->addField('set_reminder')->type('boolean');
 		$this->addField('remind_via')->display(['form'=>'xepan\base\DropDown'])->setValueList(['Email'=>'Email','SMS'=>'SMS','Notification'=>'Notification']);
