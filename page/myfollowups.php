@@ -8,9 +8,14 @@ class page_myfollowups extends \xepan\base\Page{
 	function init(){
 		parent::init();
 
+		$subtype_m = $this->add('xepan\projects\Model_Config_TaskSubtype')->tryLoadAny();
+		$subtype = explode(",", $subtype_m['value']);
+		$subtype = array_combine($subtype, $subtype);
+
 		$this->app->stickyGET('start_date');
 		$this->app->stickyGET('end_date');
 		$this->app->stickyGET('filter_for_employee_id');
+		$this->app->stickyGET('followup_type');
 
 		$this->start_date = $start_date = $_GET['start_date']?:$this->app->today;
 		$this->end_date = $end_date = $_GET['end_date']?:$this->app->today;
@@ -19,15 +24,16 @@ class page_myfollowups extends \xepan\base\Page{
 
         $contact_id = $this->app->stickyGET('contact_id');
 
-        $filter_form = $this->add('Form',null,'filter_form');
+        $filter_form = $this->add('Form');
         $note_v = $filter_form->add('View');
         $filter_form->add('xepan\base\Controller_FLC')
 		->showLables(true)
 		->makePanelsCoppalsible(true)
 		->layout([
-				'period'=>'Filter (Date Range and See Overdue) Followups~c1~4~closed',
-				'exclude_overdue'=>'c2~4',
-				'FormButtons'=>'c3~4',
+				'period'=>'Filter (Date Range and See Overdue) Followups~c1~3~closed',
+				'followup_type'=>'c2~4',
+				'exclude_overdue'=>'c3~3',
+				'FormButtons~&nbsp;'=>'c4~2',
 			]);
 
         $fld = $filter_form->addField('DateRangePicker','period')
@@ -36,13 +42,14 @@ class page_myfollowups extends \xepan\base\Page{
                 ->getFutureDatesSet()
                 ->getBackDatesSet(false);
         $filter_form->addField('CheckBox','exclude_overdue','Exlude Overdue Followups (Follow Given Date)')->set($exclude_overdue);
+        $filter_form->addField('Dropdown','followup_type')->setValueList($subtype)->setEmptyText('Please Select ..');
 		$filter_form->addSubmit("Filter")->addClass('btn btn-primary');
 		
 		if($filter_form->isSubmitted()){
-			$this->js()->reload(['exclude_overdue'=>$filter_form['exclude_overdue']?:0,'start_date'=>$fld->getStartDate()?:0,'end_date'=>$fld->getEndDate()?:0])->execute();
+			$this->js()->reload(['exclude_overdue'=>$filter_form['exclude_overdue']?:0,'start_date'=>$fld->getStartDate()?:0,'end_date'=>$fld->getEndDate()?:0,'followup_type'=>$filter_form['followup_type']])->execute();
 		}
 
-		$my_followups = $this->add('xepan\hr\CRUD',['entity_name'=>'Followup','grid_class'=>'xepan\projects\View_TaskList'],'view');
+		$my_followups = $this->add('xepan\hr\CRUD',['entity_name'=>'Followup','grid_class'=>'xepan\projects\View_TaskList']);
 		
 		$status_array = [];	
 		$status_array = [	'Pending'=>'Pending',
@@ -52,7 +59,7 @@ class page_myfollowups extends \xepan\base\Page{
 							'Completed'=>'Completed'
 						];	
 		
-		$frm = $my_followups->grid->addQuickSearch(['task_name']);
+		// $frm = $my_followups->grid->addQuickSearch(['task_name']);
 		
 
 		// $frm->add('xepan\base\Controller_FLC')
@@ -101,6 +108,9 @@ class page_myfollowups extends \xepan\base\Page{
 
 		$my_followups_model = $this->add('xepan\projects\Model_FollowUp');
 		
+		if($_GET['followup_type']){
+			$my_followups_model->addCondition('sub_type',$_GET['followup_type']);
+		}
 		// loading followups depending upon employees post permission level
 		$post_m = $this->add('xepan\hr\Model_Post');
 		$post_m->load($this->app->employee['post_id']);
@@ -221,7 +231,7 @@ class page_myfollowups extends \xepan\base\Page{
 		}
 	}
 
-	function defaultTemplate(){
-		return ['page\followups'];
-	}
+	// function defaultTemplate(){
+	// 	return ['page\followups'];
+	// }
 }

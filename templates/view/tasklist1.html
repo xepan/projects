@@ -26,6 +26,7 @@
           {$action}
           {/}
           {$delete} <span title="task priority : {$priority}" class="label label-xs label-{$color}">{$priority_name} </span>{contact_info_wrapper}<span style="cursor:pointer; cursor:hand;" data-id="{$related_id}" class="do-view-contact">[{$contact_name} :: {$contact_organization} {$dummy_spot}]</span>{/}
+          {$sub_type}          
         </div>
         <div class="time-ago"><i title="Total Duration {$total_duration}" class="fa fa-clock-o">&nbsp; {total_duration}0.00{/}</i><br/>{play_pause_wrapper}  
           <div style="display:{$display_play_pause};"><span data-action="{$event_action}" data-id="{$id}" style="cursor:pointer; cursor: hand; " class="fa current_task_btn btn btn-primary btn-block {$icon} {$running-task}"><span style="margin-left:10px;" class="duration"></span></span></div>{/}

@@ -3,10 +3,10 @@ $.each({
 	showFollowupCalendar: function(obj,events_passed,defaultView, employee_list, add_employee_filter, add_task_types_filter,default_task_type, add_task_sub_types_filter, task_sub_types, employee_field_to_set, startingdate_field_to_set,form){
 		
 
-			var form_html = "<div class='row'>";
+			var form_html = "<div class='row main-box' style='padding:5px;'>";
 			
 			if(add_employee_filter !== false){
-				form_html += "<div class='col-md-4 col-lg-4 col-sm-12'><select id='xepan-schedule-to-employee'><option value='0'>All Employee</option>";
+				form_html += "<div class='col-md-3 col-lg-3 col-sm-12'><label>Employee</label><select id='xepan-schedule-to-employee'><option value='0'>All Employee</option>";
 		  		$.each(employee_list,function(id,name){
 		  			form_html += '<option value="'+id+'">'+name+'</option>';
 		  		});
@@ -16,15 +16,12 @@ $.each({
   			
 
 	  		if(startingdate_field_to_set !==null){
-		  		form_html += '<div class="col-md-4 col-lg-4 col-sm-12"><input id="xepan-schedule-datetime"></div>';
+		  		form_html += '<div class="col-md-3 col-lg-3 col-sm-12"><label>Followup On</label><input id="xepan-schedule-datetime"></div>';
 	  		}
 
-	  		if(add_employee_filter !==false && employee_field_to_set !==null){
-	  			form_html += '<div class="col-md-4 col-lg-4 col-sm-12"><button id="xepan-schedule-submit-btn" class="btn btn-primary">Update</button></div></div>';
-	  		}
 
 	  		if(add_task_types_filter !==false){
-	  			form_html += '<div class="col-md-4 col-lg-4 col-sm-12">\
+	  			form_html += '<div class="col-md-2 col-lg-2 col-sm-12"><label>Task Type</label>\
 	  						<select id="xepan-schedule-task_type">\
 	  						<option value="0">Any Task Type</option>\
 	  						<option value="Task" '+((default_task_type == 'Task')?'SELECTED':'')+'>Task</option>\
@@ -34,7 +31,7 @@ $.each({
 	  		}
 
 	  		if(add_task_sub_types_filter !==false){
-	  			form_html += '<div class="col-md-4 col-lg-4 col-sm-12">';
+	  			form_html += '<div class="col-md-2 col-lg-2 col-sm-12"><label>Task Sub Type</label>';
 	  			form_html += '<select id="xepan-schedule-task_sub_type"><option value="0">Any Task Sub Type</option>';
 	  			$.each(task_sub_types, function(index, val) {
 	  				form_html += '<option value="'+val+'">'+val+'</option>';
@@ -43,6 +40,9 @@ $.each({
 	  			form_html +='</div>';
 	  		}
 
+	  		if(add_employee_filter !==false && employee_field_to_set !==null){
+	  			form_html += '<div class="col-md-2 col-lg-2 col-sm-12"><button id="xepan-schedule-submit-btn" class="btn btn-primary">Update</button></div>';
+	  		}
   			form_html += "</div>";
 
 	  		$(form_html).appendTo($(form));
