@@ -6,15 +6,23 @@ namespace xepan\projects;
 
 class View_TaskCalendar extends \View{
 
+	public $add_employee_filter=true;
+	public $add_task_types_filter=true;
+	public $default_task_type=false;
+	public $add_task_sub_types_filter=true;
+
 	public $employee_field_to_set=null;
 	public $startingdate_field_to_set=null;
 
+	public $task_sub_types=[];
 	public $event_array=[];
 	public $calview;
 	public $form;
 
 	public $defaultView='agendaWeek';
 	public $title_field='assign_to';
+	
+	public $folowup_types=null;
 
 	function init(){
 		parent::init();
@@ -34,7 +42,8 @@ class View_TaskCalendar extends \View{
 		$this->event_array=[];
 		// {title:value.title,start:value.start,document_id:value.document_id,'client_event_id':value._id}
 		foreach ($model as $m) {
-			$e =['title'=>$m[$this->title_field],'start'=>$m['starting_date'],'task_id'=>$m->id,'allDay'=>false,'end'=>$m['starting_date'],'desc'=>$m->description()];
+			$color = ($m['type']=='Followup' && $m['Status'] !='Completed' && strtotime($m['starting_date']) < strtotime($this->app->today)) ? 'red':null;
+			$e =['title'=>$m[$this->title_field],'start'=>$m['starting_date'],'task_id'=>$m->id,'allDay'=>false,'end'=>$m['starting_date'],'desc'=>$m->description(),'assign_to_id'=>$m['assign_to_id'],'type'=>$m['type'],'sub_type'=>$m['sub_type'],'color'=>$color];
 			$this->event_array[] = $e;
 		}
 	}
@@ -47,8 +56,9 @@ class View_TaskCalendar extends \View{
 
 	function render(){
 		$this->js(true)->_css('fullcalendar-3.9.0/fullcalendar');//->_css('compiled/calendar');
-		$this->js(true)->_load('fullcalendar-3.9.0/lib/moment.min')->_load('fullcalendar-3.9.0/fullcalendar.min')->_load('xepan-followup-scheduler12');
-		$this->js(true)->univ()->showFollowupCalendar($this->calview,$this->event_array, $this->employee_list, $this->employee_field_to_set, $this->startingdate_field_to_set,$this->form, $this->defaultView);
+		$this->js(true)->_load('fullcalendar-3.9.0/lib/moment.min')->_load('fullcalendar-3.9.0/fullcalendar.min')->_load('xepan-followup-scheduler13');
+		// showFollowupCalendar: function(obj,events_passed,defaultView, employee_list, add_employee_filter, add_task_types_filter,default_task_type, add_task_sub_types_filter, task_sub_types, employee_field_to_set, startingdate_field_to_set,form){
+		$this->js(true)->univ()->showFollowupCalendar($this->calview,$this->event_array, $this->defaultView, $this->employee_list, $this->add_employee_filter, $this->add_task_types_filter, $this->default_task_type, $this->add_task_sub_types_filter, $this->task_sub_types, $this->employee_field_to_set, $this->startingdate_field_to_set,$this->form);
 		return parent::render();
 	}
 
