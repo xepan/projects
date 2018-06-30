@@ -22,8 +22,6 @@ class View_TaskCalendar extends \View{
 	public $defaultView='agendaWeek';
 	public $title_field='assign_to';
 	
-	public $folowup_types=null;
-
 	function init(){
 		parent::init();
 
@@ -33,6 +31,10 @@ class View_TaskCalendar extends \View{
         $this->js(true)->_load('select2.min')->_css('libs/select2');
 		$this->form = $this->add('View');
 		$this->calview = $this->add('View');
+
+		$m = $this->add('xepan\projects\Model_Config_TaskSubtype')->tryLoadAny();
+		$this->task_sub_types = explode(",", $m['value']);
+
 	}
 
 	function setModel($model){
