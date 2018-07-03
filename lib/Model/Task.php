@@ -484,16 +484,6 @@ class Model_Task extends \xepan\base\Model_Table
 		if($this['type'] =='Followup'){
 
 			$btn = $p->add('Button')->set('Immediate Complete')->addClass('btn btn-primary xepan-push-large btn-block');
-
-			$comm = $p->add('xepan\communication\View_Communication',['showFilter'=>false]);
-			$comm->add('H5',null,'filter')->set('Complete Followup by creating Communication: What is status of This Followup');
-			$comm->setCommunicationsWith($this->ref('related_id'));
-			$comm->showCommunicationHistory(false);
-			$comm->addSuccessJs($this->app->js(null,$p->js()->univ()->closeDialog())->_selector('.xepan-mini-task, .xepan-tasklist-grid')->trigger('reload'));
-			$this->app->addHook('communication_created',function($app)use($p){
-				$this->mark_complete();
-			});
-
 			
 			if($btn->isClicked()){				
 				$this->mark_complete();
@@ -503,45 +493,43 @@ class Model_Task extends \xepan\base\Model_Table
 				return $this->app->page_action_result = $this->app->js(true,$p->js()->univ()->closeDialog())->_selector('.xepan-mini-task')->trigger('reload');
 			}
 
-		// 	$contact = $this->add('xepan\base\Model_Contact');
-		// 	$contact->tryLoad($this['related_id']);
+			$contact = $this->add('xepan\base\Model_Contact');
+			$contact->tryLoad($this['related_id']);
 
-		// 	if($contact->loaded()){
-		// 		$p->add('View')->setClass('alert alert-info')->set('Add Communication with '. $contact['name_with_type']);
-		// 		$form = $p->add('xepan\communication\Form_Communication');
-		// 		$form->setContact($contact);
-		// 		$member_phones = $contact->getPhones();
-		// 		$called_to_field = $form->getElement('called_to');
-		// 		$nos=[];
-		// 			foreach ($member_phones as $no) {
-		// 				$nos[$no] = $no;
-		// 			}
-		// 			$called_to_field->setValueList($nos);
-		// 	}else{
-		// 		$form= $this->add('Form');
-		// 		$p->add('View')->setClass('alert alert-danger')->set('Associated Contact not found or removed');
-		// 	}
+			if($contact->loaded()){
+				$p->add('View')->setClass('alert alert-info')->set('Add Communication with '. $contact['name_with_type']);
+				$comm = $p->add('xepan\communication\View_Communication',['showFilter'=>false]);
+				$comm->add('H5',null,'filter')->set('Complete Followup by creating Communication: What is status of This Followup');
+				$comm->setCommunicationsWith($this->ref('related_id'));
+				$comm->showCommunicationHistory(false);
+				$comm->addSuccessJs($this->app->js(null,$p->js()->univ()->closeDialog())->_selector('.xepan-mini-task, .xepan-tasklist-grid')->trigger('reload'));
+				$this->app->addHook('communication_created',function($app)use($p){
+					$this->mark_complete();
+				});
+			}else{
+				$p->add('View')->setClass('alert alert-danger')->set('Associated Contact not found or removed');
+			}
 
-		// }else{
-		// 	$form = $p->add('Form');
-		// 	$form->addField('text','comment');
-		// }
+		}else{
+			$form = $p->add('Form');
+			$form->addField('text','comment');
+			$form->addSubmit('Save');
+				
+			if($form->isSubmitted()){			
+				$this->mark_complete();
+				// if($this['assign_to_id'] == $this['created_by_id']){
+				// $this->app->employee
+			 //            ->addActivity("Task '".$this['task_name']."' completed by '".$this->app->employee['name']."'",null, $this['assign_to_id'] /*Related Contact ID*/,null,null,null);
+				// }else{
+				// 	$this->app->employee
+				//             ->addActivity("Task '".$this['task_name']."' completed by '".$this->app->employee['name']."'",null, $this['assign_to_id'] /*Related Contact ID*/,null,null,null)
+				//             ->notifyTo([$this['created_by_id'],$this['assign_to_id']],"Task : ".$this['task_name']."' marked Complete by '".$this->app->employee['name']."'");
+				// }
 
-		// $form->addSubmit('Save');
-			
-		// if($form->isSubmitted()){			
-		// 	$this->mark_complete($form);
-		// 	if($this['assign_to_id'] == $this['created_by_id']){
-		// 	$this->app->employee
-		//             ->addActivity("Task '".$this['task_name']."' completed by '".$this->app->employee['name']."'",null, $this['assign_to_id'] /*Related Contact ID*/,null,null,null);
-		// 	}else{
-		// 		$this->app->employee
-		// 	            ->addActivity("Task '".$this['task_name']."' completed by '".$this->app->employee['name']."'",null, $this['assign_to_id'] /*Related Contact ID*/,null,null,null)
-		// 	            ->notifyTo([$this['created_by_id'],$this['assign_to_id']],"Task : ".$this['task_name']."' marked Complete by '".$this->app->employee['name']."'");
-		// 	}
-
-		// 	return $this->app->page_action_result = $this->app->js(true,$p->js()->univ()->closeDialog())->_selector('.xepan-mini-task')->trigger('reload');
+				return $this->app->page_action_result = $this->app->js(true,$p->js()->univ()->closeDialog())->_selector('.xepan-mini-task')->trigger('reload');
+			}
 		}
+
 	}
 
 	function mark_complete(){		
