@@ -97,6 +97,11 @@ class Initiator extends \Controller_Addon {
 						'icon'=>'fa fa-cc-paw',
 						'url'=>'xepan_projects_pointsystem'
 					],
+					[
+						'name'=>'My Tasks',
+						'icon'=>'fa fa-tasks',
+						'url'=>'xepan_projects_mytasks'
+					],
 					[	'name'=>'Reports',
 						'icon'=>'fa fa-cog',
 						'url'=>'xepan_projects_projectreport'
