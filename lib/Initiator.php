@@ -66,18 +66,67 @@ class Initiator extends \Controller_Addon {
 	function populateApplicationMenus(){
 		if(!$this->app->getConfig('hidden_xepan_projects',false)){
 
-				$m = $this->app->top_menu->addMenu('Projects');
+				// $m = $this->app->top_menu->addMenu('Projects');
 				// $m->addItem(['Dashboard','icon'=>'fa fa-dashboard'],'xepan_projects_projectdashboard');
-				$m->addItem(['Project','icon'=>'fa fa-sitemap'],'xepan_projects_project');
-				$m->addItem(['Trace Employee','icon'=>' fa fa-paw'],'xepan_projects_projectlive');
-				$m->addItem(['Manage Point Rules','icon'=>' fa fa-paw'],'xepan_projects_pointsystem');
+				// $m->addItem(['Project','icon'=>'fa fa-sitemap'],'xepan_projects_project');
+				// $m->addItem(['Trace Employee','icon'=>' fa fa-paw'],'xepan_projects_projectlive');
+				// $m->addItem(['Manage Point Rules','icon'=>' fa fa-paw'],'xepan_projects_pointsystem');
 				$this->app->user_menu->addItem(['Tasks','icon'=>'fa fa-tasks'],'xepan_projects_mytasks');
 				// $this->app->user_menu->addItem(['My Followups','icon'=>'fa fa-stack-exchange'],'xepan_projects_myfollowups');
 				// $projects = $this->add('xepan\projects\Model_Project');
 				// $m->addItem(['Configuration','icon'=>' fa fa-cog'],'xepan_projects_configuration');
-				$m->addItem(['Reports','icon'=>' fa fa-cog'],'xepan_projects_projectreport');
+				// $m->addItem(['Reports','icon'=>' fa fa-cog'],'xepan_projects_projectreport');
 			}
 	}
+
+		// used for custom menu
+	function getTopApplicationMenu(){
+
+		return ['Projects'=>[
+					[	'name'=>'Project',
+						'icon'=>'fa fa-sitemap',
+						'url'=>'xepan_projects_project'
+					],
+					[
+						'name'=>'Trace Employee',
+						'icon'=>'fa fa-paw',
+						'url'=>'xepan_projects_projectlive'
+					],
+					[
+						'name'=>'Manage Point Rules',
+						'icon'=>'fa fa-cc-paw',
+						'url'=>'xepan_projects_pointsystem'
+					],
+					[	'name'=>'Reports',
+						'icon'=>'fa fa-cog',
+						'url'=>'xepan_projects_projectreport'
+					]
+				]
+			];
+	}
+
+	function getConfigTopApplicationMenu(){
+		return [
+				'Projects_Config'=>[
+					[
+						'name'=>'Force Sitting Ideal Info',
+						'icon'=>'fa fa-cog',
+						'url'=>'xepan_projects_configuration_task'
+					],
+					[
+						'name'=>'Task Reminder Layout',
+						'icon'=>'fa fa-cog',
+						'url'=>'xepan_projects_configuration_layouts'
+					],
+					[
+						'name'=>'Task Subtype',
+						'icon'=>'fa fa-cog',
+						'url'=>'xepan_projects_configuration_tasksubtype'
+					]
+			    ]
+			];
+
+	} 
 
 	function exportWidgets($app,&$array){
         $array[] = ['xepan\projects\Widget_AccountableSystemUse','level'=>'Global','title'=>'Staff Accountable System Use'];
