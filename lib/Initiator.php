@@ -94,13 +94,14 @@ class Initiator extends \Controller_Addon {
 					],
 					[
 						'name'=>'Manage Point Rules',
-						'icon'=>'fa fa-cc-paw',
+						'icon'=>'fa fa-paw',
 						'url'=>'xepan_projects_pointsystem'
 					],
 					[
 						'name'=>'My Tasks',
 						'icon'=>'fa fa-tasks',
-						'url'=>'xepan_projects_mytasks'
+						'url'=>'xepan_projects_mytasks',
+						'skip_default'=>true
 					],
 					[	'name'=>'Reports',
 						'icon'=>'fa fa-cog',
