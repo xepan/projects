@@ -97,6 +97,9 @@ $.each({
 			},
 			eventRender: function(event, element) {
 	        	$(element).tooltip({title: event.desc, html:true});
+	        	if(event.icon){          
+			        element.find(".fc-title").prepend("<i class='fa fa-"+event.icon+"'></i> ");
+			    }
 	        	to_show=true;
 	        	if(add_employee_filter)
 	        		to_show = to_show && ['0', event.assign_to_id].indexOf($('#xepan-schedule-to-employee').val()) >= 0
