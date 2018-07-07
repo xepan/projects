@@ -1,6 +1,6 @@
 $.each({
 
-	showFollowupCalendar: function(obj,events_passed,defaultView, employee_list, add_employee_filter, add_task_types_filter,default_task_type, add_task_sub_types_filter, task_sub_types, employee_field_to_set, startingdate_field_to_set,form){
+	showFollowupCalendar: function(obj,events_passed,defaultView, employee_list, add_employee_filter, add_task_types_filter,default_task_type, add_task_sub_types_filter, task_sub_types, employee_field_to_set, startingdate_field_to_set,form,detail_url){
 		
 
 			var form_html = "<div class='row main-box' style='padding:5px;'>";
@@ -109,7 +109,10 @@ $.each({
 	        },
 			dayClick: function(date) {
 			    $('#xepan-schedule-datetime').handleDtpicker('setDate',date.format('YYYY-MM-DD HH:mm:00'));
-			  }
+			},
+			eventClick: function(calEvent, jsEvent, view){
+				$.univ().frameURL(calEvent.title,detail_url+'&task_id='+calEvent.task_id);
+			}
 		});
 	}
 
