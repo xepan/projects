@@ -31,6 +31,7 @@ class page_pointsystem extends \xepan\projects\page_sidemenu{
 
 		foreach ($groups as $g) {
 			$rules_m = $this->add('xepan\base\Model_Rules');
+			$rules_m->getElement('created_by_id')->defaultValue($this->app->employee->id);
 			$rules_m->addCondition('rulegroup_id',$g->id);
 			$crud = $v->add('xepan\hr\CRUD',['grid_options'=>['fixed_header'=>false]],$g->id);
 			$crud->setModel($rules_m);
@@ -43,8 +44,10 @@ class page_pointsystem extends \xepan\projects\page_sidemenu{
 	}
 
 	function page_rulegroups(){
+		$model=$this->add('xepan\base\Model_RuleGroup');
+		$model->getElement('created_by_id')->defaultValue($this->app->employee->id);
 		$crud = $this->add('xepan\hr\CRUD');
-		$crud->setModel('xepan\base\RuleGroup');
+		$crud->setModel($model);
 
 	}
 
