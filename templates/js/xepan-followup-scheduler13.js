@@ -3,7 +3,7 @@ $.each({
 	showFollowupCalendar: function(obj,events_passed,defaultView, employee_list, add_employee_filter, add_task_types_filter,default_task_type, add_task_sub_types_filter, task_sub_types, employee_field_to_set, startingdate_field_to_set,form,detail_url){
 		
 
-			var form_html = "<div class='row main-box' style='padding:5px;'>";
+			var form_html = "<div class='row main-box' style='padding:5px;margin:0px 0px 5px 0px;'>";
 			
 			if(add_employee_filter !== false){
 				form_html += "<div class='col-md-3 col-lg-3 col-sm-12'><label>Employee</label><select id='xepan-schedule-to-employee'><option value='0'>All Employee</option>";
@@ -106,7 +106,7 @@ $.each({
 	        	if(add_task_types_filter)
 	        		to_show = to_show && ['0', event.type].indexOf($('#xepan-schedule-task_type').val()) >= 0
 	        	if(add_task_sub_types_filter)
-	        		to_show = to_show && ['0', event.task_sub_type].indexOf($('#xepan-schedule-task_sub_type').val()) >= 0
+	        		to_show = to_show && ['0', event.sub_type].indexOf($('#xepan-schedule-task_sub_type').val()) >= 0
 
 	        	return to_show;
 	        },
