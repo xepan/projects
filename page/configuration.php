@@ -17,10 +17,17 @@ class page_configuration extends \xepan\base\Page{
 		$config_m = $this->add('xepan\projects\Model_Config_ReminderAndTask');
 		$config_m->tryLoadAny();
 
+		$task_spot_list = $this->add('xepan\projects\Model_Task')->getActualFields();
+		sort($task_spot_list);
+		
+		array_walk($task_spot_list,function(&$value,$key){
+			$value = '{$'.$value.'}';
+		});
+
 		$form=$this->add('Form');
 		$form->setModel($config_m,['reminder_subject','reminder_body']);
 		$form->getElement('reminder_subject')->set($config_m['reminder_subject']);
-		$form->getElement('reminder_body')->setFieldHint('{$name}, {$task}, {$description}')->set($config_m['reminder_body']);
+		$form->getElement('reminder_body')->setFieldHint(implode(",", $task_spot_list))->set($config_m['reminder_body']);
 		$form->addSubmit('Save')->addClass('btn btn-primary');
 		
 		if($form->isSubmitted()){
