@@ -48,6 +48,7 @@ class View_TaskCalendar extends \View{
 		// {title:value.title,start:value.start,document_id:value.document_id,'client_event_id':value._id}
 		foreach ($model as $m) {
 			$color = ($m['status'] !='Completed' && (($m['type']=='Followup' && strtotime($m['starting_date']) < strtotime($this->app->today)) || ($m['type']=='Task' && strtotime($m['deadline']) < strtotime($this->app->today)) ) ) ? 'red':null;
+			$color = (strtolower($m['status']) =='completed')? 'green':$color;
 			$e =['title'=>$m[$this->title_field],'start'=>$m['starting_date'],'task_id'=>$m->id,'allDay'=>false,'end'=>$m['starting_date'],'desc'=>$m->description(),'assign_to_id'=>$m['assign_to_id'],'type'=>$m['type'],'sub_type'=>$m['sub_type'],'color'=>$color, 'icon'=>($m['type']=='Task'?'tasks':($m['type']=='Followup'?'refresh':'bell-o'))];
 			$this->event_array[] = $e;
 		}
