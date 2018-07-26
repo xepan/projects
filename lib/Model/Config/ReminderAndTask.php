@@ -7,6 +7,7 @@ class Model_Config_ReminderAndTask extends \xepan\base\Model_ConfigJsonModel{
 	public $fields = [
 						'reminder_subject'=>'Line',
 						'reminder_body'=>'xepan\base\RichText',
+						'reminder_sms_content'=>'Text',
 						'force_to_fill_sitting_ideal'=>'Checkbox',
 						'for_selected_posts'=>'xepan\hr\Post',
 						'repeate_check_in_seconds'=>'Number',
