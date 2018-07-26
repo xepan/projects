@@ -640,7 +640,10 @@ class Model_Task extends \xepan\base\Model_Table
 		$reminder_task = $this->add('xepan\projects\Model_Task');
 		$reminder_task->addCondition('set_reminder',true);
 		$reminder_task->addCondition([['is_reminded',0],['is_reminded',null]]);
-		
+
+		$config_m = $this->add('xepan\projects\Model_Config_ReminderAndTask');
+		$config_m->tryLoadAny();
+
 		foreach ($reminder_task as $task) {
 			if(($task['type'] == 'Task' || $task['type'] == 'Followup') AND $task['status'] == 'Completed'){
 				$task['is_reminded'] = true;
@@ -662,14 +665,23 @@ class Model_Task extends \xepan\base\Model_Table
 					$employee_array = explode(',', $task['notify_to']);
 
 					$emails = [];
+					$mobile_nos = [];
+					foreach ($employee_array as $value){
+						if(!$value) continue; // in case user kept 'Please select' also
+						$emp = $this->add('xepan\hr\Model_Employee')->tryLoad($value);
+
+						if($emp['status'] != 'Active') continue;
+						$temp = explode("<br/>",$emp['emails_str']);
+						$emails = array_merge($emails,$temp);
+
+						$contacts = explode("<br/>",$emp['contacts_str']);
+						$mobile_nos = array_merge($mobile_nos,$contacts);
+					}
+
+					$merge_model_array=[];
+					$merge_model_array = array_merge($merge_model_array,$task->get());
+
 					if(in_array("Email", $remind_via_array)){
-						foreach ($employee_array as $value){
-							if(!$value) continue; // in case user kept 'Please select' also
-							$emp = $this->add('xepan\hr\Model_Employee')->tryLoad($value);
-							if($emp['status'] != 'Active') continue;
-							$temp = explode("<br/>",$emp['emails_str']);
-							$emails = array_merge($emails,$temp);
-						}
 
 						$to_emails = implode(', ', $emails);
 						if($debug) echo "Sending Emails to ".$to_emails."<br/>";
@@ -681,26 +693,21 @@ class Model_Task extends \xepan\base\Model_Table
 						
 						$mail = $this->add('xepan\projects\Model_ReminderMail');
 
-						$config_m = $this->add('xepan\base\Model_ConfigJsonModel',
-						[
-							'fields'=>[
-										'reminder_subject'=>'Line',
-										'reminder_body'=>'xepan\base\RichText',
-										],
-								'config_key'=>'EMPLOYEE_REMINDER_RELATED_EMAIL',
-								'application'=>'projects'
-						]);
-						$config_m->tryLoadAny();
-
+						// $config_m = $this->add('xepan\base\Model_ConfigJsonModel',
+						// [
+						// 	'fields'=>[
+						// 				'reminder_subject'=>'Line',
+						// 				'reminder_body'=>'xepan\base\RichText',
+						// 				],
+						// 		'config_key'=>'EMPLOYEE_REMINDER_RELATED_EMAIL',
+						// 		'application'=>'projects'
+						// ]);
 						$email_subject = $config_m['reminder_subject'];
 	        			$email_body = $config_m['reminder_body'];
 							
 						$temp=$this->add('GiTemplate');
 						$temp->loadTemplateFromString($email_body);
 						
-						
-						$merge_model_array=[];
-						$merge_model_array = array_merge($merge_model_array,$task->get());
 
 						$subject_temp=$this->add('GiTemplate');
 						$subject_temp->loadTemplateFromString($email_subject);
@@ -731,8 +738,31 @@ class Model_Task extends \xepan\base\Model_Table
 						}
 					}
 
-					if(in_array("SMS", $remind_via_array)){
-						// SMS CONFIGURATION REMAINING
+					$sms_setting = $this->add('xepan\communication\Model_Communication_SMSSetting')->tryLoadAny();
+					if(in_array("SMS", $remind_via_array) && $sms_setting->loaded()){
+
+						$sms_content = $config_m['reminder_sms_content'];
+						$template=$this->add('GiTemplate');
+						$template->loadTemplateFromString($sms_content);
+						$v = $this->add('View',null,null,$template);
+						$v->template->trySetHtml($merge_model_array);
+						$sms_content = $v->getHtml();
+
+						$communication = $this->add('xepan\communication\Model_Communication_SMS');
+						$communication->addCondition('status','Commented');
+
+						$communication['from_id'] = $task['created_by_id'];
+						$communication['direction'] = 'Out';
+						$communication['description'] = $sms_content;
+						
+						foreach ($mobile_nos as $nos) {
+							$communication->addTo($nos);
+						}
+						$communication->setFrom($task['created_by_id'],$task['created_by_id']);
+						$communication['title'] = substr($sms_content,0,35)." ...";
+						$communication['created_at'] = $this->app->now;
+						$communication['communication_channel_id'] = $sms_setting->id;
+						$communication->send($sms_setting);
 					}
 
 					if(in_array("Notification", $remind_via_array)){					
