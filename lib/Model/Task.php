@@ -763,6 +763,8 @@ class Model_Task extends \xepan\base\Model_Table
 						$communication['created_at'] = $this->app->now;
 						$communication['communication_channel_id'] = $sms_setting->id;
 						$communication->send($sms_setting);
+
+						if($debug) echo "SMS (".$sms_content.") send to ".implode(",", $mobile_nos)."<br/>";
 					}
 
 					if(in_array("Notification", $remind_via_array)){					
