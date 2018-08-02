@@ -738,7 +738,7 @@ class Model_Task extends \xepan\base\Model_Table
 						}
 					}
 
-					$sms_setting = $this->add('xepan\communication\Model_Communication_SMSSetting')->tryLoadAny();
+					$sms_setting = $this->add('xepan\communication\Model_Communication_DefaultSMSSetting')->tryLoadAny();
 					if(in_array("SMS", $remind_via_array) && $sms_setting->loaded()){
 
 						$sms_content = $config_m['reminder_sms_content'];
