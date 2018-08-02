@@ -183,11 +183,31 @@ class page_myfollowups extends \xepan\base\Page{
 		
 
 		if($my_followups->isEditing()){
-			$my_followups->form->setLayout('view\task_form');
+			$my_followups->form->add('xepan\base\Controller_FLC')
+				->showLables(true)
+				->makePanelsCoppalsible(true)
+				->addContentspot()
+				->layout([
+						'task_name~Followup Name'=>'Followup Details~c1~12',
+						'priority~Followup Priority'=>'c2~3',
+						'starting_date'=>'c3~3',
+						'deadline'=>'c4~3',
+						'estimate_time'=>'c5~3',
+						'related~Related Contact'=>'c6~12',
+						'description'=>'c7~12',
+						'set_reminder~&nbsp;'=>'FollowUp Reminder~b1~2',
+						'reminder_time~Remind At'=>'b2~3',
+						'remind_via~Remind Medium'=>'b3~3',
+						'notify_to~Remind To'=>'b4~4',
+						'snooze_reminder~&nbsp;'=>'d1~4',
+						'snooze_duration'=>'d2~4',
+						'remind_unit~Snooze Unit'=>'d3~4'
+					]);
+			// $my_followups->form->setLayout('view\task_form');
 			$snooze_reminder_field = $my_followups->form->addField('checkbox','snooze_reminder','Enable Snoozing [Repetitive Reminder]');
 		}
 
-		$my_followups->setModel($my_followups_model,['contact_name','task_name','related_id','assign_to_image','reminder_time','priority','starting_date','deadline','estimate_time','set_reminder','remind_via','notify_to','snooze_duration','remind_unit','description','is_recurring','recurring_span','contact_organization'],['contact_organization','contact_name','assIgn_to_image','task_name','related_id','assign_to','reminder_time','priority','starting_date','deadline','estimate_time','set_reminder','remind_via','notify_to','snooze_duration','remind_unit','description','is_recurring','recurring_span','status']);
+		$my_followups->setModel($my_followups_model,['contact_name','task_name','related_id','assign_to_image','reminder_time','priority','starting_date','deadline','estimate_time','set_reminder','remind_via','notify_to','snooze_duration','remind_unit','description','contact_organization'],['contact_organization','contact_name','assIgn_to_image','task_name','related_id','assign_to','reminder_time','priority','starting_date','deadline','estimate_time','set_reminder','remind_via','notify_to','snooze_duration','remind_unit','description','is_recurring','status']);
 		$my_followups->add('xepan\base\Controller_Avatar',['name_field'=>'assign_to','image_field'=>'assign_to_image','extra_classes'=>'profile-img center-block','options'=>['size'=>50,'display'=>'block','margin'=>'auto'],'float'=>null,'model'=>$this->model]);
 		
 		$my_followups->form->getElement('related_id')->set($contact_id);
@@ -197,7 +217,7 @@ class page_myfollowups extends \xepan\base\Page{
 		$my_followups->form->getElement('related_id')->set($contact_id);
 		
 		$reminder_field = $my_followups->form->getElement('set_reminder'); 
-		$recurring_field = $my_followups->form->getElement('is_recurring');
+		// $recurring_field = $my_followups->form->getElement('is_recurring');
 
 		if($my_followups->isEditing()){
 			$my_followups->form->getElement('notify_to')
@@ -208,15 +228,15 @@ class page_myfollowups extends \xepan\base\Page{
 											
 			$reminder_field->js(true)->univ()->bindConditionalShow([
 				true=>['remind_via','notify_to','reminder_time','snooze_reminder']
-			],'div.atk-form-row');
+			],'div.flc-atk-form-row');
 
 			$snooze_reminder_field->js(true)->univ()->bindConditionalShow([
 				true=>['snooze_reminder','snooze_duration','remind_unit']
-			],'div.atk-form-row');
+			],'div.flc-atk-form-row');
 			
-			$recurring_field->js(true)->univ()->bindConditionalShow([
-				true=>['recurring_span']
-			],'div.atk-form-row');
+			// $recurring_field->js(true)->univ()->bindConditionalShow([
+			// 	true=>['recurring_span']
+			// ],'div.atk-form-row');
 
 			if($my_followups->form->isSubmitted()){
 				$my_followups->model['assign_to_id'] = $this->app->employee->id;
