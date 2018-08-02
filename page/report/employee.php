@@ -52,6 +52,7 @@ class page_report_employee extends \xepan\base\Page{
 		$grid = $this->add('xepan\hr\Grid',null,null,['view/report/employee-comm-report']);
 		$grid->setModel($employee_comm);
 		$grid->addPaginator(50);
+		$grid->add("misc\Export");
 
 		$assign_to_pending_task = $this->add('VirtualPage')->set(function($page){
 			// $page->add('View_Error')->set($_GET['from_date']);
