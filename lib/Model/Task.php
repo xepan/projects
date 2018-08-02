@@ -26,6 +26,8 @@ class Model_Task extends \xepan\base\Model_Table
 		$this->hasOne('xepan\hr\Employee','created_by_id')->defaultValue($this->app->employee->id);
 		$this->hasOne('xepan\base\Contact','related_id')->display(array('form'=>'autocomplete\Basic'));
 		
+		$this->getElement('related_id')->getModel()->title_field = "name_with_type";
+
 		$this->addField('task_name');
 		$this->addField('description')->type('text')->display(['form'=>'xepan\base\RichText']);
 		$this->addField('deadline')->display(['form'=>'DateTimePicker'])->type('datetime');
