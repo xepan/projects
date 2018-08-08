@@ -3,7 +3,7 @@ $.each({
 	showFollowupCalendar: function(obj,events_passed,defaultView, employee_list, add_employee_filter, add_task_types_filter,default_task_type, add_task_sub_types_filter, task_sub_types, employee_field_to_set, startingdate_field_to_set,form,detail_url){
 		
 
-			var form_html = "<div class='row main-box' style='padding:5px;margin:0px 0px 5px 0px;'>";
+			var form_html = "<div class='row main-box xepan-followup-schedule' style='padding:5px;margin:0px 0px 5px 0px;'>";
 			
 			if(add_employee_filter !== false){
 				form_html += "<div class='col-md-3 col-lg-3 col-sm-12'><label>Employee</label><select id='xepan-schedule-to-employee'><option value='0'>All Employee</option>";
@@ -96,7 +96,7 @@ $.each({
 				// console.log(view);
 			},
 			eventRender: function(event, element) {
-	        	$(element).popover({title: event.title,content: event.desc, html:true,trigger: 'hover',placement: 'top',container: 'body'});
+	        	$(element).popover({title: event.title,content: event.desc, html:true,trigger: 'hover',placement: 'top',container: '.xepan-followup-schedule'});
 	        	if(event.icon){          
 			        element.find(".fc-title").prepend("<i class='fa fa-"+event.icon+"'></i> ");
 			    }
