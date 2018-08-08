@@ -96,7 +96,7 @@ $.each({
 				// console.log(view);
 			},
 			eventRender: function(event, element) {
-	        	$(element).popover({title: event.title,content: event.desc, html:true,trigger: 'hover',placement: 'top',container: '.xepan-followup-schedule'});
+	        	$(element).popover({title: event.title,content: event.desc, html:true,trigger: 'hover',placement: 'bottom',container: '.xepan-followup-schedule'});
 	        	if(event.icon){          
 			        element.find(".fc-title").prepend("<i class='fa fa-"+event.icon+"'></i> ");
 			    }
