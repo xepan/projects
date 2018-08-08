@@ -208,7 +208,9 @@ class Model_Task extends \xepan\base\Model_Table
 
  	function description($br='<br/>'){
  		$str  ='<div style="text-align:left">';
- 		$str .= $this['task_name'] .$br;
+
+ 		if($this['description'])
+ 			$str .= $this['description'];
  		$str .= 'On: ' . $this['created_at'] .$br;
  		$str .= 'By: ' . $this['created_by'] .$br;
  		$str .= 'To: ' . $this['assign_to'] .$br;

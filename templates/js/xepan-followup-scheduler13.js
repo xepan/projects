@@ -96,7 +96,7 @@ $.each({
 				// console.log(view);
 			},
 			eventRender: function(event, element) {
-	        	$(element).tooltip({title: event.desc, html:true});
+	        	$(element).popover({title: event.title,content: event.desc, html:true,trigger: 'hover',placement: 'top',container: 'body'});
 	        	if(event.icon){          
 			        element.find(".fc-title").prepend("<i class='fa fa-"+event.icon+"'></i> ");
 			    }
