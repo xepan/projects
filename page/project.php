@@ -10,9 +10,9 @@ class page_project extends \xepan\projects\page_sidemenu{
 		$project = $this->add('xepan\projects\Model_Formatted_Project');
 		$project->add('xepan\base\Controller_TopBarStatusFilter');
 		$crud=$this->add('xepan\hr\CRUD',['entity_name'=>'Project'],null,['view\project-grid']);
-		$crud->setModel($project,['name','description','status','starting_date','ending_date']);
+		$crud->setModel($project,['name','description','status','starting_date','ending_date','branch_id']);
 		$crud->grid->addQuickSearch('name');
-
+		
 		$color = [
 					0=>"emerald", 
 					1=>"green",

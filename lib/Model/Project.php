@@ -23,6 +23,7 @@ class Model_Project extends \xepan\base\Model_Table
 		parent::init();
 		
 		$this->hasOne('xepan\hr\Employee','created_by_id')->defaultValue($this->app->employee->id);
+		$this->hasOne('xepan\base\Branch','branch_id')->defaultValue(@$this->app->branch->id);
 		$this->addField('name')->sortable(true);
 		$this->addField('description');	
 		$this->addField('starting_date')->type('date');	
