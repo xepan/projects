@@ -525,12 +525,16 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 		$emp_id = $this->app->stickyGET('employee_id');
 		$emp = $this->add('xepan\hr\Model_Employee')->load($emp_id);
 		
+
 		$view = $this->add('View');
 
 		$view->setElement('iframe');
 		$view->setAttr('src','http://maps.google.com/maps?q='.$emp['last_latitude'].', '.$emp['last_longitude'].'&z=15&output=embed');
-		$view->setAttr('width','500');
-		$view->setAttr('height','350');
+		$view->setAttr('width','100%');
+		$view->setAttr('height','600');
+		$view->setAttr('frameborder',"0");
+		$view->setAttr('border',"0");
+		$this->add('View_Info')->set('latitude:'.$emp['last_latitude'].' longitude:'.$emp['last_longitude']);
 	}
 
 	function seconds2human($ss) {
