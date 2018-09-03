@@ -54,20 +54,31 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 		$project_detail_grid->add('xepan\base\Controller_Avatar',['options'=>['size'=>40,'border'=>['width'=>0]],'name_field'=>'name','default_value'=>'']);
 		$project_detail_grid->addPaginator(50);
 		$project_detail_grid->addQuickSearch(['name']);
-		$project_detail_grid->setModel($model_employee,['name','running_task','project','total_score','pending_tasks_count','running_task_since']); 
+		$project_detail_grid->setModel($model_employee,['name','running_task','project','total_score','pending_tasks_count','running_task_since','last_geolocation_update']); 
+		$project_detail_grid->addColumn('last_location');
 		$project_detail_grid->removeAttachment();
+		$project_detail_grid->removeColumn('last_geolocation_update');
 		
 		$project_detail_grid->addHook('formatRow',function($g){
+			if(!$g->model['last_geolocation_update']){
+				$g->current_row['last_location']="";
+			}else{
+				$g->current_row_html['last_location'] = "<a href='#map' class='do-show-location' data-id='".$g->model->id."' >".$this->seconds2human($this->app->my_date_diff($g->model['last_geolocation_update'],$this->app->now)['seconds_total'] ).'</a>';
+			}
+
 			$g->current_row['running_task_since'] = $this->seconds2human($g->model['running_task_since']);
 			$g->current_row_html['pending_tasks_count'] = '<a href="#'.$g->model->id.'" data-id="'.$g->model->id.'" class="do-show-pending-task" >'.$g->model['pending_tasks_count'].'</a>';
 			$g->current_row_html['running_task'] = '<a href="#'.$g->model['running_task_id'].'" data-id="'.$g->model->id.'" data-running_task_id="'.$g->model['running_task_id'].'" class="do-show-timesheet" >'.($g->model['running_task']?:' --- ').'</a>';
 			$g->current_row_html['total_score'] = '<a href="#'.$g->model['running_task_id'].'" data-id="'.$g->model->id.'" data-running_task_id="'.$g->model['running_task_id'].'" class="do-show-score" >'.($g->model['total_score']?:' --- ').'</a>';
 		});
 
+		$project_detail_grid->addOrder()->move('last_location','after','running_task_since')->now();
+
 		$project_detail_grid->js('click')->_selector('.do-show-timesheet')->univ()->frameURL('Employee\'s Today\'s TimeSheet',[$this->api->url('./employeetimesheet'),'contact_id'=>$this->js()->_selectorThis()->closest('[data-id]')->data('id')]);
 		$project_detail_grid->js('click')->_selector('.do-view-project-live')->univ()->frameURL('Employee Project Status',[$this->api->url('xepan_projects_dailyanalysis'),'contact_id'=>$this->js()->_selectorThis()->closest('[data-id]')->data('id')]);
 		$project_detail_grid->js('click')->_selector('.do-show-pending-task')->univ()->frameURL('Employee Pending Tasks',[$this->api->url('./employee_pending_tasks'),'employee_id'=>$this->js()->_selectorThis()->data('id')]);
 		$project_detail_grid->js('click')->_selector('.do-show-score')->univ()->frameURL('Employee Scores',[$this->api->url('./employee_scores'),'employee_id'=>$this->js()->_selectorThis()->data('id')]);
+		$project_detail_grid->js('click')->_selector('.do-show-location')->univ()->frameURL('Employee Current Location',[$this->api->url('./employee_location'),'employee_id'=>$this->js()->_selectorThis()->data('id')]);
 
 	}
 
@@ -507,6 +518,19 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 		$grid->addOrder()->move('from_to','before','task_name')->now();
 		$grid->addPaginator(50);
 
+	}
+
+	// <iframe src="http://maps.google.com/maps?q=35.856737, 10.606619&z=15&output=embed" width="360" height="270" frameborder="0" style="border:0"></iframe>
+	function page_employee_location(){
+		$emp_id = $this->app->stickyGET('employee_id');
+		$emp = $this->add('xepan\hr\Model_Employee')->load($emp_id);
+		
+		$view = $this->add('View');
+
+		$view->setElement('iframe');
+		$view->setAttr('src','http://maps.google.com/maps?q='.$emp['last_latitude'].', '.$emp['last_longitude'].'&z=15&output=embed');
+		$view->setAttr('width','500');
+		$view->setAttr('height','350');
 	}
 
 	function seconds2human($ss) {
