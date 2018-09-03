@@ -13,6 +13,7 @@ class View_TaskCalendar extends \View{
 
 	public $employee_field_to_set=null;
 	public $startingdate_field_to_set=null;
+	public $follow_type_field_to_set=null;
 
 	public $task_sub_types=[];
 	public $event_array=[];
@@ -64,7 +65,7 @@ class View_TaskCalendar extends \View{
 		$this->js(true)->_css('fullcalendar-3.9.0/fullcalendar');//->_css('compiled/calendar');
 		$this->js(true)->_load('fullcalendar-3.9.0/lib/moment.min')->_load('fullcalendar-3.9.0/fullcalendar.min')->_load('xepan-followup-scheduler13');
 		// showFollowupCalendar: function(obj,events_passed,defaultView, employee_list, add_employee_filter, add_task_types_filter,default_task_type, add_task_sub_types_filter, task_sub_types, employee_field_to_set, startingdate_field_to_set,form){
-		$this->js(true)->univ()->showFollowupCalendar($this->calview,$this->event_array, $this->defaultView, $this->employee_list, $this->add_employee_filter, $this->add_task_types_filter, $this->default_task_type, $this->add_task_sub_types_filter, $this->task_sub_types, $this->employee_field_to_set, $this->startingdate_field_to_set,$this->form,$this->vp->getURL());
+		$this->js(true)->univ()->showFollowupCalendar($this->calview,$this->event_array, $this->defaultView, $this->employee_list, $this->add_employee_filter, $this->add_task_types_filter, $this->default_task_type, $this->add_task_sub_types_filter, $this->task_sub_types, $this->employee_field_to_set, $this->startingdate_field_to_set,$this->form,$this->vp->getURL(),$this->follow_type_field_to_set);
 		return parent::render();
 	}
 

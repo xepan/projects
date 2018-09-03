@@ -1,8 +1,7 @@
 $.each({
 
-	showFollowupCalendar: function(obj,events_passed,defaultView, employee_list, add_employee_filter, add_task_types_filter,default_task_type, add_task_sub_types_filter, task_sub_types, employee_field_to_set, startingdate_field_to_set,form,detail_url){
-		
-
+	showFollowupCalendar: function(obj,events_passed,defaultView, employee_list, add_employee_filter, add_task_types_filter,default_task_type, add_task_sub_types_filter, task_sub_types, employee_field_to_set, startingdate_field_to_set,form,detail_url,follow_type_field_to_set){
+					
 			var form_html = "<div class='row main-box xepan-followup-schedule' style='padding:5px;margin:0px 0px 5px 0px;'>";
 			
 			if(add_employee_filter !== false){
@@ -83,6 +82,9 @@ $.each({
 		   		$(startingdate_field_to_set).val($('#xepan-schedule-datetime').val());
 		   		$(employee_field_to_set).val($('#xepan-schedule-to-employee').val());
 		   		$(employee_field_to_set).trigger('change');
+		   		$(follow_type_field_to_set).val($('#xepan-schedule-task_sub_type').val());
+		   		$(follow_type_field_to_set).trigger('change');
+
 		   		$(this).closest('.dialog').dialog('close');
 		   	});
 
