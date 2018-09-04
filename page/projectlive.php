@@ -537,6 +537,7 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 			$view->setAttr('border',"0");
 		}
 		$this->add('View_Info')->set('http://'.$this->app->current_website_name.'.xavoc.com/?page=xepan_hr_tracegeolocationapi&emp='.$emp->id);
+		$this->add('View_Info')->set('https://play.google.com/store/apps/details?id=mobi.stos.gpsmobile');
 		$this->add('View_Info')->set('latitude:'.$emp['last_latitude'].' longitude:'.$emp['last_longitude']);
 	}
 
