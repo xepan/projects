@@ -529,7 +529,7 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 		$view = $this->add('View');
 
 		$view->setElement('iframe');
-		$view->setAttr('src','http://maps.google.com/maps?q='.$emp['last_latitude'].', '.$emp['last_longitude'].'&z=15&output=embed');
+		$view->setAttr('src','http://maps.google.com/maps?q='.$emp['last_latitude'].', '.$emp['last_longitude'].'&z=19&output=embed');
 		$view->setAttr('width','100%');
 		$view->setAttr('height','600');
 		$view->setAttr('frameborder',"0");
