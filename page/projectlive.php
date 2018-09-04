@@ -63,7 +63,7 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 			if(!$g->model['last_geolocation_update']){
 				$g->current_row_html['last_location']="<a href='#map' class='do-show-location' data-id='".$g->model->id."' > -- </a>";
 			}else{
-				$g->current_row_html['last_location'] = "<a href='#map' class='do-show-location' data-id='".$g->model->id."' >".$this->seconds2human($this->app->my_date_diff($g->model['last_geolocation_update'],$this->app->now)['seconds_total'] ).'</a>';
+				$g->current_row_html['last_location'] = "<a href='#map' class='do-show-location' data-id='".$g->model->id."' >".$this->seconds2human($this->app->my_date_diff($g->model['last_geolocation_update'],$this->app->now)['seconds_total'] ).'<br/>'.$g->model['last_location'].'</a>';
 			}
 
 			$g->current_row['running_task_since'] = $this->seconds2human($g->model['running_task_since']);
