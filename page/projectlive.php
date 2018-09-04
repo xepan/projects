@@ -54,10 +54,11 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 		$project_detail_grid->add('xepan\base\Controller_Avatar',['options'=>['size'=>40,'border'=>['width'=>0]],'name_field'=>'name','default_value'=>'']);
 		$project_detail_grid->addPaginator(50);
 		$project_detail_grid->addQuickSearch(['name']);
-		$project_detail_grid->setModel($model_employee,['name','running_task','project','total_score','pending_tasks_count','running_task_since','last_geolocation_update']); 
+		$project_detail_grid->setModel($model_employee,['name','running_task','project','total_score','pending_tasks_count','running_task_since','last_geolocation_update','last_location']); 
 		$project_detail_grid->addColumn('last_location');
 		$project_detail_grid->removeAttachment();
 		$project_detail_grid->removeColumn('last_geolocation_update');
+		$project_detail_grid->removeColumn('last_location');
 		
 		$project_detail_grid->addHook('formatRow',function($g){
 			if(!$g->model['last_geolocation_update']){
