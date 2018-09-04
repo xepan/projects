@@ -61,7 +61,7 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 		
 		$project_detail_grid->addHook('formatRow',function($g){
 			if(!$g->model['last_geolocation_update']){
-				$g->current_row['last_location']="";
+				$g->current_row['last_location']="<a href='#map' class='do-show-location' data-id='".$g->model->id."' > -- </a>';
 			}else{
 				$g->current_row_html['last_location'] = "<a href='#map' class='do-show-location' data-id='".$g->model->id."' >".$this->seconds2human($this->app->my_date_diff($g->model['last_geolocation_update'],$this->app->now)['seconds_total'] ).'</a>';
 			}
@@ -534,6 +534,7 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 		$view->setAttr('height','600');
 		$view->setAttr('frameborder',"0");
 		$view->setAttr('border',"0");
+		$this->add('View')->set('http://'.$this->app->current_website_name.'xavoc.com/?page=xepan_hr_tracegeolocationapi&emp='.$$emp->id);
 		$this->add('View_Info')->set('latitude:'.$emp['last_latitude'].' longitude:'.$emp['last_longitude']);
 	}
 
