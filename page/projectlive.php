@@ -526,15 +526,17 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 		$emp = $this->add('xepan\hr\Model_Employee')->load($emp_id);
 		
 
-		$view = $this->add('View');
+		if($emp['last_latitude']){
+			$view = $this->add('View');
 
-		$view->setElement('iframe');
-		$view->setAttr('src','http://maps.google.com/maps?q='.$emp['last_latitude'].', '.$emp['last_longitude'].'&z=19&output=embed');
-		$view->setAttr('width','100%');
-		$view->setAttr('height','600');
-		$view->setAttr('frameborder',"0");
-		$view->setAttr('border',"0");
-		$this->add('View')->set('http://'.$this->app->current_website_name.'xavoc.com/?page=xepan_hr_tracegeolocationapi&emp='.$emp->id);
+			$view->setElement('iframe');
+			$view->setAttr('src','http://maps.google.com/maps?q='.$emp['last_latitude'].', '.$emp['last_longitude'].'&z=19&output=embed');
+			$view->setAttr('width','100%');
+			$view->setAttr('height','600');
+			$view->setAttr('frameborder',"0");
+			$view->setAttr('border',"0");
+		}
+		$this->add('View_Info')->set('http://'.$this->app->current_website_name.'.xavoc.com/?page=xepan_hr_tracegeolocationapi&emp='.$emp->id);
 		$this->add('View_Info')->set('latitude:'.$emp['last_latitude'].' longitude:'.$emp['last_longitude']);
 	}
 
