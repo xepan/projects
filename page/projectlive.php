@@ -55,16 +55,16 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 		$project_detail_grid->addPaginator(50);
 		$project_detail_grid->addQuickSearch(['name']);
 		$project_detail_grid->setModel($model_employee,['name','running_task','project','total_score','pending_tasks_count','running_task_since','last_geolocation_update','last_location']); 
-		$project_detail_grid->addColumn('last_location');
+		$project_detail_grid->addColumn('last_location_detail');
 		$project_detail_grid->removeAttachment();
 		$project_detail_grid->removeColumn('last_geolocation_update');
 		$project_detail_grid->removeColumn('last_location');
 		
 		$project_detail_grid->addHook('formatRow',function($g){
 			if(!$g->model['last_geolocation_update']){
-				$g->current_row_html['last_location']="<a href='#map' class='do-show-location' data-id='".$g->model->id."' > -- </a>";
+				$g->current_row_html['last_location_detail']="<a href='#map' class='do-show-location' data-id='".$g->model->id."' > -- </a>";
 			}else{
-				$g->current_row_html['last_location'] = "<a href='#map' class='do-show-location' data-id='".$g->model->id."' >".$this->seconds2human($this->app->my_date_diff($g->model['last_geolocation_update'],$this->app->now)['seconds_total'] ).'<br/>'.$g->model['last_location'].'</a>';
+				$g->current_row_html['last_location_detail'] = "<a href='#map' class='do-show-location' data-id='".$g->model->id."' >".$this->seconds2human($this->app->my_date_diff($g->model['last_geolocation_update'],$this->app->now)['seconds_total'] ).'<br/>'.$g->model['last_location'].'</a>';
 			}
 
 			$g->current_row['running_task_since'] = $this->seconds2human($g->model['running_task_since']);
@@ -73,7 +73,7 @@ class page_projectlive extends \xepan\projects\page_sidemenu{
 			$g->current_row_html['total_score'] = '<a href="#'.$g->model['running_task_id'].'" data-id="'.$g->model->id.'" data-running_task_id="'.$g->model['running_task_id'].'" class="do-show-score" >'.($g->model['total_score']?:' --- ').'</a>';
 		});
 
-		$project_detail_grid->addOrder()->move('last_location','after','running_task_since')->now();
+		$project_detail_grid->addOrder()->move('last_location_detail','after','running_task_since')->now();
 
 		$project_detail_grid->js('click')->_selector('.do-show-timesheet')->univ()->frameURL('Employee\'s Today\'s TimeSheet',[$this->api->url('./employeetimesheet'),'contact_id'=>$this->js()->_selectorThis()->closest('[data-id]')->data('id')]);
 		$project_detail_grid->js('click')->_selector('.do-view-project-live')->univ()->frameURL('Employee Project Status',[$this->api->url('xepan_projects_dailyanalysis'),'contact_id'=>$this->js()->_selectorThis()->closest('[data-id]')->data('id')]);
