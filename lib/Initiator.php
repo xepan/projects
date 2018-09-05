@@ -49,8 +49,8 @@ class Initiator extends \Controller_Addon {
 		$this->app->addHook('communication_rendered',[$task,'addFollowups']);
 		$this->app->user_menu->addItem(['My Timesheet','icon'=>'fa fa-clock-o'],'xepan_projects_todaytimesheet');
 		
-		$this->app->report_menu->addItem(['Employee Communication Activity Report','icon'=>'fa fa-users'],$this->app->url('xepan_projects_report_employee'));
-		$this->app->report_menu->addItem(['Employee Task Report','icon'=>'fa fa-users'],$this->app->url('xepan_projects_report_task'));
+		// $this->app->report_menu->addItem(['Employee Communication Activity Report','icon'=>'fa fa-users'],$this->app->url('xepan_projects_report_employee'));
+		// $this->app->report_menu->addItem(['Employee Task Report','icon'=>'fa fa-users'],$this->app->url('xepan_projects_report_task'));
 
 		return $this;
 
@@ -106,6 +106,17 @@ class Initiator extends \Controller_Addon {
 					[	'name'=>'Reports',
 						'icon'=>'fa fa-cog',
 						'url'=>'xepan_projects_projectreport'
+					]
+				],
+				'Reports'=>[
+					[	'name'=>'Employee Communication Activity Report',
+						'icon'=>'fa fa-users',
+						'url'=>'xepan_projects_report_employee'
+					],
+					[
+						'name'=>'Employee Task Report',
+						'icon'=>'fa fa-users',
+						'url'=>'xepan_projects_report_task'
 					]
 				]
 			];
