@@ -81,6 +81,7 @@ class Initiator extends \Controller_Addon {
 
 		// used for custom menu
 	function getTopApplicationMenu(){
+		if($this->app->getConfig('hidden_xepan_projects',false)){return [];}
 
 		return ['Projects'=>[
 					[	'name'=>'Project',
@@ -123,6 +124,8 @@ class Initiator extends \Controller_Addon {
 	}
 
 	function getConfigTopApplicationMenu(){
+		if($this->app->getConfig('hidden_xepan_projects',false)){return [];}
+
 		return [
 				'Projects_Config'=>[
 					[
