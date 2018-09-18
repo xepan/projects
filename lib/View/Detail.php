@@ -14,6 +14,7 @@ class View_Detail extends \View{
 		$project_id = $this->project_id;
 		
 		$model_task = $p->add('xepan\projects\Model_Formatted_Task')->tryLoad($task_id);
+		$model_task->getElement('assign_to_id')->getModel()->addCondition('status','Active');
 
 		if($this->project_id)
 			$model_task->addCondition('project_id',$project_id);
