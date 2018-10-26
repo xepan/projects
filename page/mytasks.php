@@ -8,6 +8,10 @@ class page_mytasks extends \xepan\base\Page{
 	function init(){
 		parent::init();		
 
+		// manage all reminders tasks from super user
+		$btn = $this->app->page_top_right_button_set->addButton('All Reminders')->addClass('btn btn-warning');
+		$btn->js('click',$this->app->js()->univ()->frameURL('Manage All Task Reminders and Notifications',$this->app->url('xepan_projects_remindersandtasknotifications')));
+
 		$from_date = $this->app->stickyGET('from_date');			   
         $to_date = $this->app->stickyGET('to_date');			   
         $task_priority = $this->app->stickyGET('priority');			 
