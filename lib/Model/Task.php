@@ -28,6 +28,10 @@ class Model_Task extends \xepan\base\Model_Table
 		
 		$this->getElement('related_id')->getModel()->title_field = "name_with_type";
 
+		$this->addExpression('related_contacts')->set(function($m,$q){
+			return $m->refSQL('related_id')->fieldQuery('contacts_comma_seperated');
+		});
+
 		$this->addField('task_name');
 		$this->addField('description')->type('text')->display(['form'=>'xepan\base\RichText']);
 		$this->addField('deadline')->display(['form'=>'DateTimePicker'])->type('datetime');
